@@ -28,6 +28,8 @@
 	<string>Camera access must be allowed for publishing video.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access must be allowed for publishing audio.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
