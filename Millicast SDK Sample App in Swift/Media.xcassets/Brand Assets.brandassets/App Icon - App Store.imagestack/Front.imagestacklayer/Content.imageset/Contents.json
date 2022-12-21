@@ -1,0 +1,18 @@
+{
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  },
+  "images" : [
+    {
+      "idiom" : "tv",
+      "scale" : "1x",
+      "filename" : "Front.png"
+    },
+    {
+      "scale" : "2x",
+      "idiom" : "tv",
+      "filename" : "Front@2x.png"
+    }
+  ]
+}

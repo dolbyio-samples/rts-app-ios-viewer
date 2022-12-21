@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Utils Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Class/Utils" class="dashAnchor"></a>
+
+    <a title="Utils Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+           Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html"> Reference</a>
+      <img class="carat" src="../img/carat.png" alt=""/>
+      Utils Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/CurrentCreds.html">CurrentCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/FileCreds.html">FileCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/MillicastManager.html">MillicastManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/MillicastSA.html">MillicastSA</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PubListener.html">PubListener</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/SavedCreds.html">SavedCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/SubListener.html">SubListener</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/UiCreds.html">UiCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Utils.html">Utils</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Bitrate.html">Bitrate</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/CaptureState.html">CaptureState</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PublisherState.html">PublisherState</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/SourceType.html">SourceType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/SubscriberState.html">SubscriberState</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/CredentialSource.html">CredentialSource</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Constants.html">Constants</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ContentView.html">ContentView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/MCSwiftVideoRenderer.html">MCSwiftVideoRenderer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Millicast_SDK_Sample_App_in_SwiftApp.html">Millicast_SDK_Sample_App_in_SwiftApp</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PublishView.html">PublishView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PublishView_Previews.html">PublishView_Previews</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SettingsMcView.html">SettingsMcView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SettingsView_Previews.html">SettingsView_Previews</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SubscribeView.html">SubscribeView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SubscribeView_Previews.html">SubscribeView_Previews</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>Utils</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Utils</span></code></pre>
+
+                </div>
+              </div>
+            <p>Utility methods used in the SA.</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC10getCredStr5credsSSAA16CredentialSource_p_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/getCredStr(creds:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC10getCredStr5credsSSAA16CredentialSource_p_tFZ">getCredStr(creds:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representing the specified CredentialSource.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">getCredStr</span><span class="p">(</span><span class="nv">creds</span><span class="p">:</span> <span class="kt"><a href="../Protocols/CredentialSource.html">CredentialSource</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC21configureAudioSessionyyFZ"></a>
+                    <a name="//apple_ref/swift/Method/configureAudioSession()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC21configureAudioSessionyyFZ">configureAudioSession()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Configures the AVAudioSession to use:</p>
+
+<ul>
+<li>Category playAndRecord for iOS, or playback for tvOS, with the mixWithOthers option.
+
+<ul>
+<li>This will allow:</li>
+<li>Recording on iOS.</li>
+<li>Audio playback in the backgroud, and even when the screen is locked.</li>
+<li>Mixing with audio from other apps that also allow mixing.</li>
+</ul></li>
+<li>Mode videoChat, which will optimise the audio for voice and allow Bluetooth Hands-Free Profile (HFP) device as input and output.</li>
+<li>Audio will default to the device&rsquo;s speakers when no other audio route is connected.
+For full control of the AVAudioSession, this method should be called:</li>
+<li>When the Subscriber&rsquo;s audioTrack is rendered, for e.g. at MillicastManager.subRenderAudio(track: MCAudioTrack?).</li>
+<li>When the AVAudioSession route changes, for e.g. at MillicastSA.routeChangeHandler(notification: Notification).</li>
+</ul>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">configureAudioSession</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC15setAudioSession6activeySb_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/setAudioSession(active:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC15setAudioSession6activeySb_tFZ">setAudioSession(active:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the AVAudioSession to active or not active as indicated by the parameter.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">setAudioSession</span><span class="p">(</span><span class="nv">active</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC15audioSessionStr7sessionSSSo07AVAudioF0C_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/audioSessionStr(session:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC15audioSessionStr7sessionSSSo07AVAudioF0C_tFZ">audioSessionStr(session:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representing characteristics of the current AVAudioSession.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">audioSessionStr</span><span class="p">(</span><span class="nv">session</span><span class="p">:</span> <span class="kt">AVAudioSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC14audioCatOptStr5valueSSSu_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/audioCatOptStr(value:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC14audioCatOptStr5valueSSSu_tFZ">audioCatOptStr(value:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representing the specified AVAudioSession.CategoryOptions.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">audioCatOptStr</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="kt">UInt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC14audioOutputLog8userInfoSSSDys11AnyHashableVypG_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/audioOutputLog(userInfo:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC14audioOutputLog8userInfoSSSDys11AnyHashableVypG_tFZ">audioOutputLog(userInfo:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Logs the current and previous audio output device.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">audioOutputLog</span><span class="p">(</span><span class="nv">userInfo</span><span class="p">:</span> <span class="p">[</span><span class="kt">AnyHashable</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC13inputAudioStr5routeSSSo30AVAudioSessionRouteDescriptionC_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/inputAudioStr(route:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC13inputAudioStr5routeSSSo30AVAudioSessionRouteDescriptionC_tFZ">inputAudioStr(route:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representation of the audio input port(s) in the given AVAudioSessionRouteDescription.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">inputAudioStr</span><span class="p">(</span><span class="n">route</span> <span class="nv">routeDescription</span><span class="p">:</span> <span class="kt">AVAudioSessionRouteDescription</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC14outputAudioStr5routeSSSo30AVAudioSessionRouteDescriptionC_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/outputAudioStr(route:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC14outputAudioStr5routeSSSo30AVAudioSessionRouteDescriptionC_tFZ">outputAudioStr(route:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representation of the audio output port(s) in the given AVAudioSessionRouteDescription.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">outputAudioStr</span><span class="p">(</span><span class="n">route</span> <span class="nv">routeDescription</span><span class="p">:</span> <span class="kt">AVAudioSessionRouteDescription</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC7portStr5portsSSSaySo29AVAudioSessionPortDescriptionCG_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/portStr(ports:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC7portStr5portsSSSaySo29AVAudioSessionPortDescriptionCG_tFZ">portStr(ports:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String representation of the given list of AVAudioSessionPortDescription.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">portStr</span><span class="p">(</span><span class="nv">ports</span><span class="p">:</span> <span class="p">[</span><span class="kt">AVAudioSessionPortDescription</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC8getValue3tag3key07defaultF0S2S_S2StFZ"></a>
+                    <a name="//apple_ref/swift/Method/getValue(tag:key:defaultValue:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC8getValue3tag3key07defaultF0S2S_S2StFZ">getValue(tag:<wbr>key:<wbr>defaultValue:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets a String value from UserDefaults, if available.
+If not, return the specified defaultValue.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">getValue</span><span class="p">(</span><span class="nv">tag</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">defaultValue</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC8getValue3tag3key07defaultF0SiSS_SSSitFZ"></a>
+                    <a name="//apple_ref/swift/Method/getValue(tag:key:defaultValue:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC8getValue3tag3key07defaultF0SiSS_SSSitFZ">getValue(tag:<wbr>key:<wbr>defaultValue:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets an integer value from UserDefaults, if available.
+If not, return the specified defaultValue.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">getValue</span><span class="p">(</span><span class="nv">tag</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">defaultValue</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11SwiftSa_iOS5UtilsC9indexNext4size3now9ascending6logTagS2i_SiSbSStFZ"></a>
+                    <a name="//apple_ref/swift/Method/indexNext(size:now:ascending:logTag:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11SwiftSa_iOS5UtilsC9indexNext4size3now9ascending6logTagS2i_SiSbSStFZ">indexNext(size:<wbr>now:<wbr>ascending:<wbr>logTag:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Given a list of specified size and the current index, gets the next index.
+ If at end of list, cycle to start of the other end.
+ Returns null if none available.</p>
+
+<p>@param size      Size of the list.
+ @param now       Current index of the list.
+ @param ascending If true, cycle in the direction of increasing index,
+                  otherwise cycle in opposite direction.
+ @param logTag
+ @return</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">indexNext</span><span class="p">(</span><span class="nv">size</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">now</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">ascending</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">logTag</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>
