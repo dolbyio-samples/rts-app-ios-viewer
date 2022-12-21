@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "631DD25026F1E18E0023D24A"
-               BuildableName = "SwiftSa tvOS.app"
-               BlueprintName = "SwiftSa tvOS"
-               ReferencedContainer = "container:SwiftSa.xcodeproj">
+               BlueprintIdentifier = "3FE90C1726B2AF4200B206A3"
+               BuildableName = "RTSViewer iOS.app"
+               BlueprintName = "RTSViewer iOS"
+               ReferencedContainer = "container:RTSViewer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,10 +44,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "631DD25026F1E18E0023D24A"
-            BuildableName = "SwiftSa tvOS.app"
-            BlueprintName = "SwiftSa tvOS"
-            ReferencedContainer = "container:SwiftSa.xcodeproj">
+            BlueprintIdentifier = "3FE90C1726B2AF4200B206A3"
+            BuildableName = "RTSViewer iOS.app"
+            BlueprintName = "RTSViewer iOS"
+            ReferencedContainer = "container:RTSViewer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,10 +61,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "631DD25026F1E18E0023D24A"
-            BuildableName = "SwiftSa tvOS.app"
-            BlueprintName = "SwiftSa tvOS"
-            ReferencedContainer = "container:SwiftSa.xcodeproj">
+            BlueprintIdentifier = "3FE90C1726B2AF4200B206A3"
+            BuildableName = "RTSViewer iOS.app"
+            BlueprintName = "RTSViewer iOS"
+            ReferencedContainer = "container:RTSViewer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

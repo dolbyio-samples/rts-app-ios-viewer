@@ -25,12 +25,10 @@
 		3FB31BFD26CB9ADC00A0A056 /* CredentialSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB31BFC26CB9ADC00A0A056 /* CredentialSource.swift */; };
 		3FB31BFF26CBA1D300A0A056 /* SavedCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB31BFE26CBA1D300A0A056 /* SavedCreds.swift */; };
 		3FD59AA326EF523D005AAB16 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD59AA226EF523D005AAB16 /* Utils.swift */; };
-		3FE90C1C26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift */; };
+		3FE90C1C26B2AF4200B206A3 /* RTSViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */; };
 		3FE90C1E26B2AF4200B206A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1D26B2AF4200B206A3 /* ContentView.swift */; };
 		3FE90C2026B2AF4300B206A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */; };
 		3FE90C2326B2AF4300B206A3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */; };
-		3FE90C2E26B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C2D26B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftTests.swift */; };
-		3FE90C3926B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C3826B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftUITests.swift */; };
 		631DD25226F1E18E0023D24A /* SubListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB0A29826CA60A200DA659A /* SubListener.swift */; };
 		631DD25326F1E18E0023D24A /* MillicastSA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAC2F9826B93635007588CA /* MillicastSA.swift */; };
 		631DD25426F1E18E0023D24A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB2293026C3DE9000982391 /* Constants.swift */; };
@@ -38,7 +36,7 @@
 		631DD25626F1E18E0023D24A /* SettingsMcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */; };
 		631DD25726F1E18E0023D24A /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD59AA226EF523D005AAB16 /* Utils.swift */; };
 		631DD25826F1E18E0023D24A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1D26B2AF4200B206A3 /* ContentView.swift */; };
-		631DD25926F1E18E0023D24A /* Millicast_SDK_Sample_App_in_SwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift */; };
+		631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */; };
 		631DD25A26F1E18E0023D24A /* PublishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C126B3E80400800DC5 /* PublishView.swift */; };
 		631DD25B26F1E18E0023D24A /* MillicastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8BB7A226BD8FD40041CC02 /* MillicastManager.swift */; };
 		631DD25C26F1E18E0023D24A /* MCStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8C0C1926D73A1F0027A323 /* MCStates.swift */; };
@@ -62,23 +60,6 @@
 		E8649BE429527C9F00309BF7 /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		3FE90C2A26B2AF4400B206A3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3FE90C1026B2AF4200B206A3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3FE90C1726B2AF4200B206A3;
-			remoteInfo = "Millicast SDK Sample App in Swift";
-		};
-		3FE90C3526B2AF4400B206A3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3FE90C1026B2AF4200B206A3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3FE90C1726B2AF4200B206A3;
-			remoteInfo = "Millicast SDK Sample App in Swift";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		3F8BB7A226BD8FD40041CC02 /* MillicastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MillicastManager.swift; sourceTree = "<group>"; };
 		3F8C0C1926D73A1F0027A323 /* MCStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCStates.swift; sourceTree = "<group>"; };
@@ -95,18 +76,12 @@
 		3FB31BFC26CB9ADC00A0A056 /* CredentialSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialSource.swift; sourceTree = "<group>"; };
 		3FB31BFE26CBA1D300A0A056 /* SavedCreds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedCreds.swift; sourceTree = "<group>"; };
 		3FD59AA226EF523D005AAB16 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		3FE90C1826B2AF4200B206A3 /* SwiftSa iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftSa iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3FE90C1B26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Millicast_SDK_Sample_App_in_SwiftApp.swift; sourceTree = "<group>"; };
+		3FE90C1826B2AF4200B206A3 /* RTSViewer iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RTSViewer iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTSViewer.swift; sourceTree = "<group>"; };
 		3FE90C1D26B2AF4200B206A3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		3FE90C2926B2AF4400B206A3 /* SwiftSaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftSaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3FE90C2D26B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Millicast_SDK_Sample_App_in_SwiftTests.swift; sourceTree = "<group>"; };
-		3FE90C2F26B2AF4400B206A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3FE90C3426B2AF4400B206A3 /* SwiftSaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftSaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3FE90C3826B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Millicast_SDK_Sample_App_in_SwiftUITests.swift; sourceTree = "<group>"; };
-		3FE90C3A26B2AF4400B206A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		631DD26926F1E18E0023D24A /* SwiftSa tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftSa tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RTSViewer TVOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		637644B92726F08300519FDD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		86625CF82913B03600305683 /* MCSwiftVideoRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCSwiftVideoRenderer.swift; sourceTree = "<group>"; };
 		8695907328911F6B003CE073 /* CurrentCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentCreds.swift; sourceTree = "<group>"; };
@@ -117,6 +92,7 @@
 		E8649BEF295284F400309BF7 /* iOSReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOSReleaseSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BF0295284F400309BF7 /* TVOSDebugSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TVOSDebugSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BF1295284F400309BF7 /* TVOSReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TVOSReleaseSettings.xcconfig; sourceTree = "<group>"; };
+		E8649BF2295299FB00309BF7 /* fastlane */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fastlane; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,20 +101,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8575E9929527B420070F53E /* MillicastSDK in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3FE90C2626B2AF4400B206A3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3FE90C3126B2AF4400B206A3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,10 +125,9 @@
 		3FE90C0F26B2AF4200B206A3 = {
 			isa = PBXGroup;
 			children = (
+				E8649BF2295299FB00309BF7 /* fastlane */,
 				E8649BED295284F400309BF7 /* Configuration */,
-				3FE90C1A26B2AF4200B206A3 /* Millicast SDK Sample App in Swift */,
-				3FE90C2C26B2AF4400B206A3 /* Millicast SDK Sample App in SwiftTests */,
-				3FE90C3726B2AF4400B206A3 /* Millicast SDK Sample App in SwiftUITests */,
+				3FE90C1A26B2AF4200B206A3 /* RTSViewer */,
 				3FE90C1926B2AF4200B206A3 /* Products */,
 				3FB131DC26B41F2900800DC5 /* Frameworks */,
 			);
@@ -175,19 +136,17 @@
 		3FE90C1926B2AF4200B206A3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3FE90C1826B2AF4200B206A3 /* SwiftSa iOS.app */,
-				3FE90C2926B2AF4400B206A3 /* SwiftSaTests.xctest */,
-				3FE90C3426B2AF4400B206A3 /* SwiftSaUITests.xctest */,
-				631DD26926F1E18E0023D24A /* SwiftSa tvOS.app */,
+				3FE90C1826B2AF4200B206A3 /* RTSViewer iOS.app */,
+				631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3FE90C1A26B2AF4200B206A3 /* Millicast SDK Sample App in Swift */ = {
+		3FE90C1A26B2AF4200B206A3 /* RTSViewer */ = {
 			isa = PBXGroup;
 			children = (
 				3FA8DBA82704AECD009713E8 /* README.md */,
-				3FE90C1B26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift */,
+				3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */,
 				3FE90C1D26B2AF4200B206A3 /* ContentView.swift */,
 				3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */,
 				3FB131C126B3E80400800DC5 /* PublishView.swift */,
@@ -212,7 +171,7 @@
 				3FE90C2126B2AF4300B206A3 /* Preview Content */,
 				637644B92726F08300519FDD /* Media.xcassets */,
 			);
-			path = "Millicast SDK Sample App in Swift";
+			path = RTSViewer;
 			sourceTree = "<group>";
 		};
 		3FE90C2126B2AF4300B206A3 /* Preview Content */ = {
@@ -221,24 +180,6 @@
 				3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		3FE90C2C26B2AF4400B206A3 /* Millicast SDK Sample App in SwiftTests */ = {
-			isa = PBXGroup;
-			children = (
-				3FE90C2D26B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftTests.swift */,
-				3FE90C2F26B2AF4400B206A3 /* Info.plist */,
-			);
-			path = "Millicast SDK Sample App in SwiftTests";
-			sourceTree = "<group>";
-		};
-		3FE90C3726B2AF4400B206A3 /* Millicast SDK Sample App in SwiftUITests */ = {
-			isa = PBXGroup;
-			children = (
-				3FE90C3826B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftUITests.swift */,
-				3FE90C3A26B2AF4400B206A3 /* Info.plist */,
-			);
-			path = "Millicast SDK Sample App in SwiftUITests";
 			sourceTree = "<group>";
 		};
 		E8649BED295284F400309BF7 /* Configuration */ = {
@@ -255,9 +196,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3FE90C1726B2AF4200B206A3 /* SwiftSa iOS */ = {
+		3FE90C1726B2AF4200B206A3 /* RTSViewer iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3FE90C3D26B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "SwiftSa iOS" */;
+			buildConfigurationList = 3FE90C3D26B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "RTSViewer iOS" */;
 			buildPhases = (
 				3FE90C1426B2AF4200B206A3 /* Sources */,
 				3FE90C1526B2AF4200B206A3 /* Frameworks */,
@@ -267,50 +208,14 @@
 			);
 			dependencies = (
 			);
-			name = "SwiftSa iOS";
+			name = "RTSViewer iOS";
 			productName = "Millicast SDK Sample App in Swift";
-			productReference = 3FE90C1826B2AF4200B206A3 /* SwiftSa iOS.app */;
+			productReference = 3FE90C1826B2AF4200B206A3 /* RTSViewer iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3FE90C2826B2AF4400B206A3 /* SwiftSaTests */ = {
+		631DD25026F1E18E0023D24A /* RTSViewer TVOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3FE90C4026B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "SwiftSaTests" */;
-			buildPhases = (
-				3FE90C2526B2AF4400B206A3 /* Sources */,
-				3FE90C2626B2AF4400B206A3 /* Frameworks */,
-				3FE90C2726B2AF4400B206A3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3FE90C2B26B2AF4400B206A3 /* PBXTargetDependency */,
-			);
-			name = SwiftSaTests;
-			productName = "Millicast SDK Sample App in SwiftTests";
-			productReference = 3FE90C2926B2AF4400B206A3 /* SwiftSaTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		3FE90C3326B2AF4400B206A3 /* SwiftSaUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3FE90C4326B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "SwiftSaUITests" */;
-			buildPhases = (
-				3FE90C3026B2AF4400B206A3 /* Sources */,
-				3FE90C3126B2AF4400B206A3 /* Frameworks */,
-				3FE90C3226B2AF4400B206A3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3FE90C3626B2AF4400B206A3 /* PBXTargetDependency */,
-			);
-			name = SwiftSaUITests;
-			productName = "Millicast SDK Sample App in SwiftUITests";
-			productReference = 3FE90C3426B2AF4400B206A3 /* SwiftSaUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		631DD25026F1E18E0023D24A /* SwiftSa tvOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 631DD26626F1E18E0023D24A /* Build configuration list for PBXNativeTarget "SwiftSa tvOS" */;
+			buildConfigurationList = 631DD26626F1E18E0023D24A /* Build configuration list for PBXNativeTarget "RTSViewer TVOS" */;
 			buildPhases = (
 				631DD25126F1E18E0023D24A /* Sources */,
 				631DD26126F1E18E0023D24A /* Frameworks */,
@@ -320,12 +225,12 @@
 			);
 			dependencies = (
 			);
-			name = "SwiftSa tvOS";
+			name = "RTSViewer TVOS";
 			packageProductDependencies = (
 				E8575E9829527B420070F53E /* MillicastSDK */,
 			);
 			productName = "Millicast SDK Sample App in Swift";
-			productReference = 631DD26926F1E18E0023D24A /* SwiftSa tvOS.app */;
+			productReference = 631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -341,17 +246,9 @@
 						CreatedOnToolsVersion = 12.5.1;
 						LastSwiftMigration = 1250;
 					};
-					3FE90C2826B2AF4400B206A3 = {
-						CreatedOnToolsVersion = 12.5.1;
-						TestTargetID = 3FE90C1726B2AF4200B206A3;
-					};
-					3FE90C3326B2AF4400B206A3 = {
-						CreatedOnToolsVersion = 12.5.1;
-						TestTargetID = 3FE90C1726B2AF4200B206A3;
-					};
 				};
 			};
-			buildConfigurationList = 3FE90C1326B2AF4200B206A3 /* Build configuration list for PBXProject "SwiftSa" */;
+			buildConfigurationList = 3FE90C1326B2AF4200B206A3 /* Build configuration list for PBXProject "RTSViewer" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -367,10 +264,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3FE90C1726B2AF4200B206A3 /* SwiftSa iOS */,
-				3FE90C2826B2AF4400B206A3 /* SwiftSaTests */,
-				3FE90C3326B2AF4400B206A3 /* SwiftSaUITests */,
-				631DD25026F1E18E0023D24A /* SwiftSa tvOS */,
+				3FE90C1726B2AF4200B206A3 /* RTSViewer iOS */,
+				631DD25026F1E18E0023D24A /* RTSViewer TVOS */,
 			);
 		};
 /* End PBXProject section */
@@ -385,20 +280,6 @@
 				3FA8DBA92704AECD009713E8 /* README.md in Resources */,
 				3FA8DB9927046061009713E8 /* Info-tvOS.plist in Resources */,
 				3FE90C2026B2AF4300B206A3 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3FE90C2726B2AF4400B206A3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3FE90C3226B2AF4400B206A3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +312,7 @@
 				3FB131C626B3EB2E00800DC5 /* SettingsMcView.swift in Sources */,
 				3FD59AA326EF523D005AAB16 /* Utils.swift in Sources */,
 				3FE90C1E26B2AF4200B206A3 /* ContentView.swift in Sources */,
-				3FE90C1C26B2AF4200B206A3 /* Millicast_SDK_Sample_App_in_SwiftApp.swift in Sources */,
+				3FE90C1C26B2AF4200B206A3 /* RTSViewer.swift in Sources */,
 				3FB131C226B3E80400800DC5 /* PublishView.swift in Sources */,
 				3F8BB7A326BD8FD40041CC02 /* MillicastManager.swift in Sources */,
 				3F8C0C1A26D73A1F0027A323 /* MCStates.swift in Sources */,
@@ -441,22 +322,6 @@
 				3FB131C526B3EB2E00800DC5 /* SubscribeView.swift in Sources */,
 				8697685D29431BAF00055C0D /* MCTypes.swift in Sources */,
 				3FB31BFF26CBA1D300A0A056 /* SavedCreds.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3FE90C2526B2AF4400B206A3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3FE90C2E26B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3FE90C3026B2AF4400B206A3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3FE90C3926B2AF4400B206A3 /* Millicast_SDK_Sample_App_in_SwiftUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,7 +338,7 @@
 				631DD25626F1E18E0023D24A /* SettingsMcView.swift in Sources */,
 				631DD25726F1E18E0023D24A /* Utils.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
-				631DD25926F1E18E0023D24A /* Millicast_SDK_Sample_App_in_SwiftApp.swift in Sources */,
+				631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */,
 				631DD25A26F1E18E0023D24A /* PublishView.swift in Sources */,
 				631DD25B26F1E18E0023D24A /* MillicastManager.swift in Sources */,
 				631DD25C26F1E18E0023D24A /* MCStates.swift in Sources */,
@@ -487,19 +352,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		3FE90C2B26B2AF4400B206A3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3FE90C1726B2AF4200B206A3 /* SwiftSa iOS */;
-			targetProxy = 3FE90C2A26B2AF4400B206A3 /* PBXContainerItemProxy */;
-		};
-		3FE90C3626B2AF4400B206A3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3FE90C1726B2AF4200B206A3 /* SwiftSa iOS */;
-			targetProxy = 3FE90C3526B2AF4400B206A3 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3FE90C3B26B2AF4400B206A3 /* Debug */ = {
@@ -555,6 +407,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -613,6 +466,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -632,23 +486,24 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"Millicast SDK Sample App in Swift/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"RTSViewer/Preview Content\"";
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "Millicast SDK Sample App in Swift/Info-iOS.plist";
+				INFOPLIST_FILE = "RTSViewer/Info-iOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_WORKSPACE = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -660,110 +515,23 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"Millicast SDK Sample App in Swift/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"RTSViewer/Preview Content\"";
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "Millicast SDK Sample App in Swift/Info-iOS.plist";
+				INFOPLIST_FILE = "RTSViewer/Info-iOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_WORKSPACE = YES;
-			};
-			name = Release;
-		};
-		3FE90C4126B2AF4400B206A3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "Millicast SDK Sample App in SwiftTests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.millicast.Millicast-SDK-Sample-App-in-SwiftTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftSa.app/SwiftSa";
-			};
-			name = Debug;
-		};
-		3FE90C4226B2AF4400B206A3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "Millicast SDK Sample App in SwiftTests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.millicast.Millicast-SDK-Sample-App-in-SwiftTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftSa.app/SwiftSa";
-			};
-			name = Release;
-		};
-		3FE90C4426B2AF4400B206A3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "Millicast SDK Sample App in SwiftUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.millicast.Millicast-SDK-Sample-App-in-SwiftUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Millicast SDK Sample App in Swift";
-			};
-			name = Debug;
-		};
-		3FE90C4526B2AF4400B206A3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "Millicast SDK Sample App in SwiftUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.millicast.Millicast-SDK-Sample-App-in-SwiftUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Millicast SDK Sample App in Swift";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
@@ -774,17 +542,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Brand Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"Millicast SDK Sample App in Swift/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"RTSViewer/Preview Content\"";
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "Millicast SDK Sample App in Swift/Info-tvOS.plist";
+				INFOPLIST_FILE = "RTSViewer/Info-tvOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.2.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -793,6 +561,7 @@
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 14.5;
 				VALIDATE_WORKSPACE = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -803,17 +572,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Brand Assets";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"Millicast SDK Sample App in Swift/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"RTSViewer/Preview Content\"";
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "Millicast SDK Sample App in Swift/Info-tvOS.plist";
+				INFOPLIST_FILE = "RTSViewer/Info-tvOS.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.2.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -821,13 +590,14 @@
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 14.5;
 				VALIDATE_WORKSPACE = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3FE90C1326B2AF4200B206A3 /* Build configuration list for PBXProject "SwiftSa" */ = {
+		3FE90C1326B2AF4200B206A3 /* Build configuration list for PBXProject "RTSViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3FE90C3B26B2AF4400B206A3 /* Debug */,
@@ -836,7 +606,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3FE90C3D26B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "SwiftSa iOS" */ = {
+		3FE90C3D26B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "RTSViewer iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3FE90C3E26B2AF4400B206A3 /* Debug */,
@@ -845,25 +615,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3FE90C4026B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "SwiftSaTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3FE90C4126B2AF4400B206A3 /* Debug */,
-				3FE90C4226B2AF4400B206A3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		3FE90C4326B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "SwiftSaUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3FE90C4426B2AF4400B206A3 /* Debug */,
-				3FE90C4526B2AF4400B206A3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		631DD26626F1E18E0023D24A /* Build configuration list for PBXNativeTarget "SwiftSa tvOS" */ = {
+		631DD26626F1E18E0023D24A /* Build configuration list for PBXNativeTarget "RTSViewer TVOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				631DD26726F1E18E0023D24A /* Debug */,
