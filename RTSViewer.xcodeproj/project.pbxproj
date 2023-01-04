@@ -56,8 +56,12 @@
 		8695907B28911F6B003CE073 /* UiCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907528911F6B003CE073 /* UiCreds.swift */; };
 		8697685D29431BAF00055C0D /* MCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697685C29431BAF00055C0D /* MCTypes.swift */; };
 		8697685E29431BAF00055C0D /* MCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697685C29431BAF00055C0D /* MCTypes.swift */; };
+		E80E4C462965466900464B13 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E80E4C452965466900464B13 /* RTSComponentKit */; };
+		E80E4C482965467A00464B13 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E80E4C472965467A00464B13 /* RTSComponentKit */; };
+		E80EA0C12967EBFA00419927 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E80EA0C02967EBFA00419927 /* DolbyIOUIKit */; };
 		E8575E9929527B420070F53E /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
 		E8649BE429527C9F00309BF7 /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
+		E87FCD2D2968A86A00391B1C /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E87FCD2C2968A86A00391B1C /* DolbyIOUIKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -101,6 +105,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8575E9929527B420070F53E /* MillicastSDK in Frameworks */,
+				E87FCD2D2968A86A00391B1C /* DolbyIOUIKit in Frameworks */,
+				E80E4C482965467A00464B13 /* RTSComponentKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,6 +115,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8649BE429527C9F00309BF7 /* MillicastSDK in Frameworks */,
+				E80EA0C12967EBFA00419927 /* DolbyIOUIKit in Frameworks */,
+				E80E4C462965466900464B13 /* RTSComponentKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +217,10 @@
 			dependencies = (
 			);
 			name = "RTSViewer iOS";
+			packageProductDependencies = (
+				E80E4C472965467A00464B13 /* RTSComponentKit */,
+				E87FCD2C2968A86A00391B1C /* DolbyIOUIKit */,
+			);
 			productName = "Millicast SDK Sample App in Swift";
 			productReference = 3FE90C1826B2AF4200B206A3 /* RTSViewer iOS.app */;
 			productType = "com.apple.product-type.application";
@@ -228,6 +240,8 @@
 			name = "RTSViewer TVOS";
 			packageProductDependencies = (
 				E8575E9829527B420070F53E /* MillicastSDK */,
+				E80E4C452965466900464B13 /* RTSComponentKit */,
+				E80EA0C02967EBFA00419927 /* DolbyIOUIKit */,
 			);
 			productName = "Millicast SDK Sample App in Swift";
 			productReference = 631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */;
@@ -492,7 +506,7 @@
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "RTSViewer/Info-iOS.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -521,7 +535,7 @@
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "RTSViewer/Info-iOS.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -559,7 +573,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 14.5;
+				TVOS_DEPLOYMENT_TARGET = 15.0;
 				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -588,7 +602,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 14.5;
+				TVOS_DEPLOYMENT_TARGET = 15.0;
 				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -638,10 +652,26 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E80E4C452965466900464B13 /* RTSComponentKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RTSComponentKit;
+		};
+		E80E4C472965467A00464B13 /* RTSComponentKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RTSComponentKit;
+		};
+		E80EA0C02967EBFA00419927 /* DolbyIOUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DolbyIOUIKit;
+		};
 		E8575E9829527B420070F53E /* MillicastSDK */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E8575E9729527B420070F53E /* XCRemoteSwiftPackageReference "millicast-sdk-swift-package" */;
 			productName = MillicastSDK;
+		};
+		E87FCD2C2968A86A00391B1C /* DolbyIOUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DolbyIOUIKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -5,14 +5,10 @@ import SwiftUI
  */
 @main
 struct RTSViewer: App {
-    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-        }
-        .onChange(of: scenePhase) { phase in
-            print("[MAIN][onChange] Scene:\(phase)")
         }
     }
 }
