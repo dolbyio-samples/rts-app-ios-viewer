@@ -66,8 +66,7 @@ struct SubscribeView: View {
     }
     
     /**
-     * Set the state of subscribe, audio and video buttons,
-     * based on current subscribe and media states.
+     * Set the state 
      */
     func getStates() -> Bool
     {
