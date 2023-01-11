@@ -12,17 +12,6 @@ struct SubscribeView: View {
     @ObservedObject var mcMan: MillicastManager
     @State private var volume = 0.5
     
-    static let labelSubscribeNot = "Not Subscribing"
-    static let labelSubscribeStart = "Start Subscribe"
-    static let labelSubscribeTry = "Trying to Subscribe..."
-    static let labelSubscribeStop = "Stop Subscribe"
-    static let labelAudioNo = "No Audio"
-    static let labelAudioMute = "Mute Audio"
-    static let labelAudioUnmute = "Unmute Audio"
-    static let labelVideoNo = "No Video"
-    static let labelVideoMute = "Mute Video"
-    static let labelVideoUnmute = "Unmute Video"
-    
     var mcSA: MillicastSA = .getInstance()
     
     let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
