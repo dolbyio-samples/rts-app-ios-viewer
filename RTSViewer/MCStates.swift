@@ -36,4 +36,6 @@ enum SubscriberState {
     case connecting
     case connected
     case subscribing
+    case streamActive
+    case streamInActive
 }
