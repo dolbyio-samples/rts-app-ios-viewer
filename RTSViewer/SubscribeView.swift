@@ -25,65 +25,41 @@ struct SubscribeView: View {
     
     var mcSA: MillicastSA = .getInstance()
     
+    let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    
     init(manager mcMan: MillicastManager) {
         self.mcMan = mcMan
     }
     
     var body: some View {
-        VStack {
-            Spacer()
-            mcMan.getRendererSub()
-            Spacer()
+        ZStack {
             
-            #if os(iOS)
+            mcMan.getRendererSub()
+            
             VStack {
-                Slider(
-                    value: $volume,
-                    in: 0 ... 1,
-                    onEditingChanged: { editing in
-                        print("Volume \(volume) \(editing)")
-                        if !editing {
-                            self.mcMan.setRemoteAudioTrackVolume(volume: volume)
-                        }
+            }.frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.black)
+            .opacity(isStreamActive() ? 0.0 : 0.8)
+            
+            VStack {
+                if !isStreamActive() {
+                    Text("Stream is offline")
+                    Text("Please wait for livestream to begin.").onAppear{
+                        mcSA.startSubscribe()
                     }
-                )
-                Text("Volume")
-            }
-            #endif
-            VStack {
-                HStack {
-                    Text("Account: \(mcMan.credsSub.accountId)")
-                    Text("Stream: \(mcMan.credsSub.streamName)")
                 }
-                Text("Token:\(mcMan.credsSub.token)")
-                    .multilineTextAlignment(.center)
+            }.onReceive(timer) { time in
+                if !isStreamActive() {
+                    mcSA.startSubscribe()
+                } else {
+                    timer.upstream.connect().cancel()
+                }
             }
-            HStack {
-                Spacer()
-                Button(getLabelSubscribe()) {
-                    print("[SubView] Subscribe.")
-                    getActionSubscribe()()
-                }.padding().disabled(!getEnableSubscribe())
-                
-                Spacer()
-                
-                Button(getLabelAudio()) {
-                    print("[SubView] Toggled Audio.")
-                    mcSA.toggleMedia(forPublisher: false, forAudio: true)
-                }.padding().disabled(!getEnableAudio())
-                
-                Spacer()
-                
-                Button(getLabelVideo()) {
-                    print("[SubView] Toggled Video.")
-                    mcSA.toggleMedia(forPublisher: false, forAudio: false)
-                }.padding().disabled(!getEnableVideo())
-                
-                Spacer()
-            }
+            
             Spacer()
-        }.alert(isPresented: $mcMan.alert) {
-            Alert(title: Text("Alert"), message: Text(mcMan.alertMsg), dismissButton: .default(Text("OK")))
+        }.onDisappear {
+            timer.upstream.connect().cancel()
+            mcSA.stopSubscribe()
         }
     }
     
@@ -91,79 +67,22 @@ struct SubscribeView: View {
      * Set the state of subscribe, audio and video buttons,
      * based on current subscribe and media states.
      */
-    func getStates() -> (labelSubscribe: String,
-                         actionSubscribe: () -> (),
-                         enableSubscribe: Bool,
-                         enableAudio: Bool,
-                         enableVideo: Bool)
+    func getStates() -> Bool
     {
-        var labelSubscribe = ""
-        var actionSubscribe: (() -> ()) = {}
-        var enableSubscribe = false
-        // Whether to enable buttons for Audio/Video on the UI.
-        var enableAudio = false
-        var enableVideo = false
-        
+        var streamActive = false
+
         switch mcMan.subState {
-            case .disconnected:
-                labelSubscribe = SubscribeView.labelSubscribeStart
-                actionSubscribe = mcSA.startSubscribe
-                enableSubscribe = true
-            case .connecting, .connected:
-                labelSubscribe = SubscribeView.labelSubscribeTry
-                enableSubscribe = false
-            case .subscribing:
-                labelSubscribe = SubscribeView.labelSubscribeStop
-                actionSubscribe = mcSA.stopSubscribe
-                enableSubscribe = true
-                // Only allow audio/video buttons to be enabled when subscribing.
-                enableAudio = true
-                enableVideo = true
+            case .disconnected, .connecting, .connected, .subscribing, .streamInActive:
+                streamActive = false
+            case .streamActive:
+                streamActive = true
         }
         
-        return (labelSubscribe, actionSubscribe, enableSubscribe, enableAudio, enableVideo)
+        return streamActive
     }
     
-    func getLabelSubscribe() -> String {
-        return getStates().labelSubscribe
-    }
-    
-    func getActionSubscribe() -> (() -> ()) {
-        return getStates().actionSubscribe
-    }
-    
-    func getEnableSubscribe() -> Bool {
-        return getStates().enableSubscribe
-    }
-    
-    func getLabelAudio() -> String {
-        if getEnableAudio() {
-            if mcMan.audioEnabledSub {
-                return SubscribeView.labelAudioMute
-            } else {
-                return SubscribeView.labelAudioUnmute
-            }
-        }
-        return SubscribeView.labelAudioNo
-    }
-    
-    func getEnableAudio() -> Bool {
-        return getStates().enableAudio
-    }
-    
-    func getLabelVideo() -> String {
-        if getEnableVideo() {
-            if mcMan.videoEnabledSub {
-                return SubscribeView.labelVideoMute
-            } else {
-                return SubscribeView.labelVideoUnmute
-            }
-        }
-        return SubscribeView.labelVideoNo
-    }
-    
-    func getEnableVideo() -> Bool {
-        return getStates().enableVideo
+    func isStreamActive() -> Bool {
+        return getStates()
     }
 }
 

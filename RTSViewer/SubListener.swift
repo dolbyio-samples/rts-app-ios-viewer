@@ -78,6 +78,7 @@ class SubListener: MCSubscriberListener {
     
     func onActive(_ _: String!, tracks: [String]!, sourceId: String!) {
         var logTag = "[Sub][Ltn][Active][Source][Id]"
+        mcMan.setSubState(to: .streamActive)
         for track in tracks {
             let split = track.split(separator: "/")
             let type = String(split[0])
@@ -95,6 +96,7 @@ class SubListener: MCSubscriberListener {
     func onInactive(_ streamId: String!, sourceId: String!) {
         let logTag = "[Sub][Ltn][Active][In][Source][Id] "
         print(logTag + "OK.")
+        mcMan.setSubState(to: .streamInActive)
     }
     
     func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
