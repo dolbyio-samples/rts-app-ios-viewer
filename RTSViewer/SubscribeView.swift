@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import DolbyIOUIKit
 
 /**
  * UI for subscribing.
@@ -27,13 +28,25 @@ struct SubscribeView: View {
             
             VStack {
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black)
-            .opacity(isStreamActive() ? 0.0 : 0.8)
+                .background(Color.black)
+                .opacity(isStreamActive() ? 0.0 : 0.8)
             
             VStack {
                 if !isStreamActive() {
-                    Text("Stream is offline")
-                    Text("Please wait for livestream to begin.").onAppear{
+                    Text(
+                        text: "Stream is offline",
+                        fontAsset: .avenirNextDemiBold(
+                            size: FontSize.largeTitle,
+                            style: .largeTitle
+                        )
+                    )
+                    Text(
+                        text: "Please wait for livestream to begin.",
+                        fontAsset: .avenirNextRegular(
+                            size: FontSize.title3,
+                            style: .title3
+                        )
+                    ).onAppear{
                         mcSA.startSubscribe()
                     }
                 }
@@ -59,12 +72,12 @@ struct SubscribeView: View {
     func getStates() -> Bool
     {
         var streamActive = false
-
+        
         switch mcMan.subState {
-            case .disconnected, .connecting, .connected, .subscribing, .streamInActive:
-                streamActive = false
-            case .streamActive:
-                streamActive = true
+        case .disconnected, .connecting, .connected, .subscribing, .streamInActive:
+            streamActive = false
+        case .streamActive:
+            streamActive = true
         }
         
         return streamActive
