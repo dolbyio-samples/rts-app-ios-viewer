@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  RTSViewer
+*/
+
+/** Stream Detail Input Screen */
+
+"stream-detail-input.header.label" = "Dolby.io Stream Monitor";
+"stream-detail-input.title.label" = "View stream";
+"stream-detail-input.subtitle.label" = "Enter your stream information to view a stream";
+"stream-detail-input.streamName.placeholder.label" = "Enter your stream name";
+"stream-detail-input.accountId.placeholder.label" = "Enter your account ID";
+"stream-detail-input.play.button" = "Play";
+"stream-detail-input.rememberStream.toggle" = "Remember stream";
+"stream-detail-input.footnote.label" = "Copyright © 2022 Dolby.io — All Rights Reserved";
+
+/** Stream Screen */
+
+"stream.offline.title.label" = "Stream is offline";
+"stream.offline.subtitle.label" = "Please wait for livestream to begin.";

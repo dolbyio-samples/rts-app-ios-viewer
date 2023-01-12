@@ -50,18 +50,35 @@ public struct Button: View {
     }
 
     public var body: some View {
+        if let borderColor = borderColorAndWidth?.color, let borderWidth = borderColorAndWidth?.width {
+            buttonView
+                .overlay(
+                    RoundedRectangle(cornerRadius: Layout.cornerRadius6x)
+                        .stroke(borderColor, lineWidth: borderWidth)
+                )
+                .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
+        } else {
+            buttonView
+                .cornerRadius(Layout.cornerRadius6x)
+        }
+    }
+}
+
+// MARK: Private helper functions
+
+private extension Button {
+    var buttonView: some View {
         SwiftUI.Button(action: action) {
-            if let borderColor = borderColorAndWidth?.color, let borderWidth = borderColorAndWidth?.width {
-                buttonView
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Layout.cornerRadius6x)
-                            .stroke(borderColor, lineWidth: borderWidth)
-                    )
-                    .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
-            } else {
-                buttonView
-                    .cornerRadius(Layout.cornerRadius6x)
-            }
+            CustomButtonView(
+                action: action,
+                text: text,
+                leftIcon: leftIcon,
+                rightIcon: rightIcon,
+                mode: mode,
+                danger: danger,
+                hover: $hover,
+                buttonState: $buttonState
+            )
         }
         .accessibilityLabel(accessibilityLabel)
 #if os(tvOS)
@@ -77,23 +94,8 @@ public struct Button: View {
             hover = $0
         }
 #endif
-    }
-}
-
-// MARK: Private helper functions
-
-private extension Button {
-    var buttonView: CustomButtonView {
-        CustomButtonView(
-            action: action,
-            text: text,
-            leftIcon: leftIcon,
-            rightIcon: rightIcon,
-            mode: mode,
-            danger: danger,
-            hover: $hover,
-            buttonState: $buttonState
-        )
+        .frame(maxWidth: .infinity)
+        .background(backgroundColor)
     }
     
     typealias BorderColorAndWidth = (color: Color?, width: CGFloat?)
@@ -129,6 +131,53 @@ private extension Button {
             return theme[ColorAsset.secondaryButton(.disabledBorderColor)]
         case (.secondary, true):
             return theme[ColorAsset.secondaryDangerButton(.disabledBorderColor)]
+        }
+    }
+    
+    var backgroundColor: Color? {
+        guard isEnabled == true else {
+            return disabledBackgroundColor
+        }
+        
+        if isFocused {
+            return hoverBackgroundColor
+        }
+        
+        switch (mode, danger) {
+        case (.primary, false):
+            return theme[ColorAsset.primaryButton(.backgroundColor)]
+        case (.primary, true):
+            return theme[ColorAsset.primaryDangerButton(.backgroundColor)]
+        case (.secondary, false):
+            return theme[ColorAsset.secondaryButton(.backgroundColor)]
+        case (.secondary, true):
+            return theme[ColorAsset.secondaryDangerButton(.backgroundColor)]
+        }
+    }
+    
+    var hoverBackgroundColor: Color? {
+        switch (mode, danger) {
+        case (.primary, false):
+            return theme[ColorAsset.primaryButton(.hoverBackgroundColor)]
+        case (.primary, true):
+            return theme[ColorAsset.primaryDangerButton(.hoverBackgroundColor)]
+        case (.secondary, false):
+            return theme[ColorAsset.secondaryButton(.hoverBackgroundColor)]
+        case (.secondary, true):
+            return theme[ColorAsset.secondaryDangerButton(.hoverBackgroundColor)]
+        }
+    }
+    
+    var disabledBackgroundColor: Color? {
+        switch (mode, danger) {
+        case (.primary, false):
+            return theme[ColorAsset.primaryButton(.disabledBackgroundColor)]
+        case (.primary, true):
+            return theme[ColorAsset.primaryDangerButton(.disabledBackgroundColor)]
+        case (.secondary, false):
+            return theme[ColorAsset.secondaryButton(.disabledBackgroundColor)]
+        case (.secondary, true):
+            return theme[ColorAsset.secondaryDangerButton(.disabledBackgroundColor)]
         }
     }
     
@@ -217,7 +266,6 @@ fileprivate struct CustomButtonView: View {
         .padding(.vertical, Layout.spacing1x)
         .padding(.horizontal, Layout.spacing4x)
         .frame(minHeight: 44)
-        .background(backgroundColor)
     }
 }
 
@@ -282,53 +330,6 @@ private extension CustomButtonView {
             return theme[ColorAsset.secondaryButton(.disabledTintColor)]
         case (.secondary, true):
             return theme[ColorAsset.secondaryDangerButton(.disabledTintColor)]
-        }
-    }
-    
-    var backgroundColor: Color? {
-        guard isEnabled == true else {
-            return disabledBackgroundColor
-        }
-        
-        if isFocused {
-            return hoverBackgroundColor
-        }
-        
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.backgroundColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.backgroundColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.backgroundColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.backgroundColor)]
-        }
-    }
-    
-    var hoverBackgroundColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.hoverBackgroundColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.hoverBackgroundColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.hoverBackgroundColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.hoverBackgroundColor)]
-        }
-    }
-    
-    var disabledBackgroundColor: Color? {
-        switch (mode, danger) {
-        case (.primary, false):
-            return theme[ColorAsset.primaryButton(.disabledBackgroundColor)]
-        case (.primary, true):
-            return theme[ColorAsset.primaryDangerButton(.disabledBackgroundColor)]
-        case (.secondary, false):
-            return theme[ColorAsset.secondaryButton(.disabledBackgroundColor)]
-        case (.secondary, true):
-            return theme[ColorAsset.secondaryDangerButton(.disabledBackgroundColor)]
         }
     }
 }

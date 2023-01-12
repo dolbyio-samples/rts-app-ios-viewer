@@ -7,59 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3F8BB7A326BD8FD40041CC02 /* MillicastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8BB7A226BD8FD40041CC02 /* MillicastManager.swift */; };
-		3F8C0C1A26D73A1F0027A323 /* MCStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8C0C1926D73A1F0027A323 /* MCStates.swift */; };
-		3F8DC0A226BA98E7009D51B1 /* PubListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8DC0A126BA98E7009D51B1 /* PubListener.swift */; };
-		3FA8DB9627045DE7009713E8 /* Info-iOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DB9527045DE7009713E8 /* Info-iOS.plist */; };
-		3FA8DB9727045DE7009713E8 /* Info-iOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DB9527045DE7009713E8 /* Info-iOS.plist */; };
-		3FA8DB9927046061009713E8 /* Info-tvOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DB9827046061009713E8 /* Info-tvOS.plist */; };
-		3FA8DB9A27046061009713E8 /* Info-tvOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DB9827046061009713E8 /* Info-tvOS.plist */; };
 		3FA8DBA92704AECD009713E8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DBA82704AECD009713E8 /* README.md */; };
 		3FA8DBAA2704AECD009713E8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DBA82704AECD009713E8 /* README.md */; };
-		3FAC2F9926B93635007588CA /* MillicastSA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAC2F9826B93635007588CA /* MillicastSA.swift */; };
-		3FB0A29926CA60A200DA659A /* SubListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB0A29826CA60A200DA659A /* SubListener.swift */; };
-		3FB131C226B3E80400800DC5 /* PublishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C126B3E80400800DC5 /* PublishView.swift */; };
-		3FB131C526B3EB2E00800DC5 /* SubscribeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C326B3EB2E00800DC5 /* SubscribeView.swift */; };
-		3FB131C626B3EB2E00800DC5 /* SettingsMcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */; };
-		3FB2293126C3DE9000982391 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB2293026C3DE9000982391 /* Constants.swift */; };
-		3FB31BFD26CB9ADC00A0A056 /* CredentialSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB31BFC26CB9ADC00A0A056 /* CredentialSource.swift */; };
-		3FB31BFF26CBA1D300A0A056 /* SavedCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB31BFE26CBA1D300A0A056 /* SavedCreds.swift */; };
-		3FD59AA326EF523D005AAB16 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD59AA226EF523D005AAB16 /* Utils.swift */; };
 		3FE90C1C26B2AF4200B206A3 /* RTSViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */; };
 		3FE90C1E26B2AF4200B206A3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1D26B2AF4200B206A3 /* ContentView.swift */; };
 		3FE90C2026B2AF4300B206A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */; };
 		3FE90C2326B2AF4300B206A3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */; };
-		631DD25226F1E18E0023D24A /* SubListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB0A29826CA60A200DA659A /* SubListener.swift */; };
-		631DD25326F1E18E0023D24A /* MillicastSA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAC2F9826B93635007588CA /* MillicastSA.swift */; };
-		631DD25426F1E18E0023D24A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB2293026C3DE9000982391 /* Constants.swift */; };
-		631DD25526F1E18E0023D24A /* PubListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8DC0A126BA98E7009D51B1 /* PubListener.swift */; };
-		631DD25626F1E18E0023D24A /* SettingsMcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */; };
-		631DD25726F1E18E0023D24A /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD59AA226EF523D005AAB16 /* Utils.swift */; };
 		631DD25826F1E18E0023D24A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1D26B2AF4200B206A3 /* ContentView.swift */; };
 		631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */; };
-		631DD25A26F1E18E0023D24A /* PublishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C126B3E80400800DC5 /* PublishView.swift */; };
-		631DD25B26F1E18E0023D24A /* MillicastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8BB7A226BD8FD40041CC02 /* MillicastManager.swift */; };
-		631DD25C26F1E18E0023D24A /* MCStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8C0C1926D73A1F0027A323 /* MCStates.swift */; };
-		631DD25D26F1E18E0023D24A /* CredentialSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB31BFC26CB9ADC00A0A056 /* CredentialSource.swift */; };
-		631DD25F26F1E18E0023D24A /* SubscribeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB131C326B3EB2E00800DC5 /* SubscribeView.swift */; };
-		631DD26026F1E18E0023D24A /* SavedCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB31BFE26CBA1D300A0A056 /* SavedCreds.swift */; };
 		631DD26326F1E18E0023D24A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */; };
 		631DD26426F1E18E0023D24A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */; };
 		637644BA2726F08300519FDD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 637644B92726F08300519FDD /* Media.xcassets */; };
-		86625CF92913B03600305683 /* MCSwiftVideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86625CF82913B03600305683 /* MCSwiftVideoRenderer.swift */; };
-		86625CFA2913B03600305683 /* MCSwiftVideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86625CF82913B03600305683 /* MCSwiftVideoRenderer.swift */; };
-		8695907628911F6B003CE073 /* CurrentCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907328911F6B003CE073 /* CurrentCreds.swift */; };
-		8695907728911F6B003CE073 /* CurrentCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907328911F6B003CE073 /* CurrentCreds.swift */; };
-		8695907828911F6B003CE073 /* FileCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907428911F6B003CE073 /* FileCreds.swift */; };
-		8695907928911F6B003CE073 /* FileCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907428911F6B003CE073 /* FileCreds.swift */; };
-		8695907A28911F6B003CE073 /* UiCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907528911F6B003CE073 /* UiCreds.swift */; };
-		8695907B28911F6B003CE073 /* UiCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8695907528911F6B003CE073 /* UiCreds.swift */; };
-		8697685D29431BAF00055C0D /* MCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697685C29431BAF00055C0D /* MCTypes.swift */; };
-		8697685E29431BAF00055C0D /* MCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697685C29431BAF00055C0D /* MCTypes.swift */; };
+		E81D7C72296EDB4B00856B89 /* Info-iOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DB9527045DE7009713E8 /* Info-iOS.plist */; };
+		E81D7C73296EDB4F00856B89 /* Info-tvOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DB9827046061009713E8 /* Info-tvOS.plist */; };
 		E82A0C0F296CEA07007214B8 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C0E296CEA07007214B8 /* DolbyIOUIKit */; };
 		E82A0C11296CEA0A007214B8 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C10296CEA0A007214B8 /* RTSComponentKit */; };
 		E82A0C13296CEA0F007214B8 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */; };
 		E82A0C15296CEA12007214B8 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C14296CEA12007214B8 /* RTSComponentKit */; };
+		E82A0C1D296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */; };
+		E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */; };
+		E82A0C1F296D0F04007214B8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E82A0C1C296D0F04007214B8 /* Localizable.strings */; };
+		E82A0C20296D0F04007214B8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E82A0C1C296D0F04007214B8 /* Localizable.strings */; };
+		E844ABEC296DA5B20067B78C /* StreamingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844ABEB296DA5B20067B78C /* StreamingScreen.swift */; };
+		E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844ABEB296DA5B20067B78C /* StreamingScreen.swift */; };
 		E8575E9929527B420070F53E /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
 		E8649BE429527C9F00309BF7 /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
 /* End PBXBuildFile section */
@@ -92,6 +62,9 @@
 		8695907428911F6B003CE073 /* FileCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCreds.swift; sourceTree = "<group>"; };
 		8695907528911F6B003CE073 /* UiCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiCreds.swift; sourceTree = "<group>"; };
 		8697685C29431BAF00055C0D /* MCTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCTypes.swift; sourceTree = "<group>"; };
+		E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDetailInputScreen.swift; sourceTree = "<group>"; };
+		E82A0C1C296D0F04007214B8 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		E844ABEB296DA5B20067B78C /* StreamingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingScreen.swift; sourceTree = "<group>"; };
 		E8649BEE295284F400309BF7 /* iOSDebugSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOSDebugSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BEF295284F400309BF7 /* iOSReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOSReleaseSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BF0295284F400309BF7 /* TVOSDebugSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TVOSDebugSettings.xcconfig; sourceTree = "<group>"; };
@@ -153,9 +126,33 @@
 		3FE90C1A26B2AF4200B206A3 /* RTSViewer */ = {
 			isa = PBXGroup;
 			children = (
+				E844ABEA296DA4C60067B78C /* StreamingScreen */,
+				E82A0C19296D0F04007214B8 /* StreamDetailInputScreen */,
+				E82A0C1B296D0F04007214B8 /* Resources */,
 				3FA8DBA82704AECD009713E8 /* README.md */,
 				3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */,
 				3FE90C1D26B2AF4200B206A3 /* ContentView.swift */,
+				E81D7C71296ED96F00856B89 /* Legacy */,
+				3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */,
+				3FA8DB9527045DE7009713E8 /* Info-iOS.plist */,
+				3FA8DB9827046061009713E8 /* Info-tvOS.plist */,
+				3FE90C2126B2AF4300B206A3 /* Preview Content */,
+				637644B92726F08300519FDD /* Media.xcassets */,
+			);
+			path = RTSViewer;
+			sourceTree = "<group>";
+		};
+		3FE90C2126B2AF4300B206A3 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E81D7C71296ED96F00856B89 /* Legacy */ = {
+			isa = PBXGroup;
+			children = (
 				3FB131C426B3EB2E00800DC5 /* SettingsMcView.swift */,
 				3FB131C126B3E80400800DC5 /* PublishView.swift */,
 				3FB131C326B3EB2E00800DC5 /* SubscribeView.swift */,
@@ -173,21 +170,32 @@
 				8695907328911F6B003CE073 /* CurrentCreds.swift */,
 				8695907528911F6B003CE073 /* UiCreds.swift */,
 				3FD59AA226EF523D005AAB16 /* Utils.swift */,
-				3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */,
-				3FA8DB9527045DE7009713E8 /* Info-iOS.plist */,
-				3FA8DB9827046061009713E8 /* Info-tvOS.plist */,
-				3FE90C2126B2AF4300B206A3 /* Preview Content */,
-				637644B92726F08300519FDD /* Media.xcassets */,
 			);
-			path = RTSViewer;
+			path = Legacy;
 			sourceTree = "<group>";
 		};
-		3FE90C2126B2AF4300B206A3 /* Preview Content */ = {
+		E82A0C19296D0F04007214B8 /* StreamDetailInputScreen */ = {
 			isa = PBXGroup;
 			children = (
-				3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */,
+				E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */,
 			);
-			path = "Preview Content";
+			path = StreamDetailInputScreen;
+			sourceTree = "<group>";
+		};
+		E82A0C1B296D0F04007214B8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E82A0C1C296D0F04007214B8 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E844ABEA296DA4C60067B78C /* StreamingScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E844ABEB296DA5B20067B78C /* StreamingScreen.swift */,
+			);
+			path = StreamingScreen;
 			sourceTree = "<group>";
 		};
 		E8649BED295284F400309BF7 /* Configuration */ = {
@@ -254,7 +262,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1420;
 				TargetAttributes = {
 					3FE90C1726B2AF4200B206A3 = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -289,10 +297,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FA8DB9627045DE7009713E8 /* Info-iOS.plist in Resources */,
+				E81D7C72296EDB4B00856B89 /* Info-iOS.plist in Resources */,
+				E82A0C1F296D0F04007214B8 /* Localizable.strings in Resources */,
 				3FE90C2326B2AF4300B206A3 /* Preview Assets.xcassets in Resources */,
 				3FA8DBA92704AECD009713E8 /* README.md in Resources */,
-				3FA8DB9927046061009713E8 /* Info-tvOS.plist in Resources */,
 				3FE90C2026B2AF4300B206A3 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -301,10 +309,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FA8DB9727045DE7009713E8 /* Info-iOS.plist in Resources */,
+				E81D7C73296EDB4F00856B89 /* Info-tvOS.plist in Resources */,
 				631DD26326F1E18E0023D24A /* Preview Assets.xcassets in Resources */,
 				3FA8DBAA2704AECD009713E8 /* README.md in Resources */,
-				3FA8DB9A27046061009713E8 /* Info-tvOS.plist in Resources */,
+				E82A0C20296D0F04007214B8 /* Localizable.strings in Resources */,
 				637644BA2726F08300519FDD /* Media.xcassets in Resources */,
 				631DD26426F1E18E0023D24A /* Assets.xcassets in Resources */,
 			);
@@ -317,25 +325,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FB0A29926CA60A200DA659A /* SubListener.swift in Sources */,
-				86625CF92913B03600305683 /* MCSwiftVideoRenderer.swift in Sources */,
-				8695907628911F6B003CE073 /* CurrentCreds.swift in Sources */,
-				3FAC2F9926B93635007588CA /* MillicastSA.swift in Sources */,
-				3FB2293126C3DE9000982391 /* Constants.swift in Sources */,
-				3F8DC0A226BA98E7009D51B1 /* PubListener.swift in Sources */,
-				3FB131C626B3EB2E00800DC5 /* SettingsMcView.swift in Sources */,
-				3FD59AA326EF523D005AAB16 /* Utils.swift in Sources */,
+				E844ABEC296DA5B20067B78C /* StreamingScreen.swift in Sources */,
 				3FE90C1E26B2AF4200B206A3 /* ContentView.swift in Sources */,
+				E82A0C1D296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,
 				3FE90C1C26B2AF4200B206A3 /* RTSViewer.swift in Sources */,
-				3FB131C226B3E80400800DC5 /* PublishView.swift in Sources */,
-				3F8BB7A326BD8FD40041CC02 /* MillicastManager.swift in Sources */,
-				3F8C0C1A26D73A1F0027A323 /* MCStates.swift in Sources */,
-				8695907828911F6B003CE073 /* FileCreds.swift in Sources */,
-				8695907A28911F6B003CE073 /* UiCreds.swift in Sources */,
-				3FB31BFD26CB9ADC00A0A056 /* CredentialSource.swift in Sources */,
-				3FB131C526B3EB2E00800DC5 /* SubscribeView.swift in Sources */,
-				8697685D29431BAF00055C0D /* MCTypes.swift in Sources */,
-				3FB31BFF26CBA1D300A0A056 /* SavedCreds.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,25 +336,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				631DD25226F1E18E0023D24A /* SubListener.swift in Sources */,
-				86625CFA2913B03600305683 /* MCSwiftVideoRenderer.swift in Sources */,
-				8695907728911F6B003CE073 /* CurrentCreds.swift in Sources */,
-				631DD25326F1E18E0023D24A /* MillicastSA.swift in Sources */,
-				631DD25426F1E18E0023D24A /* Constants.swift in Sources */,
-				631DD25526F1E18E0023D24A /* PubListener.swift in Sources */,
-				631DD25626F1E18E0023D24A /* SettingsMcView.swift in Sources */,
-				631DD25726F1E18E0023D24A /* Utils.swift in Sources */,
+				E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
+				E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,
 				631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */,
-				631DD25A26F1E18E0023D24A /* PublishView.swift in Sources */,
-				631DD25B26F1E18E0023D24A /* MillicastManager.swift in Sources */,
-				631DD25C26F1E18E0023D24A /* MCStates.swift in Sources */,
-				8695907928911F6B003CE073 /* FileCreds.swift in Sources */,
-				8695907B28911F6B003CE073 /* UiCreds.swift in Sources */,
-				631DD25D26F1E18E0023D24A /* CredentialSource.swift in Sources */,
-				631DD25F26F1E18E0023D24A /* SubscribeView.swift in Sources */,
-				8697685E29431BAF00055C0D /* MCTypes.swift in Sources */,
-				631DD26026F1E18E0023D24A /* SavedCreds.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -420,7 +398,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -428,7 +406,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TVOS_DEPLOYMENT_TARGET = 14.5;
+				TVOS_DEPLOYMENT_TARGET = 15.0;
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
@@ -479,14 +457,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				TVOS_DEPLOYMENT_TARGET = 14.5;
+				TVOS_DEPLOYMENT_TARGET = 15.0;
 				VALIDATE_PRODUCT = YES;
 				VALIDATE_WORKSPACE = YES;
 			};

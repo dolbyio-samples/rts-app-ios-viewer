@@ -46,7 +46,7 @@ struct MCSwiftVideoRenderer: UIViewRepresentable {
     public func setMirror(_ mirror: Bool) -> Bool {
         let logTag = "[Video][Render][er][Mirror]:\(mirror). "
         if let view = uiView {
-            var task = { [self] in
+            var task = {
                 var log = "Set current mirrored state to "
                 if mirror {
                     view.transform = CGAffineTransformMakeScale(-1, 1)
