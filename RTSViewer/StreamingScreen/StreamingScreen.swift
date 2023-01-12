@@ -90,5 +90,6 @@ struct StreamingScreen: View {
 struct StreamingScreen_Previews: PreviewProvider {
     static var previews: some View {
         StreamingScreen()
+            .environmentObject(RTSDataStore())
     }
 }
