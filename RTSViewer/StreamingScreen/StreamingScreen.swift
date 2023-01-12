@@ -24,6 +24,14 @@ struct StreamingScreen: View {
                     .background(Color.black)
                     .opacity(isStreamActive ? 0.0 : 0.8)
 
+                VStack {
+                    HStack {
+                        IconButton(name: .settings, tintColor: .white) {
+                        }
+                        Spacer().frame(width: Layout.spacing1x)
+                    }.frame(maxWidth: .infinity, alignment: .trailing)
+                }.frame(maxHeight: .infinity, alignment: .bottom)
+
                 if !isStreamActive {
                     VStack {
                         Text(
