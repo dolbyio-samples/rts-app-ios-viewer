@@ -3,7 +3,7 @@
 //  
 import SwiftUI
 
-public protocol ThemeProviding  {
+public protocol ThemeProviding {
     associatedtype _ColorAsset: ColorAssetable
     associatedtype _FontAsset: FontAssetable
     associatedtype _ImageAsset: ImageAssetable
@@ -27,11 +27,11 @@ open class AbstractTheme<C: ColorAssetable, F: FontAssetable, I: ImageAssetable>
     open subscript(colorAsset: _ColorAsset) -> Color? {
         fatalError("Implement subscript in subclass")
     }
-    
+
     open subscript(fontAsset: _FontAsset) -> Font {
         fatalError("Implement subscript in subclass")
     }
-    
+
     open subscript(imageAsset: _ImageAsset) -> Image {
         fatalError("Implement subscript in subclass")
     }

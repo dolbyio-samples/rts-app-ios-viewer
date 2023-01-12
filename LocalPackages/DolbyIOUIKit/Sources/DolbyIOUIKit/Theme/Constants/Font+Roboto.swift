@@ -6,7 +6,7 @@ import Foundation
 import SwiftUI
 
 public extension Font {
-    
+
     // MARK: Roboto Font's
 
     static func robotoBlack(withStyle style: Font.TextStyle, size: CGFloat) -> Font {

@@ -5,14 +5,14 @@
 import SwiftUI
 
 public struct LoadingView: View {
-    
+
     @State private var spin: Bool = false
     var tintColor: Color?
-    
+
     public init(tintColor: Color?) {
         self.tintColor = tintColor
     }
-        
+
     public var body: some View {
         IconView(name: .loader, tintColor: tintColor)
             .fixedSize()
@@ -22,7 +22,7 @@ public struct LoadingView: View {
                 .linear(duration: 0.8)
                 .repeatForever(autoreverses: false),
                 value: spin)
-            .onAppear() {
+            .onAppear {
                 spin = true
             }
             .onDisappear { spin = false }

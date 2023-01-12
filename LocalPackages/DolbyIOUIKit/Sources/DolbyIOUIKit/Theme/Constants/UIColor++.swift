@@ -5,7 +5,7 @@
 import UIKit
 
 public extension UIColor {
-    
+
     /// The primary color is the Dolby.io “brand” color, and is used across all interactive elements such as buttons, links, inputs, etc. These colors define the overall feel and elicit emotion.
     enum Primary {
         public static let neonPurple25 = UIColor(hex: 0xFDFAFF)
@@ -20,7 +20,7 @@ public extension UIColor {
         public static let neonPurple800 = UIColor(hex: 0x3B1259)
         public static let neonPurple900 = UIColor(hex: 0x220A33)
     }
-    
+
     /// Along with primary colors, it's helpful to have a selection of secondary colors to use in components such as alerts and labels. These secondary colors should be used sparingly or as accents, while the primary color(s) should take precendence.
     enum Secondary {
         public static let ultraViolet100 = UIColor(hex: 0xB0B2FF)
@@ -29,7 +29,7 @@ public extension UIColor {
         public static let ultraViolet400 = UIColor(hex: 0xAA33FF)
         public static let ultraViolet500 = UIColor(hex: 0x8829CC)
         public static let ultraViolet600 = UIColor(hex: 0x6E21A6)
-        
+
         public static let articBlue100 = UIColor(hex: 0x78DAFF)
         public static let articBlue200 = UIColor(hex: 0x48C6F5)
         public static let articBlue300 = UIColor(hex: 0x30B4E6)
@@ -37,14 +37,13 @@ public extension UIColor {
         public static let articBlue500 = UIColor(hex: 0x30B4E6)
         public static let articBlue600 = UIColor(hex: 0x30B4E6)
 
-        
         public static let magenta100 = UIColor(hex: 0xFFABCB)
         public static let magenta200 = UIColor(hex: 0xFC80B0)
         public static let magenta300 = UIColor(hex: 0xFF5294)
         public static let magenta400 = UIColor(hex: 0xFF2E7E)
         public static let magenta500 = UIColor(hex: 0xDA0059)
         public static let magenta600 = UIColor(hex: 0xAA174F)
-        
+
         public static let emeraldGreen100 = UIColor(hex: 0xCFFEEB)
         public static let emeraldGreen200 = UIColor(hex: 0xA1FBD6)
         public static let emeraldGreen300 = UIColor(hex: 0x5CF2AF)
@@ -52,7 +51,7 @@ public extension UIColor {
         public static let emeraldGreen500 = UIColor(hex: 0x0BCB74)
         public static let emeraldGreen600 = UIColor(hex: 0x06B365)
     }
-    
+
     /// Gray is a neutral color and is the foundation of the Dolby.io color system. Almost everything in UI design — text, form fields, backgrounds, dividers — are usually gray.
     enum Neutral {
         public static let neutral25 = UIColor(hex: 0xFCFCFF)
@@ -67,7 +66,7 @@ public extension UIColor {
         public static let neutral800 = UIColor(hex: 0x292930)
         public static let neutral900 = UIColor(hex: 0x14141A)
     }
-    
+
     /// A typeface is the design of lettering that can include variations in size, weight, slope, width, and height. Avenir Next is part of the Platinum Collection and comes in 4 typeface sets, regular, Italic, condensed and condensed Italic weights.
     enum Typography {
         enum Light {
@@ -87,7 +86,7 @@ public extension UIColor {
         public static let black = UIColor(hex: 0x14141A)
         public static let white = UIColor(hex: 0xFFFFFF)
     }
-    
+
     /// A call to action or CTA communicates to a user to take a specified action.
     enum CTA {
         public static let `default` = UIColor(hex: 0xAA33FF)
@@ -95,10 +94,10 @@ public extension UIColor {
         public static let focused = UIColor(hex: 0xBF66FF)
         public static let selected = UIColor(hex: 0x6E21A6)
     }
-    
+
     /// Feedback colors communicate purpose and denote standard value states (such as good, bad, or warning). Each color has the same basic meaning in all contexts.
     enum Feedback {
-        
+
         /// Success colors commuicate a position action, positive trend, or a successful confirmation.
         public static let success25 = UIColor(hex: 0xFAFFFB)
         public static let success50 = UIColor(hex: 0xEDFAF0)
@@ -111,7 +110,7 @@ public extension UIColor {
         public static let success700 = UIColor(hex: 0x0A661E)
         public static let success800 = UIColor(hex: 0x044D14)
         public static let success900 = UIColor(hex: 0x00330B)
-        
+
         /// Invalid colors commuicate an action that is potentially desructive or “on–hold.”
         public static let invalid25 = UIColor(hex: 0xFFFDFA)
         public static let invalid50 = UIColor(hex: 0xFFFBF2)
@@ -124,7 +123,7 @@ public extension UIColor {
         public static let invalid700 = UIColor(hex: 0x996D03)
         public static let invalid800 = UIColor(hex: 0x664800)
         public static let invalid900 = UIColor(hex: 0x332400)
-        
+
         /// Error colors are used across error states and in “destructive” actions.
         public static let error25 = UIColor(hex: 0xFFFAFA)
         public static let error50 = UIColor(hex: 0xFFF2F2)
@@ -137,7 +136,7 @@ public extension UIColor {
         public static let error700 = UIColor(hex: 0x800303)
         public static let error800 = UIColor(hex: 0x590000)
         public static let error900 = UIColor(hex: 0x330000)
-        
+
         /// Information colors are used to provide users with information about any actions or states  of an application or system.
         public static let info25 = UIColor(hex: 0xFAFDFF)
         public static let info50 = UIColor(hex: 0xF2F9FF)
@@ -160,7 +159,7 @@ extension UIColor {
         let blue = Double((hex & 0xff) >> 0) / 255.0
         self.init(red: red, green: green, blue: blue, alpha: opacity)
     }
-    
+
     convenience init(light: UIColor, dark: UIColor) {
         self.init { $0.userInterfaceStyle == .dark ? dark : light }
     }

@@ -5,7 +5,7 @@
 import SwiftUI
 
 public enum ColorAsset: ColorAssetable {
-    
+
     case text(TextAsset)
     case textField(TextFieldAsset)
     case toggle(ToggleAsset)
@@ -16,9 +16,8 @@ public enum ColorAsset: ColorAssetable {
     case secondaryButton(ButtonAsset)
     case secondaryDangerButton(ButtonAsset)
 
-
     // MARK: Text Colors
-    
+
     public enum TextAsset {
         case primaryColor
         case secondaryColor
@@ -37,7 +36,7 @@ public enum ColorAsset: ColorAssetable {
         case disabledBackgroundColor
         case errorMessageColor
     }
-    
+
     // MARK: Toggle Colors
 
     public enum ToggleAsset {
@@ -52,16 +51,16 @@ public enum ColorAsset: ColorAssetable {
     public enum IconAsset {
         case tintColor
     }
-    
+
     // MARK: IconButton Colors
 
     public enum IconButtonAsset {
         case tintColor
         case focusedBackgroundColor
     }
-    
+
     // MARK: Button Colors
-    
+
     public enum ButtonAsset {
         case textColor
         case disabledTextColor

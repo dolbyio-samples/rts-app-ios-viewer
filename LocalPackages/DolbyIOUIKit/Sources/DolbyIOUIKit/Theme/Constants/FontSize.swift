@@ -5,7 +5,7 @@
 import Foundation
 
 public enum FontSize {
-    
+
     // MARK: Font size's
     public static let largeTitle: CGFloat = 32.0
     public static let title1: CGFloat = 28.0

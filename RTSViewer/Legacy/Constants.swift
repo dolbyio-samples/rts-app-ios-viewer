@@ -14,9 +14,9 @@ import Foundation
  * The UI also provides a way to reload the file values here.
  */
 struct Constants {
-    
+
     // Set the following as default values if desired.
-    
+
     //Set Millicast account ID here.
     static let ACCOUNT_ID = ""
     // Set publishing stream name here. Optional if not publishing.

@@ -7,15 +7,15 @@ import SwiftUI
 @available(tvOS, unavailable)
 @available(iOS 15, *)
 public struct TextField: View {
-    
+
     public typealias ValidationResult = (success: Bool, message: LocalizedStringKey?)
-    
+
     @Binding public var text: String
     public let placeholderText: LocalizedStringKey
     public var validate: (() -> ValidationResult)?
 
     @FocusState private var isFocused: Bool
-    @State private var validationResult: ValidationResult? = nil
+    @State private var validationResult: ValidationResult?
     @Environment(\.colorScheme) private var colorScheme
     private var theme: Theme = ThemeManager.shared.theme
 
@@ -93,19 +93,19 @@ private extension TextField {
     var font: Font {
         theme[.avenirNextRegular(size: FontSize.subhead, style: .subheadline)]
     }
-    
+
     var errorFont: Font {
         theme[.avenirNextRegular(size: FontSize.caption1, style: .caption)]
     }
-    
+
     var placeholderTextColor: Color? {
         theme[ColorAsset.textField(.placeHolderTextColor)]
     }
-    
+
     var tintColor: Color? {
         theme[ColorAsset.textField(.tintColor)]
     }
-    
+
     var outlineColor: Color? {
         switch (hasError, isFocused) {
         case (true, _):
@@ -116,17 +116,17 @@ private extension TextField {
             return theme[ColorAsset.textField(.outlineColor)]
         }
     }
-    
+
     var errorMessageColor: Color? {
         theme[ColorAsset.textField(.errorMessageColor)]
     }
 }
 
-fileprivate struct InputTextFieldStyle: TextFieldStyle {
+private struct InputTextFieldStyle: TextFieldStyle {
     let isFocused: Bool
     let hasError: Bool
     private var theme: Theme = ThemeManager.shared.theme
-    
+
     init(isFocused: Bool, hasError: Bool) {
         self.isFocused = isFocused
         self.hasError = hasError
@@ -138,7 +138,7 @@ fileprivate struct InputTextFieldStyle: TextFieldStyle {
             .frame(minHeight: 48)
             .padding([.leading, .trailing])
     }
-    
+
     var textColor: Color? {
         theme[ColorAsset.textField(.textColor)]
     }
@@ -156,7 +156,7 @@ struct TextField_Previews: PreviewProvider {
                     return (false, "Invalid username")
                 }
             )
-            
+
             TextField(
                 text: .constant(""),
                 placeholderText: "Enter your account ID",
