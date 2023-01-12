@@ -9,7 +9,6 @@ on:
 
 jobs:
   Build-And-Deploy-To-Appstore:
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: macos-12
     steps:
       - name: Checkout source code
