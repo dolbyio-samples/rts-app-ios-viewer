@@ -64,12 +64,12 @@ private struct StreamDetailInputBox: View {
 
     var body: some View {
         GeometryReader { proxy in
-            VStack(spacing: Layout.spacing5x) {
+            VStack(spacing: Layout.spacing3x) {
                 Text(
                     text: "stream-detail-input.header.label",
                     fontAsset: .avenirNextDemiBold(
-                        size: FontSize.headline,
-                        style: .headline
+                        size: FontSize.title3,
+                        style: .title3
                     )
                 )
 
@@ -86,8 +86,8 @@ private struct StreamDetailInputBox: View {
                     Text(
                         text: "stream-detail-input.subtitle.label",
                         fontAsset: .avenirNextRegular(
-                            size: FontSize.body,
-                            style: .body
+                            size: FontSize.headline,
+                            style: .headline
                         )
                     )
                 }
@@ -95,10 +95,10 @@ private struct StreamDetailInputBox: View {
                 VStack(spacing: Layout.spacing3x) {
 
                     TextField("stream-detail-input.streamName.placeholder.label", text: $streamName)
-                        .font(.avenirNextRegular(withStyle: .body, size: FontSize.body))
+                        .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
 
                     TextField("stream-detail-input.accountId.placeholder.label", text: $accountID)
-                        .font(.avenirNextRegular(withStyle: .body, size: FontSize.body))
+                        .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
 
                     RTSComponentKit.SubscribeButton(
                         text: "stream-detail-input.play.button",
