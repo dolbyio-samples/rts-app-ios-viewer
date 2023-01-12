@@ -24,4 +24,8 @@ public enum ImageAsset: String, ImageAssetable {
     // MARK: Dolby Logo
 
     case dolby_logo_dd = "dolby-logo-dd"
+
+    // MARK: Buttons
+
+    case settings = "settings"
 }
