@@ -7,7 +7,7 @@ import SwiftUI
 import UIKit
 
 public class DefaultTheme: Theme {
-    
+
     public override subscript(colorAsset: ColorAsset) -> Color? {
         switch colorAsset {
         case let .toggle(asset):
@@ -30,11 +30,11 @@ public class DefaultTheme: Theme {
             return secondaryDangerButtonColor(for: asset)
         }
     }
-    
+
     public override subscript(fontAsset: FontAsset) -> Font {
         return font(for: fontAsset)
     }
-    
+
     public override subscript(imageAsset: ImageAsset) -> Image {
         return image(for: imageAsset)
     }
@@ -65,11 +65,10 @@ extension DefaultTheme {
     }
 }
 
-
 // MARK: Theme color definitions
 
 extension DefaultTheme {
-    
+
     private func color(for toggleAsset: ColorAsset.ToggleAsset) -> Color? {
         switch toggleAsset {
         case .textColor:
@@ -87,7 +86,6 @@ extension DefaultTheme {
             return Color(uiColor: UIColor.Neutral.neutral200)
         }
     }
-
 
     private func color(for iconAsset: ColorAsset.IconAsset) -> Color? {
         switch iconAsset {
@@ -119,7 +117,7 @@ extension DefaultTheme {
             )
         }
     }
-    
+
     private func color(for textAsset: ColorAsset.TextAsset) -> Color? {
         switch textAsset {
         case .primaryColor:
@@ -193,28 +191,28 @@ extension DefaultTheme {
         switch buttonAsset {
         case .textColor:
             return Color(uiColor: UIColor.Typography.Dark.secondary)
-            
+
         case .disabledTextColor:
             return Color(uiColor: UIColor.Typography.Dark.secondary)
-            
+
         case .tintColor:
             return Color(uiColor: UIColor.Background.white)
-            
+
         case .disabledTintColor:
             return Color(uiColor: UIColor.Background.white)
-            
+
         case .backgroundColor:
             return Color(uiColor: UIColor.Primary.neonPurple400)
-            
+
         case .hoverBackgroundColor:
             return Color(uiColor: UIColor.Primary.neonPurple500)
-            
+
         case .disabledBackgroundColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
-            
+
         case .borderColor:
             return nil
-            
+
         case .disabledBorderColor:
             return nil
         }
@@ -224,28 +222,28 @@ extension DefaultTheme {
         switch buttonAsset {
         case .textColor:
             return Color(uiColor: UIColor.Typography.Dark.secondary)
-            
+
         case .disabledTextColor:
             return Color(uiColor: UIColor.Typography.Dark.secondary)
-            
+
         case .tintColor:
             return Color(uiColor: UIColor.Background.white)
-            
+
         case .disabledTintColor:
             return Color(uiColor: UIColor.Background.white)
-            
+
         case .backgroundColor:
             return Color(uiColor: UIColor.Feedback.error500)
-            
+
         case .hoverBackgroundColor:
             return Color(uiColor: UIColor.Feedback.error600)
-            
+
         case .disabledBackgroundColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
-            
+
         case .borderColor:
             return nil
-            
+
         case .disabledBorderColor:
             return nil
         }
@@ -260,10 +258,10 @@ extension DefaultTheme {
                     dark: UIColor.Background.white
                 )
             )
-            
+
         case .disabledTextColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
-            
+
         case .tintColor:
             return Color(
                 uiColor: UIColor(
@@ -271,10 +269,10 @@ extension DefaultTheme {
                     dark: UIColor.Background.white
                 )
             )
-            
+
         case .disabledTintColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
-            
+
         case .backgroundColor:
             return Color(
                 uiColor: UIColor(
@@ -282,7 +280,7 @@ extension DefaultTheme {
                     dark: UIColor.Background.black
                 )
             )
-            
+
         case .hoverBackgroundColor:
             return Color(
                 uiColor: UIColor(
@@ -291,7 +289,7 @@ extension DefaultTheme {
                         .withAlphaComponent(0.2)
                 )
             )
-            
+
         case .disabledBackgroundColor:
             return Color(
                 uiColor: UIColor(
@@ -300,10 +298,10 @@ extension DefaultTheme {
                         .withAlphaComponent(0.2)
                 )
             )
-            
+
         case .borderColor:
             return Color(uiColor: UIColor.Primary.neonPurple400)
-            
+
         case .disabledBorderColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
         }
@@ -316,13 +314,13 @@ extension DefaultTheme {
 
         case .disabledTextColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
-            
+
         case .tintColor:
             return Color(uiColor: UIColor.Feedback.error500)
 
         case .disabledTintColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
-            
+
         case .backgroundColor:
             return Color(
                 uiColor: UIColor(
@@ -330,7 +328,7 @@ extension DefaultTheme {
                     dark: UIColor.Background.black
                 )
             )
-            
+
         case .hoverBackgroundColor:
             return Color(
                 uiColor: UIColor(
@@ -338,7 +336,7 @@ extension DefaultTheme {
                     dark: UIColor.Feedback.error900
                 )
             )
-            
+
         case .disabledBackgroundColor:
             return Color(
                 uiColor: UIColor(
@@ -346,10 +344,10 @@ extension DefaultTheme {
                     dark: UIColor.Feedback.error900
                 )
             )
-            
+
         case .borderColor:
             return Color(uiColor: UIColor.Feedback.error500)
-            
+
         case .disabledBorderColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
         }

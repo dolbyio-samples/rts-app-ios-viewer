@@ -8,7 +8,7 @@ import MillicastSDK
 import SwiftUI
 
 public final class RTSDataStore: ObservableObject {
-    
+
     public enum SubscribeState: Equatable {
         case streamInactive
         case streamActive
@@ -17,12 +17,12 @@ public final class RTSDataStore: ObservableObject {
         case disconnected
         case error(SubscriptionError)
     }
-    
+
     public enum SubscriptionError: Error, Equatable {
         case subscribeError(reason: String)
         case connectError(reason: String)
     }
-    
+
     @Published public private(set) var subscribeState: SubscribeState = .disconnected
     @Published public private(set) var isSubscribeAudioEnabled: Bool = true
     @Published public private(set) var isSubscribeVideoEnabled: Bool = true
@@ -38,7 +38,7 @@ public final class RTSDataStore: ObservableObject {
         self.listener = listener
         self.subscriptionVideoRenderer = subscriptionVideoRenderer
     }
-    
+
     public convenience init() {
         let listener = SubscriptionListener()
         self.init(
@@ -48,14 +48,14 @@ public final class RTSDataStore: ObservableObject {
         )
         listener.delegate = self
     }
-    
+
     // MARK: Subscribe API methods
-    
+
     @discardableResult
     public func toggleAudioState() -> Bool {
         setAudio(!isSubscribeAudioEnabled)
     }
-    
+
     @discardableResult
     public func setAudio(_ isEnabled: Bool) -> Bool {
         switch subscribeState {
@@ -63,17 +63,17 @@ public final class RTSDataStore: ObservableObject {
             subscriptionManager.enableAudio(for: audioTrack, enable: isEnabled)
             isSubscribeAudioEnabled = isEnabled
             return true
-            
+
         default:
             return false
         }
     }
-        
+
     @discardableResult
     public func toggleVideoState() -> Bool {
         setVideo(!isSubscribeVideoEnabled)
     }
-    
+
     @discardableResult
     public func setVideo(_ isEnabled: Bool) -> Bool {
         switch subscribeState {
@@ -81,12 +81,12 @@ public final class RTSDataStore: ObservableObject {
             subscriptionManager.enableVideo(for: videoTrack, enable: isEnabled)
             isSubscribeVideoEnabled = isEnabled
             return true
-            
+
         default:
             return false
         }
     }
-    
+
     @discardableResult
     public func setVolume(_ volume: Double) -> Bool {
         guard
@@ -101,7 +101,7 @@ public final class RTSDataStore: ObservableObject {
     public func connect(streamName: String, accountID: String) async -> Bool {
         await subscriptionManager.connect(streamName: streamName, accountID: accountID)
     }
-    
+
     public func connect() async -> Bool {
         await subscriptionManager.connect()
     }
@@ -109,26 +109,26 @@ public final class RTSDataStore: ObservableObject {
     public func startSubscribe() async -> Bool {
         await subscriptionManager.startSubscribe()
     }
-    
+
     public func stopSubscribe() async -> Bool {
         let success = await subscriptionManager.stopSubscribe()
-        
+
         Task {
             await MainActor.run {
                 subscribeState = .disconnected
             }
         }
-        
+
         setAudio(false)
         setVideo(false)
-        
+
         guard case .connected = subscribeState else {
             return false
         }
         await subscriptionManager.stopRender(of: videoTrack, on: subscriptionVideoRenderer)
         return success
     }
-    
+
     public func subscriptionView() -> UIView {
         subscriptionVideoRenderer.getView()
     }
@@ -144,7 +144,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
             }
         }
     }
-    
+
     func onStreamInactive() {
         Task {
             await MainActor.run {
@@ -152,7 +152,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
             }
         }
     }
-    
+
     func onStreamStopped() {
         Task {
             await MainActor.run {
@@ -160,7 +160,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
             }
         }
     }
-    
+
     func onSubscribed() {
         Task {
             await MainActor.run {
@@ -168,7 +168,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
             }
         }
     }
-    
+
     func onSubscribedError(_ reason: String) {
         Task {
             await MainActor.run {
@@ -176,7 +176,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
             }
         }
     }
-    
+
     func onVideoTrack(_ track: MCVideoTrack, withMid mid: String) {
         Task {
             await MainActor.run {
@@ -184,7 +184,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
             }
         }
     }
-    
+
     func onAudioTrack(_ track: MCAudioTrack, withMid mid: String) {
         Task {
             await MainActor.run {
@@ -192,7 +192,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
             }
         }
     }
-    
+
     func onConnected() {
         Task {
             await MainActor.run {
@@ -200,7 +200,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
             }
         }
     }
-    
+
     func onConnectionError(reason: String) {
         Task {
             await MainActor.run {
@@ -213,7 +213,7 @@ extension RTSDataStore: SubscriptionListenerDelegate {
 // MARK: Render handler's for Audio and Video Tracks
 
 private extension RTSDataStore {
-    
+
     private func renderVideoTrack(_ videoTrack: MCVideoTrack?) {
         self.videoTrack = videoTrack
         setVideo(true)
@@ -221,7 +221,7 @@ private extension RTSDataStore {
             await subscriptionManager.startRender(of: videoTrack, on: subscriptionVideoRenderer)
         }
     }
-    
+
     private func renderAudioTrack(_ audioTrack: MCAudioTrack?) {
         self.audioTrack = audioTrack
         setAudio(true)
@@ -230,4 +230,3 @@ private extension RTSDataStore {
         }
     }
 }
-

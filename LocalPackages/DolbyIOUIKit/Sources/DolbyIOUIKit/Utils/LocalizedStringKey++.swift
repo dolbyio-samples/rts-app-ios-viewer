@@ -10,23 +10,24 @@ extension LocalizedStringKey {
      Return localized value of thisLocalizedStringKey
      */
     public func toString() -> String {
-        //use reflection
+        // Use reflection
         let mirror = Mirror(reflecting: self)
-        
-        //try to find 'key' attribute value
+
+        // Try to find 'key' attribute value
         let attributeLabelAndValue = mirror.children.first { (arg0) -> Bool in
             let (label, _) = arg0
-            if(label == "key"){
-                return true;
+            if label == "key" {
+                return true
             }
-            return false;
+            return false
         }
-        
-        if(attributeLabelAndValue != nil) {
-            //ask for localization of found key via NSLocalizedString
-            return String.localizedStringWithFormat(NSLocalizedString(attributeLabelAndValue!.value as! String, comment: ""));
-        }
-        else {
+
+        if attributeLabelAndValue != nil {
+            // Ask for localization of found key via NSLocalizedString
+            // swiftlint:disable force_cast
+            return String.localizedStringWithFormat(NSLocalizedString(attributeLabelAndValue!.value as! String, comment: ""))
+            // swiftlint:enable force_cast
+        } else {
             return ""
         }
     }

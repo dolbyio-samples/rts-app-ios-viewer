@@ -14,9 +14,9 @@ public extension View {
 }
 
 public struct NavigationHeaderView: View, ShapeStyle {
-    
+
     public init() {}
-    
+
     public var body: some View {
             ZStack {
                 IconView(name: .dolby_logo_dd, tintColor: .white)

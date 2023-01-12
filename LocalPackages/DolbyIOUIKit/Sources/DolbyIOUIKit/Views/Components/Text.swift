@@ -5,7 +5,7 @@
 import SwiftUI
 
 public struct Text: View {
-    
+
     public enum Mode {
         case primary
         case secondary
@@ -15,7 +15,7 @@ public struct Text: View {
     public var text: LocalizedStringKey
     public var mode: Mode
     public var font: Font
-    
+
     public init(
         text: LocalizedStringKey,
         mode: Mode = .primary,
@@ -25,7 +25,7 @@ public struct Text: View {
         self.mode = mode
         self.font = font
     }
-    
+
     public init(
         text: LocalizedStringKey,
         mode: Mode = .primary,
@@ -74,7 +74,7 @@ struct Text_Previews: PreviewProvider {
                         style: .largeTitle
                     )
                 )
-                
+
                 Text(
                     text: "This is a regular text",
                     mode: .primary,
@@ -83,7 +83,7 @@ struct Text_Previews: PreviewProvider {
                         style: .title
                     )
                 )
-                
+
                 Text(
                     text: "This is a regular text",
                     mode: .primary,
@@ -92,7 +92,7 @@ struct Text_Previews: PreviewProvider {
                         style: .title2
                     )
                 )
-                
+
                 Text(
                     text: "This is a regular text",
                     mode: .primary,
@@ -102,7 +102,7 @@ struct Text_Previews: PreviewProvider {
                     )
                 )
             }
-            
+
             VStack {
                 Text(
                     text: "This is a bold text",
@@ -112,7 +112,7 @@ struct Text_Previews: PreviewProvider {
                         style: .largeTitle
                     )
                 )
-                
+
                 Text(
                     text: "This is a bold text",
                     mode: .primary,
@@ -121,7 +121,7 @@ struct Text_Previews: PreviewProvider {
                         style: .title
                     )
                 )
-                
+
                 Text(
                     text: "This is a bold text",
                     mode: .primary,
@@ -130,7 +130,7 @@ struct Text_Previews: PreviewProvider {
                         style: .title2
                     )
                 )
-                
+
                 Text(
                     text: "This is a bold text",
                     mode: .primary,

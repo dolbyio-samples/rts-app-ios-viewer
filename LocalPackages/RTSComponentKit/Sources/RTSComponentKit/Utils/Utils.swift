@@ -207,7 +207,9 @@ class Utils {
 
         if let savedValue = UserDefaults.standard.object(forKey: key) {
             log = "Used saved UserDefaults."
+            // swiftlint:disable force_cast
             value = savedValue as! Int
+            // swiftlint:enable force_cast
         } else {
             value = defaultValue
             log = "No UserDefaults, used default value."

@@ -5,13 +5,13 @@
 import SwiftUI
 
 public struct Toggle: View {
-    
+
     public var text: LocalizedStringKey
     @Binding public var isOn: Bool
-    
+
     @Environment(\.isFocused) private var isFocused: Bool
     private var theme: Theme = ThemeManager.shared.theme
-    
+
     public init(text: LocalizedStringKey, isOn: Binding<Bool>) {
         self.text = text
         self._isOn = isOn
@@ -39,11 +39,11 @@ private extension Toggle {
     var font: Font {
         theme[.avenirNextRegular(size: FontSize.subhead, style: .subheadline)]
     }
-    
+
     var textColor: Color? {
         theme[ColorAsset.toggle(.textColor)]
     }
-    
+
     var focusedBackgroundColor: Color? {
         theme[ColorAsset.toggle(.focusedBackgroundColor)]
     }
@@ -69,11 +69,11 @@ struct CheckboxToggleStyle: ToggleStyle {
                         )
                 }
             }
-            
+
             configuration.label
         }
     }
-    
+
     private var tintColor: Color? {
         theme[ColorAsset.toggle(.tintColor)]
     }

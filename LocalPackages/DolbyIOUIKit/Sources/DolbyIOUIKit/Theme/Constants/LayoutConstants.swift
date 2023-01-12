@@ -5,18 +5,18 @@
 import Foundation
 
 public enum Layout {
-    
+
     // MARK: Border size's
-    
+
     public static let border1x: CGFloat = 1.0
     public static let border2x: CGFloat = 2.0
-    
+
     // MARK: Corner Radius
-    
+
     public static let cornerRadius6x: CGFloat = 6.0
 
     // MARK: Spacing's
-    
+
     public static let spacing0x: CGFloat = 0.0
     public static let spacing1x: CGFloat = 8.0
     public static var spacing0_5x: CGFloat { Self.spacing1x / 2 }

@@ -8,7 +8,7 @@ import SwiftUI
 import RTSComponentKit
 
 struct StreamingScreen: View {
-    
+
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     @EnvironmentObject private var dataStore: RTSDataStore
@@ -54,10 +54,10 @@ struct StreamingScreen: View {
                     }
                 }
             }
-            .onReceive(timer) { time in
+            .onReceive(timer) { _ in
                 Task {
                     switch dataStore.subscribeState {
-                    case .error(_):
+                    case .error:
                         _ = await dataStore.connect()
                     default:
                         // No-op
@@ -73,7 +73,7 @@ struct StreamingScreen: View {
             }
         }
     }
-    
+
     private var isStreamActive: Bool {
         return dataStore.subscribeState == .streamActive
     }

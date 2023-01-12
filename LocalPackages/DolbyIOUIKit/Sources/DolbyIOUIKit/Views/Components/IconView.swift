@@ -8,7 +8,7 @@ public struct IconView: View {
     public var name: ImageAsset
     public var tintColor: Color?
     private var theme: Theme = ThemeManager.shared.theme
-    
+
     public init(name: ImageAsset, tintColor: Color? = nil) {
         self.name = name
         self.tintColor = tintColor
@@ -20,7 +20,7 @@ public struct IconView: View {
             .foregroundColor(_tintColor)
             .fixedSize()
     }
-    
+
     private var _tintColor: Color? {
         tintColor ?? theme[.icon(.tintColor)]
     }

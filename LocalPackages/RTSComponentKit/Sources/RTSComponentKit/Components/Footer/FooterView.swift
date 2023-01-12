@@ -7,11 +7,11 @@ import DolbyIOUIKit
 
 public struct FooterView: View {
     public var text: LocalizedStringKey
-    
+
     public init(text: LocalizedStringKey) {
         self.text = text
     }
-    
+
     public var body: some View {
         DolbyIOUIKit.Text(
             text: text,

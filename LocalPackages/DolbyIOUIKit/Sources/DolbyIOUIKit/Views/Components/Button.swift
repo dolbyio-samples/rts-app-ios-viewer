@@ -4,7 +4,6 @@
 
 import SwiftUI
 
-
 public struct Button: View {
     public enum ButtonState {
         case `default`
@@ -16,7 +15,7 @@ public struct Button: View {
         case primary
         case secondary
     }
-    
+
     public var action: () -> Void
     public var text: LocalizedStringKey
     public var leftIcon: ImageAsset?
@@ -97,17 +96,17 @@ private extension Button {
         .frame(maxWidth: .infinity)
         .background(backgroundColor)
     }
-    
+
     typealias BorderColorAndWidth = (color: Color?, width: CGFloat?)
     var borderColorAndWidth: BorderColorAndWidth? {
-        switch (isEnabled) {
+        switch isEnabled {
         case true:
             return (color: borderColor, Layout.border1x)
         case false:
             return (color: disabledBorderColor, Layout.border1x)
         }
     }
-    
+
     var borderColor: Color? {
         switch (mode, danger) {
         case (.primary, false):
@@ -120,7 +119,7 @@ private extension Button {
             return theme[ColorAsset.secondaryDangerButton(.borderColor)]
         }
     }
-    
+
     var disabledBorderColor: Color? {
         switch (mode, danger) {
         case (.primary, false):
@@ -133,16 +132,16 @@ private extension Button {
             return theme[ColorAsset.secondaryDangerButton(.disabledBorderColor)]
         }
     }
-    
+
     var backgroundColor: Color? {
         guard isEnabled == true else {
             return disabledBackgroundColor
         }
-        
+
         if isFocused {
             return hoverBackgroundColor
         }
-        
+
         switch (mode, danger) {
         case (.primary, false):
             return theme[ColorAsset.primaryButton(.backgroundColor)]
@@ -154,7 +153,7 @@ private extension Button {
             return theme[ColorAsset.secondaryDangerButton(.backgroundColor)]
         }
     }
-    
+
     var hoverBackgroundColor: Color? {
         switch (mode, danger) {
         case (.primary, false):
@@ -167,7 +166,7 @@ private extension Button {
             return theme[ColorAsset.secondaryDangerButton(.hoverBackgroundColor)]
         }
     }
-    
+
     var disabledBackgroundColor: Color? {
         switch (mode, danger) {
         case (.primary, false):
@@ -180,7 +179,7 @@ private extension Button {
             return theme[ColorAsset.secondaryDangerButton(.disabledBackgroundColor)]
         }
     }
-    
+
     var accessibilityLabel: String {
         switch buttonState {
         case .default:
@@ -195,7 +194,7 @@ private extension Button {
 
 // MARK: Defines the `View` for the Button's content
 
-fileprivate struct CustomButtonView: View {
+private struct CustomButtonView: View {
     var action: () -> Void
     var text: LocalizedStringKey
     var leftIcon: ImageAsset?
@@ -205,7 +204,7 @@ fileprivate struct CustomButtonView: View {
 
     @Binding var hover: Bool
     @Binding var buttonState: Button.ButtonState
-    
+
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isFocused) private var isFocused
     private var theme: Theme = ThemeManager.shared.theme
@@ -229,9 +228,9 @@ fileprivate struct CustomButtonView: View {
         self._hover = hover
         self._buttonState = buttonState
     }
-    
+
     var body: some View {
-        ZStack (alignment: Alignment(horizontal: .center, vertical: .center)) {
+        ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
             HStack(spacing: Layout.spacing2x) {
                 if let leftIcon = leftIcon {
                     IconView(
@@ -251,12 +250,12 @@ fileprivate struct CustomButtonView: View {
                 }
             }
             .opacity(buttonState == .default ? 1.0 : 0.0)
-            
+
             LoadingView(
                 tintColor: tintColor
             )
             .opacity(buttonState == .loading ? 1.0 : 0.0)
-            
+
             IconView(
                 name: .success,
                 tintColor: tintColor
@@ -277,7 +276,7 @@ private extension CustomButtonView {
         guard isEnabled == true else {
             return disabledTextColor
         }
-        
+
         switch (mode, danger) {
         case (.primary, false):
             return theme[ColorAsset.primaryButton(.textColor)]
@@ -289,7 +288,7 @@ private extension CustomButtonView {
             return theme[ColorAsset.secondaryDangerButton(.textColor)]
         }
     }
-    
+
     var disabledTextColor: Color? {
         switch (mode, danger) {
         case (.primary, false):
@@ -302,12 +301,12 @@ private extension CustomButtonView {
             return theme[ColorAsset.secondaryDangerButton(.disabledTextColor)]
         }
     }
-    
+
     var tintColor: Color? {
         guard isEnabled == true else {
             return disabledTintColor
         }
-        
+
         switch (mode, danger) {
         case (.primary, false):
             return theme[ColorAsset.primaryButton(.tintColor)]
@@ -319,7 +318,7 @@ private extension CustomButtonView {
             return theme[ColorAsset.secondaryDangerButton(.tintColor)]
         }
     }
-    
+
     var disabledTintColor: Color? {
         switch (mode, danger) {
         case (.primary, false):
@@ -334,13 +333,12 @@ private extension CustomButtonView {
     }
 }
 
-
 #if DEBUG
 struct PrimaryButton_Previews: PreviewProvider {
-        
+
     static var previews: some View {
         Group {
-            
+
             // MARK: Primary Buttons
             VStack {
                 Button(
@@ -352,7 +350,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     rightIcon: .arrowRight,
                     buttonState: .constant(.default)
                 )
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -362,7 +360,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     rightIcon: .arrowRight,
                     buttonState: .constant(.loading)
                 )
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -372,7 +370,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     rightIcon: .arrowRight,
                     buttonState: .constant(.success)
                 )
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -384,7 +382,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                 )
                 .disabled(true)
             }
-            
+
             // MARK: Primary Danger Buttons
             VStack {
                 Button(
@@ -397,7 +395,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     danger: true,
                     buttonState: .constant(.default)
                 )
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -410,7 +408,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                 )
                 .disabled(true)
             }
-            
+
             // MARK: Secondary Buttons
 
             VStack {
@@ -424,7 +422,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     mode: .secondary,
                     buttonState: .constant(.default)
                 )
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -435,7 +433,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     mode: .secondary,
                     buttonState: .constant(.loading)
                 )
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -446,7 +444,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     mode: .secondary,
                     buttonState: .constant(.success)
                 )
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -459,11 +457,11 @@ struct PrimaryButton_Previews: PreviewProvider {
                 )
                 .disabled(true)
             }
-            
+
             // MARK: Secondary Danger Buttons
 
             VStack {
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -475,7 +473,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                     danger: true,
                     buttonState: .constant(.default)
                 )
-                
+
                 Button(
                     action: {
                         print("Pressed Button 1")
@@ -490,7 +488,7 @@ struct PrimaryButton_Previews: PreviewProvider {
                 .disabled(true)
             }
         }
-        
+
     }
 }
 #endif

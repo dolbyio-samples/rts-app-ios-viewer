@@ -8,13 +8,13 @@ import DolbyIOUIKit
 public struct SubscribeButton: View {
     @State private var buttonState: DolbyIOUIKit.Button.ButtonState = .default
     @ObservedObject private var viewModel: SubscribeButtonViewModel
-    
+
     public var text: LocalizedStringKey
     public var streamName: String
     public var accountID: String
 
     public var completion: (Bool) -> Void
-    
+
     public init(text: LocalizedStringKey, streamName: String, accountID: String, dataStore: RTSDataStore, completion: @escaping (Bool) -> Void) {
         self.text = text
         self.streamName = streamName

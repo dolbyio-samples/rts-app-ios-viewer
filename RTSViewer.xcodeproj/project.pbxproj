@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -218,6 +218,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3FE90C3D26B2AF4400B206A3 /* Build configuration list for PBXNativeTarget "RTSViewer iOS" */;
 			buildPhases = (
+				E81D7C79296FBD7400856B89 /* Linting */,
 				3FE90C1426B2AF4200B206A3 /* Sources */,
 				3FE90C1526B2AF4200B206A3 /* Frameworks */,
 				3FE90C1626B2AF4200B206A3 /* Resources */,
@@ -239,6 +240,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 631DD26626F1E18E0023D24A /* Build configuration list for PBXNativeTarget "RTSViewer TVOS" */;
 			buildPhases = (
+				E81D7C78296FB58000856B89 /* Linting */,
 				631DD25126F1E18E0023D24A /* Sources */,
 				631DD26126F1E18E0023D24A /* Frameworks */,
 				631DD26226F1E18E0023D24A /* Resources */,
@@ -321,6 +323,47 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E81D7C78296FB58000856B89 /* Linting */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Linting;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint >/dev/null; then\n  swiftlint --fix && swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+		E81D7C79296FBD7400856B89 /* Linting */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Linting;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint >/dev/null; then\n  swiftlint --fix && swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3FE90C1426B2AF4200B206A3 /* Sources */ = {
