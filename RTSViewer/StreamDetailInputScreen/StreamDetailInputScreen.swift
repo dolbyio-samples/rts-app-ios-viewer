@@ -40,6 +40,7 @@ struct StreamDetailInputScreen: View {
                                 style: .footnote
                             )
                         )
+                        .padding(.bottom, Layout.spacing3x)
                     }
                 }
             }
