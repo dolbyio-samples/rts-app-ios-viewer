@@ -62,6 +62,7 @@
 		8695907428911F6B003CE073 /* FileCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCreds.swift; sourceTree = "<group>"; };
 		8695907528911F6B003CE073 /* UiCreds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UiCreds.swift; sourceTree = "<group>"; };
 		8697685C29431BAF00055C0D /* MCTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCTypes.swift; sourceTree = "<group>"; };
+		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = IDETemplateMacros.plist; path = RTSViewer.xcworkspace/xcshareddata/IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
 		E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDetailInputScreen.swift; sourceTree = "<group>"; };
 		E82A0C1C296D0F04007214B8 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E844ABEB296DA5B20067B78C /* StreamingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingScreen.swift; sourceTree = "<group>"; };
@@ -136,6 +137,7 @@
 				3FE90C1F26B2AF4300B206A3 /* Assets.xcassets */,
 				3FA8DB9527045DE7009713E8 /* Info-iOS.plist */,
 				3FA8DB9827046061009713E8 /* Info-tvOS.plist */,
+				E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */,
 				3FE90C2126B2AF4300B206A3 /* Preview Content */,
 				637644B92726F08300519FDD /* Media.xcassets */,
 			);
