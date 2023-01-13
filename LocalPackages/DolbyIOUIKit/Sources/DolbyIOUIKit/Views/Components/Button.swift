@@ -28,7 +28,7 @@ public struct Button: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.colorScheme) private var colorScheme
     @State private var hover = false
-    @Environment(\.isFocused) private var isFocused
+    @FocusState private var isFocused: Bool
 
     public init(
         action: @escaping () -> Void,
@@ -79,12 +79,13 @@ private extension Button {
                 buttonState: $buttonState
             )
         }
+        .focused($isFocused)
         .accessibilityLabel(accessibilityLabel)
 #if os(tvOS)
         .buttonStyle(
             ClearButtonStyle(
                 isFocused: isFocused,
-                focusedBackgroundColor: .white
+                focusedBackgroundColor: hoverBackgroundColor
             )
         )
 #else
@@ -206,7 +207,6 @@ private struct CustomButtonView: View {
     @Binding var buttonState: Button.ButtonState
 
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.isFocused) private var isFocused
     private var theme: Theme = ThemeManager.shared.theme
 
     init(
