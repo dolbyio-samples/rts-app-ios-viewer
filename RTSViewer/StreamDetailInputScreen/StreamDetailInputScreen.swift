@@ -114,9 +114,7 @@ private struct StreamDetailInputBox: View {
                         streamName: streamName,
                         accountID: accountID,
                         dataStore: dataStore) { success in
-                            if success == false {
-                                showingAlert = true
-                            }
+                            showingAlert = !success
                             isShowingStreamingView = success
                         }
                 }
