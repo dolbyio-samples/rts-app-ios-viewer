@@ -18,14 +18,7 @@ public final class SubscriptionManager: ObservableObject {
         self.listener = listener
     }
 
-    private lazy var subscriber: MCSubscriber? = {
-        guard let subscriber = MCSubscriber.create() else {
-            return nil
-        }
-        subscriber.setListener(listener)
-
-        return subscriber
-    }()
+    private var subscriber: MCSubscriber?
 
     public func enableAudio(for track: MCAudioTrack?, enable: Bool) {
         track?.enable(enable)
@@ -75,7 +68,7 @@ public final class SubscriptionManager: ObservableObject {
 
     public func connect(streamName: String, accountID: String) async -> Bool {
         let task = { [weak self] in
-            guard let self = self, let subscriber = self.subscriber else {
+            guard let self = self, let subscriber = self.makeSubscriber() else {
                 return
             }
 
@@ -90,6 +83,8 @@ public final class SubscriptionManager: ObservableObject {
             subscriber.setOptions(self.clientOptions)
 
             subscriber.connect()
+
+            self.subscriber = subscriber
         }
 
         runOnQueue(log: "Connect Subscriber", task, queueSub)
@@ -160,6 +155,15 @@ public final class SubscriptionManager: ObservableObject {
 // MARK: Maker functions
 
 private extension SubscriptionManager {
+
+    func makeSubscriber() -> MCSubscriber? {
+        guard let subscriber = MCSubscriber.create() else {
+            return nil
+        }
+        subscriber.setListener(listener)
+
+        return subscriber
+    }
 
     var clientOptions: MCClientOptions {
         let optionsSub = MCClientOptions()
