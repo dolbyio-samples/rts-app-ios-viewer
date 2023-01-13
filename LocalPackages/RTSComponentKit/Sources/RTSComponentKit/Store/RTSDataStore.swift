@@ -113,19 +113,20 @@ public final class RTSDataStore: ObservableObject {
     public func stopSubscribe() async -> Bool {
         let success = await subscriptionManager.stopSubscribe()
 
+        setAudio(false)
+        setVideo(false)
+
+        await subscriptionManager.stopRender(of: videoTrack, on: subscriptionVideoRenderer)
+
+        self.audioTrack = nil
+        self.videoTrack = nil
+
         Task {
             await MainActor.run {
                 subscribeState = .disconnected
             }
         }
 
-        setAudio(false)
-        setVideo(false)
-
-        guard case .connected = subscribeState else {
-            return false
-        }
-        await subscriptionManager.stopRender(of: videoTrack, on: subscriptionVideoRenderer)
         return success
     }
 
