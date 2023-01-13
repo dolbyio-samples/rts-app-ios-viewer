@@ -10,7 +10,7 @@ public struct IconButton: View {
     public var focusedBackgroundColor: Color?
     public var action: () -> Void
 
-    @Environment(\.isFocused) private var isFocused: Bool
+    @FocusState private var isFocused: Bool
     private var theme: Theme = ThemeManager.shared.theme
 
     public init(
@@ -32,6 +32,7 @@ public struct IconButton: View {
                 tintColor: _tintColor
             )
         }
+        .focused($isFocused)
         .buttonStyle(
             ClearButtonStyle(isFocused: isFocused, focusedBackgroundColor: _focusedBackgroundColor)
         )
