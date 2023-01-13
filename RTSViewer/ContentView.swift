@@ -4,7 +4,6 @@
 //
 
 import SwiftUI
-import RTSComponentKit
 
 struct ContentView: View {
 
@@ -13,7 +12,5 @@ struct ContentView: View {
             StreamDetailInputScreen()
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .preferredColorScheme(.dark)
-        .environmentObject(RTSDataStore())
     }
 }

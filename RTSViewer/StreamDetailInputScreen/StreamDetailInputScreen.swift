@@ -12,6 +12,7 @@ struct StreamDetailInputScreen: View {
     @State private var streamName: String = ""
     @State private var accountID: String = ""
     @State private var isShowingStreamingView: Bool = false
+    @State private var isShowingRecentStreams: Bool = false
 
     var body: some View {
         BackgroundContainerView {
@@ -29,7 +30,12 @@ struct StreamDetailInputScreen: View {
                 .hidden()
 
                 VStack {
-                    StreamDetailInputBox(streamName: $streamName, accountID: $accountID, isShowingStreamingView: $isShowingStreamingView)
+                    StreamDetailInputBox(
+                        streamName: $streamName,
+                        accountID: $accountID,
+                        isShowingStreamingView: $isShowingStreamingView,
+                        isShowingRecentStreams: $isShowingRecentStreams
+                    )
 
                     Spacer()
                     Text(
@@ -40,6 +46,13 @@ struct StreamDetailInputScreen: View {
                         )
                     )
                     .padding(.bottom, Layout.spacing3x)
+                }
+                .sheet(isPresented: $isShowingRecentStreams) {
+                    RecentStreamsScreen(
+                        streamName: $streamName,
+                        accountID: $accountID,
+                        isShowingRecentStreams: $isShowingRecentStreams
+                    )
                 }
             }
         }
@@ -52,15 +65,17 @@ private struct StreamDetailInputBox: View {
     @Binding private var streamName: String
     @Binding private var accountID: String
     @Binding private var isShowingStreamingView: Bool
+    @Binding private var isShowingRecentStreams: Bool
 
     @EnvironmentObject private var dataStore: RTSDataStore
 
     @State private var showingAlert = false
 
-    init(streamName: Binding<String>, accountID: Binding<String>, isShowingStreamingView: Binding<Bool>) {
+    init(streamName: Binding<String>, accountID: Binding<String>, isShowingStreamingView: Binding<Bool>, isShowingRecentStreams: Binding<Bool>) {
         self._streamName = streamName
         self._accountID = accountID
         self._isShowingStreamingView = isShowingStreamingView
+        self._isShowingRecentStreams = isShowingRecentStreams
     }
 
     var body: some View {
@@ -115,6 +130,13 @@ private struct StreamDetailInputBox: View {
                             showingAlert = !success
                             isShowingStreamingView = success
                         }
+
+                    DolbyIOUIKit.Button(
+                        action: {
+                            isShowingRecentStreams = true
+                        },
+                        text: "stream-detail-input.recent-streams.button"
+                    )
                 }
                 .alert("stream-detail-input.credentials-error.labal", isPresented: $showingAlert) { }
 

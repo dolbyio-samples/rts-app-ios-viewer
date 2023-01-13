@@ -7,7 +7,7 @@ import DolbyIOUIKit
 
 public struct SubscribeButton: View {
     @State private var buttonState: DolbyIOUIKit.Button.ButtonState = .default
-    @ObservedObject private var viewModel: SubscribeButtonViewModel
+    @ObservedObject private var dataStore: RTSDataStore
 
     public var text: LocalizedStringKey
     public var streamName: String
@@ -20,15 +20,14 @@ public struct SubscribeButton: View {
         self.streamName = streamName
         self.accountID = accountID
         self.completion = completion
-        self.viewModel = SubscribeButtonViewModel(dataStore: dataStore)
+        self.dataStore = dataStore
     }
 
     public var body: some View {
         Button(
             action: {
                 Task {
-                    let success = await viewModel
-                        .subscribe(streamName: streamName, accountID: accountID)
+                    let success = await dataStore.connect(streamName: streamName, accountID: accountID)
                     await MainActor.run {
                         completion(success)
                     }
