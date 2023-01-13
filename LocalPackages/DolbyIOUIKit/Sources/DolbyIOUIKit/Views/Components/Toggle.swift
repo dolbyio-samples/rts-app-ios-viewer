@@ -9,7 +9,7 @@ public struct Toggle: View {
     public var text: LocalizedStringKey
     @Binding public var isOn: Bool
 
-    @Environment(\.isFocused) private var isFocused: Bool
+    @FocusState private var isFocused: Bool
     private var theme: Theme = ThemeManager.shared.theme
 
     public init(text: LocalizedStringKey, isOn: Binding<Bool>) {
@@ -29,6 +29,7 @@ public struct Toggle: View {
                 .focusable()
             #endif
         }
+        .focused($isFocused)
         .buttonStyle(
             ClearButtonStyle(isFocused: isFocused, focusedBackgroundColor: focusedBackgroundColor)
         )
