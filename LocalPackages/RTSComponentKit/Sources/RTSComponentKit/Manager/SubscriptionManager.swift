@@ -67,6 +67,10 @@ public final class SubscriptionManager: ObservableObject {
     }
 
     public func connect(streamName: String, accountID: String) async -> Bool {
+        guard streamName.count > 0, accountID.count > 0 else {
+            return false
+        }
+
         let task = { [weak self] in
             guard let self = self, let subscriber = self.makeSubscriber() else {
                 return

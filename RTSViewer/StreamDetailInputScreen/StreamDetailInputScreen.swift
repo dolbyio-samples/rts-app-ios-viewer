@@ -57,6 +57,8 @@ private struct StreamDetailInputBox: View {
 
     @EnvironmentObject private var dataStore: RTSDataStore
 
+    @State private var showingAlert = false
+
     init(streamName: Binding<String>, accountID: Binding<String>, isShowingStreamingView: Binding<Bool>) {
         self._streamName = streamName
         self._accountID = accountID
@@ -96,9 +98,15 @@ private struct StreamDetailInputBox: View {
                 VStack(spacing: Layout.spacing3x) {
 
                     TextField("stream-detail-input.streamName.placeholder.label", text: $streamName)
+                        .onReceive(streamName.publisher) { _ in
+                            streamName = String(streamName.prefix(64))
+                        }
                         .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
 
                     TextField("stream-detail-input.accountId.placeholder.label", text: $accountID)
+                        .onReceive(accountID.publisher) { _ in
+                            accountID = String(accountID.prefix(64))
+                        }
                         .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
 
                     RTSComponentKit.SubscribeButton(
@@ -106,9 +114,11 @@ private struct StreamDetailInputBox: View {
                         streamName: streamName,
                         accountID: accountID,
                         dataStore: dataStore) { success in
+                            showingAlert = !success
                             isShowingStreamingView = success
                         }
                 }
+                .alert("stream-detail-input.credentials-error.labal", isPresented: $showingAlert) { }
 
                 Spacer()
                     .frame(height: Layout.spacing12x)
