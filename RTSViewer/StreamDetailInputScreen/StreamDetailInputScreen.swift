@@ -14,39 +14,37 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingStreamingView: Bool = false
 
     var body: some View {
-        NavigationView {
-            BackgroundContainerView {
-                ZStack {
+        BackgroundContainerView {
+            ZStack {
 
-                    /*
-                     NavigationLink - Adds an unnecessary padding across its containing view -
-                     so screen navigations are not visually rendered - but only used for programmatic navigation
-                     - in this case - controlled by the Binded `Bool` value.
-                     */
+                /*
+                 NavigationLink - Adds an unnecessary padding across its containing view -
+                 so screen navigations are not visually rendered - but only used for programmatic navigation
+                 - in this case - controlled by the Binded `Bool` value.
+                 */
 
-                    NavigationLink(destination: StreamingScreen(), isActive: $isShowingStreamingView) {
-                        EmptyView()
-                    }
-                    .hidden()
+                NavigationLink(destination: StreamingScreen(), isActive: $isShowingStreamingView) {
+                    EmptyView()
+                }
+                .hidden()
 
-                    VStack {
-                        StreamDetailInputBox(streamName: $streamName, accountID: $accountID, isShowingStreamingView: $isShowingStreamingView)
+                VStack {
+                    StreamDetailInputBox(streamName: $streamName, accountID: $accountID, isShowingStreamingView: $isShowingStreamingView)
 
-                        Spacer()
-                        Text(
-                            text: "stream-detail-input.footnote.label",
-                            fontAsset: .avenirNextRegular(
-                                size: FontSize.footnote,
-                                style: .footnote
-                            )
+                    Spacer()
+                    Text(
+                        text: "stream-detail-input.footnote.label",
+                        fontAsset: .avenirNextRegular(
+                            size: FontSize.footnote,
+                            style: .footnote
                         )
-                        .padding(.bottom, Layout.spacing3x)
-                    }
+                    )
+                    .padding(.bottom, Layout.spacing3x)
                 }
             }
-            .navigationHeaderView()
-            .navigationBarHidden(true)
         }
+        .navigationHeaderView()
+        .navigationBarHidden(true)
     }
 }
 
