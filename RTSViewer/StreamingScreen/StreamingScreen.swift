@@ -23,90 +23,88 @@ struct StreamingScreen: View {
     @State private var showStats = false
 
     var body: some View {
-        NavigationView {
-            BackgroundContainerView {
-                ZStack {
-                    VideoRendererView(uiView: dataStore.subscriptionView())
+        BackgroundContainerView {
+            ZStack {
+                VideoRendererView(uiView: dataStore.subscriptionView())
 
-                    VStack {}
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black)
-                        .opacity(isStreamActive ? 0.0 : 0.8)
+                VStack {}
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black)
+                    .opacity(isStreamActive ? 0.0 : 0.8)
 
-                    if showLive {
-                        VStack {
-                            Spacer().frame(height: Layout.spacing1x)
-                            HStack {
-                                Text(text: "stream.live.label", fontAsset: .avenirNextDemiBold(
-                                    size: FontSize.largeTitle,
-                                    style: .largeTitle
-                                    )
-                                ).padding()
-                                .background(.red)
-                                Spacer().frame(width: Layout.spacing1x)
-                            }.frame(maxWidth: .infinity, alignment: .trailing)
-                        }.frame(maxHeight: .infinity, alignment: .top)
-                    }
-
-                    if showSettings {
-                        SettingsView(settingsView: $showSettings, liveIndicator: $showLive, statsView: $showStats)
-                    }
-
+                if showLive {
                     VStack {
+                        Spacer().frame(height: Layout.spacing1x)
                         HStack {
-                            IconButton(name: .settings, tintColor: .white) {
-                                showSettings = !showSettings
-                            }
+                            Text(text: "stream.live.label", fontAsset: .avenirNextDemiBold(
+                                size: FontSize.largeTitle,
+                                style: .largeTitle
+                            )
+                            ).padding()
+                                .background(.red)
                             Spacer().frame(width: Layout.spacing1x)
                         }.frame(maxWidth: .infinity, alignment: .trailing)
-                    }.frame(maxHeight: .infinity, alignment: .bottom)
+                    }.frame(maxHeight: .infinity, alignment: .top)
+                }
 
-                    if !isStreamActive {
-                        VStack {
-                            Text(
-                                text: "stream.offline.title.label",
-                                fontAsset: .avenirNextDemiBold(
-                                    size: FontSize.largeTitle,
-                                    style: .largeTitle
-                                )
+                if showSettings {
+                    SettingsView(settingsView: $showSettings, liveIndicator: $showLive, statsView: $showStats)
+                }
+
+                VStack {
+                    HStack {
+                        IconButton(name: .settings, tintColor: .white) {
+                            showSettings = !showSettings
+                        }
+                        Spacer().frame(width: Layout.spacing1x)
+                    }.frame(maxWidth: .infinity, alignment: .trailing)
+                }.frame(maxHeight: .infinity, alignment: .bottom)
+
+                if !isStreamActive {
+                    VStack {
+                        Text(
+                            text: "stream.offline.title.label",
+                            fontAsset: .avenirNextDemiBold(
+                                size: FontSize.largeTitle,
+                                style: .largeTitle
                             )
-                            Text(
-                                text: "stream.offline.subtitle.label",
-                                fontAsset: .avenirNextRegular(
-                                    size: FontSize.title3,
-                                    style: .title3
-                                )
+                        )
+                        Text(
+                            text: "stream.offline.subtitle.label",
+                            fontAsset: .avenirNextRegular(
+                                size: FontSize.title3,
+                                style: .title3
                             )
-                        }
+                        )
                     }
                 }
-                .onReceive(dataStore.$subscribeState) { subscribeState in
-                    Task {
-                        switch subscribeState {
-                        case .connected, .streamInactive:
-                            _ = await dataStore.startSubscribe()
-                        default:
-                            // No-op
-                            break
-                        }
+            }
+            .onReceive(dataStore.$subscribeState) { subscribeState in
+                Task {
+                    switch subscribeState {
+                    case .connected, .streamInactive:
+                        _ = await dataStore.startSubscribe()
+                    default:
+                        // No-op
+                        break
                     }
                 }
-                .onReceive(timer) { _ in
-                    Task {
-                        switch dataStore.subscribeState {
-                        case .error:
-                            _ = await dataStore.connect()
-                        default:
-                            // No-op
-                            break
-                        }
+            }
+            .onReceive(timer) { _ in
+                Task {
+                    switch dataStore.subscribeState {
+                    case .error:
+                        _ = await dataStore.connect()
+                    default:
+                        // No-op
+                        break
                     }
                 }
-                .onDisappear {
-                    Task {
-                        _ = await dataStore.stopSubscribe()
-                        timer.upstream.connect().cancel()
-                    }
+            }
+            .onDisappear {
+                Task {
+                    _ = await dataStore.stopSubscribe()
+                    timer.upstream.connect().cancel()
                 }
             }
         }
@@ -157,7 +155,7 @@ private struct SettingsView: View {
                     VStack {}.frame(height: 50)
                 }.cornerRadius(Layout.cornerRadius6x)
             }.padding()
-            .frame(maxWidth: 600, maxHeight: 450, alignment: .bottom)
+                .frame(maxWidth: 600, maxHeight: 450, alignment: .bottom)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
     }
 }
