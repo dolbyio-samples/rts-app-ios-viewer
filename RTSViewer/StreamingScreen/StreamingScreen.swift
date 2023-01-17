@@ -51,14 +51,16 @@ struct StreamingScreen: View {
                     SettingsView(settingsView: $showSettings, liveIndicator: $showLive, statsView: $showStats)
                 }
 
-                VStack {
-                    HStack {
-                        IconButton(name: .settings, tintColor: .white) {
-                            showSettings = !showSettings
-                        }
-                        Spacer().frame(width: Layout.spacing1x)
-                    }.frame(maxWidth: .infinity, alignment: .trailing)
-                }.frame(maxHeight: .infinity, alignment: .bottom)
+                if isStreamActive {
+                    VStack {
+                        HStack {
+                            IconButton(name: .settings, tintColor: .white) {
+                                showSettings = !showSettings
+                            }
+                            Spacer().frame(width: Layout.spacing1x)
+                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                    }.frame(maxHeight: .infinity, alignment: .bottom)
+                }
 
                 if !isStreamActive {
                     VStack {
