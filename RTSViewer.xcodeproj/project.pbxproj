@@ -32,6 +32,8 @@
 		E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844ABEB296DA5B20067B78C /* StreamingScreen.swift */; };
 		E8575E9929527B420070F53E /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
 		E8649BE429527C9F00309BF7 /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
+		E8D1947B29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */; };
+		E8D1947C29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +73,7 @@
 		E8649BF0295284F400309BF7 /* TVOSDebugSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TVOSDebugSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BF1295284F400309BF7 /* TVOSReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TVOSReleaseSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BF2295299FB00309BF7 /* fastlane */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fastlane; sourceTree = "<group>"; };
+		E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +130,7 @@
 		3FE90C1A26B2AF4200B206A3 /* RTSViewer */ = {
 			isa = PBXGroup;
 			children = (
+				E8D1947929717D050080C4E0 /* RecentStreamsScreen */,
 				E844ABEA296DA4C60067B78C /* StreamingScreen */,
 				E82A0C19296D0F04007214B8 /* StreamDetailInputScreen */,
 				E82A0C1B296D0F04007214B8 /* Resources */,
@@ -209,6 +213,14 @@
 				E8649BF1295284F400309BF7 /* TVOSReleaseSettings.xcconfig */,
 			);
 			path = Configuration;
+			sourceTree = "<group>";
+		};
+		E8D1947929717D050080C4E0 /* RecentStreamsScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */,
+			);
+			path = RecentStreamsScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -370,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8D1947B29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */,
 				E844ABEC296DA5B20067B78C /* StreamingScreen.swift in Sources */,
 				3FE90C1E26B2AF4200B206A3 /* ContentView.swift in Sources */,
 				E82A0C1D296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,
@@ -381,6 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8D1947C29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */,
 				E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
 				E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,

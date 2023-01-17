@@ -37,7 +37,7 @@ public struct Button: View {
         rightIcon: ImageAsset? = nil,
         mode: Mode = .primary,
         danger: Bool = false,
-        buttonState: Binding<ButtonState>
+        buttonState: Binding<ButtonState> = .constant(.default)
     ) {
         self.action = action
         self.text = text

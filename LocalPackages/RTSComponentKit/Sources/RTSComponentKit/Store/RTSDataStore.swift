@@ -26,27 +26,27 @@ public final class RTSDataStore: ObservableObject {
     @Published public private(set) var subscribeState: SubscribeState = .disconnected
     @Published public private(set) var isSubscribeAudioEnabled: Bool = true
     @Published public private(set) var isSubscribeVideoEnabled: Bool = true
+    public let persistenceManager: PersistenceManager
 
     private let subscriptionManager: SubscriptionManager
-    private let listener: MCSubscriberListener
     private let subscriptionVideoRenderer: MCIosVideoRenderer
     private var audioTrack: MCAudioTrack?
     private var videoTrack: MCVideoTrack?
 
-    init(subscriptionManager: SubscriptionManager, listener: MCSubscriberListener, subscriptionVideoRenderer: MCIosVideoRenderer) {
+    init(subscriptionManager: SubscriptionManager, subscriptionVideoRenderer: MCIosVideoRenderer, persistenceManager: PersistenceManager) {
         self.subscriptionManager = subscriptionManager
-        self.listener = listener
         self.subscriptionVideoRenderer = subscriptionVideoRenderer
+        self.persistenceManager = persistenceManager
+        self.subscriptionManager.delegate = self
     }
 
     public convenience init() {
-        let listener = SubscriptionListener()
         self.init(
-            subscriptionManager: SubscriptionManager(listener: listener),
-            listener: listener,
-            subscriptionVideoRenderer: MCIosVideoRenderer(colorRangeExpansion: false)
+            subscriptionManager: SubscriptionManager(),
+            subscriptionVideoRenderer: MCIosVideoRenderer(),
+            persistenceManager: PersistenceManager()
         )
-        listener.delegate = self
+        self.subscriptionManager.delegate = self
     }
 
     // MARK: Subscribe API methods
@@ -99,7 +99,13 @@ public final class RTSDataStore: ObservableObject {
     }
 
     public func connect(streamName: String, accountID: String) async -> Bool {
-        await subscriptionManager.connect(streamName: streamName, accountID: accountID)
+        let success = await subscriptionManager.connect(streamName: streamName, accountID: accountID)
+
+        if success {
+            persistenceManager.saveStream(streamName, accountID: accountID)
+        }
+
+        return success
     }
 
     public func connect() async -> Bool {
@@ -135,9 +141,10 @@ public final class RTSDataStore: ObservableObject {
     }
 }
 
-// MARK: SubscriptionListenerDelegate implementation
+// MARK: SubscriptionManagerDelegate implementation
 
-extension RTSDataStore: SubscriptionListenerDelegate {
+extension RTSDataStore: SubscriptionManagerDelegate {
+
     func onStreamActive() {
         Task {
             await MainActor.run {
