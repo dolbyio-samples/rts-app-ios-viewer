@@ -15,6 +15,10 @@ enum StreamType: String, CaseIterable, Identifiable {
 struct StreamingScreen: View {
 
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    private var isNetworkConnected: Bool {
+        let monitor = RTSComponentKit.NetworkMonitor.shared
+        return monitor.isReachable
+    }
 
     @EnvironmentObject private var dataStore: RTSDataStore
     @State private var volume = 0.5
@@ -63,21 +67,32 @@ struct StreamingScreen: View {
                 }
 
                 if !isStreamActive {
-                    VStack {
+                    if isNetworkConnected {
+                        VStack {
+                            Text(
+                                text: "stream.offline.title.label",
+                                fontAsset: .avenirNextDemiBold(
+                                    size: FontSize.largeTitle,
+                                    style: .largeTitle
+                                )
+                            )
+                            Text(
+                                text: "stream.offline.subtitle.label",
+                                fontAsset: .avenirNextRegular(
+                                    size: FontSize.title3,
+                                    style: .title3
+                                )
+                            )
+                        }
+                    } else {
                         Text(
-                            text: "stream.offline.title.label",
+                            text: "stream.network.disconnected.label",
                             fontAsset: .avenirNextDemiBold(
                                 size: FontSize.largeTitle,
                                 style: .largeTitle
                             )
                         )
-                        Text(
-                            text: "stream.offline.subtitle.label",
-                            fontAsset: .avenirNextRegular(
-                                size: FontSize.title3,
-                                style: .title3
-                            )
-                        )
+
                     }
                 }
             }
