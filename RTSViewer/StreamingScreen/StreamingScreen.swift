@@ -81,6 +81,7 @@ struct StreamingScreen: View {
                     }
                 }
             }
+            .edgesIgnoringSafeArea(.all)
             .onReceive(dataStore.$subscribeState) { subscribeState in
                 Task {
                     switch subscribeState {
