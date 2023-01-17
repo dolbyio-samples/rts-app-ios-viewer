@@ -7,12 +7,20 @@ import DolbyIOUIKit
 import SwiftUI
 import RTSComponentKit
 
+enum StreamType: String, CaseIterable, Identifiable {
+    case auto, high, medium, low
+    var id: Self { self }
+}
+
 struct StreamingScreen: View {
 
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     @EnvironmentObject private var dataStore: RTSDataStore
     @State private var volume = 0.5
+    @State private var showSettings = false
+    @State private var showLive = false
+    @State private var showStats = false
 
     var body: some View {
         BackgroundContainerView {
@@ -24,13 +32,35 @@ struct StreamingScreen: View {
                     .background(Color.black)
                     .opacity(isStreamActive ? 0.0 : 0.8)
 
-                VStack {
-                    HStack {
-                        IconButton(name: .settings, tintColor: .white) {
-                        }
-                        Spacer().frame(width: Layout.spacing1x)
-                    }.frame(maxWidth: .infinity, alignment: .trailing)
-                }.frame(maxHeight: .infinity, alignment: .bottom)
+                if showLive {
+                    VStack {
+                        Spacer().frame(height: Layout.spacing1x)
+                        HStack {
+                            Text(text: "stream.live.label", fontAsset: .avenirNextDemiBold(
+                                size: FontSize.largeTitle,
+                                style: .largeTitle
+                            )
+                            ).padding()
+                                .background(.red)
+                            Spacer().frame(width: Layout.spacing1x)
+                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                    }.frame(maxHeight: .infinity, alignment: .top)
+                }
+
+                if showSettings {
+                    SettingsView(settingsView: $showSettings, liveIndicator: $showLive, statsView: $showStats)
+                }
+
+                if isStreamActive {
+                    VStack {
+                        HStack {
+                            IconButton(name: .settings, tintColor: .white) {
+                                showSettings = !showSettings
+                            }
+                            Spacer().frame(width: Layout.spacing1x)
+                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                    }.frame(maxHeight: .infinity, alignment: .bottom)
+                }
 
                 if !isStreamActive {
                     VStack {
@@ -85,6 +115,51 @@ struct StreamingScreen: View {
 
     private var isStreamActive: Bool {
         return dataStore.subscribeState == .streamActive
+    }
+}
+
+private struct SettingsView: View {
+    @Binding var settingsView: Bool
+    @Binding var liveIndicator: Bool
+    @Binding var statsView: Bool
+
+    @State private var selectedFlavor: StreamType = .auto
+
+    var body: some View {
+        VStack {
+            VStack {
+                VStack {
+                    List {
+                        HStack {
+                            IconButton(name: .close, tintColor: .white) {
+                                settingsView = false
+                            }
+                            Spacer().frame(width: Layout.spacing1x)
+                        }.frame(maxWidth: .infinity, alignment: .trailing)
+
+                        if #available(tvOS 16.0, *) {
+                            Picker("stream.simulcast.label", selection: $selectedFlavor) {
+                                ForEach(StreamType.allCases, id: \.self) { item in
+                                    Text(item.rawValue.capitalized)
+                                }
+                            }.pickerStyle(.navigationLink)
+                        } else {
+                            Picker("stream.simulcast.label", selection: $selectedFlavor) {
+                                ForEach(StreamType.allCases, id: \.self) { item in
+                                    Text(item.rawValue.capitalized)
+                                }
+                            }.pickerStyle(.inline)
+                        }
+
+                        Toggle("stream.media-stats.label", isOn: $statsView)
+                        Toggle("stream.live-indicator.label", isOn: $liveIndicator)
+                    }.background(Color(uiColor: UIColor.Neutral.neutral800))
+
+                    VStack {}.frame(height: 50)
+                }.cornerRadius(Layout.cornerRadius6x)
+            }.padding()
+                .frame(maxWidth: 600, maxHeight: 450, alignment: .bottom)
+        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
     }
 }
 
