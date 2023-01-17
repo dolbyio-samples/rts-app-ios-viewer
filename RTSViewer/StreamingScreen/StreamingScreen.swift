@@ -6,6 +6,7 @@
 import DolbyIOUIKit
 import SwiftUI
 import RTSComponentKit
+import Network
 
 enum StreamType: String, CaseIterable, Identifiable {
     case auto, high, medium, low
@@ -21,6 +22,7 @@ struct StreamingScreen: View {
     @State private var showSettings = false
     @State private var showLive = false
     @State private var showStats = false
+    @State private var isNetworkConnected: Bool = false
 
     var body: some View {
         BackgroundContainerView {
@@ -63,22 +65,39 @@ struct StreamingScreen: View {
                 }
 
                 if !isStreamActive {
-                    VStack {
+                    if isNetworkConnected {
+                        VStack {
+                            Text(
+                                text: "stream.offline.title.label",
+                                fontAsset: .avenirNextDemiBold(
+                                    size: FontSize.largeTitle,
+                                    style: .largeTitle
+                                )
+                            )
+                            Text(
+                                text: "stream.offline.subtitle.label",
+                                fontAsset: .avenirNextRegular(
+                                    size: FontSize.title3,
+                                    style: .title3
+                                )
+                            )
+                        }
+                    } else {
                         Text(
-                            text: "stream.offline.title.label",
+                            text: "stream.network.disconnected.label",
                             fontAsset: .avenirNextDemiBold(
                                 size: FontSize.largeTitle,
                                 style: .largeTitle
                             )
                         )
-                        Text(
-                            text: "stream.offline.subtitle.label",
-                            fontAsset: .avenirNextRegular(
-                                size: FontSize.title3,
-                                style: .title3
-                            )
-                        )
+
                     }
+                }
+            }
+            .task {
+                let monitor = RTSComponentKit.NetworkMonitor.shared
+                monitor.startMonitoring { path in
+                    isNetworkConnected = path.status == .satisfied
                 }
             }
             .edgesIgnoringSafeArea(.all)
