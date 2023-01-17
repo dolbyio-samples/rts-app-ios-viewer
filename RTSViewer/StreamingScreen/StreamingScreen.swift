@@ -6,6 +6,7 @@
 import DolbyIOUIKit
 import SwiftUI
 import RTSComponentKit
+import Network
 
 enum StreamType: String, CaseIterable, Identifiable {
     case auto, high, medium, low
@@ -15,16 +16,13 @@ enum StreamType: String, CaseIterable, Identifiable {
 struct StreamingScreen: View {
 
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
-    private var isNetworkConnected: Bool {
-        let monitor = RTSComponentKit.NetworkMonitor.shared
-        return monitor.isReachable
-    }
 
     @EnvironmentObject private var dataStore: RTSDataStore
     @State private var volume = 0.5
     @State private var showSettings = false
     @State private var showLive = false
     @State private var showStats = false
+    @State private var isNetworkConnected: Bool = false
 
     var body: some View {
         BackgroundContainerView {
@@ -94,6 +92,12 @@ struct StreamingScreen: View {
                         )
 
                     }
+                }
+            }
+            .task {
+                let monitor = RTSComponentKit.NetworkMonitor.shared
+                monitor.startMonitoring { path in
+                    isNetworkConnected = path.status == .satisfied
                 }
             }
             .edgesIgnoringSafeArea(.all)

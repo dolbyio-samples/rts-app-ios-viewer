@@ -15,8 +15,5 @@ struct ContentView: View {
         .navigationViewStyle(StackNavigationViewStyle())
         .preferredColorScheme(.dark)
         .environmentObject(RTSDataStore())
-        .task {
-            RTSComponentKit.NetworkMonitor.shared.startMonitoring()
-        }
     }
 }
