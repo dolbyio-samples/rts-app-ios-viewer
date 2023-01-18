@@ -73,6 +73,8 @@ private struct StreamDetailInputBox: View {
     @State private var showingAlert = false
     @State private var showingClearStreamsSuccessAlert = false
 
+    private let streamDetails: FetchRequest<StreamDetail> = FetchRequest<StreamDetail>(fetchRequest: PersistenceManager.recentStreams)
+
     init(streamName: Binding<String>, accountID: Binding<String>, isShowingStreamingView: Binding<Bool>, isShowingRecentStreams: Binding<Bool>) {
         self._streamName = streamName
         self._accountID = accountID
@@ -124,13 +126,15 @@ private struct StreamDetailInputBox: View {
                         }
                         .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
 
-                    DolbyIOUIKit.Button(
-                        action: {
-                            isShowingRecentStreams = true
-                        },
-                        text: "stream-detail-input.recent-streams.button",
-                        mode: .secondary
-                    )
+                    if streamDetails.wrappedValue.count > 0 {
+                        DolbyIOUIKit.Button(
+                            action: {
+                                isShowingRecentStreams = true
+                            },
+                            text: "stream-detail-input.recent-streams.button",
+                            mode: .secondary
+                        )
+                    }
 
                     RTSComponentKit.SubscribeButton(
                         text: "stream-detail-input.play.button",
@@ -144,15 +148,17 @@ private struct StreamDetailInputBox: View {
                             }
                         }
 
-                    DolbyIOUIKit.Button(
-                        action: {
-                            persistenceManager.clearAllStreams()
-                            showingClearStreamsSuccessAlert = true
-                        },
-                        text: "stream-detail-input.clear-stream-history.button",
-                        mode: .secondary,
-                        danger: true
-                    )
+                    if streamDetails.wrappedValue.count > 0 {
+                        DolbyIOUIKit.Button(
+                            action: {
+                                persistenceManager.clearAllStreams()
+                                showingClearStreamsSuccessAlert = true
+                            },
+                            text: "stream-detail-input.clear-stream-history.button",
+                            mode: .secondary,
+                            danger: true
+                        )
+                    }
                 }
                 .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
                 .alert("stream-detail-input.clear-streams-successful.label", isPresented: $showingClearStreamsSuccessAlert) { }

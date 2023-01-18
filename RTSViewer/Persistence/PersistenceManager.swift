@@ -48,9 +48,9 @@ final class PersistenceManager: ObservableObject {
         saveChanges()
     }
 
-    func saveStream(_ name: String, accountID: String) {
+    func saveStream(_ streamName: String, accountID: String) {
         let request: NSFetchRequest<StreamDetail> = StreamDetail.fetchRequest()
-        request.predicate = NSPredicate(format: "name == %@ && accountID == %@", name, accountID)
+        request.predicate = NSPredicate(format: "streamName == %@ && accountID == %@", streamName, accountID)
 
         do {
             let fetchedResults = try context.fetch(request)
@@ -61,7 +61,7 @@ final class PersistenceManager: ObservableObject {
             } else {
                 streamDetail = StreamDetail(context: context)
                 streamDetail.accountID = accountID
-                streamDetail.name = name
+                streamDetail.streamName = streamName
                 streamDetail.lastUsedDate = Date()
 
                 // Delete streams that are older and exceeding the maximum allowed count

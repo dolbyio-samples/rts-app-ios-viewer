@@ -12,13 +12,13 @@ struct RecentStreamsScreen: View {
     @Binding private var isShowingRecentStreams: Bool
     @EnvironmentObject private var dataStore: RTSDataStore
 
+    private let streamDetails: FetchRequest<StreamDetail> = FetchRequest<StreamDetail>(fetchRequest: PersistenceManager.recentStreams)
+
     init(streamName: Binding<String>, accountID: Binding<String>, isShowingRecentStreams: Binding<Bool>) {
         self._streamName = streamName
         self._accountID = accountID
         self._isShowingRecentStreams = isShowingRecentStreams
     }
-
-    private let streamDetails: FetchRequest<StreamDetail> = FetchRequest<StreamDetail>(fetchRequest: PersistenceManager.recentStreams)
 
     var body: some View {
         BackgroundContainerView {
@@ -34,7 +34,7 @@ struct RecentStreamsScreen: View {
 
                     List {
                         ForEach(streamDetails.wrappedValue) { streamDetail in
-                            if let name = streamDetail.name, let accountID = streamDetail.accountID {
+                            if let name = streamDetail.streamName, let accountID = streamDetail.accountID {
                                 SwiftUI.Button.init {
                                     self.streamName = name
                                     self.accountID = accountID
