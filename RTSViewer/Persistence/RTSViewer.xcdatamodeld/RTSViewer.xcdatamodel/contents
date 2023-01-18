@@ -3,6 +3,6 @@
     <entity name="StreamDetail" representedClassName="StreamDetail" syncable="YES" codeGenerationType="class">
         <attribute name="accountID" optional="YES" attributeType="String"/>
         <attribute name="lastUsedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="streamName" optional="YES" attributeType="String"/>
     </entity>
 </model>

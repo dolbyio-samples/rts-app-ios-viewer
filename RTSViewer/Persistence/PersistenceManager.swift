@@ -5,14 +5,14 @@
 import CoreData
 import Foundation
 
-public final class PersistenceManager: ObservableObject {
+final class PersistenceManager: ObservableObject {
 
     enum Constants {
         static let maximumAllowedStreams = 25
     }
 
     static var managedObjectModel: NSManagedObjectModel = {
-        guard let url = Bundle.module.url(forResource: "RTSViewer", withExtension: "momd") else {
+        guard let url = Bundle.main.url(forResource: "RTSViewer", withExtension: "momd") else {
             fatalError("Failed to locate momd file for TodoListsSwiftUI")
         }
         guard let model = NSManagedObjectModel(contentsOf: url) else {
@@ -21,10 +21,10 @@ public final class PersistenceManager: ObservableObject {
         return model
     }()
 
-    public let container: NSPersistentContainer
-    public var context: NSManagedObjectContext { container.viewContext }
+    let container: NSPersistentContainer
+    var context: NSManagedObjectContext { container.viewContext }
 
-    public init() {
+    init() {
         container = NSPersistentContainer(name: "RTSViewer", managedObjectModel: Self.managedObjectModel)
 
         container.loadPersistentStores { (_, error) in
@@ -34,7 +34,7 @@ public final class PersistenceManager: ObservableObject {
         }
     }
 
-    public static var recentStreams: NSFetchRequest<StreamDetail> = {
+    static var recentStreams: NSFetchRequest<StreamDetail> = {
         let request: NSFetchRequest<StreamDetail> = StreamDetail.fetchRequest()
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \StreamDetail.lastUsedDate, ascending: false)
@@ -43,14 +43,14 @@ public final class PersistenceManager: ObservableObject {
         return request
     }()
 
-    public func updateLastUsedDate(for streamDetail: StreamDetail) {
+    func updateLastUsedDate(for streamDetail: StreamDetail) {
         streamDetail.lastUsedDate = Date()
         saveChanges()
     }
 
-    public func saveStream(_ name: String, accountID: String) {
+    func saveStream(_ streamName: String, accountID: String) {
         let request: NSFetchRequest<StreamDetail> = StreamDetail.fetchRequest()
-        request.predicate = NSPredicate(format: "name == %@ && accountID == %@", name, accountID)
+        request.predicate = NSPredicate(format: "streamName == %@ && accountID == %@", streamName, accountID)
 
         do {
             let fetchedResults = try context.fetch(request)
@@ -61,7 +61,7 @@ public final class PersistenceManager: ObservableObject {
             } else {
                 streamDetail = StreamDetail(context: context)
                 streamDetail.accountID = accountID
-                streamDetail.name = name
+                streamDetail.streamName = streamName
                 streamDetail.lastUsedDate = Date()
 
                 // Delete streams that are older and exceeding the maximum allowed count
@@ -78,7 +78,18 @@ public final class PersistenceManager: ObservableObject {
         }
     }
 
-    public func saveChanges() {
+    func clearAllStreams() {
+        let request: NSFetchRequest<StreamDetail> = Self.recentStreams
+        do {
+            let allStreams = try context.fetch(request)
+            allStreams.forEach(context.delete)
+            saveChanges()
+        } catch {
+            print("Failed to fetch existing data - \(error.localizedDescription)")
+        }
+    }
+
+    func saveChanges() {
         if context.hasChanges {
             do {
                 try context.save()

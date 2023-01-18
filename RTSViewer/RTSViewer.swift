@@ -9,6 +9,8 @@ import RTSComponentKit
 struct RTSViewer: App {
 
     private let dataStore = RTSDataStore()
+    private let persistenceManager = PersistenceManager()
+
     @Environment(\.scenePhase) var scenePhase
 
     var body: some Scene {
@@ -16,13 +18,14 @@ struct RTSViewer: App {
             ContentView()
                 .preferredColorScheme(.dark)
                 .environmentObject(dataStore)
-                .environment(\.managedObjectContext, dataStore.persistenceManager.context)
+                .environmentObject(persistenceManager)
+                .environment(\.managedObjectContext, persistenceManager.context)
         }
         .onChange(of: scenePhase) { newScenePhase in
             guard newScenePhase == .background else {
                 return
             }
-            dataStore.persistenceManager.saveChanges()
+            persistenceManager.saveChanges()
         }
     }
 }
