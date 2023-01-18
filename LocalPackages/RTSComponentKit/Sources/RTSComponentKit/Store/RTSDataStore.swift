@@ -234,6 +234,9 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                      bytesReceived: Int(s.bytes_received),
                      totalSampleDuration: s.total_samples_duration,
                      codecId: s.codec_id as String?,
+                     jitter: s.jitter,
+                     packetsReceived: Double(s.packets_received),
+                     packetsLost: Double(s.packets_lost),
                      timestamp: Double(s.timestamp)
                  )
                  return statsInboundRtp
@@ -307,11 +310,13 @@ public struct StatsInboundRtp {
     public private(set) var bytesReceived: Int
     public private(set) var totalSampleDuration: Double
     public private(set) var codec: String?
+    public private(set) var jitter: Double
+    public private(set) var packetsReceived: Double
+    public private(set) var packetsLost: Double
     public private(set) var timestamp: Double
 
     public private(set) var isVideo: Bool
-    public private(set) var audioTotalReceived: Int?
-    init(roundTripTime: Double?, sid: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, timestamp: Double) {
+    init(roundTripTime: Double?, sid: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, jitter: Double, packetsReceived: Double, packetsLost: Double, timestamp: Double) {
         self.roundTripTime = roundTripTime
         self.sid = sid
         self.decoder = decoder
@@ -327,13 +332,17 @@ public struct StatsInboundRtp {
         self.bytesReceived = bytesReceived
         self.totalSampleDuration = totalSampleDuration
         self.codec = codecId
+
+        self.jitter = jitter
+        self.packetsReceived = packetsReceived
+        self.packetsLost = packetsLost
+
         self.timestamp = timestamp
 
         if sid.starts(with: "RTCInboundRTPVideoStream") {
             isVideo = true
         } else {
             isVideo = false
-            audioTotalReceived = bytesReceived
         }
 
         self.videoResolution = String(format: "%d x %d", frameWidth, frameHeight)
