@@ -68,8 +68,10 @@ private struct StreamDetailInputBox: View {
     @Binding private var isShowingRecentStreams: Bool
 
     @EnvironmentObject private var dataStore: RTSDataStore
+    @EnvironmentObject private var persistenceManager: PersistenceManager
 
     @State private var showingAlert = false
+    @State private var showingClearStreamsSuccessAlert = false
 
     init(streamName: Binding<String>, accountID: Binding<String>, isShowingStreamingView: Binding<Bool>, isShowingRecentStreams: Binding<Bool>) {
         self._streamName = streamName
@@ -122,6 +124,14 @@ private struct StreamDetailInputBox: View {
                         }
                         .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
 
+                    DolbyIOUIKit.Button(
+                        action: {
+                            isShowingRecentStreams = true
+                        },
+                        text: "stream-detail-input.recent-streams.button",
+                        mode: .secondary
+                    )
+
                     RTSComponentKit.SubscribeButton(
                         text: "stream-detail-input.play.button",
                         streamName: streamName,
@@ -129,16 +139,23 @@ private struct StreamDetailInputBox: View {
                         dataStore: dataStore) { success in
                             showingAlert = !success
                             isShowingStreamingView = success
+                            if success {
+                                persistenceManager.saveStream(streamName, accountID: accountID)
+                            }
                         }
 
                     DolbyIOUIKit.Button(
                         action: {
-                            isShowingRecentStreams = true
+                            persistenceManager.clearAllStreams()
+                            showingClearStreamsSuccessAlert = true
                         },
-                        text: "stream-detail-input.recent-streams.button"
+                        text: "stream-detail-input.clear-stream-history.button",
+                        mode: .secondary,
+                        danger: true
                     )
                 }
-                .alert("stream-detail-input.credentials-error.labal", isPresented: $showingAlert) { }
+                .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
+                .alert("stream-detail-input.clear-streams-successful.label", isPresented: $showingClearStreamsSuccessAlert) { }
 
                 Spacer()
                     .frame(height: Layout.spacing12x)

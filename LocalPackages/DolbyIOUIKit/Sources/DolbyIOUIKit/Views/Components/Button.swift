@@ -85,7 +85,7 @@ private extension Button {
         .buttonStyle(
             ClearButtonStyle(
                 isFocused: isFocused,
-                focusedBackgroundColor: hoverBackgroundColor
+                focusedBackgroundColor: .clear
             )
         )
 #else

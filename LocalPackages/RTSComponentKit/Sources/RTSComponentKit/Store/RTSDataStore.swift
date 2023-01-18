@@ -9,7 +9,12 @@ import SwiftUI
 
 public final class RTSDataStore: ObservableObject {
 
-    public enum SubscribeState: Equatable {
+    public enum SubscriptionError: Error, Equatable {
+        case subscribeError(reason: String)
+        case connectError(reason: String)
+    }
+
+    public enum State: Equatable {
         case streamInactive
         case streamActive
         case connected
@@ -18,98 +23,75 @@ public final class RTSDataStore: ObservableObject {
         case error(SubscriptionError)
     }
 
-    public enum SubscriptionError: Error, Equatable {
-        case subscribeError(reason: String)
-        case connectError(reason: String)
-    }
+    @Published public private(set) var subscribeState: State = .disconnected
+    @Published public private(set) var isAudioEnabled: Bool = true
+    @Published public private(set) var isVideoEnabled: Bool = true
 
-    @Published public private(set) var subscribeState: SubscribeState = .disconnected
-    @Published public private(set) var isSubscribeAudioEnabled: Bool = true
-    @Published public private(set) var isSubscribeVideoEnabled: Bool = true
-    public let persistenceManager: PersistenceManager
+    private let videoRenderer: MCIosVideoRenderer
+    private var subscriptionManager: SubscriptionManager!
 
-    private let subscriptionManager: SubscriptionManager
-    private let subscriptionVideoRenderer: MCIosVideoRenderer
+    private typealias StreamDetail = (streamName: String, accountID: String)
+    private var streamDetail: StreamDetail?
     private var audioTrack: MCAudioTrack?
     private var videoTrack: MCVideoTrack?
 
-    init(subscriptionManager: SubscriptionManager, subscriptionVideoRenderer: MCIosVideoRenderer, persistenceManager: PersistenceManager) {
+    init(subscriptionManager: SubscriptionManager, videoRenderer: MCIosVideoRenderer) {
         self.subscriptionManager = subscriptionManager
-        self.subscriptionVideoRenderer = subscriptionVideoRenderer
-        self.persistenceManager = persistenceManager
+        self.videoRenderer = videoRenderer
         self.subscriptionManager.delegate = self
     }
 
     public convenience init() {
         self.init(
             subscriptionManager: SubscriptionManager(),
-            subscriptionVideoRenderer: MCIosVideoRenderer(),
-            persistenceManager: PersistenceManager()
+            videoRenderer: MCIosVideoRenderer()
         )
         self.subscriptionManager.delegate = self
     }
 
     // MARK: Subscribe API methods
 
-    @discardableResult
-    public func toggleAudioState() -> Bool {
-        setAudio(!isSubscribeAudioEnabled)
+    public func toggleAudioState() {
+        setAudio(!isAudioEnabled)
     }
 
-    @discardableResult
-    public func setAudio(_ isEnabled: Bool) -> Bool {
-        switch subscribeState {
-        case .connected:
-            subscriptionManager.enableAudio(for: audioTrack, enable: isEnabled)
-            isSubscribeAudioEnabled = isEnabled
-            return true
-
-        default:
-            return false
+    public func setAudio(_ enable: Bool) {
+        audioTrack?.enable(enable)
+        Task {
+            await MainActor.run {
+                isAudioEnabled = enable
+            }
         }
     }
 
-    @discardableResult
-    public func toggleVideoState() -> Bool {
-        setVideo(!isSubscribeVideoEnabled)
+    public func toggleVideoState() {
+        setVideo(!isVideoEnabled)
     }
 
-    @discardableResult
-    public func setVideo(_ isEnabled: Bool) -> Bool {
-        switch subscribeState {
-        case .connected:
-            subscriptionManager.enableVideo(for: videoTrack, enable: isEnabled)
-            isSubscribeVideoEnabled = isEnabled
-            return true
-
-        default:
-            return false
+    public func setVideo(_ enable: Bool) {
+        videoTrack?.enable(enable)
+        Task {
+            await MainActor.run {
+                isVideoEnabled = enable
+            }
         }
     }
 
-    @discardableResult
-    public func setVolume(_ volume: Double) -> Bool {
-        guard
-            case .connected = subscribeState,
-            let audioTrack = audioTrack
-        else {
-            return false
-        }
-        return subscriptionManager.setAudioTrackVolume(volume, audioTrack: audioTrack)
-    }
-
-    public func connect(streamName: String, accountID: String) async -> Bool {
-        let success = await subscriptionManager.connect(streamName: streamName, accountID: accountID)
-
-        if success {
-            persistenceManager.saveStream(streamName, accountID: accountID)
-        }
-
-        return success
+    public func setVolume(_ volume: Double) {
+        audioTrack?.setVolume(volume)
     }
 
     public func connect() async -> Bool {
-        await subscriptionManager.connect()
+        guard let streamDetail = streamDetail else {
+            return false
+        }
+
+        return await connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
+    }
+
+    public func connect(streamName: String, accountID: String) async -> Bool {
+        self.streamDetail = (streamName: streamName, accountID: accountID)
+        return await subscriptionManager.connect(streamName: streamName, accountID: accountID)
     }
 
     public func startSubscribe() async -> Bool {
@@ -122,22 +104,18 @@ public final class RTSDataStore: ObservableObject {
         setAudio(false)
         setVideo(false)
 
-        await subscriptionManager.stopRender(of: videoTrack, on: subscriptionVideoRenderer)
+        audioTrack = nil
+        videoTrack = nil
 
-        self.audioTrack = nil
-        self.videoTrack = nil
+        videoTrack?.remove(videoRenderer)
 
-        Task {
-            await MainActor.run {
-                subscribeState = .disconnected
-            }
-        }
+        updateState(to: .disconnected)
 
         return success
     }
 
     public func subscriptionView() -> UIView {
-        subscriptionVideoRenderer.getView()
+        videoRenderer.getView()
     }
 }
 
@@ -145,96 +123,52 @@ public final class RTSDataStore: ObservableObject {
 
 extension RTSDataStore: SubscriptionManagerDelegate {
 
-    func onStreamActive() {
-        Task {
-            await MainActor.run {
-                subscribeState = .streamActive
-            }
-        }
+    public func onStreamActive() {
+        updateState(to: .streamActive)
     }
 
-    func onStreamInactive() {
-        Task {
-            await MainActor.run {
-                subscribeState = .streamInactive
-            }
-        }
+    public func onStreamInactive() {
+        updateState(to: .streamInactive)
     }
 
-    func onStreamStopped() {
-        Task {
-            await MainActor.run {
-                subscribeState = .streamInactive
-            }
-        }
+    public func onStreamStopped() {
+        updateState(to: .streamInactive)
     }
 
-    func onSubscribed() {
-        Task {
-            await MainActor.run {
-                subscribeState = .subscribed
-            }
-        }
+    public func onSubscribed() {
+        updateState(to: .subscribed)
     }
 
-    func onSubscribedError(_ reason: String) {
-        Task {
-            await MainActor.run {
-                subscribeState = .error(.subscribeError(reason: reason))
-            }
-        }
+    public func onSubscribedError(_ reason: String) {
+        updateState(to: .error(.subscribeError(reason: reason)))
     }
 
-    func onVideoTrack(_ track: MCVideoTrack, withMid mid: String) {
-        Task {
-            await MainActor.run {
-                renderVideoTrack(track)
-            }
-        }
-    }
-
-    func onAudioTrack(_ track: MCAudioTrack, withMid mid: String) {
-        Task {
-            await MainActor.run {
-                renderAudioTrack(track)
-            }
-        }
-    }
-
-    func onConnected() {
-        Task {
-            await MainActor.run {
-                subscribeState = .connected
-            }
-        }
-    }
-
-    func onConnectionError(reason: String) {
-        Task {
-            await MainActor.run {
-                subscribeState = .error(.connectError(reason: reason))
-            }
-        }
-    }
-}
-
-// MARK: Render handler's for Audio and Video Tracks
-
-private extension RTSDataStore {
-
-    private func renderVideoTrack(_ videoTrack: MCVideoTrack?) {
-        self.videoTrack = videoTrack
+    public func onVideoTrack(_ track: MCVideoTrack, withMid mid: String) {
+        videoTrack = track
         setVideo(true)
-        Task {
-            await subscriptionManager.startRender(of: videoTrack, on: subscriptionVideoRenderer)
-        }
+        track.add(videoRenderer)
     }
 
-    private func renderAudioTrack(_ audioTrack: MCAudioTrack?) {
-        self.audioTrack = audioTrack
+    public func onAudioTrack(_ track: MCAudioTrack, withMid mid: String) {
+        audioTrack = track
         setAudio(true)
+        // Configure the AVAudioSession with our settings.
+        Utils.configureAudioSession()
+    }
+
+    public func onConnected() {
+        updateState(to: .connected)
+    }
+
+    public func onConnectionError(reason: String) {
+        updateState(to: .error(.connectError(reason: reason)))
+    }
+
+    public func updateState(to state: State) {
         Task {
-            await subscriptionManager.renderAudioTrack(audioTrack)
+            await MainActor.run {
+                self.subscribeState = state
+            }
         }
     }
 }
