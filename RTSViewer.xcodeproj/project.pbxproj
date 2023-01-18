@@ -28,6 +28,8 @@
 		E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */; };
 		E82A0C1F296D0F04007214B8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E82A0C1C296D0F04007214B8 /* Localizable.strings */; };
 		E82A0C20296D0F04007214B8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E82A0C1C296D0F04007214B8 /* Localizable.strings */; };
+		E82FC5062977CF3B0050777F /* Task+Deplayed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82FC5052977CF3B0050777F /* Task+Deplayed.swift */; };
+		E82FC5072977CF3E0050777F /* Task+Deplayed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82FC5052977CF3B0050777F /* Task+Deplayed.swift */; };
 		E844ABEC296DA5B20067B78C /* StreamingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844ABEB296DA5B20067B78C /* StreamingScreen.swift */; };
 		E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844ABEB296DA5B20067B78C /* StreamingScreen.swift */; };
 		E8575E9929527B420070F53E /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
@@ -71,6 +73,7 @@
 		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = IDETemplateMacros.plist; path = RTSViewer.xcworkspace/xcshareddata/IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
 		E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDetailInputScreen.swift; sourceTree = "<group>"; };
 		E82A0C1C296D0F04007214B8 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		E82FC5052977CF3B0050777F /* Task+Deplayed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Deplayed.swift"; sourceTree = "<group>"; };
 		E844ABEB296DA5B20067B78C /* StreamingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingScreen.swift; sourceTree = "<group>"; };
 		E8649BEE295284F400309BF7 /* iOSDebugSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOSDebugSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BEF295284F400309BF7 /* iOSReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOSReleaseSettings.xcconfig; sourceTree = "<group>"; };
@@ -136,6 +139,7 @@
 		3FE90C1A26B2AF4200B206A3 /* RTSViewer */ = {
 			isa = PBXGroup;
 			children = (
+				E82FC5042977CF2A0050777F /* Utils */,
 				E8C47C6B29778BAA0026E877 /* Persistence */,
 				E8D1947929717D050080C4E0 /* RecentStreamsScreen */,
 				E844ABEA296DA4C60067B78C /* StreamingScreen */,
@@ -201,6 +205,14 @@
 				E82A0C1C296D0F04007214B8 /* Localizable.strings */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		E82FC5042977CF2A0050777F /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				E82FC5052977CF3B0050777F /* Task+Deplayed.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		E844ABEA296DA4C60067B78C /* StreamingScreen */ = {
@@ -402,6 +414,7 @@
 				E844ABEC296DA5B20067B78C /* StreamingScreen.swift in Sources */,
 				3FE90C1E26B2AF4200B206A3 /* ContentView.swift in Sources */,
 				E82A0C1D296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,
+				E82FC5062977CF3B0050777F /* Task+Deplayed.swift in Sources */,
 				E8C47C6D29778BAA0026E877 /* PersistenceManager.swift in Sources */,
 				3FE90C1C26B2AF4200B206A3 /* RTSViewer.swift in Sources */,
 				E8C47C7129778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,
@@ -416,6 +429,7 @@
 				E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
 				E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,
+				E82FC5072977CF3E0050777F /* Task+Deplayed.swift in Sources */,
 				E8C47C6E29778BAA0026E877 /* PersistenceManager.swift in Sources */,
 				631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */,
 				E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,

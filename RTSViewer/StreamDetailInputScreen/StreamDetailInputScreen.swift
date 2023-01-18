@@ -144,7 +144,11 @@ private struct StreamDetailInputBox: View {
                             showingAlert = !success
                             isShowingStreamingView = success
                             if success {
-                                persistenceManager.saveStream(streamName, accountID: accountID)
+                                // A delay is added before saving the stream.
+                                // Workaround - the `clear stream` and `saved streams` buttons appear before the screen transition animation completes.
+                                Task.delayed(byTimeInterval: 0.50) {
+                                    await persistenceManager.saveStream(streamName, accountID: accountID)
+                                }
                             }
                         }
 
