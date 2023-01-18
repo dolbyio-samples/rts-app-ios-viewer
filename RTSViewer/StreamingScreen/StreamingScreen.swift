@@ -91,7 +91,7 @@ struct StreamingScreen: View {
                     }
                 }
                 if showStats {
-                    StatsView(statsView: $showStats, stats: $dataStore.statsInboundRtp)
+                    StatisticsView(statsView: $showStats, stats: $dataStore.statisticsData)
                 }
             }
             .task {

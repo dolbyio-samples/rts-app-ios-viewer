@@ -26,7 +26,7 @@ public final class RTSDataStore: ObservableObject {
     @Published public private(set) var subscribeState: State = .disconnected
     @Published public private(set) var isAudioEnabled: Bool = true
     @Published public private(set) var isVideoEnabled: Bool = true
-    @Published public var statsInboundRtp: StatsInboundRtp?
+    @Published public var statisticsData: StatisticsData?
 
     private let videoRenderer: MCIosVideoRenderer
     private var subscriptionManager: SubscriptionManager!
@@ -182,7 +182,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         let value = getStatsInboundRtp(report: report)
         Task {
             await MainActor.run {
-                self.statsInboundRtp = value
+                self.statisticsData = value
             }
         }
     }
@@ -211,15 +211,16 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         }
     }
 
-    private func getStatsInboundRtp(report: MCStatsReport?) -> StatsInboundRtp? {
-
+    private func getStatsInboundRtp(report: MCStatsReport?) -> StatisticsData? {
+        var result: StatisticsData?
          let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
          let rtt: Double? = getStatsRtt(report: report)
          if let statsReport = report?.getStatsOf(inboundRtpStreamStatsType) {
+             var audio: StatsInboundRtp?
+             var video: StatsInboundRtp?
              for stats in statsReport {
                  guard let s = stats as? MCInboundRtpStreamStats else { return nil }
                  let statsInboundRtp: StatsInboundRtp = StatsInboundRtp(
-                     roundTripTime: rtt,
                      sid: s.sid as String,
                      decoder: s.decoder_implementation as String?,
                      frameWidth: Int(s.frame_width),
@@ -239,10 +240,15 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                      packetsLost: Double(s.packets_lost),
                      timestamp: Double(s.timestamp)
                  )
-                 return statsInboundRtp
+                 if statsInboundRtp.isVideo {
+                     video = statsInboundRtp
+                 } else {
+                     audio = statsInboundRtp
+                 }
              }
+             result = StatisticsData(roundTripTime: rtt, audio: audio, video: video)
          }
-         return nil
+         return result
      }
 
     public func getStatsStrInboundRtp(report: MCStatsReport?) -> String {
@@ -280,21 +286,33 @@ extension RTSDataStore: SubscriptionManagerDelegate {
     }
 
     private func getStatsRtt(report: MCStatsReport?) -> Double? {
-        let receivedType = MCReceivedRtpStreamStats.get_type()
-        var roundTripTime: Double? = 0.0
+        let receivedType = MCRemoteInboundRtpStreamStats.get_type()
+        var roundTripTime: Double?
         if let statsReport = report?.getStatsOf(receivedType) {
+
             for stats in statsReport {
                 guard let s = stats as? MCRemoteInboundRtpStreamStats else { return nil }
+                print("!!! Fetch RTT")
                 roundTripTime = Double(s.round_trip_time)
+                print("!!! \(String(describing: roundTripTime))")
             }
         }
         return roundTripTime
     }
 }
 
-public struct StatsInboundRtp {
+public struct StatisticsData {
     public private(set) var roundTripTime: Double?
+    public private(set) var audio: StatsInboundRtp?
+    public private(set) var video: StatsInboundRtp?
+    init(roundTripTime: Double?, audio: StatsInboundRtp?, video: StatsInboundRtp?) {
+        self.roundTripTime = roundTripTime
+        self.audio = audio
+        self.video = video
+    }
+}
 
+public struct StatsInboundRtp {
     public private(set) var sid: String
     public private(set) var decoder: String?
     public private(set) var frameWidth: Int
@@ -316,8 +334,8 @@ public struct StatsInboundRtp {
     public private(set) var timestamp: Double
 
     public private(set) var isVideo: Bool
-    init(roundTripTime: Double?, sid: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, jitter: Double, packetsReceived: Double, packetsLost: Double, timestamp: Double) {
-        self.roundTripTime = roundTripTime
+    init(sid: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, jitter: Double, packetsReceived: Double, packetsLost: Double, timestamp: Double) {
+
         self.sid = sid
         self.decoder = decoder
         self.frameWidth = frameWidth
