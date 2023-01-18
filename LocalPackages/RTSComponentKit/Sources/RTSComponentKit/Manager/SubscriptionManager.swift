@@ -13,6 +13,7 @@ protocol SubscriptionManagerDelegate: AnyObject {
     func onSubscribedError(_ reason: String)
     func onVideoTrack(_ track: MCVideoTrack, withMid mid: String)
     func onAudioTrack(_ track: MCAudioTrack, withMid mid: String)
+    func onStatsReport(report: MCStatsReport)
     func onConnected()
     func onStreamActive()
     func onStreamInactive()
@@ -92,6 +93,8 @@ final class SubscriptionManager {
             }
 
             Self.logger.debug("Subscription successful")
+
+            subscriber.enableStats(true)
             return true
         }
 
@@ -105,6 +108,7 @@ final class SubscriptionManager {
             guard let self = self, let subscriber = subscriber, isSubscribed else {
                 return false
             }
+            subscriber.enableStats(false)
 
             guard subscriber.unsubscribe() else {
                 Self.logger.debug("Failed to unsubscribe")
@@ -224,6 +228,7 @@ extension SubscriptionManager: MCSubscriberListener {
 
     func onStatsReport(_ report: MCStatsReport!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onStatsReport()")
+        delegate?.onStatsReport(report: report)
     }
 
     func onViewerCount(_ count: Int32) {

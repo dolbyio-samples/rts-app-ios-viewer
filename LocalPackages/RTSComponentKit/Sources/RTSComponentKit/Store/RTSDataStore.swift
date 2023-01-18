@@ -26,6 +26,7 @@ public final class RTSDataStore: ObservableObject {
     @Published public private(set) var subscribeState: State = .disconnected
     @Published public private(set) var isAudioEnabled: Bool = true
     @Published public private(set) var isVideoEnabled: Bool = true
+    @Published public var statsInboundRtp: StatsInboundRtp?
 
     private let videoRenderer: MCIosVideoRenderer
     private var subscriptionManager: SubscriptionManager!
@@ -34,6 +35,7 @@ public final class RTSDataStore: ObservableObject {
     private var streamDetail: StreamDetail?
     private var audioTrack: MCAudioTrack?
     private var videoTrack: MCVideoTrack?
+    private var statsReport: MCStatsReport?
 
     @Published public private(set) var layerActiveMap: [MCLayerData]?
 
@@ -172,6 +174,19 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         Utils.configureAudioSession()
     }
 
+    func onStatsReport(report: MCStatsReport) {
+        self.statsReport = report
+
+        let type = MCInboundRtpStreamStats.get_type()
+        print(getStatsStrInboundRtp(report: report))
+        let value = getStatsInboundRtp(report: report)
+        Task {
+            await MainActor.run {
+                self.statsInboundRtp = value
+            }
+        }
+    }
+
     public func onConnected() {
         updateState(to: .connected)
     }
@@ -194,5 +209,133 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                 layerActiveMap = activeLayers
             }
         }
+    }
+
+    private func getStatsInboundRtp(report: MCStatsReport?) -> StatsInboundRtp? {
+
+         let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
+         let rtt: Double? = getStatsRtt(report: report)
+         if let statsReport = report?.getStatsOf(inboundRtpStreamStatsType) {
+             for stats in statsReport {
+                 guard let s = stats as? MCInboundRtpStreamStats else { return nil }
+                 let statsInboundRtp: StatsInboundRtp = StatsInboundRtp(
+                     roundTripTime: rtt,
+                     sid: s.sid as String,
+                     decoder: s.decoder_implementation as String?,
+                     frameWidth: Int(s.frame_width),
+                     frameHeight: Int(s.frame_height),
+                     fps: Int(s.frames_per_second),
+                     audioLevel: Int(s.audio_level),
+                     totalEnergy: s.total_audio_energy,
+                     framesReceived: Int(s.frames_received),
+                     framesDecoded: Int(s.frames_decoded),
+                     framesBitDepth: Int(s.frame_bit_depth),
+                     nackCount: Int(s.nack_count),
+                     bytesReceived: Int(s.bytes_received),
+                     totalSampleDuration: s.total_samples_duration,
+                     codecId: s.codec_id as String?,
+                     timestamp: Double(s.timestamp)
+                 )
+                 return statsInboundRtp
+             }
+         }
+         return nil
+     }
+
+    public func getStatsStrInboundRtp(report: MCStatsReport?) -> String {
+        let type = MCInboundRtpStreamStats.get_type()
+        var str = ""
+        if let statsReport = report?.getStatsOf(type) {
+            for stats in statsReport {
+                guard let s = stats as? MCInboundRtpStreamStats else { return str }
+                let sid = s.sid ?? "Nil"
+                    let decoder_impl = s.decoder_implementation ?? "Nil"
+                    str += "[ Sid:\(sid) Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
+                    str += ", Audio level:\(s.audio_level) total energy:\(s.total_audio_energy)"
+                    str += ", Frames recv:\(s.frames_received)"
+                    str += ", Frames decoded:\(s.frames_decoded)"
+                    str += ", Frames bit depth:\(s.frame_bit_depth)"
+                    str += ", Nack count:\(s.nack_count)"
+                    str += ", Decoder impl:\(decoder_impl)"
+                    str += ", Bytes recv:\(s.bytes_received)"
+                    str += ", Total sample duration:\(s.total_samples_duration) "
+                    str += ", Codec ID:\(s.codec_id ?? "Nil") "
+                    str += ", Frames dropped:\(s.frames_dropped) "
+                    str += ", Jitter:\(s.jitter) "
+                    str += ", Timestamp:\(s.timestamp) "
+                    str += ", Packets Received:\(s.packets_received) "
+                    str += ", Packets Lost:\(s.packets_lost) "
+                    str += ", Packets Discarded:\(s.packets_discarded) "
+                    str += ", Description:\(s.description) ] "
+            }
+        }
+        if str == "" {
+            str += "NONE"
+        }
+        str = "\(type): " + str
+        return str
+    }
+
+    private func getStatsRtt(report: MCStatsReport?) -> Double? {
+        let receivedType = MCReceivedRtpStreamStats.get_type()
+        var roundTripTime: Double? = 0.0
+        if let statsReport = report?.getStatsOf(receivedType) {
+            for stats in statsReport {
+                guard let s = stats as? MCRemoteInboundRtpStreamStats else { return nil }
+                roundTripTime = Double(s.round_trip_time)
+            }
+        }
+        return roundTripTime
+    }
+}
+
+public struct StatsInboundRtp {
+    public private(set) var roundTripTime: Double?
+
+    public private(set) var sid: String
+    public private(set) var decoder: String?
+    public private(set) var frameWidth: Int
+    public private(set) var frameHeight: Int
+    public private(set) var videoResolution: String
+    public private(set) var fps: Int
+    public private(set) var audioLevel: Int
+    public private(set) var totalEnergy: Double
+    public private(set) var framesReceived: Int
+    public private(set) var framesDecoded: Int
+    public private(set) var framesBitDepth: Int
+    public private(set) var nackCount: Int
+    public private(set) var bytesReceived: Int
+    public private(set) var totalSampleDuration: Double
+    public private(set) var codec: String?
+    public private(set) var timestamp: Double
+
+    public private(set) var isVideo: Bool
+    public private(set) var audioTotalReceived: Int?
+    init(roundTripTime: Double?, sid: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, timestamp: Double) {
+        self.roundTripTime = roundTripTime
+        self.sid = sid
+        self.decoder = decoder
+        self.frameWidth = frameWidth
+        self.frameHeight = frameHeight
+        self.fps = fps
+        self.audioLevel = audioLevel
+        self.totalEnergy = totalEnergy
+        self.framesReceived = framesReceived
+        self.framesDecoded = framesDecoded
+        self.framesBitDepth = framesBitDepth
+        self.nackCount = nackCount
+        self.bytesReceived = bytesReceived
+        self.totalSampleDuration = totalSampleDuration
+        self.codec = codecId
+        self.timestamp = timestamp
+
+        if sid.starts(with: "RTCInboundRTPVideoStream") {
+            isVideo = true
+        } else {
+            isVideo = false
+            audioTotalReceived = bytesReceived
+        }
+
+        self.videoResolution = String(format: "%d x %d", frameWidth, frameHeight)
     }
 }

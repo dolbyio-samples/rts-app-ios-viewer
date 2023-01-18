@@ -32,3 +32,23 @@
 
 "recent-streams.title.label" = "Saved streams";
 "recent-streams.format.label %@ %@" = "%@ (Account ID: %@)";
+
+/** Streaming Settings */
+"stream.stats.name.label" = "Name";
+"stream.stats.value.label" = "Value";
+"stream.stats.rtt.label" = "RTT";
+"stream.stats.video-resolution.label" = "Video Resolution";
+"stream.stats.fps.label" = "FPS";
+"stream.stats.video-bitrate.label" = "Video Bitrate";
+"stream.stats.audio-bitrate.label" = "Audio Bitrate";
+"stream.stats.video-total-received.label" = "Video Total Received";
+"stream.stats.audio-total-received.label" = "Audio Total Received";
+"stream.stats.video-packet-loss.label" = "Video Packet Loss";
+"stream.stats.audio-packet-loss.label" = "Audio Packet Loss";
+"stream.stats.video-jitter.label" = "Video Jitter";
+"stream.stats.audio-jitter.label" = "Audio Jitter";
+"stream.stats.codecs.label" = "Codecs";
+"stream.stats.timestamp.label" = "Timestamp";
+"stream.stats.server.label" = "Server";
+"stream.stats.cluster.label" = "Cluster";
+
