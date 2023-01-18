@@ -11,10 +11,12 @@
 "stream-detail-input.streamName.placeholder.label" = "Enter your stream name";
 "stream-detail-input.accountId.placeholder.label" = "Enter your account ID";
 "stream-detail-input.play.button" = "Play";
-"stream-detail-input.recent-streams.button" = "Recent Streams";
+"stream-detail-input.recent-streams.button" = "Saved Streams";
+"stream-detail-input.clear-stream-history.button" = "Clear stream history";
 "stream-detail-input.rememberStream.toggle" = "Remember stream";
 "stream-detail-input.footnote.label" = "Copyright © 2022 Dolby.io — All Rights Reserved";
-"stream-detail-input.credentials-error.labal" = "Invalid Stream name or Account ID";
+"stream-detail-input.credentials-error.label" = "Invalid Stream name or Account ID";
+"stream-detail-input.clear-streams-successful.label" = "All your saved streams are now cleared";
 
 /** Stream Screen */
 
@@ -28,5 +30,5 @@
 
 /** Recent Streams Screen */
 
-"recent-streams.title.label" = "Select a recently used stream";
+"recent-streams.title.label" = "Saved streams";
 "recent-streams.format.label %@ %@" = "%@ (Account ID: %@)";

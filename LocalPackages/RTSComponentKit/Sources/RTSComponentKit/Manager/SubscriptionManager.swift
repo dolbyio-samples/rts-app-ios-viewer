@@ -6,6 +6,7 @@
 import AVFoundation
 import Foundation
 import MillicastSDK
+import os
 
 protocol SubscriptionManagerDelegate: AnyObject {
     func onSubscribed()
@@ -21,70 +22,31 @@ protocol SubscriptionManagerDelegate: AnyObject {
 
 final class SubscriptionManager {
 
-    private let queueLabelKey = DispatchSpecificKey<String>()
-    private let queueSub = DispatchQueue(label: "mc-QSub", qos: .userInitiated)
+    private static let logger = Logger(
+        subsystem: Bundle.module.bundleIdentifier!,
+        category: String(describing: SubscriptionManager.self)
+    )
+
     private var subscriber: MCSubscriber?
 
     weak var delegate: SubscriptionManagerDelegate?
 
-    func enableAudio(for track: MCAudioTrack?, enable: Bool) {
-        track?.enable(enable)
-    }
-
-    func enableVideo(for track: MCVideoTrack?, enable: Bool) {
-        track?.enable(enable)
-    }
-
-    func renderAudioTrack(_ track: MCAudioTrack?) async {
-        let task = {
-            guard track != nil else {
-                return
-            }
-            // Configure the AVAudioSession with our settings.
-            Utils.configureAudioSession()
-        }
-        runOnQueue(log: "Render subscribe audio", task, queueSub)
-    }
-
-    func setAudioTrackVolume(_ volume: Double, audioTrack: MCAudioTrack) -> Bool {
-        guard let subscriber = subscriber, subscriber.isSubscribed() else {
-            return false
-        }
-        audioTrack.setVolume(volume)
-        return true
-    }
-
-    func connect() async -> Bool {
-        let task = { [weak self] in
-            guard let self = self, let subscriber = self.subscriber else {
-                return
-            }
-
-            guard !subscriber.isSubscribed(), !subscriber.isConnected() else {
-                return
-            }
-
-            subscriber.setOptions(self.clientOptions)
-
-            subscriber.connect()
-        }
-
-        runOnQueue(log: "Connect Subscriber", task, queueSub)
-        return true
-    }
-
     func connect(streamName: String, accountID: String) async -> Bool {
+        Self.logger.debug("Start a new connect request")
+
         guard streamName.count > 0, accountID.count > 0 else {
             return false
         }
 
-        let task = { [weak self] in
+        let task = Task { [weak self] () -> Bool in
             guard let self = self, let subscriber = self.makeSubscriber() else {
-                return
+                return false
             }
+            self.subscriber = subscriber
 
             guard !subscriber.isSubscribed(), !subscriber.isConnected() else {
-                return
+                Self.logger.debug("Returning as the subscriber is already subscribed or connected")
+                return false
             }
 
             subscriber.setCredentials(
@@ -93,73 +55,73 @@ final class SubscriptionManager {
 
             subscriber.setOptions(self.clientOptions)
 
-            subscriber.connect()
+            guard subscriber.connect() else {
+                Self.logger.debug("Failed to connect")
+                return false
+            }
 
-            self.subscriber = subscriber
+            Self.logger.debug("Connection successful")
+            return true
         }
 
-        runOnQueue(log: "Connect Subscriber", task, queueSub)
-        return true
+        return await task.value
     }
 
     func startSubscribe() async -> Bool {
-        let task = { [weak self] in
+        Self.logger.debug("Start a subscription")
+
+        let task = Task { [weak self] () -> Bool in
             guard let self = self, let subscriber = self.subscriber else {
-                return
+                return false
             }
 
-            guard subscriber.isConnected(), !subscriber.isSubscribed() else {
-                return
+            guard subscriber.isConnected() else {
+                Self.logger.debug("Returning as the subscriber is not connected")
+                return false
             }
 
-            subscriber.subscribe()
+            guard !subscriber.isSubscribed() else {
+                Self.logger.debug("Returning as the subscriber is already subscribed")
+                return false
+            }
+
+            guard subscriber.subscribe() else {
+                Self.logger.debug("Failed to subscribe")
+                return false
+            }
+
+            Self.logger.debug("Subscription successful")
+            return true
         }
 
-        runOnQueue(log: "Connect Subscriber", task, queueSub)
-        return true
+        return await task.value
     }
 
     func stopSubscribe() async -> Bool {
-        let task = { [self] in
-            guard let subscriber = subscriber, isSubscribed else {
-                return
+        Self.logger.debug("Stop subscription")
+
+        let task = Task { [weak self] () -> Bool in
+            guard let self = self, let subscriber = subscriber, isSubscribed else {
+                return false
             }
 
             guard subscriber.unsubscribe() else {
-                // TODO: Handle unsubscribe failure
-                return
+                Self.logger.debug("Failed to unsubscribe")
+                return false
             }
 
             guard subscriber.disconnect() else {
-                // TODO: Handle disconnect failure
-                return
+                Self.logger.debug("Failed to disconnect")
+                return false
             }
 
             // Remove Subscriber.
             self.subscriber = nil
-        }
-        runOnQueue(log: "Stop Subscribe", task, queueSub)
-        return true
-    }
 
-    func startRender(of track: MCVideoTrack?, on renderer: MCIosVideoRenderer) async {
-        let task = {
-            guard let track = track else {
-                return
-            }
-            track.add(renderer)
+            Self.logger.debug("Successfully stopped subscription")
+            return true
         }
-        runOnQueue(log: "Render subscribe video", task, queueSub)
-    }
-
-    func stopRender(of track: MCVideoTrack?, on renderer: MCIosVideoRenderer) async {
-        let task = {
-            guard let track = track else {
-                return
-            }
-            track.remove(renderer)
-        }
-        runOnQueue(log: "Renderer removed from video track.", task, queueSub)
+        return await task.value
     }
 }
 
@@ -197,70 +159,74 @@ private extension SubscriptionManager {
 extension SubscriptionManager: MCSubscriberListener {
 
     func onSubscribed() {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSubscribed()")
         delegate?.onSubscribed()
     }
 
     func onSubscribedError(_ reason: String!) {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSubscribedError(_ reason:)")
         delegate?.onSubscribedError(reason)
     }
 
     func onVideoTrack(_ track: MCVideoTrack!, withMid mid: String!) {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onVideoTrack(_ mid:)")
         delegate?.onVideoTrack(track, withMid: mid)
     }
 
     func onAudioTrack(_ track: MCAudioTrack!, withMid mid: String!) {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onAudioTrack(_ mid:)")
         delegate?.onAudioTrack(track, withMid: mid)
     }
 
     func onActive(_ streamId: String!, tracks: [String]!, sourceId: String!) {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onActive(_ streamId:tracks:sourceId:)")
         delegate?.onStreamActive()
     }
 
     func onInactive(_ streamId: String!, sourceId: String!) {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onInactive(_ streamId:sourceId:)")
         delegate?.onStreamInactive()
     }
 
     func onStopped() {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onStopped()")
         delegate?.onStreamStopped()
     }
 
     func onVad(_ mid: String!, sourceId: String!) {
-        // TODO:
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onVad(_ mid:sourceId:)")
     }
 
     func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
-        // TODO:
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onLayers(_ mid:activeLayers:inactiveLayers:)")
     }
 
     func onConnected() {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onConnected()")
         delegate?.onConnected()
     }
 
     func onConnectionError(_ status: Int32, withReason reason: String!) {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onConnectionError(_ status:withReason:)")
         delegate?.onConnectionError(reason: reason)
     }
 
     func onSignalingError(_ message: String!) {
-        // TODO:
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSignalingError(_ message:)")
     }
 
     func onStatsReport(_ report: MCStatsReport!) {
-        // TODO:
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onStatsReport()")
     }
 
     func onViewerCount(_ count: Int32) {
-        // TODO:
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onViewerCount(_ count:)")
     }
 }
 
 // MARK: Helper functions
 
 private extension SubscriptionManager {
-    func runOnQueue(log: String = "", _ task: @escaping () -> Void, _ queue: DispatchQueue) {
-        queue.async {
-            task()
-        }
-    }
 
     var isSubscribed: Bool {
         guard let subscriber = subscriber, subscriber.isSubscribed() else {
