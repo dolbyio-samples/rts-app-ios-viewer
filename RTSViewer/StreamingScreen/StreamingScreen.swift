@@ -146,11 +146,11 @@ struct StreamingScreen: View {
         case .auto:
             dataStore.selectLayer(layer: nil)
         case .high:
-            dataStore.selectLayer(layer: dataStore.layerActiveMap[0])
+            dataStore.selectLayer(layer: dataStore.layerActiveMap?[0])
         case .medium:
-            dataStore.selectLayer(layer: dataStore.layerActiveMap[1])
+            dataStore.selectLayer(layer: dataStore.layerActiveMap?[1])
         case .low:
-            dataStore.selectLayer(layer: dataStore.layerActiveMap[2])
+            dataStore.selectLayer(layer: dataStore.layerActiveMap?[2])
         }
     }
 }
@@ -192,7 +192,7 @@ private struct SettingsView: View {
                     VStack {}.frame(height: 50)
                 }.cornerRadius(Layout.cornerRadius6x)
             }.padding()
-                .frame(maxWidth: 600, maxHeight: 900, alignment: .bottom)
+                .frame(maxWidth: 600, maxHeight: .infinity, alignment: .bottom)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
     }
 }

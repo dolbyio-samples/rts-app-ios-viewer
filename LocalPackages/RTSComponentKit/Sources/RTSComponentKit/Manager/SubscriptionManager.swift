@@ -18,7 +18,7 @@ protocol SubscriptionManagerDelegate: AnyObject {
     func onStreamInactive()
     func onStreamStopped()
     func onConnectionError(reason: String)
-    func onStreamLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!)
+    func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?)
 }
 
 final class SubscriptionManager {
