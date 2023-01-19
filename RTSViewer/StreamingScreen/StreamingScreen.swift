@@ -8,11 +8,6 @@ import SwiftUI
 import RTSComponentKit
 import Network
 
-enum StreamType: String, CaseIterable, Identifiable {
-    case auto, high, medium, low
-    var id: Self { self }
-}
-
 struct StreamingScreen: View {
 
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
@@ -20,9 +15,11 @@ struct StreamingScreen: View {
     @EnvironmentObject private var dataStore: RTSDataStore
     @State private var volume = 0.5
     @State private var showSettings = false
+    @State private var layersDisabled = true
     @State private var showLive = false
     @State private var showStats = false
     @State private var isNetworkConnected: Bool = false
+    @State private var selectedLayer: StreamType = .auto
 
     var body: some View {
         BackgroundContainerView {
@@ -50,7 +47,7 @@ struct StreamingScreen: View {
                 }
 
                 if showSettings {
-                    SettingsView(settingsView: $showSettings, liveIndicator: $showLive, statsView: $showStats)
+                    SettingsView(settingsView: $showSettings, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer)
                 }
 
                 if isStreamActive {
@@ -112,6 +109,9 @@ struct StreamingScreen: View {
                     }
                 }
             }
+            .onReceive(dataStore.$layerActiveMap) { layers in
+                layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
+            }
             .onReceive(timer) { _ in
                 Task {
                     switch dataStore.subscribeState {
@@ -135,14 +135,19 @@ struct StreamingScreen: View {
     private var isStreamActive: Bool {
         return dataStore.subscribeState == .streamActive
     }
+
+    private func setLayer(streamType: StreamType) {
+        dataStore.selectLayer(streamType: streamType)
+    }
 }
 
 private struct SettingsView: View {
     @Binding var settingsView: Bool
+    @Binding var disableLayers: Bool
     @Binding var liveIndicator: Bool
     @Binding var statsView: Bool
-
-    @State private var selectedFlavor: StreamType = .auto
+    @Binding var selectedLayer: StreamType
+    var layerHandler: (StreamType) -> Void
 
     var body: some View {
         VStack {
@@ -156,19 +161,15 @@ private struct SettingsView: View {
                             Spacer().frame(width: Layout.spacing1x)
                         }.frame(maxWidth: .infinity, alignment: .trailing)
 
-                        if #available(tvOS 16.0, *) {
-                            Picker("stream.simulcast.label", selection: $selectedFlavor) {
-                                ForEach(StreamType.allCases, id: \.self) { item in
-                                    Text(item.rawValue.capitalized)
-                                }
-                            }.pickerStyle(.navigationLink)
-                        } else {
-                            Picker("stream.simulcast.label", selection: $selectedFlavor) {
+                            Picker("stream.simulcast.label", selection: $selectedLayer) {
                                 ForEach(StreamType.allCases, id: \.self) { item in
                                     Text(item.rawValue.capitalized)
                                 }
                             }.pickerStyle(.inline)
-                        }
+                                .onChange(of: selectedLayer) { layer in
+                                    layerHandler(layer)
+                                }
+                                .disabled(disableLayers)
 
                         Toggle("stream.media-stats.label", isOn: $statsView)
                         Toggle("stream.live-indicator.label", isOn: $liveIndicator)
@@ -177,7 +178,7 @@ private struct SettingsView: View {
                     VStack {}.frame(height: 50)
                 }.cornerRadius(Layout.cornerRadius6x)
             }.padding()
-                .frame(maxWidth: 600, maxHeight: 450, alignment: .bottom)
+                .frame(maxWidth: 600, maxHeight: .infinity, alignment: .bottom)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
     }
 }

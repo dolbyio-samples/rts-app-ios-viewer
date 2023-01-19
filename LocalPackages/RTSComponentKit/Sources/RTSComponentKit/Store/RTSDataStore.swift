@@ -35,6 +35,8 @@ public final class RTSDataStore: ObservableObject {
     private var audioTrack: MCAudioTrack?
     private var videoTrack: MCVideoTrack?
 
+    @Published public private(set) var layerActiveMap: [MCLayerData]?
+
     init(subscriptionManager: SubscriptionManager, videoRenderer: MCIosVideoRenderer) {
         self.subscriptionManager = subscriptionManager
         self.videoRenderer = videoRenderer
@@ -117,6 +119,20 @@ public final class RTSDataStore: ObservableObject {
     public func subscriptionView() -> UIView {
         videoRenderer.getView()
     }
+
+    @discardableResult
+    public func selectLayer(streamType: StreamType) -> Bool {
+        switch streamType {
+        case .auto:
+            return subscriptionManager.selectLayer(layer: nil)
+        case .high:
+            return subscriptionManager.selectLayer(layer: layerActiveMap?[0])
+        case .medium:
+            return subscriptionManager.selectLayer(layer: layerActiveMap?[1])
+        case .low:
+            return subscriptionManager.selectLayer(layer: layerActiveMap?[2])
+        }
+    }
 }
 
 // MARK: SubscriptionManagerDelegate implementation
@@ -168,6 +184,14 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         Task {
             await MainActor.run {
                 self.subscribeState = state
+            }
+        }
+    }
+
+    func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?) {
+        Task {
+            await MainActor.run {
+                layerActiveMap = activeLayers
             }
         }
     }
