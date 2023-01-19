@@ -90,6 +90,9 @@ struct StreamingScreen: View {
 
                     }
                 }
+                if showStats {
+                    StatisticsView(statsView: $showStats, stats: $dataStore.statisticsData)
+                }
             }
             .task {
                 let monitor = RTSComponentKit.NetworkMonitor.shared

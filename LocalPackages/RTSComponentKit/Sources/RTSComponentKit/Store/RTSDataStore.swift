@@ -26,6 +26,7 @@ public final class RTSDataStore: ObservableObject {
     @Published public private(set) var subscribeState: State = .disconnected
     @Published public private(set) var isAudioEnabled: Bool = true
     @Published public private(set) var isVideoEnabled: Bool = true
+    @Published public var statisticsData: StatisticsData?
 
     private let videoRenderer: MCIosVideoRenderer
     private var subscriptionManager: SubscriptionManager!
@@ -34,6 +35,7 @@ public final class RTSDataStore: ObservableObject {
     private var streamDetail: StreamDetail?
     private var audioTrack: MCAudioTrack?
     private var videoTrack: MCVideoTrack?
+    private var statsReport: MCStatsReport?
 
     @Published public private(set) var layerActiveMap: [MCLayerData]?
 
@@ -172,6 +174,16 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         Utils.configureAudioSession()
     }
 
+    func onStatsReport(report: MCStatsReport) {
+        self.statsReport = report
+        let value = getStatisticsData(report: report)
+        Task {
+            await MainActor.run {
+                self.statisticsData = value
+            }
+        }
+    }
+
     public func onConnected() {
         updateState(to: .connected)
     }
@@ -194,5 +206,57 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                 layerActiveMap = activeLayers
             }
         }
+    }
+
+    private func getStatisticsData(report: MCStatsReport?) -> StatisticsData? {
+        var result: StatisticsData?
+        let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
+        let rtt: Double? = getStatisticsRountTripTime(report: report)
+        if let statsReport = report?.getStatsOf(inboundRtpStreamStatsType) {
+            var audio: StatsInboundRtp?
+            var video: StatsInboundRtp?
+            for stats in statsReport {
+                guard let statsReportData = stats as? MCInboundRtpStreamStats else { return nil }
+                let statsInboundRtp: StatsInboundRtp = StatsInboundRtp(
+                    sid: statsReportData.sid as String,
+                    decoder: statsReportData.decoder_implementation as String?,
+                    frameWidth: Int(statsReportData.frame_width),
+                    frameHeight: Int(statsReportData.frame_height),
+                    fps: Int(statsReportData.frames_per_second),
+                    audioLevel: Int(statsReportData.audio_level),
+                    totalEnergy: statsReportData.total_audio_energy,
+                    framesReceived: Int(statsReportData.frames_received),
+                    framesDecoded: Int(statsReportData.frames_decoded),
+                    framesBitDepth: Int(statsReportData.frame_bit_depth),
+                    nackCount: Int(statsReportData.nack_count),
+                    bytesReceived: Int(statsReportData.bytes_received),
+                    totalSampleDuration: statsReportData.total_samples_duration,
+                    codecId: statsReportData.codec_id as String?,
+                    jitter: statsReportData.jitter,
+                    packetsReceived: Double(statsReportData.packets_received),
+                    packetsLost: Double(statsReportData.packets_lost),
+                    timestamp: Double(statsReportData.timestamp)
+                )
+                if statsInboundRtp.isVideo {
+                    video = statsInboundRtp
+                } else {
+                    audio = statsInboundRtp
+                }
+            }
+            result = StatisticsData(roundTripTime: rtt, audio: audio, video: video)
+        }
+        return result
+    }
+
+    private func getStatisticsRountTripTime(report: MCStatsReport?) -> Double? {
+        let receivedType = MCRemoteInboundRtpStreamStats.get_type()
+        var roundTripTime: Double?
+        if let statsReport = report?.getStatsOf(receivedType) {
+            for stats in statsReport {
+                guard let s = stats as? MCRemoteInboundRtpStreamStats else { return nil }
+                roundTripTime = Double(s.round_trip_time)
+            }
+        }
+        return roundTripTime
     }
 }
