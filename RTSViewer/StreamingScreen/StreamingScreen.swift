@@ -20,6 +20,7 @@ struct StreamingScreen: View {
     @EnvironmentObject private var dataStore: RTSDataStore
     @State private var volume = 0.5
     @State private var showSettings = false
+    @State private var layersEnabled = false
     @State private var showLive = false
     @State private var showStats = false
     @State private var isNetworkConnected: Bool = false
@@ -50,7 +51,7 @@ struct StreamingScreen: View {
                 }
 
                 if showSettings {
-                    SettingsView(settingsView: $showSettings, liveIndicator: $showLive, statsView: $showStats)
+                    SettingsView(settingsView: $showSettings, enableLayers: $layersEnabled, liveIndicator: $showLive, statsView: $showStats)
                 }
 
                 if isStreamActive {
@@ -112,6 +113,9 @@ struct StreamingScreen: View {
                     }
                 }
             }
+            .onReceive(dataStore.$layerActiveMap) { layers in
+                layersEnabled = layers != nil
+            }
             .onReceive(timer) { _ in
                 Task {
                     switch dataStore.subscribeState {
@@ -139,6 +143,7 @@ struct StreamingScreen: View {
 
 private struct SettingsView: View {
     @Binding var settingsView: Bool
+    @Binding var enableLayers: Bool
     @Binding var liveIndicator: Bool
     @Binding var statsView: Bool
 
@@ -156,13 +161,7 @@ private struct SettingsView: View {
                             Spacer().frame(width: Layout.spacing1x)
                         }.frame(maxWidth: .infinity, alignment: .trailing)
 
-                        if #available(tvOS 16.0, *) {
-                            Picker("stream.simulcast.label", selection: $selectedFlavor) {
-                                ForEach(StreamType.allCases, id: \.self) { item in
-                                    Text(item.rawValue.capitalized)
-                                }
-                            }.pickerStyle(.navigationLink)
-                        } else {
+                        if enableLayers {
                             Picker("stream.simulcast.label", selection: $selectedFlavor) {
                                 ForEach(StreamType.allCases, id: \.self) { item in
                                     Text(item.rawValue.capitalized)
@@ -177,7 +176,7 @@ private struct SettingsView: View {
                     VStack {}.frame(height: 50)
                 }.cornerRadius(Layout.cornerRadius6x)
             }.padding()
-                .frame(maxWidth: 600, maxHeight: 450, alignment: .bottom)
+                .frame(maxWidth: 600, maxHeight: .infinity, alignment: .bottom)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
     }
 }
