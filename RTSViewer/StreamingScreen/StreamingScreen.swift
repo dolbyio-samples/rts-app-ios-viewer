@@ -115,7 +115,7 @@ struct StreamingScreen: View {
                 }
             }
             .onReceive(dataStore.$layerActiveMap) { layers in
-                layersDisabled = layers == nil || (layers?.count < 2 || layers?.count > 3)
+                layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
             }
             .onReceive(timer) { _ in
                 Task {
@@ -142,16 +142,16 @@ struct StreamingScreen: View {
     }
 
     private func setLayer(streamType: StreamType) {
-//        switch streamType {
-//        case .auto:
-//            dataStore.selectLayer(layer: nil)
-//        case .high:
-//            dataStore.selectLayer(layer: dataStore.layerActiveMap[0])
-//        case .medium:
-//            dataStore.selectLayer(layer: dataStore.layerActiveMap[1])
-//        case .low:
-//            dataStore.selectLayer(layer: dataStore.layerActiveMap[2])
-//        }
+        switch streamType {
+        case .auto:
+            dataStore.selectLayer(layer: nil)
+        case .high:
+            dataStore.selectLayer(layer: dataStore.layerActiveMap[0])
+        case .medium:
+            dataStore.selectLayer(layer: dataStore.layerActiveMap[1])
+        case .low:
+            dataStore.selectLayer(layer: dataStore.layerActiveMap[2])
+        }
     }
 }
 
@@ -192,7 +192,7 @@ private struct SettingsView: View {
                     VStack {}.frame(height: 50)
                 }.cornerRadius(Layout.cornerRadius6x)
             }.padding()
-                .frame(maxWidth: 600, maxHeight: .infinity, alignment: .bottom)
+                .frame(maxWidth: 600, maxHeight: 900, alignment: .bottom)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
     }
 }
