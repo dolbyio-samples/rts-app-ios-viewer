@@ -18,6 +18,7 @@ protocol SubscriptionManagerDelegate: AnyObject {
     func onStreamInactive()
     func onStreamStopped()
     func onConnectionError(reason: String)
+    func onStreamLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!)
 }
 
 final class SubscriptionManager {
@@ -199,6 +200,7 @@ extension SubscriptionManager: MCSubscriberListener {
 
     func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onLayers(_ mid:activeLayers:inactiveLayers:)")
+        delegate?.onStreamLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
     }
 
     func onConnected() {
