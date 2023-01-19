@@ -176,10 +176,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
 
     func onStatsReport(report: MCStatsReport) {
         self.statsReport = report
-
-        let type = MCInboundRtpStreamStats.get_type()
-        print(getStatsStrInboundRtp(report: report))
-        let value = getStatsInboundRtp(report: report)
+        let value = getStatisticsData(report: report)
         Task {
             await MainActor.run {
                 self.statisticsData = value
@@ -211,90 +208,53 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         }
     }
 
-    private func getStatsInboundRtp(report: MCStatsReport?) -> StatisticsData? {
+    private func getStatisticsData(report: MCStatsReport?) -> StatisticsData? {
         var result: StatisticsData?
-         let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
-         let rtt: Double? = getStatsRtt(report: report)
-         if let statsReport = report?.getStatsOf(inboundRtpStreamStatsType) {
-             var audio: StatsInboundRtp?
-             var video: StatsInboundRtp?
-             for stats in statsReport {
-                 guard let s = stats as? MCInboundRtpStreamStats else { return nil }
-                 let statsInboundRtp: StatsInboundRtp = StatsInboundRtp(
-                     sid: s.sid as String,
-                     decoder: s.decoder_implementation as String?,
-                     frameWidth: Int(s.frame_width),
-                     frameHeight: Int(s.frame_height),
-                     fps: Int(s.frames_per_second),
-                     audioLevel: Int(s.audio_level),
-                     totalEnergy: s.total_audio_energy,
-                     framesReceived: Int(s.frames_received),
-                     framesDecoded: Int(s.frames_decoded),
-                     framesBitDepth: Int(s.frame_bit_depth),
-                     nackCount: Int(s.nack_count),
-                     bytesReceived: Int(s.bytes_received),
-                     totalSampleDuration: s.total_samples_duration,
-                     codecId: s.codec_id as String?,
-                     jitter: s.jitter,
-                     packetsReceived: Double(s.packets_received),
-                     packetsLost: Double(s.packets_lost),
-                     timestamp: Double(s.timestamp)
-                 )
-                 if statsInboundRtp.isVideo {
-                     video = statsInboundRtp
-                 } else {
-                     audio = statsInboundRtp
-                 }
-             }
-             result = StatisticsData(roundTripTime: rtt, audio: audio, video: video)
-         }
-         return result
-     }
-
-    public func getStatsStrInboundRtp(report: MCStatsReport?) -> String {
-        let type = MCInboundRtpStreamStats.get_type()
-        var str = ""
-        if let statsReport = report?.getStatsOf(type) {
+        let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
+        let rtt: Double? = getStatisticsRountTripTime(report: report)
+        if let statsReport = report?.getStatsOf(inboundRtpStreamStatsType) {
+            var audio: StatsInboundRtp?
+            var video: StatsInboundRtp?
             for stats in statsReport {
-                guard let s = stats as? MCInboundRtpStreamStats else { return str }
-                let sid = s.sid ?? "Nil"
-                    let decoder_impl = s.decoder_implementation ?? "Nil"
-                    str += "[ Sid:\(sid) Res(WxH):\(s.frame_width)x\(s.frame_height) \(s.frames_per_second)fps"
-                    str += ", Audio level:\(s.audio_level) total energy:\(s.total_audio_energy)"
-                    str += ", Frames recv:\(s.frames_received)"
-                    str += ", Frames decoded:\(s.frames_decoded)"
-                    str += ", Frames bit depth:\(s.frame_bit_depth)"
-                    str += ", Nack count:\(s.nack_count)"
-                    str += ", Decoder impl:\(decoder_impl)"
-                    str += ", Bytes recv:\(s.bytes_received)"
-                    str += ", Total sample duration:\(s.total_samples_duration) "
-                    str += ", Codec ID:\(s.codec_id ?? "Nil") "
-                    str += ", Frames dropped:\(s.frames_dropped) "
-                    str += ", Jitter:\(s.jitter) "
-                    str += ", Timestamp:\(s.timestamp) "
-                    str += ", Packets Received:\(s.packets_received) "
-                    str += ", Packets Lost:\(s.packets_lost) "
-                    str += ", Packets Discarded:\(s.packets_discarded) "
-                    str += ", Description:\(s.description) ] "
+                guard let s = stats as? MCInboundRtpStreamStats else { return nil }
+                let statsInboundRtp: StatsInboundRtp = StatsInboundRtp(
+                    sid: s.sid as String,
+                    decoder: s.decoder_implementation as String?,
+                    frameWidth: Int(s.frame_width),
+                    frameHeight: Int(s.frame_height),
+                    fps: Int(s.frames_per_second),
+                    audioLevel: Int(s.audio_level),
+                    totalEnergy: s.total_audio_energy,
+                    framesReceived: Int(s.frames_received),
+                    framesDecoded: Int(s.frames_decoded),
+                    framesBitDepth: Int(s.frame_bit_depth),
+                    nackCount: Int(s.nack_count),
+                    bytesReceived: Int(s.bytes_received),
+                    totalSampleDuration: s.total_samples_duration,
+                    codecId: s.codec_id as String?,
+                    jitter: s.jitter,
+                    packetsReceived: Double(s.packets_received),
+                    packetsLost: Double(s.packets_lost),
+                    timestamp: Double(s.timestamp)
+                )
+                if statsInboundRtp.isVideo {
+                    video = statsInboundRtp
+                } else {
+                    audio = statsInboundRtp
+                }
             }
+            result = StatisticsData(roundTripTime: rtt, audio: audio, video: video)
         }
-        if str == "" {
-            str += "NONE"
-        }
-        str = "\(type): " + str
-        return str
+        return result
     }
 
-    private func getStatsRtt(report: MCStatsReport?) -> Double? {
+    private func getStatisticsRountTripTime(report: MCStatsReport?) -> Double? {
         let receivedType = MCRemoteInboundRtpStreamStats.get_type()
         var roundTripTime: Double?
         if let statsReport = report?.getStatsOf(receivedType) {
-
             for stats in statsReport {
                 guard let s = stats as? MCRemoteInboundRtpStreamStats else { return nil }
-                print("!!! Fetch RTT")
                 roundTripTime = Double(s.round_trip_time)
-                print("!!! \(String(describing: roundTripTime))")
             }
         }
         return roundTripTime
