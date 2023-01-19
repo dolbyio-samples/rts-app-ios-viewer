@@ -20,7 +20,7 @@ struct StreamingScreen: View {
     @EnvironmentObject private var dataStore: RTSDataStore
     @State private var volume = 0.5
     @State private var showSettings = false
-    @State private var layersDisabled = false
+    @State private var layersDisabled = true
     @State private var showLive = false
     @State private var showStats = false
     @State private var isNetworkConnected: Bool = false
@@ -52,7 +52,7 @@ struct StreamingScreen: View {
                 }
 
                 if showSettings {
-                    SettingsView(settingsView: $showSettings, disableLayers: layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer)
+                    SettingsView(settingsView: $showSettings, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer)
                 }
 
                 if isStreamActive {
