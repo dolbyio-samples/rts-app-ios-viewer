@@ -121,8 +121,17 @@ public final class RTSDataStore: ObservableObject {
     }
 
     @discardableResult
-    public func selectLayer(layer: MCLayerData?) -> Bool {
-        return subscriptionManager.selectLayer(layer: layer)
+    public func selectLayer(streamType: StreamType) -> Bool {
+        switch streamType {
+        case .auto:
+            return subscriptionManager.selectLayer(layer: nil)
+        case .high:
+            return subscriptionManager.selectLayer(layer: layerActiveMap?[0])
+        case .medium:
+            return subscriptionManager.selectLayer(layer: layerActiveMap?[1])
+        case .low:
+            return subscriptionManager.selectLayer(layer: layerActiveMap?[2])
+        }
     }
 }
 

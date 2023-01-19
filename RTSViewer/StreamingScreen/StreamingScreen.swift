@@ -8,11 +8,6 @@ import SwiftUI
 import RTSComponentKit
 import Network
 
-enum StreamType: String, CaseIterable, Identifiable {
-    case auto, high, medium, low
-    var id: Self { self }
-}
-
 struct StreamingScreen: View {
 
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
@@ -142,16 +137,7 @@ struct StreamingScreen: View {
     }
 
     private func setLayer(streamType: StreamType) {
-        switch streamType {
-        case .auto:
-            dataStore.selectLayer(layer: nil)
-        case .high:
-            dataStore.selectLayer(layer: dataStore.layerActiveMap?[0])
-        case .medium:
-            dataStore.selectLayer(layer: dataStore.layerActiveMap?[1])
-        case .low:
-            dataStore.selectLayer(layer: dataStore.layerActiveMap?[2])
-        }
+        dataStore.selectLayer(streamType: streamType)
     }
 }
 

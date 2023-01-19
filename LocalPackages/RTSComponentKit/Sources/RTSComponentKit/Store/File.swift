@@ -1,6 +1,0 @@
-//
-//  File.swift
-//
-    
-
-import Foundation

@@ -125,6 +125,7 @@ final class SubscriptionManager {
         return await task.value
     }
 
+    @discardableResult
     func selectLayer(layer: MCLayerData?) -> Bool {
         return subscriber?.select(layer) ?? false
     }
