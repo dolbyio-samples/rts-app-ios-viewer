@@ -124,6 +124,10 @@ final class SubscriptionManager {
         }
         return await task.value
     }
+
+    func selectLayer(layer: MCLayerData?) -> Bool {
+        return subscriber?.select(layer) ?? false
+    }
 }
 
 // MARK: Maker functions

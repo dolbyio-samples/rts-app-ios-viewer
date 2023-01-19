@@ -117,6 +117,10 @@ public final class RTSDataStore: ObservableObject {
     public func subscriptionView() -> UIView {
         videoRenderer.getView()
     }
+
+    public func selectLayer(layer: MCLayerData?) -> Bool {
+        return subscriptionManager.selectLayer(layer: layer)
+    }
 }
 
 // MARK: SubscriptionManagerDelegate implementation

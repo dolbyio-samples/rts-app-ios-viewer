@@ -20,10 +20,11 @@ struct StreamingScreen: View {
     @EnvironmentObject private var dataStore: RTSDataStore
     @State private var volume = 0.5
     @State private var showSettings = false
-    @State private var layersEnabled = false
+    @State private var layersDisabled = false
     @State private var showLive = false
     @State private var showStats = false
     @State private var isNetworkConnected: Bool = false
+    @State private var selectedLayer: StreamType = .auto
 
     var body: some View {
         BackgroundContainerView {
@@ -51,7 +52,7 @@ struct StreamingScreen: View {
                 }
 
                 if showSettings {
-                    SettingsView(settingsView: $showSettings, enableLayers: $layersEnabled, liveIndicator: $showLive, statsView: $showStats)
+                    SettingsView(settingsView: $showSettings, disableLayers: layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer)
                 }
 
                 if isStreamActive {
@@ -114,7 +115,7 @@ struct StreamingScreen: View {
                 }
             }
             .onReceive(dataStore.$layerActiveMap) { layers in
-                layersEnabled = layers != nil
+                layersDisabled = layers == nil || (layers?.count < 2 || layers?.count > 3)
             }
             .onReceive(timer) { _ in
                 Task {
@@ -139,15 +140,28 @@ struct StreamingScreen: View {
     private var isStreamActive: Bool {
         return dataStore.subscribeState == .streamActive
     }
+
+    private func setLayer(streamType: StreamType) {
+//        switch streamType {
+//        case .auto:
+//            dataStore.selectLayer(layer: nil)
+//        case .high:
+//            dataStore.selectLayer(layer: dataStore.layerActiveMap[0])
+//        case .medium:
+//            dataStore.selectLayer(layer: dataStore.layerActiveMap[1])
+//        case .low:
+//            dataStore.selectLayer(layer: dataStore.layerActiveMap[2])
+//        }
+    }
 }
 
 private struct SettingsView: View {
     @Binding var settingsView: Bool
-    @Binding var enableLayers: Bool
+    @Binding var disableLayers: Bool
     @Binding var liveIndicator: Bool
     @Binding var statsView: Bool
-
-    @State private var selectedFlavor: StreamType = .auto
+    @Binding var selectedLayer: StreamType
+    var layerHandler: (StreamType) -> Void
 
     var body: some View {
         VStack {
@@ -161,13 +175,15 @@ private struct SettingsView: View {
                             Spacer().frame(width: Layout.spacing1x)
                         }.frame(maxWidth: .infinity, alignment: .trailing)
 
-                        if enableLayers {
-                            Picker("stream.simulcast.label", selection: $selectedFlavor) {
+                            Picker("stream.simulcast.label", selection: $selectedLayer) {
                                 ForEach(StreamType.allCases, id: \.self) { item in
                                     Text(item.rawValue.capitalized)
                                 }
                             }.pickerStyle(.inline)
-                        }
+                                .onChange(of: selectedLayer) { layer in
+                                    layerHandler(layer)
+                                }
+                                .disabled(disableLayers)
 
                         Toggle("stream.media-stats.label", isOn: $statsView)
                         Toggle("stream.live-indicator.label", isOn: $liveIndicator)
