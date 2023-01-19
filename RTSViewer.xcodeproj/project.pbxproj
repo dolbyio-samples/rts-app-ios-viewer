@@ -34,6 +34,10 @@
 		E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844ABEB296DA5B20067B78C /* StreamingScreen.swift */; };
 		E8575E9929527B420070F53E /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
 		E8649BE429527C9F00309BF7 /* MillicastSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E8575E9829527B420070F53E /* MillicastSDK */; };
+		E8B48E7E2978DEA7000DC59A /* DolbyIOUIKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E8B48E802978DEA8000DC59A /* RTSComponentKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C14296CEA12007214B8 /* RTSComponentKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E8B48E812978DEB2000DC59A /* DolbyIOUIKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C0E296CEA07007214B8 /* DolbyIOUIKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E8B48E832978DEB3000DC59A /* RTSComponentKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C10296CEA0A007214B8 /* RTSComponentKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E8C47C6D29778BAA0026E877 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6C29778BAA0026E877 /* PersistenceManager.swift */; };
 		E8C47C6E29778BAA0026E877 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6C29778BAA0026E877 /* PersistenceManager.swift */; };
 		E8C47C7129778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6F29778BD00026E877 /* RTSViewer.xcdatamodeld */; };
@@ -41,6 +45,33 @@
 		E8D1947B29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */; };
 		E8D1947C29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E8B48E7F2978DEA7000DC59A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E8B48E7E2978DEA7000DC59A /* DolbyIOUIKit in Embed Frameworks */,
+				E8B48E802978DEA8000DC59A /* RTSComponentKit in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8B48E822978DEB2000DC59A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E8B48E812978DEB2000DC59A /* DolbyIOUIKit in Embed Frameworks */,
+				E8B48E832978DEB3000DC59A /* RTSComponentKit in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3F8BB7A226BD8FD40041CC02 /* MillicastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MillicastManager.swift; sourceTree = "<group>"; };
@@ -262,6 +293,7 @@
 				3FE90C1426B2AF4200B206A3 /* Sources */,
 				3FE90C1526B2AF4200B206A3 /* Frameworks */,
 				3FE90C1626B2AF4200B206A3 /* Resources */,
+				E8B48E822978DEB2000DC59A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -284,6 +316,7 @@
 				631DD25126F1E18E0023D24A /* Sources */,
 				631DD26126F1E18E0023D24A /* Frameworks */,
 				631DD26226F1E18E0023D24A /* Resources */,
+				E8B48E7F2978DEA7000DC59A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
