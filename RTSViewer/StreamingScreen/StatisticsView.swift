@@ -7,7 +7,7 @@ import SwiftUI
 import RTSComponentKit
 import Foundation
 
-public struct StatisticsView: View {
+struct StatisticsView: View {
     @Binding var statsView: Bool
     @Binding var stats: StatisticsData?
 
@@ -16,18 +16,18 @@ public struct StatisticsView: View {
 
     private let fontAssetCaption = FontAsset.avenirNextDemiBold(size: FontSize.title2, style: .title2)
 
-    public var body: some View {
+    var body: some View {
         VStack {
             VStack {
                 VStack {
                     HStack {
-                        Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption).frame(maxWidth: 200, alignment: .leading).focusable()
+                        Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption).frame(maxWidth: 200, alignment: .leading)
                         Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption)
                     }.frame(maxWidth: .infinity, alignment: .leading).padding([.leading, .top], 40)
                     List {
-                        ForEach(data()) { item in
+                        ForEach(data) { item in
                             HStack {
-                                Text(text: item.key, fontAsset: fontAssetTable).frame(maxWidth: 200, alignment: .leading).focusable()
+                                Text(text: item.key, fontAsset: fontAssetTable).frame(maxWidth: 200, alignment: .leading)
                                 Text(item.value).font(fontTable)
                             }
                         }
@@ -48,7 +48,7 @@ public struct StatisticsView: View {
         var value: String
     }
 
-    private func data() -> [StatData] {
+    private var data: [StatData] {
         var result = [StatData]()
 
         if let rtt = stats?.roundTripTime {
