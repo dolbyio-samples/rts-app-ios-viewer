@@ -5,27 +5,27 @@
 import Foundation
 
 public struct StatsInboundRtp {
-    public private(set) var sid: String
-    public private(set) var decoder: String?
-    public private(set) var frameWidth: Int
-    public private(set) var frameHeight: Int
-    public private(set) var videoResolution: String
-    public private(set) var fps: Int
-    public private(set) var audioLevel: Int
-    public private(set) var totalEnergy: Double
-    public private(set) var framesReceived: Int
-    public private(set) var framesDecoded: Int
-    public private(set) var framesBitDepth: Int
-    public private(set) var nackCount: Int
-    public private(set) var bytesReceived: Int
-    public private(set) var totalSampleDuration: Double
-    public private(set) var codec: String?
-    public private(set) var jitter: Double
-    public private(set) var packetsReceived: Double
-    public private(set) var packetsLost: Double
-    public private(set) var timestamp: Double
+    public let sid: String
+    public let decoder: String?
+    public let frameWidth: Int
+    public let frameHeight: Int
+    public let videoResolution: String
+    public let fps: Int
+    public let audioLevel: Int
+    public let totalEnergy: Double
+    public let framesReceived: Int
+    public let framesDecoded: Int
+    public let framesBitDepth: Int
+    public let nackCount: Int
+    public let bytesReceived: Int
+    public let totalSampleDuration: Double
+    public let codec: String?
+    public let jitter: Double
+    public let packetsReceived: Double
+    public let packetsLost: Double
+    public let timestamp: Double
 
-    public private(set) var isVideo: Bool
+    public let isVideo: Bool
     init(sid: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, jitter: Double, packetsReceived: Double, packetsLost: Double, timestamp: Double) {
 
         self.sid = sid
