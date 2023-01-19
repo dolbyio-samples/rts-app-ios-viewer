@@ -84,7 +84,7 @@ private struct StreamDetailInputBox: View {
 
     var body: some View {
         GeometryReader { proxy in
-            VStack(spacing: Layout.spacing3x) {
+            VStack(spacing: Layout.spacing6x) {
                 Text(
                     text: "stream-detail-input.header.label",
                     fontAsset: .avenirNextDemiBold(
@@ -153,22 +153,26 @@ private struct StreamDetailInputBox: View {
                         }
 
                     if streamDetails.wrappedValue.count > 0 {
-                        DolbyIOUIKit.Button(
-                            action: {
-                                persistenceManager.clearAllStreams()
-                                showingClearStreamsSuccessAlert = true
-                            },
-                            text: "stream-detail-input.clear-stream-history.button",
-                            mode: .secondary,
-                            danger: true
-                        )
+                        HStack {
+                            LinkButton(
+                                action: {
+                                    persistenceManager.clearAllStreams()
+                                    showingClearStreamsSuccessAlert = true
+                                },
+                                text: "stream-detail-input.clear-stream-history.button",
+                                fontAsset: .avenirNextBold(size: FontSize.title1, style: .title)
+                            )
+
+                            Spacer()
+                        }
+                        .frame(width: .infinity)
                     }
                 }
                 .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
                 .alert("stream-detail-input.clear-streams-successful.label", isPresented: $showingClearStreamsSuccessAlert) { }
 
                 Spacer()
-                    .frame(height: Layout.spacing12x)
+                    .frame(height: Layout.spacing8x)
             }
             .padding(.all, Layout.spacing5x)
 #if os(tvOS)
