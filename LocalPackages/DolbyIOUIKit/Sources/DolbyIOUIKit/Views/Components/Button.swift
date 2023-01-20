@@ -270,7 +270,7 @@ private struct CustomButtonView: View {
 
 private extension CustomButtonView {
     var font: Font {
-        theme[.avenirNextDemiBold(size: FontSize.body, style: .body)]
+        theme[.avenirNextDemiBold(size: FontSize.caption2, style: .caption2)]
     }
     var textColor: Color? {
         guard isEnabled == true else {

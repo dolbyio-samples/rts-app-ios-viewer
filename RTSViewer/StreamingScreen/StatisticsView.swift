@@ -11,10 +11,10 @@ struct StatisticsView: View {
     @Binding var statsView: Bool
     @Binding var stats: StatisticsData?
 
-    private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.title3, style: .title3)
-    private let fontTable = Font.avenirNextRegular(withStyle: .title3, size: FontSize.title3)
+    private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption2, style: .caption2)
+    private let fontTable = Font.avenirNextRegular(withStyle: .caption2, size: FontSize.caption2)
 
-    private let fontAssetCaption = FontAsset.avenirNextDemiBold(size: FontSize.title2, style: .title2)
+    private let fontAssetCaption = FontAsset.avenirNextDemiBold(size: FontSize.caption1, style: .caption)
 
     var body: some View {
         VStack {

@@ -38,14 +38,8 @@ struct StreamDetailInputScreen: View {
                     )
 
                     Spacer()
-                    Text(
-                        text: "stream-detail-input.footnote.label",
-                        fontAsset: .avenirNextRegular(
-                            size: FontSize.footnote,
-                            style: .footnote
-                        )
-                    )
-                    .padding(.bottom, Layout.spacing3x)
+                    FooterView(text: "stream-detail-input.footnote.label")
+                        .padding(.bottom, Layout.spacing3x)
                 }
                 .sheet(isPresented: $isShowingRecentStreams) {
                     RecentStreamsScreen(
@@ -84,12 +78,12 @@ private struct StreamDetailInputBox: View {
 
     var body: some View {
         GeometryReader { proxy in
-            VStack(spacing: Layout.spacing3x) {
+            VStack(spacing: Layout.spacing6x) {
                 Text(
                     text: "stream-detail-input.header.label",
                     fontAsset: .avenirNextDemiBold(
-                        size: FontSize.title3,
-                        style: .title3
+                        size: FontSize.body,
+                        style: .body
                     )
                 )
 
@@ -98,16 +92,16 @@ private struct StreamDetailInputBox: View {
                         text: "stream-detail-input.title.label",
                         mode: .secondary,
                         fontAsset: .avenirNextDemiBold(
-                            size: FontSize.largeTitle,
-                            style: .largeTitle
+                            size: FontSize.title2,
+                            style: .title2
                         )
                     )
 
                     Text(
                         text: "stream-detail-input.subtitle.label",
                         fontAsset: .avenirNextRegular(
-                            size: FontSize.headline,
-                            style: .headline
+                            size: FontSize.caption2,
+                            style: .caption2
                         )
                     )
                 }
@@ -118,13 +112,13 @@ private struct StreamDetailInputBox: View {
                         .onReceive(streamName.publisher) { _ in
                             streamName = String(streamName.prefix(64))
                         }
-                        .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
                     TextField("stream-detail-input.accountId.placeholder.label", text: $accountID)
                         .onReceive(accountID.publisher) { _ in
                             accountID = String(accountID.prefix(64))
                         }
-                        .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
                     if streamDetails.wrappedValue.count > 0 {
                         DolbyIOUIKit.Button(
@@ -153,22 +147,25 @@ private struct StreamDetailInputBox: View {
                         }
 
                     if streamDetails.wrappedValue.count > 0 {
-                        DolbyIOUIKit.Button(
-                            action: {
-                                persistenceManager.clearAllStreams()
-                                showingClearStreamsSuccessAlert = true
-                            },
-                            text: "stream-detail-input.clear-stream-history.button",
-                            mode: .secondary,
-                            danger: true
-                        )
+                        HStack {
+                            LinkButton(
+                                action: {
+                                    persistenceManager.clearAllStreams()
+                                    showingClearStreamsSuccessAlert = true
+                                },
+                                text: "stream-detail-input.clear-stream-history.button",
+                                fontAsset: .avenirNextBold(size: FontSize.caption2, style: .caption2)
+                            )
+
+                            Spacer()
+                        }
                     }
                 }
                 .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
                 .alert("stream-detail-input.clear-streams-successful.label", isPresented: $showingClearStreamsSuccessAlert) { }
 
                 Spacer()
-                    .frame(height: Layout.spacing12x)
+                    .frame(height: Layout.spacing8x)
             }
             .padding(.all, Layout.spacing5x)
 #if os(tvOS)

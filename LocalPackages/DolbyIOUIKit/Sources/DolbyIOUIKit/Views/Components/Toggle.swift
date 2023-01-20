@@ -38,7 +38,7 @@ public struct Toggle: View {
 
 private extension Toggle {
     var font: Font {
-        theme[.avenirNextRegular(size: FontSize.subhead, style: .subheadline)]
+        theme[.avenirNextRegular(size: FontSize.body, style: .body)]
     }
 
     var textColor: Color? {
