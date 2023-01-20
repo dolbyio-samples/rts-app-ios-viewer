@@ -74,15 +74,15 @@ struct StreamingScreen: View {
                             Text(
                                 text: "stream.offline.title.label",
                                 fontAsset: .avenirNextDemiBold(
-                                    size: FontSize.largeTitle,
-                                    style: .largeTitle
+                                    size: FontSize.title3,
+                                    style: .title3
                                 )
                             )
                             Text(
                                 text: "stream.offline.subtitle.label",
                                 fontAsset: .avenirNextRegular(
-                                    size: FontSize.title3,
-                                    style: .title3
+                                    size: FontSize.caption2,
+                                    style: .caption2
                                 )
                             )
                         }
@@ -90,8 +90,8 @@ struct StreamingScreen: View {
                         Text(
                             text: "stream.network.disconnected.label",
                             fontAsset: .avenirNextDemiBold(
-                                size: FontSize.largeTitle,
-                                style: .largeTitle
+                                size: FontSize.title3,
+                                style: .title3
                             )
                         )
 
