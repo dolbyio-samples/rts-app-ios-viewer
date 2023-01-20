@@ -35,8 +35,8 @@ struct StreamingScreen: View {
                     VStack {
                         HStack {
                             Text(text: "stream.live.label", fontAsset: .avenirNextBold(
-                                size: FontSize.title3,
-                                style: .title3
+                                size: FontSize.caption2,
+                                style: .caption2
                             )
                             ).padding(.leading, 20)
                                 .padding(.trailing, 20)
