@@ -38,14 +38,8 @@ struct StreamDetailInputScreen: View {
                     )
 
                     Spacer()
-                    Text(
-                        text: "stream-detail-input.footnote.label",
-                        fontAsset: .avenirNextRegular(
-                            size: FontSize.footnote,
-                            style: .footnote
-                        )
-                    )
-                    .padding(.bottom, Layout.spacing3x)
+                    FooterView(text: "stream-detail-input.footnote.label")
+                        .padding(.bottom, Layout.spacing3x)
                 }
                 .sheet(isPresented: $isShowingRecentStreams) {
                     RecentStreamsScreen(
@@ -98,8 +92,8 @@ private struct StreamDetailInputBox: View {
                         text: "stream-detail-input.title.label",
                         mode: .secondary,
                         fontAsset: .avenirNextDemiBold(
-                            size: FontSize.largeTitle,
-                            style: .largeTitle
+                            size: FontSize.title1,
+                            style: .title
                         )
                     )
 

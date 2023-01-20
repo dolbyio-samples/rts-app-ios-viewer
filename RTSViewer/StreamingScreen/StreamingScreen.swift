@@ -36,8 +36,8 @@ struct StreamingScreen: View {
                         Spacer().frame(height: Layout.spacing1x)
                         HStack {
                             Text(text: "stream.live.label", fontAsset: .avenirNextDemiBold(
-                                size: FontSize.largeTitle,
-                                style: .largeTitle
+                                size: FontSize.callout,
+                                style: .callout
                             )
                             ).padding()
                                 .background(.red)
@@ -67,8 +67,8 @@ struct StreamingScreen: View {
                             Text(
                                 text: "stream.offline.title.label",
                                 fontAsset: .avenirNextDemiBold(
-                                    size: FontSize.largeTitle,
-                                    style: .largeTitle
+                                    size: FontSize.callout,
+                                    style: .callout
                                 )
                             )
                             Text(
@@ -83,8 +83,8 @@ struct StreamingScreen: View {
                         Text(
                             text: "stream.network.disconnected.label",
                             fontAsset: .avenirNextDemiBold(
-                                size: FontSize.largeTitle,
-                                style: .largeTitle
+                                size: FontSize.callout,
+                                style: .callout
                             )
                         )
 

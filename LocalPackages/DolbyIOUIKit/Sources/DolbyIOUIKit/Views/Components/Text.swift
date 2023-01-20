@@ -66,14 +66,6 @@ struct Text_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             VStack {
-                Text(
-                    text: "This is a regular text",
-                    mode: .primary,
-                    fontAsset: .avenirNextRegular(
-                        size: FontSize.largeTitle,
-                        style: .largeTitle
-                    )
-                )
 
                 Text(
                     text: "This is a regular text",
@@ -104,14 +96,6 @@ struct Text_Previews: PreviewProvider {
             }
 
             VStack {
-                Text(
-                    text: "This is a bold text",
-                    mode: .primary,
-                    fontAsset: .avenirNextBold(
-                        size: FontSize.largeTitle,
-                        style: .largeTitle
-                    )
-                )
 
                 Text(
                     text: "This is a bold text",

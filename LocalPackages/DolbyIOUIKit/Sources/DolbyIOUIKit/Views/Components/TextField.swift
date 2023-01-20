@@ -91,7 +91,7 @@ public struct TextField: View {
 @available(tvOS, unavailable)
 private extension TextField {
     var font: Font {
-        theme[.avenirNextRegular(size: FontSize.subhead, style: .subheadline)]
+        theme[.avenirNextRegular(size: FontSize.body, style: .body)]
     }
 
     var errorFont: Font {

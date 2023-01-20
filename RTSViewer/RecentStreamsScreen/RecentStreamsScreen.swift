@@ -27,8 +27,8 @@ struct RecentStreamsScreen: View {
                     Text(
                         text: "recent-streams.title.label",
                         fontAsset: .avenirNextDemiBold(
-                            size: FontSize.largeTitle,
-                            style: .largeTitle
+                            size: FontSize.title1,
+                            style: .title
                         )
                     )
 

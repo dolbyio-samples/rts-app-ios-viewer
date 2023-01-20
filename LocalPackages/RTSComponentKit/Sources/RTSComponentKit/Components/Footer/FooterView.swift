@@ -16,8 +16,8 @@ public struct FooterView: View {
         DolbyIOUIKit.Text(
             text: text,
             font: .avenirNextRegular(
-                withStyle: .footnote,
-                size: FontSize.footnote
+                withStyle: .caption,
+                size: FontSize.caption1
             )
         )
     }
