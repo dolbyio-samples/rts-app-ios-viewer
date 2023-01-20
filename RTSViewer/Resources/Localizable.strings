@@ -24,6 +24,7 @@
 "stream.offline.title.label" = "Stream is offline";
 "stream.offline.subtitle.label" = "Please wait for livestream to begin.";
 "stream.live.label" = "LIVE";
+"stream.offline.label" = "OFFLINE";
 "stream.simulcast.label" = "Simulcast";
 "stream.media-stats.label" = "Media stats";
 "stream.live-indicator.label" = "Live indicator";
