@@ -21,6 +21,8 @@ struct StreamingScreen: View {
     @State private var isNetworkConnected: Bool = false
     @State private var selectedLayer: StreamType = .auto
 
+    @Environment(\.dismiss) var dismiss
+
     var body: some View {
         BackgroundContainerView {
             ZStack {
@@ -139,6 +141,14 @@ struct StreamingScreen: View {
                     _ = await dataStore.stopSubscribe()
                     timer.upstream.connect().cancel()
                 }
+            }
+        }.onExitCommand {
+            if showStats {
+                showStats = false
+            } else if showSettings {
+                showSettings = false
+            } else {
+                dismiss()
             }
         }
     }

@@ -21,25 +21,20 @@ struct StatisticsView: View {
             VStack {
                 VStack {
                     HStack {
-                        Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption).frame(maxWidth: 200, alignment: .leading)
+                        Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption).frame(maxWidth: 300, alignment: .leading)
                         Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption)
                     }.frame(maxWidth: .infinity, alignment: .leading).padding([.leading, .top], 40)
                     List {
                         ForEach(data) { item in
                             HStack {
-                                Text(text: item.key, fontAsset: fontAssetTable).frame(maxWidth: 200, alignment: .leading)
+                                Text(text: item.key, fontAsset: fontAssetTable).frame(maxWidth: 300, alignment: .leading)
                                 Text(item.value).font(fontTable)
                             }
                         }
                     }
                 }.background(Color(uiColor: UIColor.Neutral.neutral800)).cornerRadius(Layout.cornerRadius6x)
-            }.frame(maxWidth: 700, maxHeight: 800).padding([.leading, .bottom], 35)
+            }.frame(maxWidth: 700, maxHeight: 900).padding([.leading, .bottom], 35)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-            .onExitCommand {
-                if statsView {
-                    statsView = false
-                }
-            }
     }
 
     struct StatData: Identifiable {
