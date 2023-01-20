@@ -82,8 +82,8 @@ private struct StreamDetailInputBox: View {
                 Text(
                     text: "stream-detail-input.header.label",
                     fontAsset: .avenirNextDemiBold(
-                        size: FontSize.title3,
-                        style: .title3
+                        size: FontSize.body,
+                        style: .body
                     )
                 )
 
@@ -92,16 +92,16 @@ private struct StreamDetailInputBox: View {
                         text: "stream-detail-input.title.label",
                         mode: .secondary,
                         fontAsset: .avenirNextDemiBold(
-                            size: FontSize.title1,
-                            style: .title
+                            size: FontSize.title2,
+                            style: .title2
                         )
                     )
 
                     Text(
                         text: "stream-detail-input.subtitle.label",
                         fontAsset: .avenirNextRegular(
-                            size: FontSize.headline,
-                            style: .headline
+                            size: FontSize.caption2,
+                            style: .caption2
                         )
                     )
                 }
@@ -112,13 +112,13 @@ private struct StreamDetailInputBox: View {
                         .onReceive(streamName.publisher) { _ in
                             streamName = String(streamName.prefix(64))
                         }
-                        .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
                     TextField("stream-detail-input.accountId.placeholder.label", text: $accountID)
                         .onReceive(accountID.publisher) { _ in
                             accountID = String(accountID.prefix(64))
                         }
-                        .font(.avenirNextRegular(withStyle: .body, size: FontSize.headline))
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
                     if streamDetails.wrappedValue.count > 0 {
                         DolbyIOUIKit.Button(
@@ -154,7 +154,7 @@ private struct StreamDetailInputBox: View {
                                     showingClearStreamsSuccessAlert = true
                                 },
                                 text: "stream-detail-input.clear-stream-history.button",
-                                fontAsset: .avenirNextBold(size: FontSize.title1, style: .title)
+                                fontAsset: .avenirNextBold(size: FontSize.caption2, style: .caption2)
                             )
 
                             Spacer()
