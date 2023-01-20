@@ -34,15 +34,16 @@ struct StreamingScreen: View {
                 if showLive {
                     VStack {
                         HStack {
-                            Text(text: "stream.live.label", fontAsset: .avenirNextBold(
-                                size: FontSize.caption2,
-                                style: .caption2
-                            )
+                            Text(text: isStreamActive ? "stream.live.label" : "stream.offline.label",
+                                 fontAsset: .avenirNextBold(
+                                    size: FontSize.caption2,
+                                    style: .caption2
+                                 )
                             ).padding(.leading, 20)
                                 .padding(.trailing, 20)
                                 .padding(.top, 6)
                                 .padding(.bottom, 6)
-                                .background(.red)
+                                .background(isStreamActive ? Color(uiColor: UIColor.Feedback.error500) : Color(uiColor: UIColor.Neutral.neutral400))
                                 .cornerRadius(Layout.cornerRadius6x)
                         }.frame(maxWidth: .infinity, alignment: .leading)
                     }.frame(maxHeight: .infinity, alignment: .top)
