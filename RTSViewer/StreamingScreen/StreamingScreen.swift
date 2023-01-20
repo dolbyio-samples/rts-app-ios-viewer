@@ -35,12 +35,16 @@ struct StreamingScreen: View {
                     VStack {
                         Spacer().frame(height: Layout.spacing1x)
                         HStack {
-                            Text(text: "stream.live.label", fontAsset: .avenirNextDemiBold(
-                                size: FontSize.callout,
-                                style: .callout
+                            Text(
+                                text: "stream.live.label",
+                                fontAsset: .avenirNextDemiBold(
+                                    size: FontSize.caption2,
+                                    style: .caption2
+                                )
                             )
-                            ).padding()
-                                .background(.red)
+                            .padding()
+                            .background(.red)
+
                             Spacer().frame(width: Layout.spacing1x)
                         }.frame(maxWidth: .infinity, alignment: .trailing)
                     }.frame(maxHeight: .infinity, alignment: .top)
@@ -67,15 +71,15 @@ struct StreamingScreen: View {
                             Text(
                                 text: "stream.offline.title.label",
                                 fontAsset: .avenirNextDemiBold(
-                                    size: FontSize.callout,
-                                    style: .callout
+                                    size: FontSize.title3,
+                                    style: .title3
                                 )
                             )
                             Text(
                                 text: "stream.offline.subtitle.label",
                                 fontAsset: .avenirNextRegular(
-                                    size: FontSize.title3,
-                                    style: .title3
+                                    size: FontSize.caption2,
+                                    style: .caption2
                                 )
                             )
                         }
@@ -83,8 +87,8 @@ struct StreamingScreen: View {
                         Text(
                             text: "stream.network.disconnected.label",
                             fontAsset: .avenirNextDemiBold(
-                                size: FontSize.callout,
-                                style: .callout
+                                size: FontSize.title3,
+                                style: .title3
                             )
                         )
 
