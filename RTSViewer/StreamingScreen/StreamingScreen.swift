@@ -33,36 +33,39 @@ struct StreamingScreen: View {
 
                 if showLive {
                     VStack {
-                        Spacer().frame(height: Layout.spacing1x)
                         HStack {
-                            Text(
-                                text: "stream.live.label",
-                                fontAsset: .avenirNextDemiBold(
-                                    size: FontSize.caption2,
-                                    style: .caption2
-                                )
+                            Text(text: "stream.live.label", fontAsset: .avenirNextBold(
+                                size: FontSize.title3,
+                                style: .title3
                             )
-                            .padding()
-                            .background(.red)
-
-                            Spacer().frame(width: Layout.spacing1x)
-                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                            ).padding(.leading, 20)
+                                .padding(.trailing, 20)
+                                .padding(.top, 6)
+                                .padding(.bottom, 6)
+                                .background(.red)
+                                .cornerRadius(Layout.cornerRadius6x)
+                        }.frame(maxWidth: .infinity, alignment: .leading)
                     }.frame(maxHeight: .infinity, alignment: .top)
-                }
-
-                if showSettings {
-                    SettingsView(settingsView: $showSettings, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer)
+                        .padding(.leading, 56)
+                        .padding(.top, 37)
                 }
 
                 if isStreamActive {
                     VStack {
                         HStack {
                             IconButton(name: .settings, tintColor: .white) {
-                                showSettings = !showSettings
+                                withAnimation {
+                                    showSettings = !showSettings
+                                }
                             }
                             Spacer().frame(width: Layout.spacing1x)
                         }.frame(maxWidth: .infinity, alignment: .trailing)
                     }.frame(maxHeight: .infinity, alignment: .bottom)
+                        .padding()
+                }
+
+                if showSettings {
+                    SettingsView(settingsView: $showSettings, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
                 }
 
                 if !isStreamActive {
@@ -71,15 +74,15 @@ struct StreamingScreen: View {
                             Text(
                                 text: "stream.offline.title.label",
                                 fontAsset: .avenirNextDemiBold(
-                                    size: FontSize.title3,
-                                    style: .title3
+                                    size: FontSize.largeTitle,
+                                    style: .largeTitle
                                 )
                             )
                             Text(
                                 text: "stream.offline.subtitle.label",
                                 fontAsset: .avenirNextRegular(
-                                    size: FontSize.caption2,
-                                    style: .caption2
+                                    size: FontSize.title3,
+                                    style: .title3
                                 )
                             )
                         }
@@ -87,8 +90,8 @@ struct StreamingScreen: View {
                         Text(
                             text: "stream.network.disconnected.label",
                             fontAsset: .avenirNextDemiBold(
-                                size: FontSize.title3,
-                                style: .title3
+                                size: FontSize.largeTitle,
+                                style: .largeTitle
                             )
                         )
 
@@ -163,27 +166,27 @@ private struct SettingsView: View {
                     List {
                         HStack {
                             IconButton(name: .close, tintColor: .white) {
-                                settingsView = false
+                                withAnimation {
+                                    settingsView = false
+                                }
                             }
                             Spacer().frame(width: Layout.spacing1x)
                         }.frame(maxWidth: .infinity, alignment: .trailing)
 
-                            Picker("stream.simulcast.label", selection: $selectedLayer) {
-                                ForEach(StreamType.allCases, id: \.self) { item in
-                                    Text(item.rawValue.capitalized)
-                                }
-                            }.pickerStyle(.inline)
-                                .onChange(of: selectedLayer) { layer in
-                                    layerHandler(layer)
-                                }
-                                .disabled(disableLayers)
+                        Picker("stream.simulcast.label", selection: $selectedLayer) {
+                            ForEach(StreamType.allCases, id: \.self) { item in
+                                Text(item.rawValue.capitalized)
+                            }
+                        }.pickerStyle(.inline)
+                            .onChange(of: selectedLayer) { layer in
+                                layerHandler(layer)
+                            }
+                            .disabled(disableLayers)
 
                         Toggle("stream.media-stats.label", isOn: $statsView)
                         Toggle("stream.live-indicator.label", isOn: $liveIndicator)
                     }.background(Color(uiColor: UIColor.Neutral.neutral800))
-
-                    VStack {}.frame(height: 50)
-                }.cornerRadius(Layout.cornerRadius6x)
+                }
             }.padding()
                 .frame(maxWidth: 600, maxHeight: .infinity, alignment: .bottom)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
