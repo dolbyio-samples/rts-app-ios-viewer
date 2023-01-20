@@ -69,13 +69,13 @@ public extension UIColor {
 
     /// A typeface is the design of lettering that can include variations in size, weight, slope, width, and height. Avenir Next is part of the Platinum Collection and comes in 4 typeface sets, regular, Italic, condensed and condensed Italic weights.
     enum Typography {
-        enum Light {
+        public enum Light {
             public static let primary = UIColor(hex: 0x6A6A6D)
             public static let secondary = UIColor(hex: 0x292930)
             public static let tertiary = UIColor(hex: 0x2aa0cc)
         }
 
-        enum Dark {
+        public enum Dark {
             public static let primary = UIColor(hex: 0xB9B9BA)
             public static let secondary = UIColor(hex: 0xFFFFFF)
             public static let tertiary = UIColor(hex: 0x35C8FF)

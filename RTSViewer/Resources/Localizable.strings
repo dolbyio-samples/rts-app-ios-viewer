@@ -31,7 +31,9 @@
 /** Recent Streams Screen */
 
 "recent-streams.title.label" = "Saved streams";
-"recent-streams.format.label %@ %@" = "%@ (Account ID: %@)";
+"recent-streams.stream-name.label" = "Stream name";
+"recent-streams.account-id.label" = "Account ID";
+"recent-streams.format.label %@ %@" = "%@ / %@";
 
 /** Streaming Settings */
 "stream.stats.name.label" = "Name";

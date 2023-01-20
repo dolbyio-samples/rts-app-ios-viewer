@@ -24,7 +24,7 @@ struct RecentStreamsScreen: View {
     var body: some View {
         ZStack {
             GeometryReader { proxy in
-                VStack {
+                VStack(spacing: Layout.spacing4x) {
                     Text(
                         text: "recent-streams.title.label",
                         fontAsset: .avenirNextDemiBold(
@@ -33,27 +33,51 @@ struct RecentStreamsScreen: View {
                         )
                     )
 
+                    HStack(spacing: Layout.spacing1x) {
+                        Text("recent-streams.stream-name.label")
+                            .font(
+                                theme[
+                                    .avenirNextMedium(
+                                        size: FontSize.caption2,
+                                        style: .caption2
+                                    )
+                                ]
+                            )
+                            .foregroundColor(Color(uiColor: UIColor.Neutral.neutral200))
+                            .padding([.leading, .trailing])
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                Color(uiColor: UIColor.Neutral.neutral800),
+                                in: RoundedRectangle(cornerRadius: Layout.cornerRadius4x)
+                            )
+
+                        Text("recent-streams.account-id.label")
+                            .font(
+                                theme[
+                                    .avenirNextMedium(
+                                        size: FontSize.caption2,
+                                        style: .caption2
+                                    )
+                                ]
+                            )
+                            .foregroundColor(Color(uiColor: UIColor.Neutral.neutral200))
+                            .padding([.leading, .trailing])
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                Color(uiColor: UIColor.Neutral.neutral800),
+                                in: RoundedRectangle(cornerRadius: Layout.cornerRadius4x)
+                            )
+                    }
+                    .padding([.leading, .trailing])
+                    .frame(width: proxy.size.width / 2)
+
                     List {
                         ForEach(streamDetails.wrappedValue) { streamDetail in
-                            if let name = streamDetail.streamName, let accountID = streamDetail.accountID {
-                                SwiftUI.Button.init {
-                                    self.streamName = name
+                            if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
+                                RecentStreamButton(streamName: streamName, accountID: accountID) {
+                                    self.streamName = streamName
                                     self.accountID = accountID
                                     isShowingRecentStreams = false
-                                } label: {
-                                    HStack {
-                                        Spacer()
-                                        Text("recent-streams.format.label \(name) \(accountID)")
-                                            .font(
-                                                theme[
-                                                    .avenirNextMedium(
-                                                        size: FontSize.caption2,
-                                                        style: .caption2
-                                                    )
-                                                ]
-                                            )
-                                        Spacer()
-                                    }
                                 }
                             }
                         }
