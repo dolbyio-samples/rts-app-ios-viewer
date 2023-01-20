@@ -159,7 +159,6 @@ private struct StreamDetailInputBox: View {
 
                             Spacer()
                         }
-                        .frame(width: .infinity)
                     }
                 }
                 .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
