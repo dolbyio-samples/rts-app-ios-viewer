@@ -11,6 +11,7 @@ struct RecentStreamsScreen: View {
     @Binding private var accountID: String
     @Binding private var isShowingRecentStreams: Bool
     @EnvironmentObject private var dataStore: RTSDataStore
+    private let theme = ThemeManager.shared.theme
 
     private let streamDetails: FetchRequest<StreamDetail> = FetchRequest<StreamDetail>(fetchRequest: PersistenceManager.recentStreams)
 
@@ -21,14 +22,14 @@ struct RecentStreamsScreen: View {
     }
 
     var body: some View {
-        BackgroundContainerView {
+        ZStack {
             GeometryReader { proxy in
                 VStack {
                     Text(
                         text: "recent-streams.title.label",
                         fontAsset: .avenirNextDemiBold(
-                            size: FontSize.title1,
-                            style: .title
+                            size: FontSize.title2,
+                            style: .title2
                         )
                     )
 
@@ -39,11 +40,18 @@ struct RecentStreamsScreen: View {
                                     self.streamName = name
                                     self.accountID = accountID
                                     isShowingRecentStreams = false
-
                                 } label: {
                                     HStack {
                                         Spacer()
                                         Text("recent-streams.format.label \(name) \(accountID)")
+                                            .font(
+                                                theme[
+                                                    .avenirNextMedium(
+                                                        size: FontSize.caption2,
+                                                        style: .caption2
+                                                    )
+                                                ]
+                                            )
                                         Spacer()
                                     }
                                 }
@@ -55,6 +63,8 @@ struct RecentStreamsScreen: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .background(Color(uiColor: UIColor.Neutral.neutral900))
+        .navigationHeaderView()
     }
 }
 
