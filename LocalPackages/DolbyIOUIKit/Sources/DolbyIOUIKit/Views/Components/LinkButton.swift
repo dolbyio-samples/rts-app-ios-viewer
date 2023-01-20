@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  LinkButton.swift
 //
 
 import SwiftUI
@@ -10,8 +10,6 @@ public struct LinkButton: View {
     public let text: LocalizedStringKey
     public let font: Font
 
-    @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.colorScheme) private var colorScheme
     @FocusState private var isFocused: Bool
     private var theme: Theme = ThemeManager.shared.theme
 
