@@ -26,7 +26,7 @@
 "stream.live.label" = "LIVE";
 "stream.offline.label" = "OFFLINE";
 "stream.simulcast.label" = "Simulcast";
-"stream.media-stats.label" = "Media stats";
+"stream.media-stats.label" = "Streaming statistics";
 "stream.live-indicator.label" = "Live indicator";
 
 /** Recent Streams Screen */

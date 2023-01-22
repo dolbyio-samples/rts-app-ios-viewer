@@ -227,7 +227,6 @@ extension SubscriptionManager: MCSubscriberListener {
     }
 
     func onStatsReport(_ report: MCStatsReport!) {
-        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onStatsReport()")
         delegate?.onStatsReport(report: report)
     }
 
