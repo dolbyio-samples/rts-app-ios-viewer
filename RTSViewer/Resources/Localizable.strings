@@ -37,6 +37,7 @@
 "recent-streams.format.label %@ %@" = "%@ / %@";
 
 /** Streaming Settings */
+"stream.settings.label" = "Settings";
 "stream.stats.name.label" = "Name";
 "stream.stats.value.label" = "Value";
 "stream.stats.rtt.label" = "RTT";

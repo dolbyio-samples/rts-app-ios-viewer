@@ -53,7 +53,7 @@ struct StreamingScreen: View {
                         .padding(.top, 37)
                 }
 
-                // if isStreamActive {
+                if isStreamActive {
                     VStack {
                         HStack {
                             IconButton(name: .settings, tintColor: .white) {
@@ -65,7 +65,7 @@ struct StreamingScreen: View {
                         }.frame(maxWidth: .infinity, alignment: .trailing)
                     }.frame(maxHeight: .infinity, alignment: .bottom)
                         .padding()
-                // }
+                }
 
                 if showSettings {
                     SettingsView(settingsView: $showSettings, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
@@ -175,24 +175,24 @@ private struct SettingsView: View {
             VStack {
                 VStack {
                     List {
-                        HStack {
-                            IconButton(name: .close, tintColor: .white) {
-                                withAnimation {
-                                    settingsView = false
-                                }
-                            }
-                            Spacer().frame(width: Layout.spacing1x)
-                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                        Text(text: "stream.settings.label",
+                             mode: .secondary,
+                             fontAsset: .avenirNextBold(
+                                size: FontSize.title2,
+                                style: .title2
+                             )
+                        ).foregroundColor(.white)
 
                         Picker("stream.simulcast.label", selection: $selectedLayer) {
                             ForEach(StreamType.allCases, id: \.self) { item in
                                 Text(item.rawValue.capitalized)
                             }
-                        }.pickerStyle(.inline)
-                            .onChange(of: selectedLayer) { layer in
-                                layerHandler(layer)
-                            }
-                            .disabled(disableLayers)
+                        }
+                        .pickerStyle(.inline)
+                        .onChange(of: selectedLayer) { layer in
+                            layerHandler(layer)
+                        }
+                        .disabled(disableLayers)
 
                         Toggle(isOn: $statsView, label: {
                             HStack {
@@ -200,12 +200,12 @@ private struct SettingsView: View {
                                 Text("stream.media-stats.label")
                             }
                         })
-                            .padding(.leading, 28)
-                            .padding(.trailing, 28)
-                            .overlay(
-                                    RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
-                                        .stroke(.white, lineWidth: 1)
-                                )
+                        .padding(.leading, 28)
+                        .padding(.trailing, 28)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                                .stroke(.white, lineWidth: 1)
+                        )
 
                         Toggle(isOn: $liveIndicator, label: {
                             HStack {
@@ -213,11 +213,11 @@ private struct SettingsView: View {
                                 Text("stream.live-indicator.label")
                             }
                         })
-                            .padding(.leading, 28)
-                            .padding(.trailing, 28)
-                            .overlay(RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
-                                        .stroke(.white, lineWidth: 1)
-                                )
+                        .padding(.leading, 28)
+                        .padding(.trailing, 28)
+                        .overlay(RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                            .stroke(.white, lineWidth: 1)
+                        )
                     }.background(Color(uiColor: UIColor.Neutral.neutral800))
                         .padding()
                 }
