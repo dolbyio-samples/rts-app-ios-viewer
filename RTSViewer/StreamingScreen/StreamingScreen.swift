@@ -143,9 +143,7 @@ struct StreamingScreen: View {
                 }
             }
         }.onExitCommand {
-            if showStats {
-                showStats = false
-            } else if showSettings {
+            if showSettings {
                 showSettings = false
             } else {
                 dismiss()
