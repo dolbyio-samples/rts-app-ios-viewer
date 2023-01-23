@@ -21,6 +21,7 @@ public struct Toggle: View {
         SwiftUI.Button(action: {
             isOn.toggle()
         }) {
+            Image(systemName: "pencil")
             SwiftUI.Toggle(text, isOn: $isOn)
                 .toggleStyle(CheckboxToggleStyle())
                 .font(font)

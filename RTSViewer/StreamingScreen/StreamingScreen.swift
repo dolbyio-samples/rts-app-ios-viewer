@@ -53,7 +53,7 @@ struct StreamingScreen: View {
                         .padding(.top, 37)
                 }
 
-                if isStreamActive {
+                // if isStreamActive {
                     VStack {
                         HStack {
                             IconButton(name: .settings, tintColor: .white) {
@@ -65,7 +65,7 @@ struct StreamingScreen: View {
                         }.frame(maxWidth: .infinity, alignment: .trailing)
                     }.frame(maxHeight: .infinity, alignment: .bottom)
                         .padding()
-                }
+                // }
 
                 if showSettings {
                     SettingsView(settingsView: $showSettings, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
@@ -194,12 +194,35 @@ private struct SettingsView: View {
                             }
                             .disabled(disableLayers)
 
-                        Toggle("stream.media-stats.label", isOn: $statsView)
-                        Toggle("stream.live-indicator.label", isOn: $liveIndicator)
+                        Toggle(isOn: $statsView, label: {
+                            HStack {
+                                IconView(name: .info, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                Text("stream.media-stats.label")
+                            }
+                        })
+                            .padding(.leading, 28)
+                            .padding(.trailing, 28)
+                            .overlay(
+                                    RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                                        .stroke(.white, lineWidth: 1)
+                                )
+
+                        Toggle(isOn: $liveIndicator, label: {
+                            HStack {
+                                IconView(name: .liveStream, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                Text("stream.live-indicator.label")
+                            }
+                        })
+                            .padding(.leading, 28)
+                            .padding(.trailing, 28)
+                            .overlay(RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                                        .stroke(.white, lineWidth: 1)
+                                )
                     }.background(Color(uiColor: UIColor.Neutral.neutral800))
+                        .padding()
                 }
             }.padding()
-                .frame(maxWidth: 600, maxHeight: .infinity, alignment: .bottom)
+                .frame(maxWidth: 700, maxHeight: .infinity, alignment: .bottom)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
     }
 }
