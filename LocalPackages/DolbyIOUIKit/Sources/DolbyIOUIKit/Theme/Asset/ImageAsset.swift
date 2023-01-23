@@ -28,4 +28,6 @@ public enum ImageAsset: String, ImageAssetable {
     // MARK: Buttons
 
     case settings = "settings"
+    case info = "info"
+    case liveStream = "live-stream"
 }

@@ -175,31 +175,54 @@ private struct SettingsView: View {
             VStack {
                 VStack {
                     List {
-                        HStack {
-                            IconButton(name: .close, tintColor: .white) {
-                                withAnimation {
-                                    settingsView = false
-                                }
-                            }
-                            Spacer().frame(width: Layout.spacing1x)
-                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                        Text(text: "stream.settings.label",
+                             mode: .secondary,
+                             fontAsset: .avenirNextBold(
+                                size: FontSize.title2,
+                                style: .title2
+                             )
+                        ).foregroundColor(.white)
 
                         Picker("stream.simulcast.label", selection: $selectedLayer) {
                             ForEach(StreamType.allCases, id: \.self) { item in
                                 Text(item.rawValue.capitalized)
                             }
-                        }.pickerStyle(.inline)
-                            .onChange(of: selectedLayer) { layer in
-                                layerHandler(layer)
-                            }
-                            .disabled(disableLayers)
+                        }
+                        .pickerStyle(.inline)
+                        .onChange(of: selectedLayer) { layer in
+                            layerHandler(layer)
+                        }
+                        .disabled(disableLayers)
 
-                        Toggle("stream.media-stats.label", isOn: $statsView)
-                        Toggle("stream.live-indicator.label", isOn: $liveIndicator)
+                        Toggle(isOn: $statsView, label: {
+                            HStack {
+                                IconView(name: .info, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                Text("stream.media-stats.label")
+                            }
+                        })
+                        .padding(.leading, 28)
+                        .padding(.trailing, 28)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                                .stroke(.white, lineWidth: 1)
+                        )
+
+                        Toggle(isOn: $liveIndicator, label: {
+                            HStack {
+                                IconView(name: .liveStream, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                Text("stream.live-indicator.label")
+                            }
+                        })
+                        .padding(.leading, 28)
+                        .padding(.trailing, 28)
+                        .overlay(RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                            .stroke(.white, lineWidth: 1)
+                        )
                     }.background(Color(uiColor: UIColor.Neutral.neutral800))
+                        .padding()
                 }
             }.padding()
-                .frame(maxWidth: 600, maxHeight: .infinity, alignment: .bottom)
+                .frame(maxWidth: 700, maxHeight: .infinity, alignment: .bottom)
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
     }
 }

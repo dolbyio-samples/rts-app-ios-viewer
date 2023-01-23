@@ -15,6 +15,7 @@ public enum Layout {
 
     public static let cornerRadius4x: CGFloat = 4.0
     public static let cornerRadius6x: CGFloat = 6.0
+    public static let cornerRadius14x: CGFloat = 14.0
 
     // MARK: Spacing's
 
