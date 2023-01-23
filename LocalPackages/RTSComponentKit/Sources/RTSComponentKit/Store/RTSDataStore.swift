@@ -268,15 +268,13 @@ extension RTSDataStore: SubscriptionManagerDelegate {
 
     private func getStatisticsCodec(codecId: String, report: MCStatsReport?) -> String? {
         let codecType = MCCodecsStats.get_type()
-        if let statsReport = report?.getStatsOf(codecType) {
-            for stats in statsReport {
-                guard let each = stats as? MCCodecsStats else { return nil }
-                let id = each.sid as String
-                if id == codecId {
-                    return each.mime_type as String
-                }
-            }
+        guard
+            let statsReport = report?.getStatsOf(codecType),
+            let codecStats = statsReport.first(where: { $0 is MCCodecsStats && $0.sid as String == codecId }) as? MCCodecsStats
+        else {
+            return nil
         }
-        return nil
+
+        return codecStats.mime_type as String
     }
 }
