@@ -82,8 +82,15 @@ struct StatisticsView: View {
         if let timestamp = stats?.audio?.timestamp {
             result.append(StatData(key: "stream.stats.timestamp.label", value: String(timestamp))) // change to dateStr when timestamp is fixed
         }
-        if let codec = stats?.video?.codec {
-            result.append(StatData(key: "stream.stats.codecs.label", value: codec))
+        let audioCodec = stats?.audio?.codecName
+        let videoCodec = stats?.video?.codecName
+        if audioCodec != nil || videoCodec != nil {
+            var delimiter = ", "
+            if audioCodec == nil || videoCodec == nil {
+                delimiter = ""
+            }
+            let codecs = "\(audioCodec ?? "")\(delimiter)\(videoCodec ?? "")"
+            result.append(StatData(key: "stream.stats.codecs.label", value: codecs))
         }
         return result
     }
