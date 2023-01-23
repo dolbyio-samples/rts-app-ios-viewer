@@ -211,7 +211,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
     private func getStatisticsData(report: MCStatsReport?) -> StatisticsData? {
         var result: StatisticsData?
         let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
-        let rtt: Double? = getStatisticsRountTripTime(report: report)
+        let rtt: Double? = getStatisticsRoundTripTime(report: report)
         if let statsReport = report?.getStatsOf(inboundRtpStreamStatsType) {
             var audio: StatsInboundRtp?
             var video: StatsInboundRtp?
