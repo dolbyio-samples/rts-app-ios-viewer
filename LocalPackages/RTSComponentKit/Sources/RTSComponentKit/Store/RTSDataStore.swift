@@ -217,8 +217,13 @@ extension RTSDataStore: SubscriptionManagerDelegate {
             var video: StatsInboundRtp?
             for stats in statsReport {
                 guard let statsReportData = stats as? MCInboundRtpStreamStats else { return nil }
+                var codecName: String?
+                if let codecId = statsReportData.codec_id as String? {
+                    codecName = getStatisticsCodec(codecId: codecId, report: report)
+                }
                 let statsInboundRtp: StatsInboundRtp = StatsInboundRtp(
                     sid: statsReportData.sid as String,
+                    kind: statsReportData.kind as String,
                     decoder: statsReportData.decoder_implementation as String?,
                     frameWidth: Int(statsReportData.frame_width),
                     frameHeight: Int(statsReportData.frame_height),
@@ -235,7 +240,8 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                     jitter: statsReportData.jitter,
                     packetsReceived: Double(statsReportData.packets_received),
                     packetsLost: Double(statsReportData.packets_lost),
-                    timestamp: Double(statsReportData.timestamp)
+                    timestamp: Double(statsReportData.timestamp),
+                    codecName: codecName
                 )
                 if statsInboundRtp.isVideo {
                     video = statsInboundRtp
@@ -248,7 +254,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         return result
     }
 
-    private func getStatisticsRountTripTime(report: MCStatsReport?) -> Double? {
+    private func getStatisticsRoundTripTime(report: MCStatsReport?) -> Double? {
         let receivedType = MCRemoteInboundRtpStreamStats.get_type()
         var roundTripTime: Double?
         if let statsReport = report?.getStatsOf(receivedType) {
@@ -258,5 +264,19 @@ extension RTSDataStore: SubscriptionManagerDelegate {
             }
         }
         return roundTripTime
+    }
+
+    private func getStatisticsCodec(codecId: String, report: MCStatsReport?) -> String? {
+        let codecType = MCCodecsStats.get_type()
+        if let statsReport = report?.getStatsOf(codecType) {
+            for stats in statsReport {
+                guard let each = stats as? MCCodecsStats else { return nil }
+                let id = each.sid as String
+                if id == codecId {
+                    return each.mime_type as String
+                }
+            }
+        }
+        return nil
     }
 }

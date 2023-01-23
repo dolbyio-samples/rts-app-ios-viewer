@@ -6,6 +6,7 @@ import Foundation
 
 public struct StatsInboundRtp {
     public let sid: String
+    public let kind: String
     public let decoder: String?
     public let frameWidth: Int
     public let frameHeight: Int
@@ -24,11 +25,13 @@ public struct StatsInboundRtp {
     public let packetsReceived: Double
     public let packetsLost: Double
     public let timestamp: Double
+    public var codecName: String?
 
     public let isVideo: Bool
-    init(sid: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, jitter: Double, packetsReceived: Double, packetsLost: Double, timestamp: Double) {
+    init(sid: String, kind: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, jitter: Double, packetsReceived: Double, packetsLost: Double, timestamp: Double, codecName: String?) {
 
         self.sid = sid
+        self.kind = kind
         self.decoder = decoder
         self.frameWidth = frameWidth
         self.frameHeight = frameHeight
@@ -42,6 +45,7 @@ public struct StatsInboundRtp {
         self.bytesReceived = bytesReceived
         self.totalSampleDuration = totalSampleDuration
         self.codec = codecId
+        self.codecName = codecName
 
         self.jitter = jitter
         self.packetsReceived = packetsReceived
@@ -49,7 +53,7 @@ public struct StatsInboundRtp {
 
         self.timestamp = timestamp
 
-        if sid.starts(with: "RTCInboundRTPVideoStream") {
+        if kind == "video" {
             isVideo = true
         } else {
             isVideo = false
