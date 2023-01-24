@@ -15,6 +15,7 @@ struct StreamingScreen: View {
     @EnvironmentObject private var dataStore: RTSDataStore
     @State private var volume = 0.5
     @State private var showSettings = false
+    @State private var showSimulcastView = false
     @State private var layersDisabled = true
     @State private var showLive = false
     @State private var showStats = false
@@ -53,22 +54,22 @@ struct StreamingScreen: View {
                         .padding(.top, 37)
                 }
 
-                if isStreamActive {
-                    VStack {
-                        HStack {
-                            IconButton(name: .settings, tintColor: .white) {
-                                withAnimation {
-                                    showSettings = !showSettings
-                                }
+                // if isStreamActive {
+                VStack {
+                    HStack {
+                        IconButton(name: .settings, tintColor: .white) {
+                            withAnimation {
+                                showSettings = !showSettings
                             }
-                            Spacer().frame(width: Layout.spacing1x)
-                        }.frame(maxWidth: .infinity, alignment: .trailing)
-                    }.frame(maxHeight: .infinity, alignment: .bottom)
-                        .padding()
-                }
+                        }
+                        Spacer().frame(width: Layout.spacing1x)
+                    }.frame(maxWidth: .infinity, alignment: .trailing)
+                }.frame(maxHeight: .infinity, alignment: .bottom)
+                    .padding()
+                // }
 
                 if showSettings {
-                    SettingsView(settingsView: $showSettings, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
+                    SettingsView(settingsView: $showSettings, showSimulcastView: $showSimulcastView, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
                 }
 
                 if !isStreamActive {
@@ -143,7 +144,9 @@ struct StreamingScreen: View {
                 }
             }
         }.onExitCommand {
-            if showSettings {
+            if showSimulcastView {
+                showSimulcastView = false
+            } else if showSettings {
                 showSettings = false
             } else {
                 dismiss()
@@ -162,9 +165,88 @@ struct StreamingScreen: View {
 
 private struct SettingsView: View {
     @Binding var settingsView: Bool
+    @Binding var showSimulcastView: Bool
     @Binding var disableLayers: Bool
     @Binding var liveIndicator: Bool
     @Binding var statsView: Bool
+    @Binding var selectedLayer: StreamType
+    var layerHandler: (StreamType) -> Void
+
+    var body: some View {
+        ZStack {
+            if !showSimulcastView {
+                VStack {
+                    VStack {
+                        List {
+                            Text(text: "stream.settings.label",
+                                 mode: .secondary,
+                                 fontAsset: .avenirNextBold(
+                                    size: FontSize.title2,
+                                    style: .title2
+                                 )
+                            ).foregroundColor(.white)
+
+                            Button(action: {
+                                showSimulcastView = true
+                            }, label: {
+                                HStack {
+                                    IconView(name: .info, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                    Text("stream.simulcast.label")
+                                    Spacer()
+                                    Text(selectedLayer.rawValue.capitalized)
+                                    IconView(name: .arrowRight, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                }
+                            })
+                            .padding(.leading, 28)
+                            .padding(.trailing, 28)
+                            .padding(.top, 18)
+                            .padding(.bottom, 18)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                                    .stroke(.white, lineWidth: 1)
+                            )
+                            .disabled(disableLayers)
+
+                            Toggle(isOn: $statsView, label: {
+                                HStack {
+                                    IconView(name: .info, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                    Text("stream.media-stats.label")
+                                }
+                            })
+                            .padding(.leading, 28)
+                            .padding(.trailing, 28)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                                    .stroke(.white, lineWidth: 1)
+                            )
+
+                            Toggle(isOn: $liveIndicator, label: {
+                                HStack {
+                                    IconView(name: .liveStream, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                    Text("stream.live-indicator.label")
+                                }
+                            })
+                            .padding(.leading, 28)
+                            .padding(.trailing, 28)
+                            .overlay(RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                                .stroke(.white, lineWidth: 1)
+                            )
+                        }.background(Color(uiColor: UIColor.Neutral.neutral800))
+                            .padding()
+
+                    }.padding()
+                        .frame(maxWidth: 700, maxHeight: .infinity, alignment: .bottom)
+                }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            }
+
+            if showSimulcastView {
+                SimulcastView(selectedLayer: $selectedLayer, layerHandler: layerHandler).transition(.move(edge: .trailing))
+            }
+        }
+    }
+}
+
+private struct SimulcastView: View {
     @Binding var selectedLayer: StreamType
     var layerHandler: (StreamType) -> Void
 
@@ -173,7 +255,7 @@ private struct SettingsView: View {
             VStack {
                 VStack {
                     List {
-                        Text(text: "stream.settings.label",
+                        Text(text: "stream.simulcast.label",
                              mode: .secondary,
                              fontAsset: .avenirNextBold(
                                 size: FontSize.title2,
@@ -181,7 +263,7 @@ private struct SettingsView: View {
                              )
                         ).foregroundColor(.white)
 
-                        Picker("stream.simulcast.label", selection: $selectedLayer) {
+                        Picker("", selection: $selectedLayer) {
                             ForEach(StreamType.allCases, id: \.self) { item in
                                 Text(item.rawValue.capitalized)
                             }
@@ -190,32 +272,6 @@ private struct SettingsView: View {
                         .onChange(of: selectedLayer) { layer in
                             layerHandler(layer)
                         }
-                        .disabled(disableLayers)
-
-                        Toggle(isOn: $statsView, label: {
-                            HStack {
-                                IconView(name: .info, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
-                                Text("stream.media-stats.label")
-                            }
-                        })
-                        .padding(.leading, 28)
-                        .padding(.trailing, 28)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
-                                .stroke(.white, lineWidth: 1)
-                        )
-
-                        Toggle(isOn: $liveIndicator, label: {
-                            HStack {
-                                IconView(name: .liveStream, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
-                                Text("stream.live-indicator.label")
-                            }
-                        })
-                        .padding(.leading, 28)
-                        .padding(.trailing, 28)
-                        .overlay(RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
-                            .stroke(.white, lineWidth: 1)
-                        )
                     }.background(Color(uiColor: UIColor.Neutral.neutral800))
                         .padding()
                 }
