@@ -150,6 +150,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
     }
 
     public func onStreamStopped() {
+        layerActiveMap = nil
         updateState(to: .streamInactive)
     }
 

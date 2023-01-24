@@ -115,8 +115,12 @@ struct StreamingScreen: View {
             .onReceive(dataStore.$subscribeState) { subscribeState in
                 Task {
                     switch subscribeState {
-                    case .connected, .streamInactive:
+                    case .connected:
                         _ = await dataStore.startSubscribe()
+                    case .streamInactive:
+                        _ = await dataStore.stopSubscribe()
+                    case .disconnected:
+                        layersDisabled = true
                     default:
                         // No-op
                         break
@@ -129,7 +133,7 @@ struct StreamingScreen: View {
             .onReceive(timer) { _ in
                 Task {
                     switch dataStore.subscribeState {
-                    case .error:
+                    case .error, .disconnected:
                         _ = await dataStore.connect()
                     default:
                         // No-op
