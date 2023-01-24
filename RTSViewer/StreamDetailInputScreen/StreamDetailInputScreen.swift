@@ -65,7 +65,7 @@ private struct StreamDetailInputBox: View {
     @EnvironmentObject private var persistenceManager: PersistenceManager
 
     @State private var showingAlert = false
-    @State private var showingClearStreamsSuccessAlert = false
+    @State private var showingClearStreamsAlert = false
 
     private let streamDetails: FetchRequest<StreamDetail> = FetchRequest<StreamDetail>(fetchRequest: PersistenceManager.recentStreams)
 
@@ -150,8 +150,7 @@ private struct StreamDetailInputBox: View {
                         HStack {
                             LinkButton(
                                 action: {
-                                    persistenceManager.clearAllStreams()
-                                    showingClearStreamsSuccessAlert = true
+                                    showingClearStreamsAlert = true
                                 },
                                 text: "stream-detail-input.clear-stream-history.button",
                                 fontAsset: .avenirNextBold(size: FontSize.caption2, style: .caption2)
@@ -162,7 +161,18 @@ private struct StreamDetailInputBox: View {
                     }
                 }
                 .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
-                .alert("stream-detail-input.clear-streams-successful.label", isPresented: $showingClearStreamsSuccessAlert) { }
+                .alert("stream-detail-input.clear-streams.label", isPresented: $showingClearStreamsAlert, actions: {
+                    Button(
+                        "stream-detail-input.clear-streams.alert.clear.button",
+                        role: .destructive,
+                        action: { persistenceManager.clearAllStreams() }
+                    )
+                    Button(
+                        "stream-detail-input.clear-streams.alert.cancel.button",
+                        role: .cancel,
+                        action: {}
+                    )
+                })
 
                 Spacer()
                     .frame(height: Layout.spacing8x)
