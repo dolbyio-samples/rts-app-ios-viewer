@@ -54,19 +54,19 @@ struct StreamingScreen: View {
                         .padding(.top, 37)
                 }
 
-                // if isStreamActive {
-                VStack {
-                    HStack {
-                        IconButton(name: .settings, tintColor: .white) {
-                            withAnimation {
-                                showSettings = !showSettings
+                if isStreamActive {
+                    VStack {
+                        HStack {
+                            IconButton(name: .settings, tintColor: .white) {
+                                withAnimation {
+                                    showSettings = !showSettings
+                                }
                             }
-                        }
-                        Spacer().frame(width: Layout.spacing1x)
-                    }.frame(maxWidth: .infinity, alignment: .trailing)
-                }.frame(maxHeight: .infinity, alignment: .bottom)
-                    .padding()
-                // }
+                            Spacer().frame(width: Layout.spacing1x)
+                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                    }.frame(maxHeight: .infinity, alignment: .bottom)
+                        .padding()
+                }
 
                 if showSettings {
                     SettingsView(settingsView: $showSettings, showSimulcastView: $showSimulcastView, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
