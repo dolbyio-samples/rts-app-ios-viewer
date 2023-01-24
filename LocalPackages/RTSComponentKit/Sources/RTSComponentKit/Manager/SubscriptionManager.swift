@@ -55,7 +55,7 @@ final class SubscriptionManager {
                 self.makeCredentials(streamName: streamName, accountID: accountID)
             )
 
-            subscriber.setOptions(self.clientOptions)
+//            subscriber.setOptions(self.clientOptions)
 
             guard subscriber.connect() else {
                 Self.logger.debug("Failed to connect")
