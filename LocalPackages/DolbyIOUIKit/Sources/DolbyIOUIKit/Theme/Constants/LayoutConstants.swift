@@ -10,6 +10,7 @@ public enum Layout {
 
     public static let border1x: CGFloat = 1.0
     public static let border2x: CGFloat = 2.0
+    public static let border3x: CGFloat = 3.0
 
     // MARK: Corner Radius
 

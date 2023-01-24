@@ -16,7 +16,9 @@
 "stream-detail-input.rememberStream.toggle" = "Remember stream";
 "stream-detail-input.footnote.label" = "Copyright © 2023 Dolby.io — All Rights Reserved";
 "stream-detail-input.credentials-error.label" = "Invalid Stream name or Account ID";
-"stream-detail-input.clear-streams-successful.label" = "All your saved streams are now cleared";
+"stream-detail-input.clear-streams.label" = "Are you sure you want to clear the saved streams?";
+"stream-detail-input.clear-streams.alert.cancel.button" = "Cancel";
+"stream-detail-input.clear-streams.alert.clear.button" = "Clear";
 
 /** Stream Screen */
 
