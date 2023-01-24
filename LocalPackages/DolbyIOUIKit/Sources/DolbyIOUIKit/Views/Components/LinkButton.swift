@@ -39,8 +39,16 @@ public struct LinkButton: View {
                 .font(font)
                 .foregroundColor(
                     Color(
-                        uiColor: isFocused ? UIColor.CTA.focused : UIColor.Typography.Dark.primary
+                        uiColor: isFocused ? UIColor.Typography.Dark.primary : UIColor.Typography.Dark.secondary
                     )
+                )
+                .padding()
+                .overlay(
+                    isFocused ? Rectangle()
+                        .stroke(
+                            Color(uiColor: UIColor.Neutral.neutral300),
+                            lineWidth: Layout.border3x
+                        ) : nil
                 )
         }
         .focused($isFocused)

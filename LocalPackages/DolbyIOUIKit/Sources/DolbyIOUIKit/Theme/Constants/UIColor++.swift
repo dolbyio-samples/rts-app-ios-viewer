@@ -76,8 +76,8 @@ public extension UIColor {
         }
 
         public enum Dark {
-            public static let primary = UIColor(hex: 0xB9B9BA)
-            public static let secondary = UIColor(hex: 0xFFFFFF)
+            public static let primary = UIColor(hex: 0xFFFFFF)
+            public static let secondary = UIColor(hex: 0xB9B9BA)
             public static let tertiary = UIColor(hex: 0x35C8FF)
         }
     }
