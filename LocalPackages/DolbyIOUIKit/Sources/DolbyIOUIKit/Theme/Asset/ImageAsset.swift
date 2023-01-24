@@ -10,6 +10,7 @@ public enum ImageAsset: String, ImageAssetable {
 
     case arrowLeft = "arrow-left"
     case arrowRight = "arrow-right"
+    case textLink = "text-link"
 
     // MARK: Actions
 
@@ -30,4 +31,5 @@ public enum ImageAsset: String, ImageAssetable {
     case settings = "settings"
     case info = "info"
     case liveStream = "live-stream"
+    case simulcast = "simulcast"
 }

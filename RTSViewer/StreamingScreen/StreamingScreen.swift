@@ -186,15 +186,16 @@ private struct SettingsView: View {
                                  )
                             ).foregroundColor(.white)
 
+                            // TODO use DolbyIOUIKit.Button
                             Button(action: {
                                 showSimulcastView = true
                             }, label: {
                                 HStack {
-                                    IconView(name: .info, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                    IconView(name: .simulcast, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
                                     Text("stream.simulcast.label")
                                     Spacer()
                                     Text(selectedLayer.rawValue.capitalized)
-                                    IconView(name: .arrowRight, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                                    IconView(name: .textLink, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
                                 }
                             })
                             .padding(.leading, 28)
@@ -263,14 +264,26 @@ private struct SimulcastView: View {
                              )
                         ).foregroundColor(.white)
 
-                        Picker("", selection: $selectedLayer) {
-                            ForEach(StreamType.allCases, id: \.self) { item in
-                                Text(item.rawValue.capitalized)
-                            }
-                        }
-                        .pickerStyle(.inline)
-                        .onChange(of: selectedLayer) { layer in
-                            layerHandler(layer)
+                        ForEach(StreamType.allCases, id: \.self) { item in
+                            // TODO use DolbyIOUIKit.Button
+                            Button(action: {
+                                selectedLayer = item
+                                layerHandler(selectedLayer)
+                            }, label: {
+                                HStack {
+                                    Text(item.rawValue.capitalized)
+                                    Spacer()
+                                    if item == selectedLayer {IconView(name: .checkmark, tintColor: Color(uiColor: UIColor.Neutral.neutral300))}
+                                }
+                            })
+                            .padding(.leading, 28)
+                            .padding(.trailing, 28)
+                            .padding(.top, 18)
+                            .padding(.bottom, 18)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius14x)
+                                    .stroke(.white, lineWidth: 1)
+                            )
                         }
                     }.background(Color(uiColor: UIColor.Neutral.neutral800))
                         .padding()
