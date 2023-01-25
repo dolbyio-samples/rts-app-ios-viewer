@@ -130,7 +130,12 @@ struct StreamingScreen: View {
             }
             .onReceive(dataStore.$layerActiveMap) { layers in
                 layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
-                selectedLayer = dataStore.activeLayer
+                if !layersDisabled && selectedLayer != dataStore.activeLayer {
+                    selectedLayer = dataStore.activeLayer
+                    Task {
+                        setLayer(streamType: selectedLayer)
+                    }
+                }
             }
             .onReceive(timer) { _ in
                 Task {
