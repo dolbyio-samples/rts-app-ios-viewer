@@ -64,12 +64,15 @@ public enum ColorAsset: ColorAssetable {
     public enum ButtonAsset {
         case textColor
         case disabledTextColor
+        case focusedTextColor
         case tintColor
         case disabledTintColor
+        case focusedTintColor
         case backgroundColor
         case hoverBackgroundColor
         case disabledBackgroundColor
         case borderColor
         case disabledBorderColor
+        case focusedBorderColor
     }
 }
