@@ -49,17 +49,14 @@ public struct Button: View {
     }
 
     public var body: some View {
-        if let borderColor = borderColorAndWidth?.color, let borderWidth = borderColorAndWidth?.width {
-            buttonView
-                .overlay(
+        buttonView
+            .overlay(
+                borderColorAndWidth.map {
                     RoundedRectangle(cornerRadius: Layout.cornerRadius6x)
-                        .stroke(borderColor, lineWidth: borderWidth)
-                )
-                .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
-        } else {
-            buttonView
-                .cornerRadius(Layout.cornerRadius6x)
-        }
+                            .stroke($0.color, lineWidth: $0.width)
+                }
+            )
+            .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
     }
 }
 
@@ -75,8 +72,8 @@ private extension Button {
                 rightIcon: rightIcon,
                 mode: mode,
                 danger: danger,
-                hover: $hover,
-                buttonState: $buttonState
+                isFocused: isFocused,
+                buttonState: buttonState
             )
         }
         .focused($isFocused)
@@ -90,21 +87,20 @@ private extension Button {
         )
 #else
         .buttonStyle(.plain)
-        .onHover {
-            hover = $0
-        }
 #endif
         .frame(maxWidth: .infinity)
         .background(backgroundColor)
     }
 
-    typealias BorderColorAndWidth = (color: Color?, width: CGFloat?)
+    typealias BorderColorAndWidth = (color: Color, width: CGFloat)
     var borderColorAndWidth: BorderColorAndWidth? {
-        switch isEnabled {
-        case true:
-            return (color: borderColor, Layout.border1x)
-        case false:
-            return (color: disabledBorderColor, Layout.border1x)
+        switch (isEnabled, isFocused) {
+        case (true, false):
+            return borderColor.map {(color: $0, width: Layout.border1x)}
+        case (true, true):
+            return focusedBorderColor.map {(color: $0, width: Layout.border1x)}
+        case (false, _):
+            return disabledBorderColor.map {(color: $0, width: Layout.border1x)}
         }
     }
 
@@ -131,6 +127,19 @@ private extension Button {
             return theme[ColorAsset.secondaryButton(.disabledBorderColor)]
         case (.secondary, true):
             return theme[ColorAsset.secondaryDangerButton(.disabledBorderColor)]
+        }
+    }
+
+    var focusedBorderColor: Color? {
+        switch (mode, danger) {
+        case (.primary, false):
+            return theme[ColorAsset.primaryButton(.focusedBorderColor)]
+        case (.primary, true):
+            return theme[ColorAsset.primaryDangerButton(.focusedBorderColor)]
+        case (.secondary, false):
+            return theme[ColorAsset.secondaryButton(.focusedBorderColor)]
+        case (.secondary, true):
+            return theme[ColorAsset.secondaryDangerButton(.focusedBorderColor)]
         }
     }
 
@@ -196,15 +205,14 @@ private extension Button {
 // MARK: Defines the `View` for the Button's content
 
 private struct CustomButtonView: View {
-    var action: () -> Void
-    var text: LocalizedStringKey
-    var leftIcon: ImageAsset?
-    var rightIcon: ImageAsset?
-    var mode: Button.Mode
-    var danger: Bool
-
-    @Binding var hover: Bool
-    @Binding var buttonState: Button.ButtonState
+    private let action: () -> Void
+    private let text: LocalizedStringKey
+    private let leftIcon: ImageAsset?
+    private let rightIcon: ImageAsset?
+    private let mode: Button.Mode
+    private let danger: Bool
+    private let isFocused: Bool
+    private let buttonState: Button.ButtonState
 
     @Environment(\.isEnabled) private var isEnabled
     private var theme: Theme = ThemeManager.shared.theme
@@ -216,8 +224,8 @@ private struct CustomButtonView: View {
         rightIcon: ImageAsset?,
         mode: Button.Mode,
         danger: Bool,
-        hover: Binding<Bool>,
-        buttonState: Binding<Button.ButtonState>
+        isFocused: Bool,
+        buttonState: Button.ButtonState
     ) {
         self.action = action
         self.text = text
@@ -225,8 +233,8 @@ private struct CustomButtonView: View {
         self.rightIcon = rightIcon
         self.mode = mode
         self.danger = danger
-        self._hover = hover
-        self._buttonState = buttonState
+        self.isFocused = isFocused
+        self.buttonState = buttonState
     }
 
     var body: some View {
@@ -272,9 +280,14 @@ private extension CustomButtonView {
     var font: Font {
         theme[.avenirNextDemiBold(size: FontSize.caption2, style: .caption2)]
     }
+
     var textColor: Color? {
         guard isEnabled == true else {
             return disabledTextColor
+        }
+
+        if isFocused {
+            return focusedTextColor
         }
 
         switch (mode, danger) {
@@ -302,9 +315,26 @@ private extension CustomButtonView {
         }
     }
 
+    var focusedTextColor: Color? {
+        switch (mode, danger) {
+        case (.primary, false):
+            return theme[ColorAsset.primaryButton(.focusedTextColor)]
+        case (.primary, true):
+            return theme[ColorAsset.primaryDangerButton(.focusedTextColor)]
+        case (.secondary, false):
+            return theme[ColorAsset.secondaryButton(.focusedTextColor)]
+        case (.secondary, true):
+            return theme[ColorAsset.secondaryDangerButton(.focusedTextColor)]
+        }
+    }
+
     var tintColor: Color? {
         guard isEnabled == true else {
             return disabledTintColor
+        }
+
+        if isFocused {
+            return focusedTintColor
         }
 
         switch (mode, danger) {
@@ -329,6 +359,19 @@ private extension CustomButtonView {
             return theme[ColorAsset.secondaryButton(.disabledTintColor)]
         case (.secondary, true):
             return theme[ColorAsset.secondaryDangerButton(.disabledTintColor)]
+        }
+    }
+
+    var focusedTintColor: Color? {
+        switch (mode, danger) {
+        case (.primary, false):
+            return theme[ColorAsset.primaryButton(.focusedTintColor)]
+        case (.primary, true):
+            return theme[ColorAsset.primaryDangerButton(.focusedTintColor)]
+        case (.secondary, false):
+            return theme[ColorAsset.secondaryButton(.focusedTintColor)]
+        case (.secondary, true):
+            return theme[ColorAsset.secondaryDangerButton(.focusedTintColor)]
         }
     }
 }

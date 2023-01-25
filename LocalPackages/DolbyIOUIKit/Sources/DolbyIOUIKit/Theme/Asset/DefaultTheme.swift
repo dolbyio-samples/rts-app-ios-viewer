@@ -6,6 +6,8 @@ import Foundation
 import SwiftUI
 import UIKit
 
+// swiftlint:disable cyclomatic_complexity
+
 public class DefaultTheme: Theme {
 
     public override subscript(colorAsset: ColorAsset) -> Color? {
@@ -131,7 +133,7 @@ extension DefaultTheme {
             return Color(
                 uiColor: UIColor(
                     light: UIColor.Typography.Light.secondary,
-                    dark: UIColor.Typography.Dark.secondary
+                    dark: UIColor.Typography.Dark.primary
                 )
             )
         case .tertiaryColor:
@@ -190,10 +192,13 @@ extension DefaultTheme {
     private func primaryButtonColor(for buttonAsset: ColorAsset.ButtonAsset) -> Color? {
         switch buttonAsset {
         case .textColor:
-            return Color(uiColor: UIColor.Typography.Dark.secondary)
+            return Color(uiColor: UIColor.Typography.Dark.primary)
+
+        case .focusedTextColor:
+            return Color(uiColor: UIColor.Typography.Dark.tertiary)
 
         case .disabledTextColor:
-            return Color(uiColor: UIColor.Typography.Dark.secondary)
+            return Color(uiColor: UIColor.Typography.Dark.primary)
 
         case .tintColor:
             return Color(uiColor: UIColor.Background.white)
@@ -201,11 +206,14 @@ extension DefaultTheme {
         case .disabledTintColor:
             return Color(uiColor: UIColor.Background.white)
 
+        case .focusedTintColor:
+            return Color(uiColor: UIColor.Typography.Dark.tertiary)
+
         case .backgroundColor:
             return Color(uiColor: UIColor.Primary.neonPurple400)
 
         case .hoverBackgroundColor:
-            return Color(uiColor: UIColor.Primary.neonPurple500)
+            return Color(uiColor: UIColor.Neutral.neutral25)
 
         case .disabledBackgroundColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
@@ -215,22 +223,31 @@ extension DefaultTheme {
 
         case .disabledBorderColor:
             return nil
+
+        case .focusedBorderColor:
+            return nil
         }
     }
 
     private func primaryDangerButtonColor(for buttonAsset: ColorAsset.ButtonAsset) -> Color? {
         switch buttonAsset {
         case .textColor:
-            return Color(uiColor: UIColor.Typography.Dark.secondary)
+            return Color(uiColor: UIColor.Typography.Dark.primary)
+
+        case .focusedTextColor:
+            return Color(uiColor: UIColor.Typography.Dark.primary)
 
         case .disabledTextColor:
-            return Color(uiColor: UIColor.Typography.Dark.secondary)
+            return Color(uiColor: UIColor.Typography.Dark.primary)
 
         case .tintColor:
             return Color(uiColor: UIColor.Background.white)
 
         case .disabledTintColor:
             return Color(uiColor: UIColor.Background.white)
+
+        case .focusedTintColor:
+            return Color(uiColor: UIColor.Typography.Dark.primary)
 
         case .backgroundColor:
             return Color(uiColor: UIColor.Feedback.error500)
@@ -246,6 +263,9 @@ extension DefaultTheme {
 
         case .disabledBorderColor:
             return nil
+
+        case .focusedBorderColor:
+            return nil
         }
     }
 
@@ -258,6 +278,9 @@ extension DefaultTheme {
                     dark: UIColor.Background.white
                 )
             )
+
+        case .focusedTextColor:
+            return Color(uiColor: UIColor.Typography.Dark.tertiary)
 
         case .disabledTextColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
@@ -273,6 +296,9 @@ extension DefaultTheme {
         case .disabledTintColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
 
+        case .focusedTintColor:
+            return Color(uiColor: UIColor.Typography.Dark.tertiary)
+
         case .backgroundColor:
             return Color(
                 uiColor: UIColor(
@@ -282,13 +308,7 @@ extension DefaultTheme {
             )
 
         case .hoverBackgroundColor:
-            return Color(
-                uiColor: UIColor(
-                    light: UIColor.Primary.neonPurple25,
-                    dark: UIColor.Neutral.neutral100
-                        .withAlphaComponent(0.2)
-                )
-            )
+            return Color(uiColor: UIColor.Neutral.neutral25)
 
         case .disabledBackgroundColor:
             return Color(
@@ -304,12 +324,18 @@ extension DefaultTheme {
 
         case .disabledBorderColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
+
+        case .focusedBorderColor:
+            return nil
         }
     }
 
     private func secondaryDangerButtonColor(for buttonAsset: ColorAsset.ButtonAsset) -> Color? {
         switch buttonAsset {
         case .textColor:
+            return Color(uiColor: UIColor.Feedback.error500)
+
+        case .focusedTextColor:
             return Color(uiColor: UIColor.Feedback.error500)
 
         case .disabledTextColor:
@@ -320,6 +346,9 @@ extension DefaultTheme {
 
         case .disabledTintColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
+
+        case .focusedTintColor:
+            return Color(uiColor: UIColor.Feedback.error500)
 
         case .backgroundColor:
             return Color(
@@ -350,6 +379,10 @@ extension DefaultTheme {
 
         case .disabledBorderColor:
             return Color(uiColor: UIColor.Neutral.neutral200)
+
+        case .focusedBorderColor:
+            return Color(uiColor: UIColor.Feedback.error500)
         }
     }
 }
+// swiftlint:enable cyclomatic_complexity
