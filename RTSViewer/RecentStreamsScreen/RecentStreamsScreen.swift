@@ -23,7 +23,7 @@ struct RecentStreamsScreen: View {
 
     var body: some View {
         ZStack {
-            GeometryReader { proxy in
+            GeometryReader { _ in
                 VStack(spacing: Layout.spacing4x) {
                     Text(
                         text: "recent-streams.title.label",
@@ -69,7 +69,7 @@ struct RecentStreamsScreen: View {
                             )
                     }
                     .padding([.leading, .trailing])
-                    .frame(width: proxy.size.width / 2)
+                    .frame(width: 514.0)
 
                     List {
                         ForEach(streamDetails.wrappedValue) { streamDetail in
@@ -82,13 +82,12 @@ struct RecentStreamsScreen: View {
                             }
                         }
                     }
-                    .frame(width: proxy.size.width / 2)
+                    .frame(width: 514.0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .background(Color(uiColor: UIColor.Neutral.neutral900))
-        .navigationHeaderView()
     }
 }
 
