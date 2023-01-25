@@ -38,6 +38,7 @@ public final class RTSDataStore: ObservableObject {
     private var statsReport: MCStatsReport?
 
     @Published public private(set) var layerActiveMap: [MCLayerData]?
+    @Published public var activeLayer = StreamType.auto
 
     init(subscriptionManager: SubscriptionManager, videoRenderer: MCIosVideoRenderer) {
         self.subscriptionManager = subscriptionManager
@@ -124,6 +125,8 @@ public final class RTSDataStore: ObservableObject {
 
     @discardableResult
     public func selectLayer(streamType: StreamType) -> Bool {
+        activeLayer = streamType
+
         switch streamType {
         case .auto:
             return subscriptionManager.selectLayer(layer: nil)
