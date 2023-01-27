@@ -21,7 +21,14 @@ lane :build_and_deploy_to_appstore do |options|
 
   # Build and export
   gym(
-    export_method: "app-store",
+    workspace: ENV['GYM_WORKSPACE'],
+    scheme: ENV['GYM_SCHEME'],
+    clean: true,
+    output_directory: ENV['GYM_OUTPUT_DIR'],
+    configuration: ENV['GYM_CONFIGURATION'],
+    build_path: ENV['GYM_BUILD_PATH'],
+    destination: ENV['GYM_DESTINATION'],
+    export_method: ENV['GYM_EXPORT_METHOD'],
     xcargs: "MARKETING_VERSION='1.0.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'",
     xcconfig: ENV['XCCONFIG'],
     export_options: ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH']
