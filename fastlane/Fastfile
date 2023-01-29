@@ -29,7 +29,7 @@ lane :build_and_deploy_to_appstore do |options|
     build_path: ENV['GYM_BUILD_PATH'],
     destination: ENV['GYM_DESTINATION'],
     export_method: ENV['GYM_EXPORT_METHOD'],
-    xcargs: "MARKETING_VERSION='1.0.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'",
+    xcargs: "MARKETING_VERSION='1.1.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'",
     xcconfig: ENV['XCCONFIG'],
     export_options: ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH']
   )
