@@ -1,7 +1,0 @@
-clean true
-scheme "RTSViewer TVOS"
-workspace "RTSViewer.xcworkspace"
-configuration "Release"
-build_path "Tmp/build/"
-output_directory "Tmp/build/"
-destination "generic/platform=tvOS"

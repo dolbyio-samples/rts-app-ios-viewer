@@ -154,7 +154,9 @@ struct StreamingScreen: View {
                     timer.upstream.connect().cancel()
                 }
             }
-        }.onExitCommand {
+        }
+#if os(tvOS)
+        .onExitCommand {
             if showSimulcastView {
                 showSimulcastView = false
             } else if showSettings {
@@ -163,6 +165,7 @@ struct StreamingScreen: View {
                 dismiss()
             }
         }
+#endif
     }
 
     private var isStreamActive: Bool {

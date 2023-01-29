@@ -1,8 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "Dolby_icon_DD.pdf",
+      "filename" : "Dolby logo – DD.pdf",
       "idiom" : "universal"
+    },
+    {
+      "filename" : "Dolby_icon_DD.pdf",
+      "idiom" : "tv"
     }
   ],
   "info" : {
