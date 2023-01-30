@@ -28,7 +28,7 @@ struct StreamingScreen: View {
     var body: some View {
         BackgroundContainerView {
             ZStack {
-                VideoRendererView(uiView: dataStore.subscriptionView())
+                VideoRendererView(uiView: dataStore.subscriptionView()).brightness(showSettings ? -0.25 : 0)
 
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
