@@ -10,6 +10,7 @@ struct RTSViewer: App {
 
     private let dataStore = RTSDataStore()
     private let persistenceManager = PersistenceManager()
+    private let persistentSettings = PersistentSettings()
 
     @Environment(\.scenePhase) var scenePhase
 
@@ -19,6 +20,7 @@ struct RTSViewer: App {
                 .preferredColorScheme(.dark)
                 .environmentObject(dataStore)
                 .environmentObject(persistenceManager)
+                .environmentObject(persistentSettings)
                 .environment(\.managedObjectContext, persistenceManager.context)
         }
         .onChange(of: scenePhase) { newScenePhase in

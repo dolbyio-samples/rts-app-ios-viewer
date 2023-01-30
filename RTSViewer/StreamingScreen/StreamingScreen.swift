@@ -10,18 +10,15 @@ import Network
 
 struct StreamingScreen: View {
 
-    private enum PersistentSettings: String {
-        case liveIndicatorEnable
-    }
-
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     @EnvironmentObject private var dataStore: RTSDataStore
+    @EnvironmentObject private var persistentSettings: PersistentSettings
+
     @State private var volume = 0.5
     @State private var showSettings = false
     @State private var showSimulcastView = false
     @State private var layersDisabled = true
-    @State private var showLive = false
     @State private var showStats = false
     @State private var isNetworkConnected: Bool = false
     @State private var selectedLayer: StreamType = .auto
@@ -38,7 +35,7 @@ struct StreamingScreen: View {
                     .background(Color.black)
                     .opacity(isStreamActive ? 0.0 : 0.8)
 
-                if showLive {
+                if persistentSettings.liveIndicatorEnable {
                     VStack {
                         HStack {
                             Text(text: isStreamActive ? "stream.live.label" : "stream.offline.label",
@@ -73,7 +70,7 @@ struct StreamingScreen: View {
                 }
 
                 if showSettings {
-                    SettingsView(settingsView: $showSettings, showSimulcastView: $showSimulcastView, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
+                    SettingsView(settingsView: $showSettings, showSimulcastView: $showSimulcastView, disableLayers: $layersDisabled, liveIndicator: $persistentSettings.liveIndicatorEnable, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
                 }
 
                 if !isStreamActive {
@@ -114,7 +111,6 @@ struct StreamingScreen: View {
                 monitor.startMonitoring { path in
                     isNetworkConnected = path.status == .satisfied
                 }
-                showLive = isPersistentLiveIndicatorEnabled()
             }
             .edgesIgnoringSafeArea(.all)
             .onReceive(dataStore.$subscribeState) { subscribeState in
@@ -168,7 +164,6 @@ struct StreamingScreen: View {
                 showSettings = false
             } else {
                 dismiss()
-                setPersistentLiveIndicator(showLive)
             }
         }
 #endif
@@ -180,15 +175,6 @@ struct StreamingScreen: View {
 
     private func setLayer(streamType: StreamType) {
         dataStore.selectLayer(streamType: streamType)
-    }
-
-    private func isPersistentLiveIndicatorEnabled() -> Bool {
-        return UserDefaults.standard.object(forKey: PersistentSettings.liveIndicatorEnable.rawValue) as? Bool ?? true
-    }
-
-    private func setPersistentLiveIndicator(_ enable: Bool) {
-        UserDefaults.standard.set(enable, forKey: PersistentSettings.liveIndicatorEnable.rawValue)
-
     }
 }
 
