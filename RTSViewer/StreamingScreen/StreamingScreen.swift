@@ -13,11 +13,12 @@ struct StreamingScreen: View {
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     @EnvironmentObject private var dataStore: RTSDataStore
+    @EnvironmentObject private var persistentSettings: PersistentSettings
+
     @State private var volume = 0.5
     @State private var showSettings = false
     @State private var showSimulcastView = false
     @State private var layersDisabled = true
-    @State private var showLive = false
     @State private var showStats = false
     @State private var isNetworkConnected: Bool = false
     @State private var selectedLayer: StreamType = .auto
@@ -34,7 +35,7 @@ struct StreamingScreen: View {
                     .background(Color.black)
                     .opacity(isStreamActive ? 0.0 : 0.8)
 
-                if showLive {
+                if persistentSettings.liveIndicatorEnable {
                     VStack {
                         HStack {
                             Text(text: isStreamActive ? "stream.live.label" : "stream.offline.label",
@@ -69,7 +70,7 @@ struct StreamingScreen: View {
                 }
 
                 if showSettings {
-                    SettingsView(settingsView: $showSettings, showSimulcastView: $showSimulcastView, disableLayers: $layersDisabled, liveIndicator: $showLive, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
+                    SettingsView(settingsView: $showSettings, showSimulcastView: $showSimulcastView, disableLayers: $layersDisabled, liveIndicator: $persistentSettings.liveIndicatorEnable, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
                 }
 
                 if !isStreamActive {
@@ -308,9 +309,11 @@ private struct SimulcastView: View {
     }
 }
 
+#if DEBUG
 struct StreamingScreen_Previews: PreviewProvider {
     static var previews: some View {
         StreamingScreen()
             .environmentObject(RTSDataStore())
     }
 }
+#endif
