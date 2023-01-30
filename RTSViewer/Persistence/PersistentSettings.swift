@@ -25,5 +25,6 @@ final class PersistentSettings: ObservableObject {
 
     init(suiteName: String?) {
         userDefaults = UserDefaults.init(suiteName: suiteName) ?? .init()
-        liveIndicatorEnable = userDefaults.object(forKey: Keys.liveIndicatorEnable.rawValue) as? Bool ?? true    }
+        liveIndicatorEnable = userDefaults.object(forKey: Keys.liveIndicatorEnable.rawValue) as? Bool ?? true
+    }
 }
