@@ -10,6 +10,10 @@ import Network
 
 struct StreamingScreen: View {
 
+    private enum PersistentSettings: String {
+        case liveIndicatorEnable
+    }
+
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
     @EnvironmentObject private var dataStore: RTSDataStore
@@ -110,6 +114,7 @@ struct StreamingScreen: View {
                 monitor.startMonitoring { path in
                     isNetworkConnected = path.status == .satisfied
                 }
+                showLive = isPersistentLiveIndicatorEnabled()
             }
             .edgesIgnoringSafeArea(.all)
             .onReceive(dataStore.$subscribeState) { subscribeState in
@@ -163,6 +168,7 @@ struct StreamingScreen: View {
                 showSettings = false
             } else {
                 dismiss()
+                setPersistentLiveIndicator(showLive)
             }
         }
 #endif
@@ -174,6 +180,15 @@ struct StreamingScreen: View {
 
     private func setLayer(streamType: StreamType) {
         dataStore.selectLayer(streamType: streamType)
+    }
+
+    private func isPersistentLiveIndicatorEnabled() -> Bool {
+        return UserDefaults.standard.object(forKey: PersistentSettings.liveIndicatorEnable.rawValue) as? Bool ?? true
+    }
+
+    private func setPersistentLiveIndicator(_ enable: Bool) {
+        UserDefaults.standard.set(enable, forKey: PersistentSettings.liveIndicatorEnable.rawValue)
+
     }
 }
 
@@ -308,9 +323,11 @@ private struct SimulcastView: View {
     }
 }
 
+#if DEBUG
 struct StreamingScreen_Previews: PreviewProvider {
     static var previews: some View {
         StreamingScreen()
             .environmentObject(RTSDataStore())
     }
 }
+#endif
