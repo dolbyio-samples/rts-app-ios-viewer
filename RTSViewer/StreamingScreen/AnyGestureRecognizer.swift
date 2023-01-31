@@ -45,6 +45,7 @@ struct AnyGestureRecognizer: UIViewRepresentable {
         init(recognizer: AnyGestureRecognizer) {
             parent = recognizer
         }
+
         func clicked() {
             trigger()
         }
@@ -71,6 +72,7 @@ struct AnyGestureRecognizer: UIViewRepresentable {
             }
         }
     }
+
     class AnyGestureView: UIView {
         weak var delegate: Coordinator?
 
