@@ -23,7 +23,7 @@ struct StreamingScreen: View {
     @State private var showStats = false
     @State private var isNetworkConnected: Bool = false
     @State private var selectedLayer: StreamType = .auto
-    @State private var activeStreamType: [StreamType]?
+    @State private var activeStreamType = [StreamType]()
 
     @Environment(\.dismiss) var dismiss
 
@@ -139,12 +139,13 @@ struct StreamingScreen: View {
                 }
             }
             .onReceive(dataStore.$layerActiveMap) { layers in
-                activeStreamType = dataStore.activeStreamType
-                layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
+                Task {
+                    activeStreamType = dataStore.activeStreamType
+                    layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
 
-                if !layersDisabled && selectedLayer != dataStore.activeLayer {
-                    selectedLayer = dataStore.activeLayer
-                    Task {
+                    if !layersDisabled && selectedLayer != dataStore.activeLayer {
+                        selectedLayer = dataStore.activeLayer
+
                         setLayer(streamType: selectedLayer)
                     }
                 }
@@ -203,7 +204,7 @@ private struct SettingsView: View {
     @Binding var disableLayers: Bool
     @Binding var liveIndicator: Bool
     @Binding var statsView: Bool
-    @Binding var activeStreamType: [StreamType]?
+    @Binding var activeStreamType: [StreamType]
     @Binding var selectedLayer: StreamType
     var layerHandler: (StreamType) -> Void
 
@@ -283,7 +284,7 @@ private struct SettingsView: View {
 }
 
 private struct SimulcastView: View {
-    @Binding var activeStreamType: [StreamType]?
+    @Binding var activeStreamType: [StreamType]
     @Binding var selectedLayer: StreamType
     var layerHandler: (StreamType) -> Void
 
@@ -300,7 +301,7 @@ private struct SimulcastView: View {
                              )
                         ).foregroundColor(.white)
 
-                        ForEach(StreamType.allCases, id: \.self) { item in
+                        ForEach(activeStreamType, id: \.self) { item in
                             // TODO use DolbyIOUIKit.Button
                             Button(action: {
                                 selectedLayer = item
