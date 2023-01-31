@@ -14,6 +14,8 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingStreamingView: Bool = false
     @State private var isShowingRecentStreams: Bool = false
 
+    @EnvironmentObject private var dataStore: RTSDataStore
+
     var body: some View {
         BackgroundContainerView {
             ZStack {
@@ -45,8 +47,14 @@ struct StreamDetailInputScreen: View {
                     RecentStreamsScreen(
                         streamName: $streamName,
                         accountID: $accountID,
-                        isShowingRecentStreams: $isShowingRecentStreams
-                    )
+                        isShowingRecentStreams: $isShowingRecentStreams) {
+                            Task.delayed(byTimeInterval: 0.5) {
+                                let success = await dataStore.connect(streamName: streamName, accountID: accountID)
+                                await MainActor.run {
+                                    isShowingStreamingView = success
+                                }
+                            }
+                        }
                 }
             }
         }

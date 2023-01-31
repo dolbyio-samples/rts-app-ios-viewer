@@ -11,14 +11,19 @@ struct RecentStreamsScreen: View {
     @Binding private var accountID: String
     @Binding private var isShowingRecentStreams: Bool
     @EnvironmentObject private var dataStore: RTSDataStore
+
+    let action: (() -> Void)?
+
     private let theme = ThemeManager.shared.theme
 
     private let streamDetails: FetchRequest<StreamDetail> = FetchRequest<StreamDetail>(fetchRequest: PersistenceManager.recentStreams)
 
-    init(streamName: Binding<String>, accountID: Binding<String>, isShowingRecentStreams: Binding<Bool>) {
+    init(streamName: Binding<String>, accountID: Binding<String>,
+         isShowingRecentStreams: Binding<Bool>, _ action: (() -> Void)?) {
         self._streamName = streamName
         self._accountID = accountID
         self._isShowingRecentStreams = isShowingRecentStreams
+        self.action = action
     }
 
     var body: some View {
@@ -78,6 +83,7 @@ struct RecentStreamsScreen: View {
                                     self.streamName = streamName
                                     self.accountID = accountID
                                     isShowingRecentStreams = false
+                                    action?()
                                 }
                             }
                         }
@@ -93,6 +99,6 @@ struct RecentStreamsScreen: View {
 
 struct StreamHistoryScreen_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamsScreen(streamName: .constant(""), accountID: .constant(""), isShowingRecentStreams: .constant(false))
+        RecentStreamsScreen(streamName: .constant(""), accountID: .constant(""), isShowingRecentStreams: .constant(false)) { }
     }
 }

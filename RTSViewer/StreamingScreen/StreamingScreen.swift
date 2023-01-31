@@ -29,12 +29,12 @@ struct StreamingScreen: View {
     var body: some View {
         BackgroundContainerView {
             ZStack {
-                VideoRendererView(uiView: dataStore.subscriptionView()).brightness(showSettings ? -0.25 : 0)
+                VideoRendererView(uiView: dataStore.subscriptionView())
 
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
-                    .opacity(isStreamActive ? 0.0 : 0.8)
+                    .opacity(isStreamActive ? (showToolbar ? 0.5: 0.0) : 0.8)
 
                 if persistentSettings.liveIndicatorEnable {
                     VStack {
@@ -109,6 +109,7 @@ struct StreamingScreen: View {
 
                     }
                 }
+
                 if showStats {
                     StatisticsView(statsView: $showStats, stats: $dataStore.statisticsData)
                 }
