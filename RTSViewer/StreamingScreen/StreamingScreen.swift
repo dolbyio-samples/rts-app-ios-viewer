@@ -23,6 +23,7 @@ struct StreamingScreen: View {
     @State private var showStats = false
     @State private var isNetworkConnected: Bool = false
     @State private var selectedLayer: StreamType = .auto
+    @State private var activeStreamType: [StreamType]?
 
     @Environment(\.dismiss) var dismiss
 
@@ -77,7 +78,7 @@ struct StreamingScreen: View {
                 }
 
                 if showSettings {
-                    SettingsView(settingsView: $showSettings, showSimulcastView: $showSimulcastView, disableLayers: $layersDisabled, liveIndicator: $persistentSettings.liveIndicatorEnable, statsView: $showStats, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
+                    SettingsView(settingsView: $showSettings, showSimulcastView: $showSimulcastView, disableLayers: $layersDisabled, liveIndicator: $persistentSettings.liveIndicatorEnable, statsView: $showStats, activeStreamType: $activeStreamType, selectedLayer: $selectedLayer, layerHandler: setLayer).transition(.move(edge: .trailing))
                 }
 
                 if !isStreamActive {
@@ -138,7 +139,9 @@ struct StreamingScreen: View {
                 }
             }
             .onReceive(dataStore.$layerActiveMap) { layers in
+                activeStreamType = dataStore.activeStreamType
                 layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
+
                 if !layersDisabled && selectedLayer != dataStore.activeLayer {
                     selectedLayer = dataStore.activeLayer
                     Task {
@@ -200,6 +203,7 @@ private struct SettingsView: View {
     @Binding var disableLayers: Bool
     @Binding var liveIndicator: Bool
     @Binding var statsView: Bool
+    @Binding var activeStreamType: [StreamType]?
     @Binding var selectedLayer: StreamType
     var layerHandler: (StreamType) -> Void
 
@@ -272,13 +276,14 @@ private struct SettingsView: View {
             }
 
             if showSimulcastView {
-                SimulcastView(selectedLayer: $selectedLayer, layerHandler: layerHandler).transition(.move(edge: .trailing))
+                SimulcastView(activeStreamType: $activeStreamType, selectedLayer: $selectedLayer, layerHandler: layerHandler).transition(.move(edge: .trailing))
             }
         }
     }
 }
 
 private struct SimulcastView: View {
+    @Binding var activeStreamType: [StreamType]?
     @Binding var selectedLayer: StreamType
     var layerHandler: (StreamType) -> Void
 
