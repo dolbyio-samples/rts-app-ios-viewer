@@ -16,6 +16,7 @@ struct StreamingScreen: View {
     @EnvironmentObject private var persistentSettings: PersistentSettings
 
     @State private var volume = 0.5
+    @State private var showToolbar = false
     @State private var showSettings = false
     @State private var showSimulcastView = false
     @State private var layersDisabled = true
@@ -56,17 +57,23 @@ struct StreamingScreen: View {
                 }
 
                 if isStreamActive {
-                    VStack {
-                        HStack {
-                            IconButton(name: .settings, tintColor: .white) {
-                                withAnimation {
-                                    showSettings = !showSettings
+                    if showToolbar {
+                        VStack {
+                            HStack {
+                                IconButton(name: .settings, tintColor: .white) {
+                                    withAnimation {
+                                        showSettings = !showSettings
+                                    }
                                 }
-                            }
-                            Spacer().frame(width: Layout.spacing1x)
-                        }.frame(maxWidth: .infinity, alignment: .trailing)
-                    }.frame(maxHeight: .infinity, alignment: .bottom)
+                                Spacer().frame(width: Layout.spacing1x)
+                            }.frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        .frame(maxHeight: .infinity, alignment: .bottom)
                         .padding()
+                        .transition(.move(edge: .bottom))
+                    } else {
+                        AnyGestureRecognizer(triggered: $showToolbar)
+                    }
                 }
 
                 if showSettings {
@@ -162,6 +169,8 @@ struct StreamingScreen: View {
                 showSimulcastView = false
             } else if showSettings {
                 showSettings = false
+            } else if showToolbar {
+                hideToolbar()
             } else {
                 dismiss()
             }
@@ -175,6 +184,12 @@ struct StreamingScreen: View {
 
     private func setLayer(streamType: StreamType) {
         dataStore.selectLayer(streamType: streamType)
+    }
+
+    private func hideToolbar() {
+        withAnimation {
+            showToolbar = false
+        }
     }
 }
 
