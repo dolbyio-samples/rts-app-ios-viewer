@@ -209,6 +209,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         Task {
             await MainActor.run {
                 layerActiveMap = activeLayers?.filter { layer in
+                    // For H.264 there are no temporal layers and the id is set to 255. For VP8 use the first temporal layer.
                     return layer.temporalLayerId == 0 || layer.temporalLayerId == 255
                 }
 
