@@ -37,7 +37,7 @@ public final class RTSDataStore: ObservableObject {
     private var videoTrack: MCVideoTrack?
     private var statsReport: MCStatsReport?
 
-    @Published public private(set) var activeStreamType: [StreamType]?
+    @Published public private(set) var activeStreamType = [StreamType]()
     @Published public private(set) var layerActiveMap: [MCLayerData]?
     @Published public var activeLayer = StreamType.auto
 
@@ -208,15 +208,16 @@ extension RTSDataStore: SubscriptionManagerDelegate {
     func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?) {
         Task {
             await MainActor.run {
-                switch activeLayers?.count {
-                case 2: activeStreamType = [StreamType.auto, StreamType.high, StreamType.low]
-                case 3: activeStreamType = [StreamType.auto, StreamType.high, StreamType.medium, StreamType.low]
-                default: activeStreamType = nil
+                layerActiveMap = activeLayers?.filter { layer in
+                    return layer.temporalLayerId == 0 || layer.temporalLayerId == 255
                 }
 
-                layerActiveMap = activeLayers?.filter { layer in
-                    // For H.264 there are no temporal layers and the id is set to 255. For VP8 use the first temporal layer.
-                    return layer.temporalLayerId == 0 || layer.temporalLayerId == 255
+                activeStreamType.removeAll()
+
+                switch layerActiveMap?.count {
+                case 2: activeStreamType += [StreamType.auto, StreamType.high, StreamType.low]
+                case 3: activeStreamType += [StreamType.auto, StreamType.high, StreamType.medium, StreamType.low]
+                default: break
                 }
             }
         }
