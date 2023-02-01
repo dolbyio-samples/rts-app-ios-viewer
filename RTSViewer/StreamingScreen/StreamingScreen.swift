@@ -61,7 +61,7 @@ struct StreamingScreen: View {
                     if showToolbar {
                         VStack {
                             HStack {
-                                IconButton(name: .settings, tintColor: .white) {
+                                IconButton(name: .settings) {
                                     withAnimation {
                                         showSettings = !showSettings
                                     }

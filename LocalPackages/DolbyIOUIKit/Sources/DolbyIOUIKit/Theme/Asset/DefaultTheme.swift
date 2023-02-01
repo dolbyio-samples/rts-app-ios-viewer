@@ -106,15 +106,15 @@ extension DefaultTheme {
         case .tintColor:
             return Color(
                 uiColor: UIColor(
-                    light: UIColor.Background.black,
-                    dark: UIColor.Background.white
+                    light: UIColor.Typography.Light.secondary,
+                    dark: UIColor.Typography.Dark.secondary
                 )
             )
-        case .focusedBackgroundColor:
+        case .focusedTintColor:
             return Color(
                 uiColor: UIColor(
-                    light: UIColor.Background.white,
-                    dark: UIColor.Neutral.neutral200
+                    light: UIColor.Typography.Light.primary,
+                    dark: UIColor.Typography.Dark.primary
                 )
             )
         }

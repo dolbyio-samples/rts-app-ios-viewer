@@ -7,7 +7,7 @@ import SwiftUI
 public struct IconButton: View {
     public var name: ImageAsset
     public var tintColor: Color?
-    public var focusedBackgroundColor: Color?
+    public var focusedTintColor: Color?
     public var action: () -> Void
 
     @FocusState private var isFocused: Bool
@@ -16,12 +16,12 @@ public struct IconButton: View {
     public init(
         name: ImageAsset,
         tintColor: Color? = nil,
-        focusedBackgroundColor: Color? = nil,
+        focusedTintColor: Color? = nil,
         action: @escaping () -> Void
     ) {
         self.name = name
         self.tintColor = tintColor
-        self.focusedBackgroundColor = focusedBackgroundColor
+        self.focusedTintColor = focusedTintColor
         self.action = action
     }
 
@@ -29,21 +29,21 @@ public struct IconButton: View {
         SwiftUI.Button(action: action) {
             IconView(
                 name: name,
-                tintColor: _tintColor
+                tintColor: isFocused ? _focusedTintColor : _tintColor
             )
         }
         .focused($isFocused)
         .buttonStyle(
-            ClearButtonStyle(isFocused: isFocused, focusedBackgroundColor: _focusedBackgroundColor)
+            ClearButtonStyle(isFocused: isFocused, focusedBackgroundColor: .clear)
         )
     }
 
     private var _tintColor: Color? {
-        tintColor ?? theme[.icon(.tintColor)]
+        tintColor ?? theme[.iconButton(.tintColor)]
     }
 
-    private var _focusedBackgroundColor: Color? {
-        focusedBackgroundColor ?? theme[.iconButton(.focusedBackgroundColor)]
+    private var _focusedTintColor: Color? {
+        focusedTintColor ?? theme[.iconButton(.focusedTintColor)]
     }
 }
 
