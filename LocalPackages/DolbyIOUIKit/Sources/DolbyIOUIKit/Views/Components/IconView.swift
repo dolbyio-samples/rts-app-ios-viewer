@@ -5,9 +5,9 @@
 import SwiftUI
 
 public struct IconView: View {
-    public var name: ImageAsset
-    public var tintColor: Color?
-    private var theme: Theme = ThemeManager.shared.theme
+    private let name: ImageAsset
+    private let tintColor: Color?
+    private let theme: Theme = ThemeManager.shared.theme
 
     public init(name: ImageAsset, tintColor: Color? = nil) {
         self.name = name

@@ -56,7 +56,7 @@ public enum ColorAsset: ColorAssetable {
 
     public enum IconButtonAsset {
         case tintColor
-        case focusedBackgroundColor
+        case focusedTintColor
     }
 
     // MARK: Button Colors
