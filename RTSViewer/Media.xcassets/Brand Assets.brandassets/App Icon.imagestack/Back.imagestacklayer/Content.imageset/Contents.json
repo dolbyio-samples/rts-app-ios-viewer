@@ -1,18 +1,18 @@
 {
   "images" : [
     {
-      "filename" : "Back.png",
-      "scale" : "1x",
-      "idiom" : "tv"
+      "filename" : "app_icon@1x.png",
+      "idiom" : "tv",
+      "scale" : "1x"
     },
     {
-      "filename" : "Back@2x.png",
+      "filename" : "app_icon@2x.png",
       "idiom" : "tv",
       "scale" : "2x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

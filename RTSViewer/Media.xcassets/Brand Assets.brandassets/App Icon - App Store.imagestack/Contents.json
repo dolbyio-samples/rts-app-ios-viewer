@@ -1,7 +1,7 @@
 {
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   },
   "layers" : [
     {
@@ -16,8 +16,8 @@
   ],
   "properties" : {
     "canvasSize" : {
-      "width" : 1280,
-      "height" : 768
+      "height" : 768,
+      "width" : 1280
     }
   }
 }
