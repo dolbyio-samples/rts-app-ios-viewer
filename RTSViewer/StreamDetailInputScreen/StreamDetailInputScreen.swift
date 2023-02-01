@@ -15,6 +15,7 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingRecentStreams: Bool = false
 
     @EnvironmentObject private var dataStore: RTSDataStore
+    @EnvironmentObject private var persistenceManager: PersistenceManager
 
     var body: some View {
         BackgroundContainerView {
@@ -48,10 +49,11 @@ struct StreamDetailInputScreen: View {
                         streamName: $streamName,
                         accountID: $accountID,
                         isShowingRecentStreams: $isShowingRecentStreams) {
-                            Task.delayed(byTimeInterval: 0.5) {
+                            Task.delayed(byTimeInterval: 0.60) {
                                 let success = await dataStore.connect(streamName: streamName, accountID: accountID)
                                 await MainActor.run {
                                     isShowingStreamingView = success
+                                    persistenceManager.saveStream(streamName, accountID: accountID)
                                 }
                             }
                         }
