@@ -12,28 +12,33 @@ public struct Text: View {
         case tertiary
     }
 
-    public var text: LocalizedStringKey
-    public var mode: Mode
-    public var font: Font
+    private let text: LocalizedStringKey
+    private let mode: Mode
+    private let font: Font
+    private let textColor: Color?
 
     public init(
         text: LocalizedStringKey,
         mode: Mode = .primary,
-        font: Font
+        font: Font,
+        textColor: Color? = nil
     ) {
         self.text = text
         self.mode = mode
         self.font = font
+        self.textColor = textColor
     }
 
     public init(
         text: LocalizedStringKey,
         mode: Mode = .primary,
-        fontAsset: FontAsset
+        fontAsset: FontAsset,
+        textColor: Color? = nil
     ) {
         self.text = text
         self.mode = mode
         self.font = theme[fontAsset]
+        self.textColor = textColor
     }
 
     @Environment(\.colorScheme) private var colorScheme
@@ -41,7 +46,7 @@ public struct Text: View {
 
     public var body: some View {
         SwiftUI.Text(text)
-            .foregroundColor(textColor)
+            .foregroundColor(_textColor)
             .font(font)
     }
 }
@@ -49,7 +54,11 @@ public struct Text: View {
 // MARK: Private helper functions
 
 private extension Text {
-    var textColor: Color? {
+    var _textColor: Color? {
+        if let textColor = textColor {
+            return textColor
+        }
+
         switch mode {
         case .primary:
             return theme[.text(.primaryColor)]

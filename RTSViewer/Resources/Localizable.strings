@@ -24,6 +24,7 @@
 
 "stream.network.disconnected.label" = "Disconnected from the network";
 "stream.offline.title.label" = "Stream is offline";
+"stream.settings.button" = "Settings";
 "stream.offline.subtitle.label" = "Please wait for livestream to begin.";
 "stream.live.label" = "LIVE";
 "stream.offline.label" = "OFFLINE";

@@ -63,7 +63,10 @@ struct StreamingScreen: View {
                     if showToolbar {
                         VStack {
                             HStack {
-                                IconButton(name: .settings, tintColor: .white) {
+                                IconButton(
+                                    text: "stream.settings.button",
+                                    name: .settings
+                                ) {
                                     withAnimation {
                                         showSettings = !showSettings
                                     }
@@ -340,6 +343,7 @@ struct StreamingScreen_Previews: PreviewProvider {
     static var previews: some View {
         StreamingScreen()
             .environmentObject(RTSDataStore())
+            .environmentObject(PersistentSettings())
     }
 }
 #endif
