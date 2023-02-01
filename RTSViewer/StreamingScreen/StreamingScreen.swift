@@ -37,6 +37,7 @@ struct StreamingScreen: View {
                     .background(Color.black)
                     .opacity(isStreamActive ? (showToolbar ? 0.5: 0.0) : 0.8)
 
+#if os(tvOS)
                 if persistentSettings.liveIndicatorEnable {
                     VStack {
                         HStack {
@@ -56,6 +57,7 @@ struct StreamingScreen: View {
                         .padding(.leading, 56)
                         .padding(.top, 37)
                 }
+#endif
 
                 if isStreamActive {
                     if showToolbar {
@@ -73,7 +75,9 @@ struct StreamingScreen: View {
                         .padding()
                         .transition(.move(edge: .bottom))
                     } else {
+#if os(tvOS)
                         AnyGestureRecognizer(triggered: $showToolbar)
+#endif
                     }
                 }
 
