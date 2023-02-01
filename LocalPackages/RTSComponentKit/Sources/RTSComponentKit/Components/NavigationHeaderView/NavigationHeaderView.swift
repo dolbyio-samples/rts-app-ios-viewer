@@ -10,7 +10,9 @@ public extension View {
         self.safeAreaInset(edge: .top) {
             NavigationHeaderView()
         }
+#if os(tvOS)
         .ignoresSafeArea()
+#endif
     }
 }
 
