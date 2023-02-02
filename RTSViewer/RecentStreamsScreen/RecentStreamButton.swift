@@ -33,6 +33,9 @@ struct RecentStreamButton: View {
                     )
                 Spacer()
             }
+#if os(iOS)
+            .buttonStyle(.plain)
+#endif
         }
         .focused($isFocused)
 #if os(tvOS)
@@ -42,8 +45,6 @@ struct RecentStreamButton: View {
                 focusedBackgroundColor: .clear
             )
         )
-#else
-        .buttonStyle(.plain)
 #endif
         .frame(maxWidth: .infinity, minHeight: 60)
         .background(
