@@ -31,7 +31,9 @@ struct StreamingScreen: View {
         BackgroundContainerView {
             ZStack {
                 VideoRendererView(uiView: dataStore.subscriptionView())
-
+#if os(iOS)
+                    .frame(width: CGFloat(dataStore.statisticsData?.video?.frameWidth ?? 1280), height: CGFloat(dataStore.statisticsData?.video?.frameHeight ?? 720))
+#endif
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
