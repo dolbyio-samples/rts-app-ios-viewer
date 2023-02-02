@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="21G217" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="StreamDetail" representedClassName="StreamDetail" syncable="YES" codeGenerationType="class">
-        <attribute name="accountID" optional="YES" attributeType="String"/>
-        <attribute name="lastUsedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="streamName" optional="YES" attributeType="String"/>
+    <entity name="StreamDetailManagedObject" representedClassName="StreamDetailManagedObject" syncable="YES" codeGenerationType="class">
+        <attribute name="accountID" attributeType="String"/>
+        <attribute name="lastUsedDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="streamName" attributeType="String"/>
     </entity>
 </model>

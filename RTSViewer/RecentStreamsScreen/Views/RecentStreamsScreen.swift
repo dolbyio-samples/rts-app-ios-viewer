@@ -10,20 +10,22 @@ struct RecentStreamsScreen: View {
     @Binding private var streamName: String
     @Binding private var accountID: String
     @Binding private var isShowingRecentStreams: Bool
-    @EnvironmentObject private var dataStore: RTSDataStore
-
-    let action: (() -> Void)?
+    private let action: () -> Void
 
     private let theme = ThemeManager.shared.theme
+    private let viewModel: RecentStreamsViewModel
 
-    private let streamDetails: FetchRequest<StreamDetail> = FetchRequest<StreamDetail>(fetchRequest: PersistenceManager.recentStreams)
-
-    init(streamName: Binding<String>, accountID: Binding<String>,
-         isShowingRecentStreams: Binding<Bool>, _ action: (() -> Void)?) {
+    init(
+        streamName: Binding<String>,
+        accountID: Binding<String>,
+        isShowingRecentStreams: Binding<Bool>,
+        action: @escaping () -> Void
+    ) {
         self._streamName = streamName
         self._accountID = accountID
         self._isShowingRecentStreams = isShowingRecentStreams
         self.action = action
+        self.viewModel = RecentStreamsViewModel()
     }
 
     var body: some View {
@@ -78,13 +80,13 @@ struct RecentStreamsScreen: View {
                     .frame(width: 514.0)
  #endif
                     List {
-                        ForEach(streamDetails.wrappedValue) { streamDetail in
+                        ForEach(viewModel.streamDetails) { streamDetail in
                             if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
                                 RecentStreamButton(streamName: streamName, accountID: accountID) {
                                     self.streamName = streamName
                                     self.accountID = accountID
                                     isShowingRecentStreams = false
-                                    action?()
+                                    action()
                                 }
                             }
                         }
@@ -102,6 +104,11 @@ struct RecentStreamsScreen: View {
 
 struct StreamHistoryScreen_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamsScreen(streamName: .constant(""), accountID: .constant(""), isShowingRecentStreams: .constant(false)) { }
+        RecentStreamsScreen(
+            streamName: .constant(""),
+            accountID: .constant(""),
+            isShowingRecentStreams: .constant(false),
+            action: {}
+        )
     }
 }

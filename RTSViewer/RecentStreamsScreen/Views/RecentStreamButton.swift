@@ -6,18 +6,25 @@ import DolbyIOUIKit
 import SwiftUI
 
 struct RecentStreamButton: View {
-    let streamName: String
-    let accountID: String
-    let action: () -> Void
-
+    private let action: () -> Void
+    private let viewModel: RecentStreamButtonViewModel
     private let theme = ThemeManager.shared.theme
     @FocusState private var isFocused: Bool
+
+    init(
+        streamName: String,
+        accountID: String,
+        action: @escaping () -> Void
+    ) {
+        self.action = action
+        self.viewModel = RecentStreamButtonViewModel(streamName: streamName, accountID: accountID)
+    }
 
     var body: some View {
         Button(action: action) {
             HStack {
                 Spacer()
-                SwiftUI.Text("recent-streams.format.label \(streamName) \(accountID)")
+                SwiftUI.Text("recent-streams.format.label \(viewModel.buttonText)")
                     .font(
                         theme[
                             .avenirNextDemiBold(

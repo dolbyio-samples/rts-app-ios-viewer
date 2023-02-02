@@ -15,7 +15,7 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingRecentStreams: Bool = false
 
     @EnvironmentObject private var dataStore: RTSDataStore
-    @EnvironmentObject private var persistenceManager: PersistenceManager
+    private let streamDataManager: StreamDataManager = StreamDataManager.shared
 
     var body: some View {
         BackgroundContainerView {
@@ -53,7 +53,7 @@ struct StreamDetailInputScreen: View {
                                 let success = await dataStore.connect(streamName: streamName, accountID: accountID)
                                 await MainActor.run {
                                     isShowingStreamingView = success
-                                    persistenceManager.saveStream(streamName, accountID: accountID)
+                                    streamDataManager.saveStream(streamName, accountID: accountID)
                                 }
                             }
                         }
@@ -72,12 +72,10 @@ private struct StreamDetailInputBox: View {
     @Binding private var isShowingRecentStreams: Bool
 
     @EnvironmentObject private var dataStore: RTSDataStore
-    @EnvironmentObject private var persistenceManager: PersistenceManager
+    private let streamDataManager = StreamDataManager.shared
 
     @State private var showingAlert = false
     @State private var showingClearStreamsAlert = false
-
-    private let streamDetails: FetchRequest<StreamDetail> = FetchRequest<StreamDetail>(fetchRequest: PersistenceManager.recentStreams)
 
     init(streamName: Binding<String>, accountID: Binding<String>, isShowingStreamingView: Binding<Bool>, isShowingRecentStreams: Binding<Bool>) {
         self._streamName = streamName
@@ -130,7 +128,7 @@ private struct StreamDetailInputBox: View {
                         }
                         .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
-                    if streamDetails.wrappedValue.count > 0 {
+                    if streamDataManager.streamDetailsSubject.value.count > 0 {
                         DolbyIOUIKit.Button(
                             action: {
                                 isShowingRecentStreams = true
@@ -151,12 +149,12 @@ private struct StreamDetailInputBox: View {
                                 // A delay is added before saving the stream.
                                 // Workaround - the `clear stream` and `saved streams` buttons appear before the screen transition animation completes.
                                 Task.delayed(byTimeInterval: 0.50) {
-                                    await persistenceManager.saveStream(streamName, accountID: accountID)
+                                    await streamDataManager.saveStream(streamName, accountID: accountID)
                                 }
                             }
                         }
 
-                    if streamDetails.wrappedValue.count > 0 {
+                    if streamDataManager.streamDetailsSubject.value.count > 0 {
                         HStack {
                             LinkButton(
                                 action: {
@@ -175,7 +173,7 @@ private struct StreamDetailInputBox: View {
                     Button(
                         "stream-detail-input.clear-streams.alert.clear.button",
                         role: .destructive,
-                        action: { persistenceManager.clearAllStreams() }
+                        action: { streamDataManager.clearAllStreams() }
                     )
                     Button(
                         "stream-detail-input.clear-streams.alert.cancel.button",
