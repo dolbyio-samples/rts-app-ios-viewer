@@ -50,13 +50,6 @@ public struct Button: View {
 
     public var body: some View {
         buttonView
-            .overlay(
-                borderColorAndWidth.map {
-                    RoundedRectangle(cornerRadius: Layout.cornerRadius6x)
-                            .stroke($0.color, lineWidth: $0.width)
-                }
-            )
-            .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
     }
 }
 
@@ -66,14 +59,14 @@ private extension Button {
     var buttonView: some View {
         SwiftUI.Button(action: action) {
             CustomButtonView(
-                action: action,
                 text: text,
                 leftIcon: leftIcon,
                 rightIcon: rightIcon,
                 mode: mode,
                 danger: danger,
                 isFocused: isFocused,
-                buttonState: buttonState
+                buttonState: buttonState,
+                backgroundColor: backgroundColor
             )
         }
         .focused($isFocused)
@@ -89,7 +82,14 @@ private extension Button {
         .buttonStyle(.plain)
 #endif
         .frame(maxWidth: .infinity)
+        .overlay(
+            borderColorAndWidth.map {
+                RoundedRectangle(cornerRadius: Layout.cornerRadius6x)
+                    .stroke($0.color, lineWidth: $0.width)
+            }
+        )
         .background(backgroundColor)
+        .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
     }
 
     typealias BorderColorAndWidth = (color: Color, width: CGFloat)
@@ -205,7 +205,6 @@ private extension Button {
 // MARK: Defines the `View` for the Button's content
 
 private struct CustomButtonView: View {
-    private let action: () -> Void
     private let text: LocalizedStringKey
     private let leftIcon: ImageAsset?
     private let rightIcon: ImageAsset?
@@ -213,21 +212,21 @@ private struct CustomButtonView: View {
     private let danger: Bool
     private let isFocused: Bool
     private let buttonState: Button.ButtonState
+    private let backgroundColor: Color?
 
     @Environment(\.isEnabled) private var isEnabled
     private var theme: Theme = ThemeManager.shared.theme
 
     init(
-        action: @escaping () -> Void,
         text: LocalizedStringKey,
         leftIcon: ImageAsset?,
         rightIcon: ImageAsset?,
         mode: Button.Mode,
         danger: Bool,
         isFocused: Bool,
-        buttonState: Button.ButtonState
+        buttonState: Button.ButtonState,
+        backgroundColor: Color?
     ) {
-        self.action = action
         self.text = text
         self.leftIcon = leftIcon
         self.rightIcon = rightIcon
@@ -235,6 +234,7 @@ private struct CustomButtonView: View {
         self.danger = danger
         self.isFocused = isFocused
         self.buttonState = buttonState
+        self.backgroundColor = backgroundColor
     }
 
     var body: some View {
@@ -272,7 +272,8 @@ private struct CustomButtonView: View {
         }
         .padding(.vertical, Layout.spacing1x)
         .padding(.horizontal, Layout.spacing4x)
-        .frame(minHeight: 44)
+        .frame(maxWidth: .infinity, minHeight: 44)
+        .background(backgroundColor)
     }
 }
 
