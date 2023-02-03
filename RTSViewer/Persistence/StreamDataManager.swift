@@ -62,6 +62,8 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         super.init()
 
         streamDetailFetchResultsController.delegate = self
+
+        fetchStreamDetails()
     }
 
     func fetchStreamDetails() {
