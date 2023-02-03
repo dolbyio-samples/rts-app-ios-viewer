@@ -9,14 +9,14 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "631DD25026F1E18E0023D24A"
-               BuildableName = "RTSViewer TVOS.app"
-               BlueprintName = "RTSViewer TVOS"
+               BlueprintIdentifier = "E8752B5E298CA4C4002D5C2B"
+               BuildableName = "RTSViewerTVOSTests.xctest"
+               BlueprintName = "RTSViewerTVOSTests"
                ReferencedContainer = "container:RTSViewer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,16 +51,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "631DD25026F1E18E0023D24A"
-            BuildableName = "RTSViewer TVOS.app"
-            BlueprintName = "RTSViewer TVOS"
-            ReferencedContainer = "container:RTSViewer.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -68,16 +58,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "631DD25026F1E18E0023D24A"
-            BuildableName = "RTSViewer TVOS.app"
-            BlueprintName = "RTSViewer TVOS"
+            BlueprintIdentifier = "E8752B5E298CA4C4002D5C2B"
+            BuildableName = "RTSViewerTVOSTests.xctest"
+            BlueprintName = "RTSViewerTVOSTests"
             ReferencedContainer = "container:RTSViewer.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
