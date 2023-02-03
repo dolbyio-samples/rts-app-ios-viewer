@@ -21,6 +21,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Build, Export and Upload a build to Appstore Connect for Beta Testing In TestFlight. This lanes wait for the TestFlight build processing to complete
 
+### run_all_unit_tests
+
+```sh
+[bundle exec] fastlane run_all_unit_tests
+```
+
+Run All Unit tests
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

@@ -2,20 +2,20 @@ require 'fileutils'
 
 before_all do
   xcode_select(ENV['XCODE_SELECT_PATH'])
-  get_build_number
-  next if !is_ci
-  create_temp_keychain
 end
 
 desc "Build, Export and Upload a build to Appstore Connect for Beta Testing In TestFlight. This lanes wait for the TestFlight build processing to complete"
 lane :build_and_deploy_to_appstore do |options|
-  build_number = options[:build_number] ? options[:build_number] : lane_context[SharedValues::BUILD_NUMBER]
-
   # Install code signing assets
   if is_ci
+    create_temp_keychain
     decode_and_install_provisioning_profile
     decode_and_install_certificate
   end
+
+  get_build_number
+
+  build_number = options[:build_number] ? options[:build_number] : lane_context[SharedValues::BUILD_NUMBER]
 
   write_export_options_plist
 
@@ -35,13 +35,22 @@ lane :build_and_deploy_to_appstore do |options|
   )
 
   deliver_to_testflight
-end
 
-after_all do
   FileUtils.rm_rf('../Tmp') if File.directory?('../Tmp')
   next if !is_ci
   delete_temp_keychain_if_exists
   delete_temp_provisioning_profiles
+end
+
+desc "Run All Unit tests"
+lane :run_all_unit_tests do
+  test_schemes = ENV['TEST_SCHEMES'].split(", ")
+  test_schemes.each do |scheme_name|
+    scan(
+      scheme: scheme_name,
+      device: ENV['TEST_DEVICE']
+    )
+  end
 end
 
 # Private Helper Lanes

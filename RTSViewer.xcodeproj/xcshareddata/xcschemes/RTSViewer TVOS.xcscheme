@@ -34,8 +34,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E8752B5E298CA4C4002D5C2B"
-               BuildableName = "RTSViewer TVOSTests.xctest"
-               BlueprintName = "RTSViewer TVOSTests"
+               BuildableName = "RTSViewerTVOSTests.xctest"
+               BlueprintName = "RTSViewerTVOSTests"
                ReferencedContainer = "container:RTSViewer.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -152,7 +152,7 @@
 		E8752B50298C7D02002D5C2B /* DateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateProvider.swift; sourceTree = "<group>"; };
 		E8752B55298C7F9F002D5C2B /* RecentStreamsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsViewModel.swift; sourceTree = "<group>"; };
 		E8752B58298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamButtonViewModel.swift; sourceTree = "<group>"; };
-		E8752B5F298CA4C4002D5C2B /* RTSViewer TVOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RTSViewer TVOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8752B5F298CA4C4002D5C2B /* RTSViewerTVOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RTSViewerTVOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8752B68298CA513002D5C2B /* StreamDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDataManagerTests.swift; sourceTree = "<group>"; };
 		E8752B6C298CA614002D5C2B /* RecentStreamsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsViewModelTests.swift; sourceTree = "<group>"; };
 		E8752B6E298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamButtonViewModelTests.swift; sourceTree = "<group>"; };
@@ -219,7 +219,7 @@
 			children = (
 				3FE90C1826B2AF4200B206A3 /* RTSViewer iOS.app */,
 				631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */,
-				E8752B5F298CA4C4002D5C2B /* RTSViewer TVOSTests.xctest */,
+				E8752B5F298CA4C4002D5C2B /* RTSViewerTVOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -458,9 +458,9 @@
 			productReference = 631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		E8752B5E298CA4C4002D5C2B /* RTSViewer TVOSTests */ = {
+		E8752B5E298CA4C4002D5C2B /* RTSViewerTVOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E8752B67298CA4C4002D5C2B /* Build configuration list for PBXNativeTarget "RTSViewer TVOSTests" */;
+			buildConfigurationList = E8752B67298CA4C4002D5C2B /* Build configuration list for PBXNativeTarget "RTSViewerTVOSTests" */;
 			buildPhases = (
 				E8752B5B298CA4C4002D5C2B /* Sources */,
 				E8752B5C298CA4C4002D5C2B /* Frameworks */,
@@ -471,9 +471,9 @@
 			dependencies = (
 				E8752B64298CA4C4002D5C2B /* PBXTargetDependency */,
 			);
-			name = "RTSViewer TVOSTests";
+			name = RTSViewerTVOSTests;
 			productName = "RTSViewer TVOSTests";
-			productReference = E8752B5F298CA4C4002D5C2B /* RTSViewer TVOSTests.xctest */;
+			productReference = E8752B5F298CA4C4002D5C2B /* RTSViewerTVOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -514,7 +514,7 @@
 			targets = (
 				3FE90C1726B2AF4200B206A3 /* RTSViewer iOS */,
 				631DD25026F1E18E0023D24A /* RTSViewer TVOS */,
-				E8752B5E298CA4C4002D5C2B /* RTSViewer TVOSTests */,
+				E8752B5E298CA4C4002D5C2B /* RTSViewerTVOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1000,7 +1000,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E8752B67298CA4C4002D5C2B /* Build configuration list for PBXNativeTarget "RTSViewer TVOSTests" */ = {
+		E8752B67298CA4C4002D5C2B /* Build configuration list for PBXNativeTarget "RTSViewerTVOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E8752B65298CA4C4002D5C2B /* Debug */,
