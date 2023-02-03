@@ -8,7 +8,7 @@ import Foundation
 final class RecentStreamsViewModel: ObservableObject {
 
     private let streamDataManager: StreamDataManagerProtocol
-    private var subscribers: [AnyCancellable] = []
+    private var subscriptions: [AnyCancellable] = []
 
     @Published var streamDetails: [StreamDetail] = []
 
@@ -18,6 +18,10 @@ final class RecentStreamsViewModel: ObservableObject {
             .sink { streamDetails in
                 self.streamDetails = streamDetails
             }
-        .store(in: &subscribers)
+        .store(in: &subscriptions)
+    }
+
+    func fetchAllStreams() {
+        streamDataManager.fetchStreamDetails()
     }
 }

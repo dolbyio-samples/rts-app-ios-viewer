@@ -4,7 +4,7 @@
 
 import Foundation
 
-struct StreamDetail: Identifiable {
+struct StreamDetail: Identifiable, Equatable {
     let id: UUID
     let accountID: String
     let streamName: String

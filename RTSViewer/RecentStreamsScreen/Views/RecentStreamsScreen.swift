@@ -99,6 +99,9 @@ struct RecentStreamsScreen: View {
             }
         }
         .background(Color(uiColor: UIColor.Neutral.neutral900))
+        .onAppear {
+            viewModel.fetchAllStreams()
+        }
     }
 }
 

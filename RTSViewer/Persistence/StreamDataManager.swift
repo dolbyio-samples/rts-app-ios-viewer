@@ -9,6 +9,7 @@ import Foundation
 protocol StreamDataManagerProtocol: AnyObject {
     var streamDetailsSubject: CurrentValueSubject<[StreamDetail], Never> { get }
 
+    func fetchStreamDetails()
     func updateLastUsedDate(for streamDetail: StreamDetail)
     func saveStream(_ streamName: String, accountID: String)
     func clearAllStreams()
@@ -42,7 +43,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         return request
     }()
 
-    private init(type: StreamDataManagerType, dateProvider: DateProvider = DefaultDateProvider()) {
+    init(type: StreamDataManagerType, dateProvider: DateProvider = DefaultDateProvider()) {
         switch type {
         case .default:
             self.coreDataManager = CoreDataManager()
@@ -61,10 +62,13 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         super.init()
 
         streamDetailFetchResultsController.delegate = self
+    }
+
+    func fetchStreamDetails() {
         try? streamDetailFetchResultsController.performFetch()
         if let newStreamDetails = streamDetailFetchResultsController.fetchedObjects {
             let streamDetails = newStreamDetails.compactMap { StreamDetail(managedObject: $0) }
-            self.streamDetailsSubject.send(streamDetails)
+            streamDetailsSubject.send(streamDetails)
         }
     }
 
@@ -138,7 +142,7 @@ extension StreamDataManager: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if let newStreamDetails = controller.fetchedObjects as? [StreamDetailManagedObject] {
             let streamDetails = newStreamDetails.compactMap { StreamDetail(managedObject: $0) }
-            self.streamDetailsSubject.send(streamDetails)
+            streamDetailsSubject.send(streamDetails)
         }
     }
 }
