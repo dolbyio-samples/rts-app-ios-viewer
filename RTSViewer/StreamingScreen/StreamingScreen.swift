@@ -133,6 +133,7 @@ struct StreamingScreen: View {
             .edgesIgnoringSafeArea(.all)
             .onReceive(dataStore.$subscribeState) { subscribeState in
                 Task {
+                    UIApplication.shared.isIdleTimerDisabled = isStreamActive
                     switch subscribeState {
                     case .connected:
                         _ = await dataStore.startSubscribe()
@@ -176,6 +177,12 @@ struct StreamingScreen: View {
                     timer.upstream.connect().cancel()
                 }
             }
+        }
+        .onAppear {
+            UIApplication.shared.isIdleTimerDisabled = isStreamActive
+        }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
         }
 #if os(tvOS)
         .onExitCommand {
