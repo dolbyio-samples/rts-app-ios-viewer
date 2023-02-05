@@ -15,8 +15,8 @@ final class RecentStreamsViewModel: ObservableObject {
     init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared) {
         self.streamDataManager = streamDataManager
         streamDataManager.streamDetailsSubject
-            .sink { streamDetails in
-                self.streamDetails = streamDetails
+            .sink { [weak self] streamDetails in
+                self?.streamDetails = streamDetails
             }
         .store(in: &subscriptions)
     }

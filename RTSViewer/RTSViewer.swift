@@ -8,14 +8,12 @@ import RTSComponentKit
 @main
 struct RTSViewer: App {
 
-    private let dataStore = RTSDataStore()
     private let persistentSettings = PersistentSettings()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(.dark)
-                .environmentObject(dataStore)
                 .environmentObject(persistentSettings)
         }
     }
