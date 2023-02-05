@@ -177,6 +177,12 @@ struct StreamingScreen: View {
                 }
             }
         }
+        .onAppear {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
 #if os(tvOS)
         .onExitCommand {
             if showSimulcastView {
