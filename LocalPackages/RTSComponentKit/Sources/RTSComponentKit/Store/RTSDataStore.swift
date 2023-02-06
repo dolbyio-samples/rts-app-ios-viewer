@@ -192,14 +192,6 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         updateState(to: .error(.connectError(reason: reason)))
     }
 
-    public func updateState(to state: State) {
-        Task {
-            await MainActor.run {
-                self.subscribeState = state
-            }
-        }
-    }
-
     public func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?) {
         Task {
             await MainActor.run {
@@ -215,6 +207,16 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                 case 3: activeStreamType += [StreamType.auto, StreamType.high, StreamType.medium, StreamType.low]
                 default: break
                 }
+            }
+        }
+    }
+
+    // MARK: Private Helpers
+
+    private func updateState(to state: State) {
+        Task {
+            await MainActor.run {
+                self.subscribeState = state
             }
         }
     }

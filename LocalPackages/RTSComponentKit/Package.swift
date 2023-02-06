@@ -29,6 +29,9 @@ let package = Package(
             ]),
         .testTarget(
             name: "RTSComponentKitTests",
-            dependencies: ["RTSComponentKit"])
+            dependencies: [
+                "RTSComponentKit",
+                .product(name: "MillicastSDK", package: "millicast-sdk-swift-package")
+            ])
     ]
 )
