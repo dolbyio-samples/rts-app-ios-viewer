@@ -8,6 +8,7 @@ import Combine
 import MillicastSDK
 import XCTest
 
+// swiftlint:disable type_body_length
 final class RTSDataStoreTests: XCTestCase {
 
     private var mockVideoRenderer: MCIosVideoRenderer!
@@ -500,3 +501,4 @@ final class RTSDataStoreTests: XCTestCase {
         XCTAssertEqual(subscriptionState, .error(.connectError(reason: message)))
     }
 }
+// swiftlint:enable type_body_length
