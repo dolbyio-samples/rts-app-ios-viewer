@@ -67,6 +67,13 @@
 		E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6F29778BD00026E877 /* RTSViewer.xcdatamodeld */; };
 		E8D1947B29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */; };
 		E8D1947C29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */; };
+		E8D5AE58299068E20019C132 /* StreamDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */; };
+		E8D5AE59299068E20019C132 /* StreamDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */; };
+		E8D5AE5D2990840E0019C132 /* MockRTSDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */; };
+		E8D5AE5F299088EF0019C132 /* MockSubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */; };
+		E8D5AE6129908D690019C132 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8D5AE6029908D690019C132 /* RTSComponentKit */; };
+		E8D5AE6329908D690019C132 /* RTSComponentKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E8D5AE6029908D690019C132 /* RTSComponentKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E8D5AE6629908DDB0019C132 /* StreamDetailInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +107,17 @@
 			files = (
 				E8B48E812978DEB2000DC59A /* DolbyIOUIKit in Embed Frameworks */,
 				E8B48E832978DEB3000DC59A /* RTSComponentKit in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8D5AE6229908D690019C132 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E8D5AE6329908D690019C132 /* RTSComponentKit in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,6 +180,10 @@
 		E8C47C6C29778BAA0026E877 /* StreamDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDataManager.swift; sourceTree = "<group>"; };
 		E8C47C7029778BD00026E877 /* RTSViewer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RTSViewer.xcdatamodel; sourceTree = "<group>"; };
 		E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsScreen.swift; sourceTree = "<group>"; };
+		E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModel.swift; sourceTree = "<group>"; };
+		E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRTSDataStore.swift; sourceTree = "<group>"; };
+		E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSubscriptionManager.swift; sourceTree = "<group>"; };
+		E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +211,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8D5AE6129908D690019C132 /* RTSComponentKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,7 +305,8 @@
 		E82A0C19296D0F04007214B8 /* StreamDetailInputScreen */ = {
 			isa = PBXGroup;
 			children = (
-				E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */,
+				E8D5AE56299068A70019C132 /* ViewModels */,
+				E8D5AE55299068A10019C132 /* Views */,
 			);
 			path = StreamDetailInputScreen;
 			sourceTree = "<group>";
@@ -355,8 +379,9 @@
 			isa = PBXGroup;
 			children = (
 				E8752B70298CA779002D5C2B /* Mocks */,
-				E8752B6B298CA605002D5C2B /* RecentStreamsScreen */,
 				E8752B6A298CA596002D5C2B /* Persistence */,
+				E8752B6B298CA605002D5C2B /* RecentStreamsScreen */,
+				E8D5AE6429908DB20019C132 /* StreamDetailInputScreen */,
 			);
 			path = "RTSViewer TVOSTests";
 			sourceTree = "<group>";
@@ -382,7 +407,9 @@
 			isa = PBXGroup;
 			children = (
 				E8752B71298CA78D002D5C2B /* MockDateProvider.swift */,
+				E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */,
 				E8752B73298CB535002D5C2B /* MockStreamDataManager.swift */,
+				E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -406,6 +433,30 @@
 				E8752B53298C7F68002D5C2B /* Views */,
 			);
 			path = RecentStreamsScreen;
+			sourceTree = "<group>";
+		};
+		E8D5AE55299068A10019C132 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E8D5AE56299068A70019C132 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E8D5AE6429908DB20019C132 /* StreamDetailInputScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */,
+			);
+			path = StreamDetailInputScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -465,6 +516,7 @@
 				E8752B5B298CA4C4002D5C2B /* Sources */,
 				E8752B5C298CA4C4002D5C2B /* Frameworks */,
 				E8752B5D298CA4C4002D5C2B /* Resources */,
+				E8D5AE6229908D690019C132 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -472,6 +524,9 @@
 				E8752B64298CA4C4002D5C2B /* PBXTargetDependency */,
 			);
 			name = RTSViewerTVOSTests;
+			packageProductDependencies = (
+				E8D5AE6029908D690019C132 /* RTSComponentKit */,
+			);
 			productName = "RTSViewer TVOSTests";
 			productReference = E8752B5F298CA4C4002D5C2B /* RTSViewerTVOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -600,6 +655,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8D5AE58299068E20019C132 /* StreamDetailInputViewModel.swift in Sources */,
 				E8B48E85297A2957000DC59A /* RecentStreamButton.swift in Sources */,
 				E8752B51298C7D02002D5C2B /* DateProvider.swift in Sources */,
 				E8D1947B29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */,
@@ -624,6 +680,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8D5AE59299068E20019C132 /* StreamDetailInputViewModel.swift in Sources */,
 				E8B48E86297A2957000DC59A /* RecentStreamButton.swift in Sources */,
 				E8752B52298C7D02002D5C2B /* DateProvider.swift in Sources */,
 				E8D1947C29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */,
@@ -649,10 +706,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8752B72298CA78D002D5C2B /* MockDateProvider.swift in Sources */,
+				E8D5AE5D2990840E0019C132 /* MockRTSDataStore.swift in Sources */,
 				E8752B74298CB535002D5C2B /* MockStreamDataManager.swift in Sources */,
 				E8752B6F298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift in Sources */,
 				E8752B69298CA513002D5C2B /* StreamDataManagerTests.swift in Sources */,
 				E8752B6D298CA614002D5C2B /* RecentStreamsViewModelTests.swift in Sources */,
+				E8D5AE6629908DDB0019C132 /* StreamDetailInputViewModelTests.swift in Sources */,
+				E8D5AE5F299088EF0019C132 /* MockSubscriptionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1043,6 +1103,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E8575E9729527B420070F53E /* XCRemoteSwiftPackageReference "millicast-sdk-swift-package" */;
 			productName = MillicastSDK;
+		};
+		E8D5AE6029908D690019C132 /* RTSComponentKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RTSComponentKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 

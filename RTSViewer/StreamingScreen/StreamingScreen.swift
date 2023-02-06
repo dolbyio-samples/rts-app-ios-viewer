@@ -12,7 +12,7 @@ struct StreamingScreen: View {
 
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
 
-    @EnvironmentObject private var dataStore: RTSDataStore
+    @ObservedObject private var dataStore: RTSDataStore
     @EnvironmentObject private var persistentSettings: PersistentSettings
 
     @State private var volume = 0.5
@@ -26,6 +26,10 @@ struct StreamingScreen: View {
     @State private var activeStreamType = [StreamType]()
 
     @Environment(\.dismiss) var dismiss
+
+    init(dataStore: RTSDataStore) {
+        self.dataStore = dataStore
+    }
 
     var body: some View {
         BackgroundContainerView {
@@ -350,8 +354,7 @@ private struct SimulcastView: View {
 #if DEBUG
 struct StreamingScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamingScreen()
-            .environmentObject(RTSDataStore())
+        StreamingScreen(dataStore: .init())
             .environmentObject(PersistentSettings())
     }
 }

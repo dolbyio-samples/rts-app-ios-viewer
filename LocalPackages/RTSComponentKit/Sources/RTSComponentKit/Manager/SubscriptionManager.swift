@@ -8,7 +8,7 @@ import Foundation
 import MillicastSDK
 import os
 
-protocol SubscriptionManagerDelegate: AnyObject {
+public protocol SubscriptionManagerDelegate: AnyObject {
     func onSubscribed()
     func onSubscribedError(_ reason: String)
     func onVideoTrack(_ track: MCVideoTrack, withMid mid: String)
@@ -22,7 +22,16 @@ protocol SubscriptionManagerDelegate: AnyObject {
     func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?)
 }
 
-final class SubscriptionManager {
+public protocol SubscriptionManagerProtocol: AnyObject {
+    var delegate: SubscriptionManagerDelegate? { get set }
+
+    func connect(streamName: String, accountID: String) async -> Bool
+    func startSubscribe() async -> Bool
+    func stopSubscribe() async -> Bool
+    func selectLayer(layer: MCLayerData?) -> Bool
+}
+
+public final class SubscriptionManager: SubscriptionManagerProtocol {
 
     private static let logger = Logger(
         subsystem: Bundle.module.bundleIdentifier!,
@@ -31,9 +40,11 @@ final class SubscriptionManager {
 
     private var subscriber: MCSubscriber?
 
-    weak var delegate: SubscriptionManagerDelegate?
+    weak public var delegate: SubscriptionManagerDelegate?
 
-    func connect(streamName: String, accountID: String) async -> Bool {
+    public init() {}
+
+    public func connect(streamName: String, accountID: String) async -> Bool {
         Self.logger.debug("Start a new connect request")
 
         guard streamName.count > 0, accountID.count > 0 else {
@@ -67,7 +78,7 @@ final class SubscriptionManager {
         return await task.value
     }
 
-    func startSubscribe() async -> Bool {
+    public func startSubscribe() async -> Bool {
         Self.logger.debug("Start a subscription")
 
         let task = Task { [weak self] () -> Bool in
@@ -99,7 +110,7 @@ final class SubscriptionManager {
         return await task.value
     }
 
-    func stopSubscribe() async -> Bool {
+    public func stopSubscribe() async -> Bool {
         Self.logger.debug("Stop subscription")
 
         let task = Task { [weak self] () -> Bool in
@@ -128,7 +139,7 @@ final class SubscriptionManager {
     }
 
     @discardableResult
-    func selectLayer(layer: MCLayerData?) -> Bool {
+    public func selectLayer(layer: MCLayerData?) -> Bool {
         return subscriber?.select(layer) ?? false
     }
 }
@@ -166,69 +177,69 @@ private extension SubscriptionManager {
 
 extension SubscriptionManager: MCSubscriberListener {
 
-    func onSubscribed() {
+    public func onSubscribed() {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSubscribed()")
         delegate?.onSubscribed()
     }
 
-    func onSubscribedError(_ reason: String!) {
+    public func onSubscribedError(_ reason: String!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSubscribedError(_ reason:)")
         delegate?.onSubscribedError(reason)
     }
 
-    func onVideoTrack(_ track: MCVideoTrack!, withMid mid: String!) {
+    public func onVideoTrack(_ track: MCVideoTrack!, withMid mid: String!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onVideoTrack(_ mid:)")
         delegate?.onVideoTrack(track, withMid: mid)
     }
 
-    func onAudioTrack(_ track: MCAudioTrack!, withMid mid: String!) {
+    public func onAudioTrack(_ track: MCAudioTrack!, withMid mid: String!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onAudioTrack(_ mid:)")
         delegate?.onAudioTrack(track, withMid: mid)
     }
 
-    func onActive(_ streamId: String!, tracks: [String]!, sourceId: String!) {
+    public func onActive(_ streamId: String!, tracks: [String]!, sourceId: String!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onActive(_ streamId:tracks:sourceId:)")
         delegate?.onStreamActive()
     }
 
-    func onInactive(_ streamId: String!, sourceId: String!) {
+    public func onInactive(_ streamId: String!, sourceId: String!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onInactive(_ streamId:sourceId:)")
         delegate?.onStreamInactive()
     }
 
-    func onStopped() {
+    public func onStopped() {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onStopped()")
         delegate?.onStreamStopped()
     }
 
-    func onVad(_ mid: String!, sourceId: String!) {
+    public func onVad(_ mid: String!, sourceId: String!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onVad(_ mid:sourceId:)")
     }
 
-    func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
+    public func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onLayers(_ mid:activeLayers:inactiveLayers:)")
         delegate?.onStreamLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
     }
 
-    func onConnected() {
+    public func onConnected() {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onConnected()")
         delegate?.onConnected()
     }
 
-    func onConnectionError(_ status: Int32, withReason reason: String!) {
+    public func onConnectionError(_ status: Int32, withReason reason: String!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onConnectionError(_ status:withReason:)")
         delegate?.onConnectionError(reason: reason)
     }
 
-    func onSignalingError(_ message: String!) {
+    public func onSignalingError(_ message: String!) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSignalingError(_ message:)")
     }
 
-    func onStatsReport(_ report: MCStatsReport!) {
+    public func onStatsReport(_ report: MCStatsReport!) {
         delegate?.onStatsReport(report: report)
     }
 
-    func onViewerCount(_ count: Int32) {
+    public func onViewerCount(_ count: Int32) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onViewerCount(_ count:)")
     }
 }

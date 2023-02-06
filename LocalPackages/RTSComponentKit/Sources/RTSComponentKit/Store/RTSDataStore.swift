@@ -7,7 +7,7 @@ import Foundation
 import MillicastSDK
 import SwiftUI
 
-public final class RTSDataStore: ObservableObject {
+open class RTSDataStore: ObservableObject {
 
     public enum SubscriptionError: Error, Equatable {
         case subscribeError(reason: String)
@@ -29,7 +29,7 @@ public final class RTSDataStore: ObservableObject {
     @Published public var statisticsData: StatisticsData?
 
     private let videoRenderer: MCIosVideoRenderer
-    private var subscriptionManager: SubscriptionManager!
+    private let subscriptionManager: SubscriptionManagerProtocol
 
     private typealias StreamDetail = (streamName: String, accountID: String)
     private var streamDetail: StreamDetail?
@@ -41,27 +41,22 @@ public final class RTSDataStore: ObservableObject {
     @Published public private(set) var layerActiveMap: [MCLayerData]?
     @Published public var activeLayer = StreamType.auto
 
-    init(subscriptionManager: SubscriptionManager, videoRenderer: MCIosVideoRenderer) {
+    public init(
+        subscriptionManager: SubscriptionManagerProtocol = SubscriptionManager(),
+        videoRenderer: MCIosVideoRenderer = MCIosVideoRenderer()
+    ) {
         self.subscriptionManager = subscriptionManager
         self.videoRenderer = videoRenderer
         self.subscriptionManager.delegate = self
     }
 
-    public convenience init() {
-        self.init(
-            subscriptionManager: SubscriptionManager(),
-            videoRenderer: MCIosVideoRenderer()
-        )
-        self.subscriptionManager.delegate = self
-    }
-
     // MARK: Subscribe API methods
 
-    public func toggleAudioState() {
+    open func toggleAudioState() {
         setAudio(!isAudioEnabled)
     }
 
-    public func setAudio(_ enable: Bool) {
+    open func setAudio(_ enable: Bool) {
         audioTrack?.enable(enable)
         Task {
             await MainActor.run {
@@ -70,11 +65,11 @@ public final class RTSDataStore: ObservableObject {
         }
     }
 
-    public func toggleVideoState() {
+    open func toggleVideoState() {
         setVideo(!isVideoEnabled)
     }
 
-    public func setVideo(_ enable: Bool) {
+    open func setVideo(_ enable: Bool) {
         videoTrack?.enable(enable)
         Task {
             await MainActor.run {
@@ -83,11 +78,11 @@ public final class RTSDataStore: ObservableObject {
         }
     }
 
-    public func setVolume(_ volume: Double) {
+    open func setVolume(_ volume: Double) {
         audioTrack?.setVolume(volume)
     }
 
-    public func connect() async -> Bool {
+    open func connect() async -> Bool {
         guard let streamDetail = streamDetail else {
             return false
         }
@@ -95,16 +90,16 @@ public final class RTSDataStore: ObservableObject {
         return await connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
     }
 
-    public func connect(streamName: String, accountID: String) async -> Bool {
+    open func connect(streamName: String, accountID: String) async -> Bool {
         self.streamDetail = (streamName: streamName, accountID: accountID)
         return await subscriptionManager.connect(streamName: streamName, accountID: accountID)
     }
 
-    public func startSubscribe() async -> Bool {
+    open func startSubscribe() async -> Bool {
         await subscriptionManager.startSubscribe()
     }
 
-    public func stopSubscribe() async -> Bool {
+    open func stopSubscribe() async -> Bool {
         let success = await subscriptionManager.stopSubscribe()
 
         setAudio(false)
@@ -120,12 +115,12 @@ public final class RTSDataStore: ObservableObject {
         return success
     }
 
-    public func subscriptionView() -> UIView {
+    open func subscriptionView() -> UIView {
         videoRenderer.getView()
     }
 
     @discardableResult
-    public func selectLayer(streamType: StreamType) -> Bool {
+    open func selectLayer(streamType: StreamType) -> Bool {
         activeLayer = streamType
 
         switch streamType {
@@ -179,7 +174,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         Utils.configureAudioSession()
     }
 
-    func onStatsReport(report: MCStatsReport) {
+    public func onStatsReport(report: MCStatsReport) {
         self.statsReport = report
         let value = getStatisticsData(report: report)
         Task {
@@ -197,15 +192,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         updateState(to: .error(.connectError(reason: reason)))
     }
 
-    public func updateState(to state: State) {
-        Task {
-            await MainActor.run {
-                self.subscribeState = state
-            }
-        }
-    }
-
-    func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?) {
+    public func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?) {
         Task {
             await MainActor.run {
                 layerActiveMap = activeLayers?.filter { layer in
@@ -220,6 +207,16 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                 case 3: activeStreamType += [StreamType.auto, StreamType.high, StreamType.medium, StreamType.low]
                 default: break
                 }
+            }
+        }
+    }
+
+    // MARK: Private Helpers
+
+    private func updateState(to state: State) {
+        Task {
+            await MainActor.run {
+                self.subscribeState = state
             }
         }
     }

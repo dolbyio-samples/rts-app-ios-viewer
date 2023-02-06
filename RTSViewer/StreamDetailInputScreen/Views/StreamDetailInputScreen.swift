@@ -14,8 +14,7 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingStreamingView: Bool = false
     @State private var isShowingRecentStreams: Bool = false
 
-    @EnvironmentObject private var dataStore: RTSDataStore
-    private let streamDataManager: StreamDataManager = StreamDataManager.shared
+    @ObservedObject private var viewModel: StreamDetailInputViewModel = .init()
 
     var body: some View {
         BackgroundContainerView {
@@ -27,13 +26,14 @@ struct StreamDetailInputScreen: View {
                  - in this case - controlled by the Binded `Bool` value.
                  */
 
-                NavigationLink(destination: StreamingScreen(), isActive: $isShowingStreamingView) {
+                NavigationLink(destination: StreamingScreen(dataStore: viewModel.dataStore), isActive: $isShowingStreamingView) {
                     EmptyView()
                 }
                 .hidden()
 
                 VStack {
                     StreamDetailInputBox(
+                        viewModel: viewModel,
                         streamName: $streamName,
                         accountID: $accountID,
                         isShowingStreamingView: $isShowingStreamingView,
@@ -50,10 +50,10 @@ struct StreamDetailInputScreen: View {
                         accountID: $accountID,
                         isShowingRecentStreams: $isShowingRecentStreams) {
                             Task.delayed(byTimeInterval: 0.60) {
-                                let success = await dataStore.connect(streamName: streamName, accountID: accountID)
+                                let success = await viewModel.connect(streamName: streamName, accountID: accountID)
                                 await MainActor.run {
                                     isShowingStreamingView = success
-                                    streamDataManager.saveStream(streamName, accountID: accountID)
+                                    viewModel.saveStream(streamName: streamName, accountID: accountID)
                                 }
                             }
                         }
@@ -71,13 +71,19 @@ private struct StreamDetailInputBox: View {
     @Binding private var isShowingStreamingView: Bool
     @Binding private var isShowingRecentStreams: Bool
 
-    @EnvironmentObject private var dataStore: RTSDataStore
-    private let streamDataManager = StreamDataManager.shared
-
     @State private var showingAlert = false
     @State private var showingClearStreamsAlert = false
 
-    init(streamName: Binding<String>, accountID: Binding<String>, isShowingStreamingView: Binding<Bool>, isShowingRecentStreams: Binding<Bool>) {
+    private let viewModel: StreamDetailInputViewModel
+
+    init(
+        viewModel: StreamDetailInputViewModel,
+        streamName: Binding<String>,
+        accountID: Binding<String>,
+        isShowingStreamingView: Binding<Bool>,
+        isShowingRecentStreams: Binding<Bool>
+    ) {
+        self.viewModel = viewModel
         self._streamName = streamName
         self._accountID = accountID
         self._isShowingStreamingView = isShowingStreamingView
@@ -128,7 +134,7 @@ private struct StreamDetailInputBox: View {
                         }
                         .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
-                    if streamDataManager.streamDetailsSubject.value.count > 0 {
+                    if viewModel.hasSavedStreams {
                         DolbyIOUIKit.Button(
                             action: {
                                 isShowingRecentStreams = true
@@ -142,19 +148,19 @@ private struct StreamDetailInputBox: View {
                         text: "stream-detail-input.play.button",
                         streamName: streamName,
                         accountID: accountID,
-                        dataStore: dataStore) { success in
+                        dataStore: viewModel.dataStore) { success in
                             showingAlert = !success
                             isShowingStreamingView = success
                             if success {
                                 // A delay is added before saving the stream.
                                 // Workaround - the `clear stream` and `saved streams` buttons appear before the screen transition animation completes.
                                 Task.delayed(byTimeInterval: 0.50) {
-                                    await streamDataManager.saveStream(streamName, accountID: accountID)
+                                    viewModel.saveStream(streamName: streamName, accountID: accountID)
                                 }
                             }
                         }
 
-                    if streamDataManager.streamDetailsSubject.value.count > 0 {
+                    if viewModel.hasSavedStreams {
                         HStack {
                             LinkButton(
                                 action: {
@@ -173,7 +179,9 @@ private struct StreamDetailInputBox: View {
                     Button(
                         "stream-detail-input.clear-streams.alert.clear.button",
                         role: .destructive,
-                        action: { streamDataManager.clearAllStreams() }
+                        action: {
+                            viewModel.clearAllStreams()
+                        }
                     )
                     Button(
                         "stream-detail-input.clear-streams.alert.cancel.button",
@@ -199,6 +207,5 @@ private struct StreamDetailInputBox: View {
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
         StreamDetailInputScreen()
-            .environmentObject(RTSDataStore())
     }
 }
