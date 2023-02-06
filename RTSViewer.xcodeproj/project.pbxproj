@@ -73,6 +73,7 @@
 		E8D5AE5F299088EF0019C132 /* MockSubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */; };
 		E8D5AE6129908D690019C132 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8D5AE6029908D690019C132 /* RTSComponentKit */; };
 		E8D5AE6329908D690019C132 /* RTSComponentKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E8D5AE6029908D690019C132 /* RTSComponentKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E8D5AE6629908DDB0019C132 /* StreamDetailInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -182,6 +183,7 @@
 		E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModel.swift; sourceTree = "<group>"; };
 		E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRTSDataStore.swift; sourceTree = "<group>"; };
 		E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSubscriptionManager.swift; sourceTree = "<group>"; };
+		E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -377,8 +379,9 @@
 			isa = PBXGroup;
 			children = (
 				E8752B70298CA779002D5C2B /* Mocks */,
-				E8752B6B298CA605002D5C2B /* RecentStreamsScreen */,
 				E8752B6A298CA596002D5C2B /* Persistence */,
+				E8752B6B298CA605002D5C2B /* RecentStreamsScreen */,
+				E8D5AE6429908DB20019C132 /* StreamDetailInputScreen */,
 			);
 			path = "RTSViewer TVOSTests";
 			sourceTree = "<group>";
@@ -446,6 +449,14 @@
 				E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E8D5AE6429908DB20019C132 /* StreamDetailInputScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */,
+			);
+			path = StreamDetailInputScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -700,6 +711,7 @@
 				E8752B6F298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift in Sources */,
 				E8752B69298CA513002D5C2B /* StreamDataManagerTests.swift in Sources */,
 				E8752B6D298CA614002D5C2B /* RecentStreamsViewModelTests.swift in Sources */,
+				E8D5AE6629908DDB0019C132 /* StreamDetailInputViewModelTests.swift in Sources */,
 				E8D5AE5F299088EF0019C132 /* MockSubscriptionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
