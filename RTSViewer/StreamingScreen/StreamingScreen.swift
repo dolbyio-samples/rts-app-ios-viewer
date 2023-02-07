@@ -27,10 +27,11 @@ struct StreamingScreen: View {
     var body: some View {
         BackgroundContainerView {
             ZStack {
+                let screenRect = UIScreen.main.bounds
+                let (videoFrameWidth, videoFrameHeight) = viewModel.calculateVideoViewWidthHeight(screenWidth: Double(screenRect.size.width), screenHeight: Double(screenRect.size.height))
                 VideoRendererView(uiView: viewModel.streamingView)
-#if os(iOS)
-                    .frame(width: viewModel.videoFrameWidth, height: viewModel.videoFrameHeight)
-#endif
+                    .frame(width: videoFrameWidth, height: videoFrameHeight)
+
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
