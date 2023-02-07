@@ -147,7 +147,7 @@ final class DisplayStreamViewModel: ObservableObject {
 // MARK: Helper methods
 
 private extension DisplayStreamViewModel {
-    private var videoFrameWidth: Double {
+    var videoFrameWidth: Double {
         let frameWidth = dataStore.statisticsData?.video?.frameWidth ?? 0
         if frameWidth > 0 {
             return Double(frameWidth)
@@ -156,7 +156,7 @@ private extension DisplayStreamViewModel {
         }
     }
 
-    private var videoFrameHeight: Double {
+    var videoFrameHeight: Double {
         let frameHeight = dataStore.statisticsData?.video?.frameHeight ?? 0
         if frameHeight > 0 {
             return Double(frameHeight)
@@ -165,7 +165,7 @@ private extension DisplayStreamViewModel {
         }
     }
 
-    private func calculateAspectRatio(crop: Bool, screenWidth: Double, screenHeight: Double, frameWidth: Double, frameHeight: Double) -> Double {
+    func calculateAspectRatio(crop: Bool, screenWidth: Double, screenHeight: Double, frameWidth: Double, frameHeight: Double) -> Double {
         var ratio: Double = 1.0
         var widthHeading: Bool = true
         if screenWidth > frameWidth && screenHeight > frameHeight {
