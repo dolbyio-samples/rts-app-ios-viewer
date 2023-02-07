@@ -4,27 +4,29 @@
 
 import Foundation
 
-final class PersistentSettings: ObservableObject {
+protocol PersistentSettingsProtocol: AnyObject {
+    var liveIndicatorEnabled: Bool { get set }
+}
 
-    let userDefaults: UserDefaults
+final class PersistentSettings: PersistentSettingsProtocol {
 
-    @Published var liveIndicatorEnable: Bool {
-        didSet {
-            userDefaults.set(liveIndicatorEnable, forKey: Keys.liveIndicatorEnable.rawValue)
-        }
-    }
+    private let userDefaults: UserDefaults
 
     private enum Keys: String {
-        case liveIndicatorEnable
+        case liveIndicatorEnabled
     }
 
-    init() {
-        userDefaults = UserDefaults.init()
-        liveIndicatorEnable = userDefaults.object(forKey: Keys.liveIndicatorEnable.rawValue) as? Bool ?? true
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+        liveIndicatorEnabled = userDefaults.object(forKey: Keys.liveIndicatorEnabled.rawValue) as? Bool ?? true
     }
 
-    init(suiteName: String?) {
-        userDefaults = UserDefaults.init(suiteName: suiteName) ?? .init()
-        liveIndicatorEnable = userDefaults.object(forKey: Keys.liveIndicatorEnable.rawValue) as? Bool ?? true
+    var liveIndicatorEnabled: Bool {
+        get {
+            userDefaults.object(forKey: Keys.liveIndicatorEnabled.rawValue) as? Bool ?? true
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.liveIndicatorEnabled.rawValue)
+        }
     }
 }

@@ -8,8 +8,11 @@ import RTSComponentKit
 import Foundation
 
 struct StatisticsView: View {
-    @Binding var statsView: Bool
-    @Binding var stats: StatisticsData?
+    private let viewModel: StatisticsViewModel
+
+    init(dataStore: RTSDataStore) {
+        self.viewModel = StatisticsViewModel(dataStore: dataStore)
+    }
 
     private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption2, style: .caption2)
     private let fontTable = Font.avenirNextRegular(withStyle: .caption2, size: FontSize.caption2)
@@ -50,40 +53,44 @@ struct StatisticsView: View {
     }
 
     private var data: [StatData] {
+        guard let stats = viewModel.statisticsData else {
+            return []
+        }
+
         var result = [StatData]()
 
-        if let rtt = stats?.roundTripTime {
+        if let rtt = stats.roundTripTime {
             result.append(StatData(key: "stream.stats.rtt.label", value: String(rtt)))
         }
-        if let videoResolution = stats?.video?.videoResolution {
+        if let videoResolution = stats.video?.videoResolution {
             result.append(StatData(key: "stream.stats.video-resolution.label", value: videoResolution))
         }
-        if let fps = stats?.video?.fps {
+        if let fps = stats.video?.fps {
             result.append(StatData(key: "stream.stats.fps.label", value: String(fps)))
         }
-        if let audioBytesReceived = stats?.audio?.bytesReceived {
+        if let audioBytesReceived = stats.audio?.bytesReceived {
             result.append(StatData(key: "stream.stats.audio-total-received.label", value: formatBytes(bytes: audioBytesReceived)))
         }
-        if let videoBytesReceived = stats?.video?.bytesReceived {
+        if let videoBytesReceived = stats.video?.bytesReceived {
             result.append(StatData(key: "stream.stats.video-total-received.label", value: formatBytes(bytes: videoBytesReceived)))
         }
-        if let audioPacketsLost = stats?.audio?.packetsLost {
+        if let audioPacketsLost = stats.audio?.packetsLost {
             result.append(StatData(key: "stream.stats.audio-packet-loss.label", value: String(audioPacketsLost)))
         }
-        if let videoPacketsLost = stats?.video?.packetsLost {
+        if let videoPacketsLost = stats.video?.packetsLost {
             result.append(StatData(key: "stream.stats.video-packet-loss.label", value: String(videoPacketsLost)))
         }
-        if let audioJitter = stats?.audio?.jitter {
+        if let audioJitter = stats.audio?.jitter {
             result.append(StatData(key: "stream.stats.audio-jitter.label", value: "\(audioJitter)"))
         }
-        if let videoJitter = stats?.video?.jitter {
+        if let videoJitter = stats.video?.jitter {
             result.append(StatData(key: "stream.stats.video-jitter.label", value: "\(videoJitter)"))
         }
-        if let timestamp = stats?.audio?.timestamp {
+        if let timestamp = stats.audio?.timestamp {
             result.append(StatData(key: "stream.stats.timestamp.label", value: String(timestamp))) // change to dateStr when timestamp is fixed
         }
-        let audioCodec = stats?.audio?.codecName
-        let videoCodec = stats?.video?.codecName
+        let audioCodec = stats.audio?.codecName
+        let videoCodec = stats.video?.codecName
         if audioCodec != nil || videoCodec != nil {
             var delimiter = ", "
             if audioCodec == nil || videoCodec == nil {
