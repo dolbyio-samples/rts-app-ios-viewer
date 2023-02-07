@@ -116,6 +116,37 @@ final class DisplayStreamViewModel: ObservableObject {
         dataStore.subscriptionView()
     }
 
+    func setLayer(streamType: StreamType) {
+        dataStore.selectLayer(streamType: streamType)
+    }
+
+    func stopSubscribe() async {
+        _ = await dataStore.stopSubscribe()
+        timer.upstream.connect().cancel()
+    }
+
+    /** Method to calculate video view width and height for the current screen size
+        and current stream frameWidth / frameHeight.
+        videoFrameWidth and videoFrameWidth are assumed to be greater than 0.
+        params: crop = true if the view should be cropped and take the whole screen
+        crop = false if the view should not be cropped.
+        */
+    func calculateVideoViewWidthHeight(screenWidth: Double, screenHeight: Double) -> (CGFloat, CGFloat) {
+        var ratio = 1.0
+        var width, height: Double
+
+        ratio = calculateAspectRatio(crop: true, screenWidth: screenWidth, screenHeight: screenHeight, frameWidth: videoFrameWidth, frameHeight: videoFrameHeight)
+
+        width = videoFrameWidth * ratio
+        height = videoFrameHeight * ratio
+
+        return (CGFloat(width), CGFloat(height))
+    }
+}
+
+// MARK: Helper methods
+
+private extension DisplayStreamViewModel {
     private var videoFrameWidth: Double {
         let frameWidth = dataStore.statisticsData?.video?.frameWidth ?? 0
         if frameWidth > 0 {
@@ -132,37 +163,6 @@ final class DisplayStreamViewModel: ObservableObject {
         } else {
             return 720
         }
-    }
-
-    func setLayer(streamType: StreamType) {
-        dataStore.selectLayer(streamType: streamType)
-    }
-
-    func stopSubscribe() async {
-        _ = await dataStore.stopSubscribe()
-        timer.upstream.connect().cancel()
-    }
-
-    /** Method to calculate video view width and height for the current screen size
-        and current stream frameWidth / frameHeight.
-        videoFrameWidth and videoFrameWidth are assumed to be greater than 0.
-        params: crop = true if the view should be cropped and take the whole screen
-        crop = false if the view should not be cropped.
-     */
-    func calculateVideoViewWidthHeight(crop: Bool) -> (CGFloat, CGFloat) {
-        let screenRect = UIScreen.main.bounds
-        let screenWidth = Double(screenRect.size.width)
-        let screenHeight = Double(screenRect.size.height)
-
-        var ratio = 1.0
-        var width, height: Double
-
-        ratio = calculateAspectRatio(crop: crop, screenWidth: screenWidth, screenHeight: screenHeight, frameWidth: videoFrameWidth, frameHeight: videoFrameHeight)
-
-        width = videoFrameWidth * ratio
-        height = videoFrameHeight * ratio
-
-        return (CGFloat(width), CGFloat(height))
     }
 
     private func calculateAspectRatio(crop: Bool, screenWidth: Double, screenHeight: Double, frameWidth: Double, frameHeight: Double) -> Double {

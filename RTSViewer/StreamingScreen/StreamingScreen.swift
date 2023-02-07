@@ -27,7 +27,8 @@ struct StreamingScreen: View {
     var body: some View {
         BackgroundContainerView {
             ZStack {
-                let (videoFrameWidth, videoFrameHeight) = viewModel.calculateVideoViewWidthHeight(crop: true)
+                let screenRect = UIScreen.main.bounds
+                let (videoFrameWidth, videoFrameHeight) = viewModel.calculateVideoViewWidthHeight(screenWidth: Double(screenRect.size.width), screenHeight: Double(screenRect.size.height))
                 VideoRendererView(uiView: viewModel.streamingView)
                     .frame(width: videoFrameWidth, height: videoFrameHeight)
 
