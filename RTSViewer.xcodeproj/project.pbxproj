@@ -84,6 +84,10 @@
 		E8D5AE6129908D690019C132 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8D5AE6029908D690019C132 /* RTSComponentKit */; };
 		E8D5AE6329908D690019C132 /* RTSComponentKit in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E8D5AE6029908D690019C132 /* RTSComponentKit */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E8D5AE6629908DDB0019C132 /* StreamDetailInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */; };
+		E8F2EE24299324AF00AF0471 /* SimulcastViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE23299324AF00AF0471 /* SimulcastViewModelTests.swift */; };
+		E8F2EE262993276B00AF0471 /* DisplayStreamViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE252993276B00AF0471 /* DisplayStreamViewModelTests.swift */; };
+		E8F2EE2829932A9100AF0471 /* MockPersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE2729932A9100AF0471 /* MockPersistentSettings.swift */; };
+		E8F2EE2A29932C4900AF0471 /* MockNetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE2929932C4900AF0471 /* MockNetworkMonitor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -199,6 +203,10 @@
 		E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRTSDataStore.swift; sourceTree = "<group>"; };
 		E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSubscriptionManager.swift; sourceTree = "<group>"; };
 		E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModelTests.swift; sourceTree = "<group>"; };
+		E8F2EE23299324AF00AF0471 /* SimulcastViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulcastViewModelTests.swift; sourceTree = "<group>"; };
+		E8F2EE252993276B00AF0471 /* DisplayStreamViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayStreamViewModelTests.swift; sourceTree = "<group>"; };
+		E8F2EE2729932A9100AF0471 /* MockPersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPersistentSettings.swift; sourceTree = "<group>"; };
+		E8F2EE2929932C4900AF0471 /* MockNetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkMonitor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -393,6 +401,7 @@
 		E8752B60298CA4C4002D5C2B /* RTSViewer TVOSTests */ = {
 			isa = PBXGroup;
 			children = (
+				E8F2EE222993249400AF0471 /* DisplayStreamScreen */,
 				E8752B70298CA779002D5C2B /* Mocks */,
 				E8752B6A298CA596002D5C2B /* Persistence */,
 				E8752B6B298CA605002D5C2B /* RecentStreamsScreen */,
@@ -422,6 +431,8 @@
 			isa = PBXGroup;
 			children = (
 				E8752B71298CA78D002D5C2B /* MockDateProvider.swift */,
+				E8F2EE2929932C4900AF0471 /* MockNetworkMonitor.swift */,
+				E8F2EE2729932A9100AF0471 /* MockPersistentSettings.swift */,
 				E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */,
 				E8752B73298CB535002D5C2B /* MockStreamDataManager.swift */,
 				E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */,
@@ -493,6 +504,15 @@
 				E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */,
 			);
 			path = StreamDetailInputScreen;
+			sourceTree = "<group>";
+		};
+		E8F2EE222993249400AF0471 /* DisplayStreamScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E8F2EE252993276B00AF0471 /* DisplayStreamViewModelTests.swift */,
+				E8F2EE23299324AF00AF0471 /* SimulcastViewModelTests.swift */,
+			);
+			path = DisplayStreamScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -752,13 +772,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8752B72298CA78D002D5C2B /* MockDateProvider.swift in Sources */,
+				E8F2EE24299324AF00AF0471 /* SimulcastViewModelTests.swift in Sources */,
 				E8D5AE5D2990840E0019C132 /* MockRTSDataStore.swift in Sources */,
 				E8752B74298CB535002D5C2B /* MockStreamDataManager.swift in Sources */,
 				E8752B6F298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift in Sources */,
 				E8752B69298CA513002D5C2B /* StreamDataManagerTests.swift in Sources */,
 				E8752B6D298CA614002D5C2B /* RecentStreamsViewModelTests.swift in Sources */,
+				E8F2EE2A29932C4900AF0471 /* MockNetworkMonitor.swift in Sources */,
+				E8F2EE2829932A9100AF0471 /* MockPersistentSettings.swift in Sources */,
 				E8D5AE6629908DDB0019C132 /* StreamDetailInputViewModelTests.swift in Sources */,
 				E8D5AE5F299088EF0019C132 /* MockSubscriptionManager.swift in Sources */,
+				E8F2EE262993276B00AF0471 /* DisplayStreamViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

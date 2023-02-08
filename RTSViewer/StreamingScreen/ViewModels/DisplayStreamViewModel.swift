@@ -104,10 +104,10 @@ final class DisplayStreamViewModel: ObservableObject {
             }
             .store(in: &subscriptions)
 
-        networkMonitor.startMonitoring { [weak self] path in
+        networkMonitor.startMonitoring { [weak self] success in
             guard let self = self else { return }
 
-            self.isNetworkConnected = path.status == .satisfied
+            self.isNetworkConnected = success
         }
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
