@@ -5,27 +5,30 @@
 import Foundation
 import Network
 
-public class NetworkMonitor {
+open class NetworkMonitor {
+
+    private let monitor = NWPathMonitor()
+
     public static let shared = NetworkMonitor()
 
     public var isReachable: Bool { status == .satisfied }
-    public var isReachableOnCellular: Bool = true
+    public private(set) var isReachableOnCellular: Bool = true
+    public private(set) var status: NWPath.Status = .requiresConnection
 
-    var status: NWPath.Status = .requiresConnection
-    let monitor = NWPathMonitor()
+    public init() {}
 
-    public func startMonitoring(onUpdate: ((NWPath) -> Void)?) {
+    open func startMonitoring(onUpdate: ((Bool) -> Void)?) {
         monitor.pathUpdateHandler = { [weak self] path in
             self?.status = path.status
             self?.isReachableOnCellular = path.isExpensive
-            onUpdate?(path)
+            onUpdate?(path.status == .satisfied)
         }
 
         let queue = DispatchQueue(label: "NetworkMonitor")
         monitor.start(queue: queue)
     }
 
-    public func stopMonitoring() {
+    open func stopMonitoring() {
         monitor.cancel()
     }
 }
