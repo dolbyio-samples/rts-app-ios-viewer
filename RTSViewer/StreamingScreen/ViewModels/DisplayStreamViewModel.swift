@@ -169,16 +169,22 @@ private extension DisplayStreamViewModel {
     func calculateAspectRatio(crop: Bool, screenWidth: Double, screenHeight: Double, frameWidth: Double, frameHeight: Double) -> Double {
         var ratio: Double = 1.0
         var widthHeading: Bool = true
-        if screenWidth > frameWidth && screenHeight > frameHeight {
+        if screenWidth >= frameWidth && screenHeight >= frameHeight {
             if (screenWidth / frameWidth) < (screenHeight / frameHeight) {
                 widthHeading = !crop
             } else {
                 widthHeading = crop
             }
-        } else if frameWidth / screenWidth >= frameHeight / screenHeight {
-            widthHeading = !crop
-        } else if frameWidth / screenWidth < frameHeight / screenHeight {
+        } else if screenWidth >= frameWidth {
             widthHeading = crop
+        } else if screenHeight >= frameHeight {
+            widthHeading = !crop
+        } else {
+            if (screenWidth / frameWidth) > (screenHeight / frameHeight) {
+                widthHeading = crop
+            } else {
+                widthHeading = !crop
+            }
         }
         if widthHeading {
             ratio = screenWidth / frameWidth
