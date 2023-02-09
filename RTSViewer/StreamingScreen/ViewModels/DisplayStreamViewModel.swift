@@ -142,15 +142,15 @@ final class DisplayStreamViewModel: ObservableObject {
         params: crop = true if the view should be cropped and take the whole screen
         crop = false if the view should not be cropped.
         */
-    func calculateVideoViewWidthHeight(screenWidth: Double, screenHeight: Double) -> (CGFloat, CGFloat) {
-        var ratio = 1.0
-        var width, height: Double
+    func calculateVideoViewWidthHeight(screenWidth: Float, screenHeight: Float) -> (CGFloat, CGFloat) {
+        var ratio: Float = 1.0
+        var width, height: Float
 
         ratio = calculateAspectRatio(crop: true, screenWidth: screenWidth, screenHeight: screenHeight, frameWidth: videoFrameWidth, frameHeight: videoFrameHeight)
 
         width = videoFrameWidth * ratio
         height = videoFrameHeight * ratio
-        
+
         return (CGFloat(width), CGFloat(height))
     }
 }
@@ -158,26 +158,19 @@ final class DisplayStreamViewModel: ObservableObject {
 // MARK: Helper methods
 
 private extension DisplayStreamViewModel {
-    var videoFrameWidth: Double {
-        let frameWidth = dataStore.dimensions?.width ?? 0
-        if frameWidth > 0 {
-            return Double(frameWidth)
-        } else {
-            return 1280.0
-        }
+    var videoFrameWidth: Float {
+        dataStore.dimensions?.width ?? 0
     }
 
-    var videoFrameHeight: Double {
-        let frameHeight = dataStore.dimensions?.height ?? 0
-        if frameHeight > 0 {
-            return Double(frameHeight)
-        } else {
-            return 720.0
-        }
+    var videoFrameHeight: Float {
+        dataStore.dimensions?.height ?? 0
     }
 
-    func calculateAspectRatio(crop: Bool, screenWidth: Double, screenHeight: Double, frameWidth: Double, frameHeight: Double) -> Double {
-        var ratio: Double = 1.0
+    func calculateAspectRatio(crop: Bool, screenWidth: Float, screenHeight: Float, frameWidth: Float, frameHeight: Float) -> Float {
+        if frameWidth <= 0 || frameHeight <= 0 {
+            return 0
+        }
+        var ratio: Float = 0
         var widthHeading: Bool = true
         if screenWidth >= frameWidth && screenHeight >= frameHeight {
             if (screenWidth / frameWidth) < (screenHeight / frameHeight) {
