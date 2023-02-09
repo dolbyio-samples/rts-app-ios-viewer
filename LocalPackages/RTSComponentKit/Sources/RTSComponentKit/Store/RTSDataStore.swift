@@ -23,10 +23,26 @@ open class RTSDataStore: ObservableObject {
         case error(SubscriptionError)
     }
 
+    // Note - Publishers are exposed as settable interfaces for Debug builds
+    // So as to easy alter them from unit tests
+    // Only applies to DEBUG builds
+    #if DEBUG
+    @Published public var subscribeState: State = .disconnected
+    @Published public var isAudioEnabled: Bool = true
+    @Published public var isVideoEnabled: Bool = true
+    @Published public var statisticsData: StatisticsData?
+    @Published public var activeStreamType = [StreamType]()
+    @Published public var layerActiveMap: [MCLayerData]?
+    @Published public var activeLayer = StreamType.auto
+    #else
     @Published public private(set) var subscribeState: State = .disconnected
     @Published public private(set) var isAudioEnabled: Bool = true
     @Published public private(set) var isVideoEnabled: Bool = true
-    @Published public var statisticsData: StatisticsData?
+    @Published public private(set) var statisticsData: StatisticsData?
+    @Published public private(set) var activeStreamType = [StreamType]()
+    @Published public private(set) var layerActiveMap: [MCLayerData]?
+    @Published public private(set) var activeLayer = StreamType.auto
+    #endif
 
     private let videoRenderer: MCIosVideoRenderer
     private let subscriptionManager: SubscriptionManagerProtocol
@@ -36,10 +52,6 @@ open class RTSDataStore: ObservableObject {
     private var audioTrack: MCAudioTrack?
     private var videoTrack: MCVideoTrack?
     private var statsReport: MCStatsReport?
-
-    @Published public private(set) var activeStreamType = [StreamType]()
-    @Published public private(set) var layerActiveMap: [MCLayerData]?
-    @Published public var activeLayer = StreamType.auto
 
     public init(
         subscriptionManager: SubscriptionManagerProtocol = SubscriptionManager(),
@@ -121,17 +133,38 @@ open class RTSDataStore: ObservableObject {
 
     @discardableResult
     open func selectLayer(streamType: StreamType) -> Bool {
-        activeLayer = streamType
+        guard layerActiveMap != nil else {
+            return false
+        }
 
-        switch streamType {
-        case .auto:
-            return subscriptionManager.selectLayer(layer: nil)
-        case .high:
-            return subscriptionManager.selectLayer(layer: layerActiveMap?[0])
-        case .medium:
-            return subscriptionManager.selectLayer(layer: layerActiveMap?[1])
-        case .low:
-            return subscriptionManager.selectLayer(layer: layerActiveMap?[2])
+        activeLayer = streamType
+        return subscriptionManager.selectLayer(layer: layer(for: streamType))
+    }
+
+}
+
+// MARK: Helper functions
+
+private extension RTSDataStore {
+    func layer(for streamType: StreamType) -> MCLayerData? {
+        guard let layerActiveMap = layerActiveMap else {
+            return nil
+        }
+        switch (streamType, layerActiveMap.count) {
+        case (.auto, _):
+            return nil
+        case (.high, _): // High resolution stream is always at index - 0
+            return layerActiveMap[0]
+        case (.medium, 2): // Medium resolution only exists when the active layer count is `3`
+            return nil
+        case (.medium, 3): // Medium resolution only exists when the active layer count is `3` and the index position will be 1
+            return layerActiveMap[1]
+        case (.low, 2): // Low resolution will be at Index 1 when there is a total `two` active layers
+            return layerActiveMap[1]
+        case (.low, 3): // Low resolution will be at Index 2 when there is a total `three` active layers
+            return layerActiveMap[2]
+        default:
+            return nil
         }
     }
 }
