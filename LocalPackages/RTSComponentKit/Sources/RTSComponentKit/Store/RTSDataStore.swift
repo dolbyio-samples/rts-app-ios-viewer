@@ -333,12 +333,3 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         return codecStats.mime_type as String
     }
 }
-
-public struct Dimensions {
-    public let width: Float?
-    public let height: Float?
-    init(width: Float?, height: Float?) {
-        self.width = width
-        self.height = height
-    }
-}
