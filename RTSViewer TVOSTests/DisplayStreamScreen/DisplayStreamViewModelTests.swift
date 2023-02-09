@@ -92,4 +92,80 @@ final class DisplayStreamViewModelTests: XCTestCase {
             .stopSubscribe
         ])
     }
+
+    func testAspetRatioLandscapeScreen() {
+        let screenWidth: Float = 1920.0
+        let screenHeight: Float = 1080.0
+        var (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, 0)
+        XCTAssertEqual(height, 0)
+
+        mockDataStore.dimensions = Dimensions(width: 720, height: 720)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenWidth), accuracy: 1, "small squared frame width")
+        XCTAssertEqual(height, Double(screenWidth), accuracy: 1, "small squared frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 2180, height: 2180)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenWidth), accuracy: 1, "large squared frame width")
+        XCTAssertEqual(height, Double(screenWidth), accuracy: 1, "large squared frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 1280, height: 720)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenWidth), accuracy: 1, "small landscape frame width")
+        XCTAssertEqual(height, Double(screenHeight), accuracy: 1, "small landscape frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 3840, height: 2160)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenWidth), accuracy: 1, "large landscape frame width")
+        XCTAssertEqual(height, Double(2160 * (screenWidth / 3840)), accuracy: 1, "large landscape frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 720, height: 1280)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenWidth), accuracy: 1, "small portrait frame width")
+        XCTAssertEqual(height, Double(1280 * (screenWidth / 720)), accuracy: 1, "small portrait frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 1440, height: 2560)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenWidth), accuracy: 1, "large portrait frame width")
+        XCTAssertEqual(height, Double(2560 * (screenWidth / 1440)), accuracy: 1, "large portrait frame height")
+    }
+
+    func testAspetRatioPortraitScreen() {
+        let screenWidth: Float = 1080.0
+        let screenHeight: Float = 1920.0
+        var (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, 0)
+        XCTAssertEqual(height, 0)
+
+        mockDataStore.dimensions = Dimensions(width: 720, height: 720)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenHeight), accuracy: 1, "small squared frame width")
+        XCTAssertEqual(height, Double(screenHeight), accuracy: 1, "small squared frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 2180, height: 2180)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenHeight), accuracy: 1, "large squared frame width")
+        XCTAssertEqual(height, Double(screenHeight), accuracy: 1, "large squared frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 1280, height: 720)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(1280 * (screenHeight / 720)), accuracy: 1, "small landscape frame width")
+        XCTAssertEqual(height, Double(screenHeight), accuracy: 1, "small landscape frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 3840, height: 2160)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(3840 * (screenHeight / 2160)), accuracy: 1, "large landscape frame width")
+        XCTAssertEqual(height, Double(screenHeight), accuracy: 1, "large landscape frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 720, height: 1280)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenWidth), accuracy: 1, "small portrait frame width")
+        XCTAssertEqual(height, Double(1280 * (screenWidth / 720)), accuracy: 1, "small portrait frame height")
+
+        mockDataStore.dimensions = Dimensions(width: 1440, height: 2560)
+        (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
+        XCTAssertEqual(width, Double(screenWidth), accuracy: 1, "large portrait frame width")
+        XCTAssertEqual(height, Double(2560 * (screenWidth / 1440)), accuracy: 1, "large portrait frame height")
+    }
 }
