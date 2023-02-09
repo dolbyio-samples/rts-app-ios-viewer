@@ -150,8 +150,7 @@ final class DisplayStreamViewModel: ObservableObject {
 
         width = videoFrameWidth * ratio
         height = videoFrameHeight * ratio
-
-        print(">>> calculate: screenWidth: \(screenWidth), screenHeight: \(screenHeight), frameWidth: \(videoFrameWidth), frameHeight: \(videoFrameHeight), result width: \(width), result height: \(height)")
+        
         return (CGFloat(width), CGFloat(height))
     }
 }

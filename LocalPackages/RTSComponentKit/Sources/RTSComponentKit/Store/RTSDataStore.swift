@@ -220,7 +220,6 @@ extension RTSDataStore: SubscriptionManagerDelegate {
             }
         }
         if self.frameWidth != videoRenderer.getWidth() || self.frameHeight != videoRenderer.getHeight() {
-            print(">>> onStatsReport: \(videoRenderer.getWidth()) x \(videoRenderer.getHeight())")
             self.frameWidth = videoRenderer.getWidth()
             self.frameHeight = videoRenderer.getHeight()
             self.dimensions = Dimensions(width: self.frameWidth, height: self.frameHeight)
