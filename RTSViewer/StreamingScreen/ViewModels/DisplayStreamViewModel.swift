@@ -76,6 +76,7 @@ final class DisplayStreamViewModel: ObservableObject {
                 self.layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
 
                 if !self.layersDisabled && self.selectedLayer != self.dataStore.activeLayer {
+                    self.selectedLayer = self.dataStore.activeLayer
                     self.setLayer(streamType: self.selectedLayer)
                 }
             }
