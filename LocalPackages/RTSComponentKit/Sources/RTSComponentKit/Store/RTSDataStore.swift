@@ -34,6 +34,7 @@ open class RTSDataStore: ObservableObject {
     @Published public var activeStreamType = [StreamType]()
     @Published public var layerActiveMap: [MCLayerData]?
     @Published public var activeLayer = StreamType.auto
+    @Published public var dimensions: Dimensions?
     #else
     @Published public private(set) var subscribeState: State = .disconnected
     @Published public private(set) var isAudioEnabled: Bool = true
@@ -42,6 +43,7 @@ open class RTSDataStore: ObservableObject {
     @Published public private(set) var activeStreamType = [StreamType]()
     @Published public private(set) var layerActiveMap: [MCLayerData]?
     @Published public private(set) var activeLayer = StreamType.auto
+    @Published public private(set) var dimensions: Dimensions?
     #endif
 
     private let videoRenderer: MCIosVideoRenderer
@@ -52,6 +54,8 @@ open class RTSDataStore: ObservableObject {
     private var audioTrack: MCAudioTrack?
     private var videoTrack: MCVideoTrack?
     private var statsReport: MCStatsReport?
+    private var frameWidth: Float?
+    private var frameHeight: Float?
 
     public init(
         subscriptionManager: SubscriptionManagerProtocol = SubscriptionManager(),
@@ -215,6 +219,12 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                 self.statisticsData = value
             }
         }
+        if self.frameWidth != videoRenderer.getWidth() || self.frameHeight != videoRenderer.getHeight() {
+            print(">>> onStatsReport: \(videoRenderer.getWidth()) x \(videoRenderer.getHeight())")
+            self.frameWidth = videoRenderer.getWidth()
+            self.frameHeight = videoRenderer.getHeight()
+            self.dimensions = Dimensions(width: self.frameWidth, height: self.frameHeight)
+        }
     }
 
     public func onConnected() {
@@ -322,5 +332,14 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         }
 
         return codecStats.mime_type as String
+    }
+}
+
+public struct Dimensions {
+    public let width: Float?
+    public let height: Float?
+    init(width: Float?, height: Float?) {
+        self.width = width
+        self.height = height
     }
 }

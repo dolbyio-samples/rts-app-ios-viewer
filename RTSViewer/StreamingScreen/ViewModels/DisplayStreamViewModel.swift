@@ -26,6 +26,8 @@ final class DisplayStreamViewModel: ObservableObject {
             persistentSettings.liveIndicatorEnabled = isLiveIndicatorEnabled
         }
     }
+    @Published private(set) var width: Double?
+    @Published private(set) var height: Double?
 
     private var subscriptions: [AnyCancellable] = []
 
@@ -89,6 +91,14 @@ final class DisplayStreamViewModel: ObservableObject {
             }
             .store(in: &subscriptions)
 
+        dataStore.$dimensions
+            .receive(on: DispatchQueue.main)
+            .sink {[weak self] dimensions in
+                self?.width = Double(dimensions?.width ?? 0)
+                self?.height = Double(dimensions?.height ?? 0)
+            }
+            .store(in: &subscriptions)
+
         timer
             .sink { [weak self] _ in
                 guard let self = self else { return }
@@ -141,6 +151,7 @@ final class DisplayStreamViewModel: ObservableObject {
         width = videoFrameWidth * ratio
         height = videoFrameHeight * ratio
 
+        print(">>> calculate: screenWidth: \(screenWidth), screenHeight: \(screenHeight), frameWidth: \(videoFrameWidth), frameHeight: \(videoFrameHeight), result width: \(width), result height: \(height)")
         return (CGFloat(width), CGFloat(height))
     }
 }
@@ -149,7 +160,7 @@ final class DisplayStreamViewModel: ObservableObject {
 
 private extension DisplayStreamViewModel {
     var videoFrameWidth: Double {
-        let frameWidth = dataStore.statisticsData?.video?.frameWidth ?? 0
+        let frameWidth = dataStore.dimensions?.width ?? 0
         if frameWidth > 0 {
             return Double(frameWidth)
         } else {
@@ -158,11 +169,11 @@ private extension DisplayStreamViewModel {
     }
 
     var videoFrameHeight: Double {
-        let frameHeight = dataStore.statisticsData?.video?.frameHeight ?? 0
+        let frameHeight = dataStore.dimensions?.height ?? 0
         if frameHeight > 0 {
             return Double(frameHeight)
         } else {
-            return 720
+            return 720.0
         }
     }
 
