@@ -8,7 +8,7 @@ import RTSComponentKit
 import Foundation
 
 struct StatisticsView: View {
-    private let viewModel: StatisticsViewModel
+    @ObservedObject private var viewModel: StatisticsViewModel
 
     init(dataStore: RTSDataStore) {
         self.viewModel = StatisticsViewModel(dataStore: dataStore)

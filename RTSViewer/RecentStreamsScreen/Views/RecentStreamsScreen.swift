@@ -13,7 +13,7 @@ struct RecentStreamsScreen: View {
     private let action: () -> Void
 
     private let theme = ThemeManager.shared.theme
-    private let viewModel: RecentStreamsViewModel
+    @ObservedObject private var viewModel: RecentStreamsViewModel
 
     init(
         streamName: Binding<String>,
