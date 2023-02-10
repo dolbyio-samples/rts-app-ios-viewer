@@ -74,7 +74,7 @@ private struct StreamDetailInputBox: View {
     @State private var showingAlert = false
     @State private var showingClearStreamsAlert = false
 
-    private let viewModel: StreamDetailInputViewModel
+    @ObservedObject private var viewModel: StreamDetailInputViewModel
 
     init(
         viewModel: StreamDetailInputViewModel,
@@ -155,7 +155,7 @@ private struct StreamDetailInputBox: View {
                                 // A delay is added before saving the stream.
                                 // Workaround - the `clear stream` and `saved streams` buttons appear before the screen transition animation completes.
                                 Task.delayed(byTimeInterval: 0.50) {
-                                    viewModel.saveStream(streamName: streamName, accountID: accountID)
+                                    await viewModel.saveStream(streamName: streamName, accountID: accountID)
                                 }
                             }
                         }

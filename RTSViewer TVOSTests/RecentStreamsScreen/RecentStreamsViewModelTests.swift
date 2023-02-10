@@ -44,6 +44,7 @@ final class RecentStreamsViewModelTests: XCTestCase {
 
         let expectation = expectation(description: "Receive stream details update")
         viewModel.$streamDetails
+            .dropFirst(2)
             .sink { _ in
                 expectation.fulfill()
             }

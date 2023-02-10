@@ -118,7 +118,9 @@ final class DisplayStreamViewModel: ObservableObject {
         networkMonitor.startMonitoring { [weak self] success in
             guard let self = self else { return }
 
-            self.isNetworkConnected = success
+            DispatchQueue.main.async {
+                self.isNetworkConnected = success
+            }
         }
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
