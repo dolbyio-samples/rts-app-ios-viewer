@@ -38,7 +38,7 @@ final class StreamDetailInputViewModelTests: XCTestCase {
         let expectation = expectation(description: "Saved stream details are updated")
         var streamDetailsReturned: [StreamDetail] = []
         viewModel.$streamDetails
-            .dropFirst(1) // Skip the current value
+            .dropFirst(2) // Skip the current values
             .sink { streamDetails in
                 streamDetailsReturned = streamDetails
                 expectation.fulfill()
@@ -58,7 +58,7 @@ final class StreamDetailInputViewModelTests: XCTestCase {
         // Given
         let expectation = expectation(description: "Saved stream details are updated")
         viewModel.$hasSavedStreams
-            .dropFirst(1) // Skip the current value
+            .dropFirst(2) // Skip the current values
             .sink { _ in
                 expectation.fulfill()
             }
