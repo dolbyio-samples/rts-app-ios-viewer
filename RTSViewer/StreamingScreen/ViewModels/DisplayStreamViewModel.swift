@@ -59,7 +59,9 @@ final class DisplayStreamViewModel: ObservableObject {
                         self.selectedLayer = StreamType.auto
                         _ = await self.dataStore.stopSubscribe()
                     case .disconnected:
-                        self.layersDisabled = true
+                        await MainActor.run {
+                            self.layersDisabled = true
+                        }
                     default:
                         // No-op
                         break
@@ -118,7 +120,11 @@ final class DisplayStreamViewModel: ObservableObject {
         networkMonitor.startMonitoring { [weak self] success in
             guard let self = self else { return }
 
-            self.isNetworkConnected = success
+            Task {
+                await MainActor.run {
+                    self.isNetworkConnected = success
+                }
+            }
         }
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
@@ -132,8 +138,9 @@ final class DisplayStreamViewModel: ObservableObject {
     }
 
     func stopSubscribe() async {
-        _ = await dataStore.stopSubscribe()
+        subscriptions.removeAll()
         timer.upstream.connect().cancel()
+        _ = await dataStore.stopSubscribe()
     }
 
     /** Method to calculate video view width and height for the current screen size

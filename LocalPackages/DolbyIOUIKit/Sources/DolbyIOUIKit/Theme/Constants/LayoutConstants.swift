@@ -2,6 +2,7 @@
 //  LayoutConstants.swift
 //  
 
+import CoreFoundation
 import Foundation
 
 public enum Layout {

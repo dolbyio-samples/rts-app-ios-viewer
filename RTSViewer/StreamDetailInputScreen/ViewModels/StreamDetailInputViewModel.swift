@@ -27,6 +27,7 @@ final class StreamDetailInputViewModel: ObservableObject {
         self.streamDataManager = streamDataManager
 
         streamDataManager.streamDetailsSubject
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] streamDetails in
                 self?.streamDetails = streamDetails
             }

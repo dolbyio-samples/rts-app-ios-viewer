@@ -137,17 +137,15 @@ struct StreamingScreen: View {
                     UIApplication.shared.isIdleTimerDisabled = isStreamActive
                 }
             }
-            .onDisappear {
-                Task {
-                    await viewModel.stopSubscribe()
-                }
-            }
         }
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = viewModel.isStreamActive
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
+            Task {
+                await viewModel.stopSubscribe()
+            }
         }
 #if os(tvOS)
         .onExitCommand {

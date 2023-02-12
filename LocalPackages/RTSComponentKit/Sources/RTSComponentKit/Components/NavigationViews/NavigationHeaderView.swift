@@ -21,13 +21,13 @@ public struct NavigationHeaderView: View, ShapeStyle {
     public init() {}
 
     public var body: some View {
-            ZStack {
-                IconView(name: .dolby_logo_dd, tintColor: .white)
-            }
-            .frame(maxWidth: .infinity, maxHeight: Layout.spacing9x)
-            .background(
-                Color(uiColor: UIColor.Background.black)
-            )
+        ZStack {
+            IconView(name: .dolby_logo_dd, tintColor: .white)
+        }
+        .frame(maxWidth: .infinity, maxHeight: Layout.spacing9x)
+        .background(
+            Color(uiColor: UIColor.Background.black)
+        )
     }
 }
 
