@@ -10,7 +10,7 @@ import Network
 
 struct StreamingScreen: View {
 
-    @ObservedObject private var viewModel: DisplayStreamViewModel
+    @StateObject private var viewModel: DisplayStreamViewModel
 
     @State private var volume = 0.5
     @State private var showToolbar = false
@@ -21,7 +21,7 @@ struct StreamingScreen: View {
     @Environment(\.dismiss) var dismiss
 
     init(dataStore: RTSDataStore) {
-        self.viewModel = DisplayStreamViewModel(dataStore: dataStore)
+        _viewModel = StateObject(wrappedValue: DisplayStreamViewModel(dataStore: dataStore))
     }
 
     var body: some View {

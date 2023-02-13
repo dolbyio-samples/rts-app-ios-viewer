@@ -8,10 +8,10 @@ import RTSComponentKit
 import Foundation
 
 struct StatisticsView: View {
-    @ObservedObject private var viewModel: StatisticsViewModel
+    @StateObject private var viewModel: StatisticsViewModel
 
     init(dataStore: RTSDataStore) {
-        self.viewModel = StatisticsViewModel(dataStore: dataStore)
+        _viewModel = StateObject(wrappedValue: StatisticsViewModel(dataStore: dataStore))
     }
 
     private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption2, style: .caption2)
