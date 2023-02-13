@@ -14,7 +14,7 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingStreamingView: Bool = false
     @State private var isShowingRecentStreams: Bool = false
 
-    @ObservedObject private var viewModel: StreamDetailInputViewModel = .init()
+    @StateObject private var viewModel: StreamDetailInputViewModel = .init()
 
     var body: some View {
         BackgroundContainerView {
