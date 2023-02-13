@@ -1,5 +1,5 @@
 //
-//  StreamingTopToolbar.swift
+//  StreamingTopToolbarView.swift
 //
 
 import DolbyIOUIKit
@@ -7,13 +7,11 @@ import Foundation
 import SwiftUI
 import RTSComponentKit
 
-struct StreamingToolbarView: View {
+struct StreamingTopToolbarView: View {
     @ObservedObject private var viewModel: StreamToolbarViewModel
 
     @Binding var showSettings: Bool
     @Binding var showToolbar: Bool
-
-    @Environment(\.dismiss) var dismiss
 
     init(viewModel: StreamToolbarViewModel, showSettings: Binding<Bool>, showToolbar: Binding<Bool>) {
         self.viewModel = viewModel
@@ -43,30 +41,5 @@ struct StreamingToolbarView: View {
         }.frame(maxHeight: .infinity, alignment: .top)
             .padding(.leading, 56)
             .padding(.top, 37)
-
-        if viewModel.isStreamActive {
-            if showToolbar {
-                VStack {
-                    HStack {
-                        IconButton(
-                            text: "stream.settings.button",
-                            name: .settings
-                        ) {
-                            withAnimation {
-                                showSettings = !showSettings
-                            }
-                        }
-                        Spacer().frame(width: Layout.spacing1x)
-                    }.frame(maxWidth: .infinity, alignment: .trailing)
-                }
-                .frame(maxHeight: .infinity, alignment: .bottom)
-                .padding()
-                .transition(.move(edge: .bottom))
-            }
-        }
-
-        if !showToolbar {
-            AnyGestureRecognizer(triggered: $showToolbar)
-        }
     }
 }

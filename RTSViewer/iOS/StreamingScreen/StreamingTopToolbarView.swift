@@ -1,5 +1,5 @@
 //
-//  StreamingTopToolbar.swift
+//  StreamingTopToolbarView.swift
 //
 
 import DolbyIOUIKit
@@ -7,7 +7,7 @@ import Foundation
 import SwiftUI
 import RTSComponentKit
 
-struct StreamingToolbarView: View {
+struct StreamingTopToolbarView: View {
     @ObservedObject private var viewModel: StreamToolbarViewModel
 
     @Binding var showSettings: Bool
