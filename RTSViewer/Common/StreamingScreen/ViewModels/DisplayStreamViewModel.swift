@@ -56,8 +56,10 @@ final class DisplayStreamViewModel: ObservableObject {
                     case .connected:
                         _ = await self.dataStore.startSubscribe()
                     case .streamInactive:
-                        self.selectedLayer = StreamType.auto
                         _ = await self.dataStore.stopSubscribe()
+                        await MainActor.run {
+                            self.selectedLayer = StreamType.auto
+                        }
                     case .disconnected:
                         await MainActor.run {
                             self.layersDisabled = true
