@@ -13,7 +13,7 @@ struct RecentStreamsScreen: View {
     private let action: () -> Void
 
     private let theme = ThemeManager.shared.theme
-    @ObservedObject private var viewModel: RecentStreamsViewModel
+    @StateObject private var viewModel: RecentStreamsViewModel
 
     init(
         streamName: Binding<String>,
@@ -25,7 +25,7 @@ struct RecentStreamsScreen: View {
         self._accountID = accountID
         self._isShowingRecentStreams = isShowingRecentStreams
         self.action = action
-        self.viewModel = RecentStreamsViewModel()
+        _viewModel = StateObject(wrappedValue: RecentStreamsViewModel())
     }
 
     var body: some View {

@@ -10,12 +10,12 @@ struct SimulcastView: View {
     let activeStreamTypes: [StreamType]
     let selectedLayer: StreamType
 
-    @ObservedObject private var viewModel: SimulcastViewModel
+    @StateObject private var viewModel: SimulcastViewModel
 
     init(activeStreamTypes: [StreamType], selectedLayer: StreamType, dataStore: RTSDataStore) {
         self.activeStreamTypes = activeStreamTypes
         self.selectedLayer = selectedLayer
-        self.viewModel = SimulcastViewModel(dataStore: dataStore)
+        _viewModel = StateObject(wrappedValue: SimulcastViewModel(dataStore: dataStore))
     }
 
     var body: some View {
