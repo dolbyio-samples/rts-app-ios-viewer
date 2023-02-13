@@ -11,7 +11,7 @@ import Network
 struct StreamingScreen: View {
 
     @StateObject private var viewModel: DisplayStreamViewModel
-    @ObservedObject private var toolbarViewModel: StreamToolbarViewModel
+    @StateObject private var toolbarViewModel: StreamToolbarViewModel
 
     @State private var volume = 0.5
     @State private var showToolbar = false
@@ -23,7 +23,7 @@ struct StreamingScreen: View {
 
     init(dataStore: RTSDataStore) {
         _viewModel = StateObject(wrappedValue: DisplayStreamViewModel(dataStore: dataStore))
-        _toolbarViewModel = StreamToolbarViewModel(dataStore: dataStore)
+        _toolbarViewModel = StateObject(wrappedValue: StreamToolbarViewModel(dataStore: dataStore))
     }
 
     var body: some View {
