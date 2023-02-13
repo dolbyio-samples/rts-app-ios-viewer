@@ -21,11 +21,7 @@ final class DisplayStreamViewModel: ObservableObject {
     @Published private(set) var activeStreamTypes: [StreamType] = []
     @Published private(set) var isNetworkConnected = false
     @Published private(set) var statisticsData: StatisticsData?
-    @Published var isLiveIndicatorEnabled: Bool {
-        didSet {
-            persistentSettings.liveIndicatorEnabled = isLiveIndicatorEnabled
-        }
-    }
+
     @Published private(set) var width: Double?
     @Published private(set) var height: Double?
 
@@ -39,7 +35,6 @@ final class DisplayStreamViewModel: ObservableObject {
         self.dataStore = dataStore
         self.persistentSettings = persistentSettings
         self.networkMonitor = networkMonitor
-        self.isLiveIndicatorEnabled = persistentSettings.liveIndicatorEnabled
 
         setupStateObservers()
     }

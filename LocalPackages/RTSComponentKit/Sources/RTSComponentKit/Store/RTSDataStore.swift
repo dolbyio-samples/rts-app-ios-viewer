@@ -35,6 +35,7 @@ open class RTSDataStore: ObservableObject {
     @Published public var layerActiveMap: [MCLayerData]?
     @Published public var activeLayer = StreamType.auto
     @Published public var dimensions: Dimensions?
+    @Published public var streamName: String?
     #else
     @Published public private(set) var subscribeState: State = .disconnected
     @Published public private(set) var isAudioEnabled: Bool = true
@@ -44,6 +45,7 @@ open class RTSDataStore: ObservableObject {
     @Published public private(set) var layerActiveMap: [MCLayerData]?
     @Published public private(set) var activeLayer = StreamType.auto
     @Published public private(set) var dimensions: Dimensions?
+    @Published public private(set) var streamName: String?
     #endif
 
     private let videoRenderer: MCIosVideoRenderer
@@ -108,6 +110,7 @@ open class RTSDataStore: ObservableObject {
 
     open func connect(streamName: String, accountID: String) async -> Bool {
         self.streamDetail = (streamName: streamName, accountID: accountID)
+        self.streamName = streamName
         return await subscriptionManager.connect(streamName: streamName, accountID: accountID)
     }
 
