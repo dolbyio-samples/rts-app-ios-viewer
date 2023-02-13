@@ -11,6 +11,7 @@ import Network
 struct StreamingScreen: View {
 
     @StateObject private var viewModel: DisplayStreamViewModel
+    @ObservedObject private var toolbarViewModel: StreamToolbarViewModel
 
     @State private var volume = 0.5
     @State private var showToolbar = false
@@ -22,6 +23,7 @@ struct StreamingScreen: View {
 
     init(dataStore: RTSDataStore) {
         _viewModel = StateObject(wrappedValue: DisplayStreamViewModel(dataStore: dataStore))
+        _toolbarViewModel = StreamToolbarViewModel(dataStore: dataStore)
     }
 
     var body: some View {
@@ -29,60 +31,18 @@ struct StreamingScreen: View {
             ZStack {
                 let screenRect = UIScreen.main.bounds
                 let (videoFrameWidth, videoFrameHeight) = viewModel.calculateVideoViewWidthHeight(screenWidth: Float(screenRect.size.width), screenHeight: Float(screenRect.size.height))
-                VideoRendererView(uiView: viewModel.streamingView)
-                    .frame(width: videoFrameWidth, height: videoFrameHeight)
+                GeometryReader { geometry in
+                    VideoRendererView(uiView: viewModel.streamingView)
+                        .frame(width: videoFrameWidth, height: videoFrameHeight)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                }
 
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
                     .opacity(viewModel.isStreamActive ? (showToolbar ? 0.5: 0.0) : 0.8)
 
-#if os(tvOS)
-                if viewModel.isLiveIndicatorEnabled {
-                    VStack {
-                        HStack {
-                            Text(text: viewModel.isStreamActive ? "stream.live.label" : "stream.offline.label",
-                                 fontAsset: .avenirNextBold(
-                                    size: FontSize.caption2,
-                                    style: .caption2
-                                 )
-                            ).padding(.leading, 20)
-                                .padding(.trailing, 20)
-                                .padding(.top, 6)
-                                .padding(.bottom, 6)
-                                .background(viewModel.isStreamActive ? Color(uiColor: UIColor.Feedback.error500) : Color(uiColor: UIColor.Neutral.neutral400))
-                                .cornerRadius(Layout.cornerRadius6x)
-                        }.frame(maxWidth: .infinity, alignment: .leading)
-                    }.frame(maxHeight: .infinity, alignment: .top)
-                        .padding(.leading, 56)
-                        .padding(.top, 37)
-                }
-#endif
-
-                if viewModel.isStreamActive {
-                    if showToolbar {
-                        VStack {
-                            HStack {
-                                IconButton(
-                                    text: "stream.settings.button",
-                                    name: .settings
-                                ) {
-                                    withAnimation {
-                                        showSettings = !showSettings
-                                    }
-                                }
-                                Spacer().frame(width: Layout.spacing1x)
-                            }.frame(maxWidth: .infinity, alignment: .trailing)
-                        }
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .padding()
-                        .transition(.move(edge: .bottom))
-                    } else {
-#if os(tvOS)
-                        AnyGestureRecognizer(triggered: $showToolbar)
-#endif
-                    }
-                }
+                StreamingToolbarView(viewModel: toolbarViewModel, showSettings: $showSettings, showToolbar: $showToolbar)
 
                 if showSettings {
                     SettingsView(
@@ -91,7 +51,7 @@ struct StreamingScreen: View {
                         selectedLayer: viewModel.selectedLayer,
                         showSimulcastView: $showSimulcastView,
                         statsView: $showStats,
-                        showLiveIndicator: $viewModel.isLiveIndicatorEnabled,
+                        showLiveIndicator: $toolbarViewModel.isLiveIndicatorEnabled,
                         dataStore: viewModel.dataStore
                     )
                     .transition(.move(edge: .trailing))
@@ -147,6 +107,7 @@ struct StreamingScreen: View {
                 await viewModel.stopSubscribe()
             }
         }
+        .navigationBarHidden(true)
 #if os(tvOS)
         .onExitCommand {
             if showSimulcastView {
