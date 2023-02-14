@@ -10,8 +10,13 @@ struct RTSViewer: App {
 
     var body: some Scene {
         WindowGroup {
+            #if os(tvOS)
             ContentView()
                 .preferredColorScheme(.dark)
+            #else
+            SplashScreen()
+                .preferredColorScheme(.dark)
+            #endif
         }
     }
 }
