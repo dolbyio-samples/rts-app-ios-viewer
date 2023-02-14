@@ -24,6 +24,7 @@ struct SettingsView: View {
         showSimulcastView: Binding<Bool>,
         statsView: Binding<Bool>,
         showLiveIndicator: Binding<Bool>,
+        showSettings: Binding<Bool>,
         dataStore: RTSDataStore
     ) {
         self.disableLayers = disableLayers
@@ -115,5 +116,6 @@ struct SettingsView: View {
                 .transition(.move(edge: .trailing))
             }
         }
+        .transition(.move(edge: .trailing))
     }
 }

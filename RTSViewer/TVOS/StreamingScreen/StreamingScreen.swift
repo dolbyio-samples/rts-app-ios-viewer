@@ -44,7 +44,7 @@ struct StreamingScreen: View {
 
                 StreamingTopToolbarView(viewModel: toolbarViewModel, showSettings: $showSettings, showToolbar: $showToolbar)
 
-                StreamingBottomToolbarView(viewModel: toolbarViewModel, showSettings: $showSettings, showToolbar: $showToolbar)
+                StreamingBottomToolbarView(viewModel: toolbarViewModel, !viewModel.layersDisabled, showSettings: $showSettings, showToolbar: $showToolbar, $showStats)
 
                 if showSettings {
                     SettingsView(
@@ -54,9 +54,9 @@ struct StreamingScreen: View {
                         showSimulcastView: $showSimulcastView,
                         statsView: $showStats,
                         showLiveIndicator: $toolbarViewModel.isLiveIndicatorEnabled,
+                        showSettings: $showSettings,
                         dataStore: viewModel.dataStore
                     )
-                    .transition(.move(edge: .trailing))
                 }
 
                 if !viewModel.isStreamActive {

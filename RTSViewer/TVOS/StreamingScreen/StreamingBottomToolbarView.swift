@@ -13,7 +13,7 @@ struct StreamingBottomToolbarView: View {
     @Binding var showSettings: Bool
     @Binding var showToolbar: Bool
 
-    init(viewModel: StreamToolbarViewModel, showSettings: Binding<Bool>, showToolbar: Binding<Bool>) {
+    init(viewModel: StreamToolbarViewModel, _: Bool, showSettings: Binding<Bool>, showToolbar: Binding<Bool>, _: Binding<Bool>) {
         self.viewModel = viewModel
 
         _showSettings = showSettings
@@ -30,7 +30,7 @@ struct StreamingBottomToolbarView: View {
                             name: .settings
                         ) {
                             withAnimation {
-                                showSettings = !showSettings
+                                showSettings = true
                             }
                         }
                         Spacer().frame(width: Layout.spacing1x)
@@ -41,10 +41,8 @@ struct StreamingBottomToolbarView: View {
                 .transition(.move(edge: .bottom))
             }
         }
-#if os(tvOS)
         if !showToolbar {
             AnyGestureRecognizer(triggered: $showToolbar)
         }
-#endif
     }
 }
