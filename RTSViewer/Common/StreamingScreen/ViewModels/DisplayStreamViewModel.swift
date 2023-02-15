@@ -146,11 +146,11 @@ final class DisplayStreamViewModel: ObservableObject {
         params: crop = true if the view should be cropped and take the whole screen
         crop = false if the view should not be cropped.
         */
-    func calculateVideoViewWidthHeight(screenWidth: Float, screenHeight: Float) -> (CGFloat, CGFloat) {
+    func calculateVideoViewWidthHeight(crop: Bool = false, screenWidth: Float, screenHeight: Float) -> (CGFloat, CGFloat) {
         var ratio: Float = 1.0
         var width, height: Float
 
-        ratio = calculateAspectRatio(crop: true, screenWidth: screenWidth, screenHeight: screenHeight, frameWidth: videoFrameWidth, frameHeight: videoFrameHeight)
+        ratio = calculateAspectRatio(crop: crop, screenWidth: screenWidth, screenHeight: screenHeight, frameWidth: videoFrameWidth, frameHeight: videoFrameHeight)
 
         width = videoFrameWidth * ratio
         height = videoFrameHeight * ratio
