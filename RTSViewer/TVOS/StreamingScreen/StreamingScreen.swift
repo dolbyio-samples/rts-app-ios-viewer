@@ -42,9 +42,7 @@ struct StreamingScreen: View {
                     .background(Color.black)
                     .opacity(viewModel.isStreamActive ? (showToolbar ? 0.5: 0.0) : 0.8)
 
-                StreamingTopToolbarView(viewModel: toolbarViewModel, showSettings: $showSettings, showToolbar: $showToolbar)
-
-                StreamingBottomToolbarView(viewModel: toolbarViewModel, !viewModel.layersDisabled, showSettings: $showSettings, showToolbar: $showToolbar, $showStats)
+                StreamingToolbarView(viewModel: toolbarViewModel, !viewModel.layersDisabled, showSettings: $showSettings, showToolbar: $showToolbar, $showStats)
 
                 if showSettings {
                     SettingsView(
