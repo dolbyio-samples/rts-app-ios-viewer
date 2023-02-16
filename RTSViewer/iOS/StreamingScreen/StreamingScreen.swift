@@ -19,18 +19,17 @@ struct StreamingScreen: View {
     @State private var showSimulcastView = false
     @State private var showStats = false
 
-    @Environment(\.dismiss) var dismiss
-
     init(dataStore: RTSDataStore) {
         _viewModel = StateObject(wrappedValue: DisplayStreamViewModel(dataStore: dataStore))
         _toolbarViewModel = StateObject(wrappedValue: StreamToolbarViewModel(dataStore: dataStore))
     }
 
     var body: some View {
-        BackgroundContainerView {
+        ZStack {
             ZStack {
                 let screenRect = UIScreen.main.bounds
                 let (videoFrameWidth, videoFrameHeight) = viewModel.calculateVideoViewWidthHeight(screenWidth: Float(screenRect.size.width), screenHeight: Float(screenRect.size.height))
+
                 GeometryReader { geometry in
                     VideoRendererView(uiView: viewModel.streamingView)
                         .frame(width: videoFrameWidth, height: videoFrameHeight)
@@ -42,34 +41,39 @@ struct StreamingScreen: View {
                     .background(Color.black)
                     .opacity(viewModel.isStreamActive ? (showToolbar ? 0.5: 0.0) : 0.8)
 
-                StreamingToolbarView(viewModel: toolbarViewModel, !viewModel.layersDisabled, showSettings: $showSettings, showToolbar: $showToolbar, $showStats)
-
-                if showSettings {
-                    SettingsView(
-                        disableLayers: viewModel.layersDisabled,
-                        activeStreamTypes: viewModel.activeStreamTypes,
-                        selectedLayer: viewModel.selectedLayer,
-                        showSimulcastView: $showSimulcastView,
-                        statsView: $showStats,
-                        showLiveIndicator: $toolbarViewModel.isLiveIndicatorEnabled,
-                        showSettings: $showSettings,
-                        dataStore: viewModel.dataStore
-                    )
-                }
-
-                if !viewModel.isStreamActive {
-                    StreamConnectionView(isNetworkConnected: viewModel.isNetworkConnected)
-                }
-
-                if showStats {
-                    StatisticsView(dataStore: viewModel.dataStore)
-                }
+                StreamingToolbarView(viewModel: toolbarViewModel, showSimulcast: !viewModel.layersDisabled, showSettings: $showSettings, showToolbar: $showToolbar, showStats: $showStats)
             }
             .edgesIgnoringSafeArea(.all)
             .onReceive(viewModel.$isStreamActive) { isStreamActive in
                 Task {
                     UIApplication.shared.isIdleTimerDisabled = isStreamActive
                 }
+            }
+            .background(Color(uiColor: UIColor.Neutral.neutral900))
+            .simultaneousGesture(
+                showSettings || showStats ? TapGesture().onEnded {
+                    showSettings = false
+                    showStats = false
+                } : nil)
+
+            if showSettings {
+                SettingsView(
+                    disableLayers: viewModel.layersDisabled,
+                    activeStreamTypes: viewModel.activeStreamTypes,
+                    selectedLayer: viewModel.selectedLayer,
+                    showSimulcastView: $showSimulcastView,
+                    statsView: $showStats,
+                    showLiveIndicator: $toolbarViewModel.isLiveIndicatorEnabled,
+                    showSettings: $showSettings,
+                    dataStore: viewModel.dataStore
+                )
+            }
+            if !viewModel.isStreamActive {
+                StreamConnectionView(isNetworkConnected: viewModel.isNetworkConnected)
+            }
+
+            if showStats {
+                StatisticsView(dataStore: viewModel.dataStore)
             }
         }
         .onAppear {
@@ -82,19 +86,7 @@ struct StreamingScreen: View {
             }
         }
         .navigationBarHidden(true)
-#if os(tvOS)
-        .onExitCommand {
-            if showSimulcastView {
-                showSimulcastView = false
-            } else if showSettings {
-                showSettings = false
-            } else if showToolbar {
-                hideToolbar()
-            } else {
-                dismiss()
-            }
-        }
-#endif
+        .statusBarHidden(true)
     }
 
     private func hideToolbar() {
