@@ -57,7 +57,9 @@ struct StreamingScreen: View {
                     )
                 }
 
-                StreamConnectionView(isStreamActive: viewModel.isStreamActive, isNetworkConnected: viewModel.isNetworkConnected)
+                if !viewModel.isStreamActive {
+                    StreamConnectionView(isNetworkConnected: viewModel.isNetworkConnected)
+                }
 
                 if showStats {
                     StatisticsView(dataStore: viewModel.dataStore)
