@@ -56,7 +56,7 @@ struct SettingsView: View {
                                     }
                                 }
                                 .tint(.white)
-                                .background(.gray)
+                                .background(Color(uiColor: UIColor.Neutral.neutral400))
                                 .clipShape(Circle())
                                 Spacer().frame(width: Layout.spacing1x)
                             }.frame(maxWidth: .infinity, alignment: .trailing)
@@ -70,11 +70,14 @@ struct SettingsView: View {
                         selectedLayer: selectedLayer,
                         dataStore: dataStore
                     )
+                    .background(Color(uiColor: UIColor.Neutral.neutral800))
+                    .cornerRadius(Layout.cornerRadius14x)
+                    .padding()
                 }
-            }.frame(maxWidth: 400, maxHeight: 400, alignment: .top)
+            }.frame(maxWidth: 400, maxHeight: 400, alignment: .center)
         }
-        .background(Color(uiColor: UIColor.Neutral.neutral800))
-        .cornerRadius(Layout.cornerRadius6x)
+        .background(.black)
+        .cornerRadius(Layout.cornerRadius14x)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .transition(.move(edge: .bottom))
     }

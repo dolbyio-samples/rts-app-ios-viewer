@@ -42,8 +42,5 @@ struct SimulcastView: View {
                 Text("video quality")
             }
         }
-        .onAppear {
-            UITableView.appearance().backgroundColor = .clear
-        }
     }
 }

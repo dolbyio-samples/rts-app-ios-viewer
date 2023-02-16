@@ -47,9 +47,13 @@ struct StreamingToolbarView: View {
                                 IconButton(
                                     name: .close
                                 ) {
-                                    dismiss()
+                                    if !showSettings {
+                                        dismiss()
+                                    } else {
+                                        showSettings = false
+                                    }
                                 }
-                                .background(.gray)
+                                .background(Color(uiColor: UIColor.Neutral.neutral400))
                                 .clipShape(Circle())
                                 Spacer().frame(width: Layout.spacing1x)
                             }.frame(maxWidth: .infinity, alignment: .trailing)
@@ -60,23 +64,14 @@ struct StreamingToolbarView: View {
                 .padding(.top, 27)
             if viewModel.isStreamActive {
                 HStack {
-                    HStack {
-                        SwiftUI.Button(action: {
-                            withAnimation {
-                                showStats = !showStats
-                            }
-                        }) {
-                            IconView(name: .info)
-                        }
-                    }.frame(maxWidth: .infinity, alignment: .leading)
                     if showSimulcast {
                         HStack {
-                            SwiftUI.Button(action: {
+                            IconButton(
+                                name: .more
+                            ) {
                                 withAnimation {
                                     showSettings = !showSettings
                                 }
-                            }) {
-                                IconView(name: .more)
                             }
                             Spacer().frame(width: Layout.spacing1x)
                         }.frame(maxWidth: .infinity, alignment: .trailing)
