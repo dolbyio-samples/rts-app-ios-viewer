@@ -4,24 +4,30 @@
 
 This project demonstrates what a simple Realtime Streaming monitor experience is like when built for an iOS/tvOS device.
 
-| Use cases              | Features                                                         | Tech Stack |
-| ---------------------- | ---------------------------------------------------------------- | ---------- |
-| Monitor a video stream | Start a stream monitoring with a stream name and account ID pair | Swift      |
+| Use cases              | Features                                                         | Tech Stack       |
+| ---------------------- | ---------------------------------------------------------------- | ---------------- |
+| Monitor a video stream | Start a stream monitoring with a stream name and account ID pair | Swift, iOS, tvOS |
 
 ## Pre-requisites
 
-This setup guide is validated on both Intel/M1-based MacBook Pro running macOS Monterey 12.6.2.
+This setup guide is validated on both Intel/M1-based MacBook Pro running macOS 13.2.1.
 
 ### Apple
 
 * Xcode Version 14.2 (14C18)
 * Apple TV simulator running tvOS 16.1
+* iPhone simulator running iOS 16.2
+* iPad simulator running iPadOS 16.2
 
 ### Other
 
 * A [Dolby.io](https://dashboard.dolby.io/signup/) account
 * Start a video streaming broadcasting, see [here](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard) 
 * The Stream name and Account ID pair from the video streaming above
+
+### How to get a Dolby.io account
+
+To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
 
 ## Cloning the repo
 
@@ -41,7 +47,7 @@ From the top of the Xcode, Select either the scheme `RTSViewer iOS` or `RTSViewe
 
 From the top of the Xcode, select the actual target to be run on.
 
-> **_Info:_** To run on a real device you need to have an **Apple Developer Account**
+> **_Info:_** To run on a real device you need to have an **Apple Developer Account**, see Apple's documentation
 
 If a real device is selected, you shall connect or pair the device with your Xcode first. This is not necessary if a simulator is selected. The Xcode shall start the simulator and connect with the selected simulator automatically in the next step.
 
