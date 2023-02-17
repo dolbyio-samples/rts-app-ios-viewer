@@ -15,15 +15,13 @@ struct VideoView: View {
     }
 
     var body: some View {
-        ZStack {
-            GeometryReader { geometry in
-                VideoRendererView(uiView: viewModel.streamingView)
-                    .onAppear {
-                        viewModel.updateScreenSize(width: Float(geometry.size.width), height: Float(geometry.size.height))
-                    }
-                    .frame(width: viewModel.width, height: viewModel.height)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-            }
+        GeometryReader { geometry in
+            VideoRendererView(uiView: viewModel.streamingView)
+                .onAppear {
+                    viewModel.updateScreenSize(width: Float(geometry.size.width), height: Float(geometry.size.height))
+                }
+                .frame(width: viewModel.width, height: viewModel.height)
+                .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }
 }

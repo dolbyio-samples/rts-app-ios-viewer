@@ -146,9 +146,12 @@ final class DisplayStreamViewModel: ObservableObject {
     }
 
     /** Method to propagate view width and height that will be cached and used
-        to calculate video frameWidth / frameHeight to display
+        to calculate video frameWidth / frameHeight to display.
+        params: crop = true if the view should be cropped and take the whole screen
+        crop = false if the view should not be cropped.
+        width, height: current screen size
      */
-    func updateScreenSize(width: Float?, height: Float?) {
+    func updateScreenSize(crop: Bool = false, width: Float?, height: Float?) {
         if width != screenWidth || height != screenHeight || (self.width == 0 && videoFrameWidth != 0) {
             screenWidth = width
             screenHeight = height
@@ -156,7 +159,7 @@ final class DisplayStreamViewModel: ObservableObject {
             guard let w = screenWidth else { return }
             guard let h = screenHeight else { return }
 
-            let (resultWidth, resultHeight) = calculateVideoViewWidthHeight(screenWidth: w, screenHeight: h)
+            let (resultWidth, resultHeight) = calculateVideoViewWidthHeight(crop: crop, screenWidth: w, screenHeight: h)
             Task {
                 await MainActor.run {
                     self.width = resultWidth
@@ -172,7 +175,7 @@ final class DisplayStreamViewModel: ObservableObject {
         params: crop = true if the view should be cropped and take the whole screen
         crop = false if the view should not be cropped.
         */
-    func calculateVideoViewWidthHeight(crop: Bool = false, screenWidth: Float, screenHeight: Float) -> (CGFloat, CGFloat) {
+    internal func calculateVideoViewWidthHeight(crop: Bool = false, screenWidth: Float, screenHeight: Float) -> (CGFloat, CGFloat) {
         var ratio: Float = 1.0
         var width, height: Float
 
