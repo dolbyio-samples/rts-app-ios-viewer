@@ -133,7 +133,7 @@ extension DefaultTheme {
             return Color(
                 uiColor: UIColor(
                     light: UIColor.Typography.Light.secondary,
-                    dark: UIColor.Typography.Dark.primary
+                    dark: UIColor.Typography.Dark.secondary
                 )
             )
         case .tertiaryColor:

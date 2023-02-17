@@ -76,9 +76,7 @@ struct RecentStreamsScreen: View {
                             )
                     }
                     .padding([.leading, .trailing])
- #if os(tvOS)
                     .frame(width: 514.0)
- #endif
                     List {
                         ForEach(viewModel.streamDetails) { streamDetail in
                             if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
@@ -91,9 +89,7 @@ struct RecentStreamsScreen: View {
                             }
                         }
                     }
- #if os(tvOS)
                     .frame(width: 514.0)
- #endif
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }

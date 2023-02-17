@@ -10,7 +10,7 @@ final class RecentStreamsViewModel: ObservableObject {
     private let streamDataManager: StreamDataManagerProtocol
     private var subscriptions: [AnyCancellable] = []
 
-    @Published var streamDetails: [StreamDetail] = []
+    @Published private(set) var streamDetails: [StreamDetail] = []
 
     init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared) {
         self.streamDataManager = streamDataManager
