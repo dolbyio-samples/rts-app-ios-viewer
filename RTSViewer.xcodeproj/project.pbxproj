@@ -27,6 +27,8 @@
 		6D61A9FB299DBC30004CAF9E /* StreamConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61A9FA299DBC30004CAF9E /* StreamConnectionView.swift */; };
 		6D61A9FC299DBC30004CAF9E /* StreamConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61A9FA299DBC30004CAF9E /* StreamConnectionView.swift */; };
 		6D61A9FF299DD09B004CAF9E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61A9E7299B1A4D004CAF9E /* SettingsView.swift */; };
+		6D61AA01299EF60D004CAF9E /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61AA00299EF60D004CAF9E /* VideoView.swift */; };
+		6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61AA06299F51AC004CAF9E /* VideoView.swift */; };
 		6D6382B82977BCAE00DF4DA7 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */; };
 		6D6382B92977BCAE00DF4DA7 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */; };
 		B696B5322987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
@@ -148,6 +150,8 @@
 		6D61A9E9299B30B3004CAF9E /* SimulcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulcastView.swift; sourceTree = "<group>"; };
 		6D61A9F3299DAF01004CAF9E /* StreamingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingScreen.swift; sourceTree = "<group>"; };
 		6D61A9FA299DBC30004CAF9E /* StreamConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamConnectionView.swift; sourceTree = "<group>"; };
+		6D61AA00299EF60D004CAF9E /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
+		6D61AA06299F51AC004CAF9E /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = IDETemplateMacros.plist; path = RTSViewer.xcworkspace/xcshareddata/IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
@@ -281,6 +285,7 @@
 		6D61A9DD2999EFFC004CAF9E /* StreamingScreen */ = {
 			isa = PBXGroup;
 			children = (
+				6D61AA00299EF60D004CAF9E /* VideoView.swift */,
 				6D61A9E5299AFFE2004CAF9E /* StreamingToolbarView.swift */,
 				6D61A9E7299B1A4D004CAF9E /* SettingsView.swift */,
 				6D61A9E9299B30B3004CAF9E /* SimulcastView.swift */,
@@ -342,6 +347,7 @@
 				6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */,
 				E844ABEB296DA5B20067B78C /* StreamingScreen.swift */,
 				6D61A9E1299AECE6004CAF9E /* StreamingToolbarView.swift */,
+				6D61AA06299F51AC004CAF9E /* VideoView.swift */,
 			);
 			path = StreamingScreen;
 			sourceTree = "<group>";
@@ -752,6 +758,7 @@
 				E8224313299B00E400F9BB15 /* ContentView.swift in Sources */,
 				E8752B51298C7D02002D5C2B /* DateProvider.swift in Sources */,
 				6D61A9F4299DAF01004CAF9E /* StreamingScreen.swift in Sources */,
+				6D61AA01299EF60D004CAF9E /* VideoView.swift in Sources */,
 				6D61A9E6299AFFE2004CAF9E /* StreamingToolbarView.swift in Sources */,
 				6D6382B82977BCAE00DF4DA7 /* StatisticsView.swift in Sources */,
 				6D61A9DB2999E3A1004CAF9E /* StreamToolbarViewModel.swift in Sources */,
@@ -791,6 +798,7 @@
 				E8BA8E102991CB0E0043DEE1 /* DisplayStreamViewModel.swift in Sources */,
 				6D29393C2988C844004EF087 /* AnyGestureRecognizer.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
+				6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */,
 				E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,
 				E8752B4B298C72F7002D5C2B /* CoreDataManager.swift in Sources */,
 				E82FC5072977CF3E0050777F /* Task+Deplayed.swift in Sources */,
