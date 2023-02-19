@@ -18,8 +18,10 @@ struct VideoView: View {
         GeometryReader { geometry in
             VideoRendererView(uiView: viewModel.streamingView)
                 .onRotate { orientation in
-                    let currentScreenSize = currentScreenSize(orientation: orientation, geometry: geometry)
-                    viewModel.updateScreenSize(width: currentScreenSize.0, height: currentScreenSize.1)
+                    if orientation.isPortrait || orientation.isLandscape {
+                        let currentScreenSize = currentScreenSize(orientation: orientation, geometry: geometry)
+                        viewModel.updateScreenSize(width: currentScreenSize.0, height: currentScreenSize.1)
+                    }
                 }
                 .frame(width: viewModel.width, height: viewModel.height)
                 .frame(width: geometry.size.width, height: geometry.size.height)
@@ -29,7 +31,7 @@ struct VideoView: View {
     private func currentScreenSize(orientation: UIDeviceOrientation, geometry: GeometryProxy) -> (Float, Float) {
         var screenWidth, screenHeight: CGFloat
         if (orientation.isPortrait && geometry.size.width < geometry.size.height)
-            || (!orientation.isPortrait && geometry.size.width > geometry.size.height) {
+            || (orientation.isLandscape && geometry.size.width > geometry.size.height) {
             screenWidth = geometry.size.width
             screenHeight = geometry.size.height
         } else {
@@ -46,7 +48,11 @@ private struct DeviceRotationViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onAppear {
-                action(UIDevice.current.orientation)
+                guard let interfaceOrientation = UIApplication.shared.connectedScenes.map({ $0 as? UIWindowScene }).compactMap({ $0 }).first?.windows.first?.windowScene?.interfaceOrientation else {
+                    action(UIDevice.current.orientation)
+                    return
+                }
+                action(UIDeviceOrientation(rawValue: (interfaceOrientation).rawValue)!)
             }
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
                 action(UIDevice.current.orientation)
