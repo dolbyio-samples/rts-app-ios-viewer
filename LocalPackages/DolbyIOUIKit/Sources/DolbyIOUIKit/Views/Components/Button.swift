@@ -279,7 +279,11 @@ private struct CustomButtonView: View {
 
 private extension CustomButtonView {
     var font: Font {
+        #if os(tvOS)
         theme[.avenirNextDemiBold(size: FontSize.caption2, style: .caption2)]
+        #else
+        theme[.avenirNextBold(size: FontSize.subhead, style: .subheadline)]
+        #endif
     }
 
     var textColor: Color? {
