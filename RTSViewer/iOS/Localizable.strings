@@ -29,7 +29,7 @@
 
 "recent-streams.title.label" = "View stream";
 "recent-streams.subtitle.label" = "Open one of your saved streams or join new.";
-"recent-streams.table-header-label" = "Saved streams";
+"recent-streams.table-header-label" = "Recently viewed";
 "recent-streams.table-header-button" = "View all";
 "recent-streams.account-id.title.label" = "ID:";
 "recent-streams.account-id.format.label %@" = "%@";

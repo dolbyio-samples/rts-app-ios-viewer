@@ -9,6 +9,7 @@ public struct LinkButton: View {
     public let action: () -> Void
     public let text: LocalizedStringKey
     public let font: Font
+    public let padding: CGFloat?
 
     @FocusState private var isFocused: Bool
     private var theme: Theme = ThemeManager.shared.theme
@@ -16,21 +17,25 @@ public struct LinkButton: View {
     public init(
         action: @escaping () -> Void,
         text: LocalizedStringKey,
-        fontAsset: FontAsset
+        fontAsset: FontAsset,
+        padding: CGFloat? = nil
     ) {
         self.action = action
         self.text = text
         self.font = theme[fontAsset]
+        self.padding = padding
     }
 
     public init(
         action: @escaping () -> Void,
         text: LocalizedStringKey,
-        font: Font
+        font: Font,
+        padding: CGFloat? = nil
     ) {
         self.action = action
         self.text = text
         self.font = font
+        self.padding = padding
     }
 
     public var body: some View {
@@ -42,7 +47,7 @@ public struct LinkButton: View {
                         uiColor: isFocused ? UIColor.Typography.Dark.primary : UIColor.Typography.Dark.secondary
                     )
                 )
-                .padding()
+                .padding(.all, padding)
                 .overlay(
                     isFocused ? Rectangle()
                         .stroke(

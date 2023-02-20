@@ -41,6 +41,9 @@ struct StreamDetailInputScreen: View {
                 if horizontalSizeClass == .regular {
                     Spacer()
                         .frame(height: Layout.spacing5x)
+                } else {
+                    Spacer()
+                        .frame(height: Layout.spacing3x)
                 }
 
                 Text(
@@ -129,6 +132,7 @@ struct StreamDetailInputScreen: View {
                 IconView(name: .dolby_logo_dd, tintColor: .white)
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: UIColor.Background.black))
