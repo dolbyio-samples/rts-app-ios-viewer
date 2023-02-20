@@ -8,6 +8,7 @@ import SwiftUI
 struct LandingView: View {
     @StateObject private var viewModel: LandingViewModel = .init()
     @State private var isShowingStreamInputView = false
+    @EnvironmentObject private var appState: AppState
 
     var body: some View {
         ZStack {
@@ -19,6 +20,7 @@ struct LandingView: View {
         }
         .layoutPriority(1)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .id(appState.rootViewID)
         .onAppear {
             viewModel.startStreamObservations()
         }

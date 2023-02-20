@@ -15,7 +15,7 @@ struct StreamingToolbarView: View {
     @Binding var showStats: Bool
 
     let showSimulcast: Bool
-    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject private var appState: AppState
 
     init(viewModel: StreamToolbarViewModel, showSimulcast: Bool, showSettings: Binding<Bool>, showToolbar: Binding<Bool>, showStats: Binding<Bool>) {
         self.viewModel = viewModel
@@ -48,7 +48,7 @@ struct StreamingToolbarView: View {
                                     name: .close
                                 ) {
                                     if !showSettings {
-                                        dismiss()
+                                        appState.popToRootView()
                                     } else {
                                         showSettings = false
                                     }

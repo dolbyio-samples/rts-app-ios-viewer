@@ -144,6 +144,9 @@ struct StreamDetailInputScreen: View {
                 inputFocus = nil
             }
         }
+        .onTapGesture {
+            inputFocus = nil
+        }
     }
 }
 

@@ -5,6 +5,19 @@
 import DolbyIOUIKit
 import SwiftUI
 
+class AppState: ObservableObject {
+    // NavigationView does not provide a `popToRoot` method like UINavigationController does in UIKit.
+    // The workaround adopted is to change the `rootViewID` property thats assigned to the rootView through the `id(..)` viewmodifier
+    // - so, a change in the ID redraws the view hence replicates the popToRoot behaviour
+    //
+    // `NavigationStack` introduced in iOS 16 SDK give better options to perform a `popToRoot`
+    @Published private(set) var rootViewID: UUID = .init()
+
+    func popToRootView() {
+        rootViewID = UUID()
+    }
+}
+
 struct ContentView: View {
 
     init() {
@@ -20,5 +33,6 @@ struct ContentView: View {
             LandingView()
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .environmentObject(AppState())
     }
 }
