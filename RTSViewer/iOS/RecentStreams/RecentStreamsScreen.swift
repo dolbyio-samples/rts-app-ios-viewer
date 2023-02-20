@@ -137,9 +137,10 @@ struct RecentStreamsScreen: View {
                 }
             }
         }
+        .layoutPriority(1)
         .navigationBarTitleDisplayMode(.inline)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: UIColor.Neutral.neutral900))
         .toolbar {
             ToolbarItem(placement: .principal) {

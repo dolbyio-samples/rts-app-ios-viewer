@@ -17,6 +17,8 @@ struct LandingView: View {
                 StreamDetailInputScreen()
             }
         }
+        .layoutPriority(1)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             viewModel.startStreamObservations()
         }

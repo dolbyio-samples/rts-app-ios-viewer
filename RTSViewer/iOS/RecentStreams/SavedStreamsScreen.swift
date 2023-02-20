@@ -139,6 +139,7 @@ struct SavedStreamsScreen: View {
                 }
             }
         }
+        .layoutPriority(1)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("saved-streams.title.label")
