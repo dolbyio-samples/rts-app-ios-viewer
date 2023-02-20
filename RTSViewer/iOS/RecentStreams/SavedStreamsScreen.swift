@@ -67,7 +67,7 @@ struct SavedStreamsScreen: View {
             } else {
                 ScrollView {
                     Spacer()
-                        .frame(height: Layout.spacing3x)
+                        .frame(height: Layout.spacing4x)
 
                     if let lastPlayedStream = viewModel.lastPlayedStream {
                         VStack(alignment: .leading) {

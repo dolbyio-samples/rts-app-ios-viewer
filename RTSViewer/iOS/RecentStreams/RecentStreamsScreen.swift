@@ -41,6 +41,9 @@ struct RecentStreamsScreen: View {
                 .hidden()
 
             VStack(spacing: Layout.spacing3x) {
+                Spacer()
+                    .frame(height: Layout.spacing3x)
+
                 VStack(spacing: Layout.spacing1x) {
                     Text(
                         text: "recent-streams.title.label",
@@ -134,6 +137,7 @@ struct RecentStreamsScreen: View {
                 }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
         .background(Color(uiColor: UIColor.Neutral.neutral900))
