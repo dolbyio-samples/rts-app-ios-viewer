@@ -108,7 +108,7 @@ struct SavedStreamsScreen: View {
                         )
 
                         VStack {
-                            ForEach(viewModel.topStreamDetails) { streamDetail in
+                            ForEach(viewModel.streamDetails) { streamDetail in
                                 if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
                                     RecentStreamCell(streamName: streamName, accountID: accountID) {
                                         Task {
