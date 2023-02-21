@@ -64,9 +64,6 @@ struct StreamingScreen: View {
                 StreamConnectionView(isNetworkConnected: viewModel.isNetworkConnected)
             }
 
-            if showStats {
-                StatisticsView(dataStore: viewModel.dataStore)
-            }
         }
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = viewModel.isStreamActive
