@@ -13,7 +13,6 @@ struct StreamingScreen: View {
     @StateObject private var viewModel: DisplayStreamViewModel
     @StateObject private var toolbarViewModel: StreamToolbarViewModel
 
-    @State private var volume = 0.5
     @State private var showToolbar = false
     @State private var showSettings = false
     @State private var showSimulcastView = false
