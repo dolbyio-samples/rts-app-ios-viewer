@@ -35,45 +35,43 @@ struct SettingsView: View {
     var body: some View {
         ZStack {
             VStack {
-                VStack {
-                    ZStack {
-                        Text(text: "stream.settings.label",
-                             mode: .secondary,
-                             fontAsset: .avenirNextBold(
-                                size: FontSize.title2,
-                                style: .title2
-                             )
-                        )
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        HStack {
-                            HStack {
-                                IconButton(
-                                    name: .close
-                                ) {
-                                    withAnimation {
-                                        showSettings = false
-                                    }
-                                }
-                                .tint(.white)
-                                .background(Color(uiColor: UIColor.Neutral.neutral400))
-                                .clipShape(Circle())
-                                Spacer().frame(width: Layout.spacing1x)
-                            }.frame(maxWidth: .infinity, alignment: .trailing)
-                        }
-                    }
-                    .padding(.top, 12)
-                    .padding(.bottom, 12)
-                    Divider()
-                    SimulcastView(
-                        activeStreamTypes: activeStreamTypes,
-                        selectedLayer: selectedLayer,
-                        dataStore: dataStore
+                ZStack {
+                    Text(text: "stream.settings.label",
+                         mode: .secondary,
+                         fontAsset: .avenirNextBold(
+                            size: FontSize.title2,
+                            style: .title2
+                         )
                     )
-                    .background(Color(uiColor: UIColor.Neutral.neutral800))
-                    .cornerRadius(Layout.cornerRadius14x)
-                    .padding()
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    HStack {
+                        HStack {
+                            IconButton(
+                                name: .close
+                            ) {
+                                withAnimation {
+                                    showSettings = false
+                                }
+                            }
+                            .tint(.white)
+                            .background(Color(uiColor: UIColor.Neutral.neutral400))
+                            .clipShape(Circle())
+                            Spacer().frame(width: Layout.spacing1x)
+                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                    }
                 }
+                .padding(.top, 12)
+                .padding(.bottom, 12)
+                Divider()
+                SimulcastView(
+                    activeStreamTypes: activeStreamTypes,
+                    selectedLayer: selectedLayer,
+                    dataStore: dataStore
+                )
+                .background(Color(uiColor: UIColor.Neutral.neutral800))
+                .cornerRadius(Layout.cornerRadius14x)
+                .padding()
             }.frame(maxWidth: 400, maxHeight: 400, alignment: .center)
         }
         .background(.black)
