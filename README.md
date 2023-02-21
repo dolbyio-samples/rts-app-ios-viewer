@@ -15,9 +15,9 @@ This setup guide is validated on both Intel/M1-based MacBook Pro running macOS 1
 ### Apple
 
 * Xcode Version 14.2 (14C18)
-* Apple TV simulator running tvOS 16.1
-* iPhone simulator running iOS 16.2
-* iPad simulator running iPadOS 16.2
+* Apple TV simulator running tvOS 15.0
+* iPhone simulator running iOS 15.0
+* iPad simulator running iPadOS 15.0
 
 ### Other
 
