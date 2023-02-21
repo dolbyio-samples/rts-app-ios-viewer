@@ -17,6 +17,9 @@ struct StreamingToolbarView: View {
     let showSimulcast: Bool
     @EnvironmentObject private var appState: AppState
 
+    @State private var showScreenControls = false
+    @State private var interactivityTimer = Timer.publish(every: 4, on: .main, in: .common).autoconnect()
+
     init(viewModel: StreamToolbarViewModel, showSimulcast: Bool, showSettings: Binding<Bool>, showToolbar: Binding<Bool>, showStats: Binding<Bool>) {
         self.viewModel = viewModel
         self.showSimulcast = showSimulcast
@@ -34,12 +37,18 @@ struct StreamingToolbarView: View {
                         size: FontSize.caption2,
                         style: .caption2
                      )
-                ).padding(.leading, 20)
-                    .padding(.trailing, 20)
-                    .padding(.top, 6)
-                    .padding(.bottom, 6)
-                    .background(viewModel.isStreamActive ? Color(uiColor: UIColor.Feedback.error500) : Color(uiColor: UIColor.Neutral.neutral400))
-                    .cornerRadius(Layout.cornerRadius6x)
+                )
+                .padding(.leading, 20)
+                .padding(.trailing, 20)
+                .padding(.top, 6)
+                .padding(.bottom, 6)
+                .background(
+                    viewModel.isStreamActive ?
+                        Color(uiColor: UIColor.Feedback.error500) :
+                        Color(uiColor: UIColor.Neutral.neutral400)
+                )
+                .cornerRadius(Layout.cornerRadius6x)
+
                 Text(viewModel.streamName ?? "")
                 if viewModel.isLiveIndicatorEnabled {
                     HStack {
@@ -56,12 +65,16 @@ struct StreamingToolbarView: View {
                         .background(Color(uiColor: UIColor.Neutral.neutral400))
                         .clipShape(Circle())
                         Spacer().frame(width: Layout.spacing1x)
-                    }.frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-            }.frame(maxWidth: .infinity, alignment: .leading)
-                .frame(maxHeight: .infinity, alignment: .top)
-                .padding(.leading, 16)
-                .padding(.top, 27)
+            }
+            .offset(x: 0, y: showScreenControls ? 0 : -200)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.leading, 16)
+            .padding(.top, 27)
+
             if viewModel.isStreamActive {
                 HStack {
                     Spacer().frame(width: Layout.spacing1x)
@@ -87,15 +100,48 @@ struct StreamingToolbarView: View {
                                 }
                             }
                             Spacer().frame(width: Layout.spacing1x)
-                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                 }
+                .offset(x: 0, y: showScreenControls ? 0 : 200)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding()
                 .transition(.move(edge: .bottom))
             }
         }
+        .contentShape(Rectangle())
+        .background(Color.black.opacity(showScreenControls ? 0.5 : 0.0))
+        .ignoresSafeArea(.all)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            showControlsAndObserveInteractions()
+        }
+        .onReceive(interactivityTimer) { _ in
+            hideControlsAndStopObservingInteractions()
+        }
+        .onTapGesture {
+            if showScreenControls {
+                hideControlsAndStopObservingInteractions()
+            } else {
+                showControlsAndObserveInteractions()
+            }
+        }
+    }
+
+    private func showControlsAndObserveInteractions() {
+        withAnimation(.spring(blendDuration: 3.0)) {
+            showScreenControls = true
+        }
+        interactivityTimer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
+    }
+
+    private func hideControlsAndStopObservingInteractions() {
+        withAnimation(.easeOut(duration: 0.75)) {
+            showScreenControls = false
+        }
+        interactivityTimer.upstream.connect().cancel()
     }
 }
 
