@@ -13,7 +13,6 @@ struct StreamingScreen: View {
     @StateObject private var viewModel: DisplayStreamViewModel
     @StateObject private var toolbarViewModel: StreamToolbarViewModel
 
-    @State private var volume = 0.5
     @State private var showToolbar = false
     @State private var showSettings = false
     @State private var showSimulcastView = false
@@ -27,14 +26,7 @@ struct StreamingScreen: View {
     var body: some View {
         ZStack {
             ZStack {
-                let screenRect = UIScreen.main.bounds
-                let (videoFrameWidth, videoFrameHeight) = viewModel.calculateVideoViewWidthHeight(screenWidth: Float(screenRect.size.width), screenHeight: Float(screenRect.size.height))
-
-                GeometryReader { geometry in
-                    VideoRendererView(uiView: viewModel.streamingView)
-                        .frame(width: videoFrameWidth, height: videoFrameHeight)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                }
+                VideoView(viewModel: viewModel)
 
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -72,9 +64,6 @@ struct StreamingScreen: View {
                 StreamConnectionView(isNetworkConnected: viewModel.isNetworkConnected)
             }
 
-            if showStats {
-                StatisticsView(dataStore: viewModel.dataStore)
-            }
         }
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = viewModel.isStreamActive

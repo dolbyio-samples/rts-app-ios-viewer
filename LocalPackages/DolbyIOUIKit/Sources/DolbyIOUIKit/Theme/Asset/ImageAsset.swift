@@ -11,11 +11,14 @@ public enum ImageAsset: String, ImageAssetable {
     case arrowLeft = "arrow-left"
     case arrowRight = "arrow-right"
     case textLink = "text-link"
+    case chevronLeft = "chevron-left"
 
     // MARK: Actions
 
     case loader = "loader"
     case close = "close"
+    case playOutlined = "playOutlined"
+    case delete = "delete"
 
     // MARK: Status
 

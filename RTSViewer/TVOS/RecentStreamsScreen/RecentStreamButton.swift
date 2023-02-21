@@ -40,19 +40,14 @@ struct RecentStreamButton: View {
                     )
                 Spacer()
             }
-#if os(iOS)
-            .buttonStyle(.plain)
-#endif
         }
         .focused($isFocused)
-#if os(tvOS)
         .buttonStyle(
             ClearButtonStyle(
                 isFocused: isFocused,
                 focusedBackgroundColor: .clear
             )
         )
-#endif
         .frame(maxWidth: .infinity, minHeight: 60)
         .background(
             Color(

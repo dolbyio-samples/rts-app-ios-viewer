@@ -15,7 +15,7 @@ struct StreamingToolbarView: View {
     @Binding var showStats: Bool
 
     let showSimulcast: Bool
-    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject private var appState: AppState
 
     init(viewModel: StreamToolbarViewModel, showSimulcast: Bool, showSettings: Binding<Bool>, showToolbar: Binding<Bool>, showStats: Binding<Bool>) {
         self.viewModel = viewModel
@@ -28,42 +28,55 @@ struct StreamingToolbarView: View {
 
     var body: some View {
         ZStack {
-            ZStack {
+            HStack {
+                Text(text: viewModel.isStreamActive ? "stream.live.label" : "stream.offline.label",
+                     fontAsset: .avenirNextBold(
+                        size: FontSize.caption2,
+                        style: .caption2
+                     )
+                ).padding(.leading, 20)
+                    .padding(.trailing, 20)
+                    .padding(.top, 6)
+                    .padding(.bottom, 6)
+                    .background(viewModel.isStreamActive ? Color(uiColor: UIColor.Feedback.error500) : Color(uiColor: UIColor.Neutral.neutral400))
+                    .cornerRadius(Layout.cornerRadius6x)
+                Text(viewModel.streamName ?? "")
+                if viewModel.isLiveIndicatorEnabled {
                     HStack {
-                        Text(text: viewModel.isStreamActive ? "stream.live.label" : "stream.offline.label",
-                             fontAsset: .avenirNextBold(
-                                size: FontSize.caption2,
-                                style: .caption2
-                             )
-                        ).padding(.leading, 20)
-                            .padding(.trailing, 20)
-                            .padding(.top, 6)
-                            .padding(.bottom, 6)
-                            .background(viewModel.isStreamActive ? Color(uiColor: UIColor.Feedback.error500) : Color(uiColor: UIColor.Neutral.neutral400))
-                            .cornerRadius(Layout.cornerRadius6x)
-                        Text(viewModel.streamName ?? "")
-                        if viewModel.isLiveIndicatorEnabled {
-                            HStack {
-                                IconButton(
-                                    name: .close
-                                ) {
-                                    if !showSettings {
-                                        dismiss()
-                                    } else {
-                                        showSettings = false
-                                    }
-                                }
-                                .background(Color(uiColor: UIColor.Neutral.neutral400))
-                                .clipShape(Circle())
-                                Spacer().frame(width: Layout.spacing1x)
-                            }.frame(maxWidth: .infinity, alignment: .trailing)
+                        IconButton(
+                            name: .close
+                        ) {
+                            if !showSettings && !showStats {
+                                appState.popToRootView()
+                            } else {
+                                showSettings = false
+                                showStats = false
+                            }
                         }
-                    }.frame(maxWidth: .infinity, alignment: .leading)
-            }.frame(maxHeight: .infinity, alignment: .top)
+                        .background(Color(uiColor: UIColor.Neutral.neutral400))
+                        .clipShape(Circle())
+                        Spacer().frame(width: Layout.spacing1x)
+                    }.frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }.frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxHeight: .infinity, alignment: .top)
                 .padding(.leading, 16)
                 .padding(.top, 27)
             if viewModel.isStreamActive {
                 HStack {
+                    Spacer().frame(width: Layout.spacing1x)
+                    IconButton(
+                        name: .info
+                    ) {
+                        withAnimation {
+                            showStats = !showStats
+                        }
+                    }.popover(isPresented: $showStats, attachmentAnchor: .point(.bottom)) {
+                        StatisticsView(dataStore: viewModel.dataStore)
+                            .background(RemoveBackgroundColor())
+                            .ignoresSafeArea(.all)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    }
                     if showSimulcast {
                         HStack {
                             IconButton(
@@ -77,10 +90,22 @@ struct StreamingToolbarView: View {
                         }.frame(maxWidth: .infinity, alignment: .trailing)
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding()
                 .transition(.move(edge: .bottom))
             }
+        }
+    }
+}
+
+struct RemoveBackgroundColor: UIViewRepresentable {
+    func makeUIView(context: Context) -> UIView {
+        return UIView()
+    }
+    func updateUIView(_ uiView: UIView, context: Context) {
+        DispatchQueue.main.async {
+            uiView.superview?.superview?.backgroundColor = .clear
         }
     }
 }

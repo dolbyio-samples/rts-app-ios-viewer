@@ -93,7 +93,7 @@ final class DisplayStreamViewModelTests: XCTestCase {
         ])
     }
 
-    func testAspetRatioWithoutCroppingLandscapeScreen() {
+    func testAspectRatioWithoutCroppingLandscapeScreen() {
         let screenWidth: Float = 1920.0
         let screenHeight: Float = 1080.0
         var (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
@@ -131,7 +131,7 @@ final class DisplayStreamViewModelTests: XCTestCase {
         XCTAssertEqual(height, Double(screenHeight), accuracy: 1, "large portrait frame height")
     }
 
-    func testAspetRatioWithoutCroppingPortraitScreen() {
+    func testAspectRatioWithoutCroppingPortraitScreen() {
         let screenWidth: Float = 1080.0
         let screenHeight: Float = 1920.0
         var (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
@@ -169,7 +169,7 @@ final class DisplayStreamViewModelTests: XCTestCase {
         XCTAssertEqual(height, Double(2560 * (screenWidth / 1440)), accuracy: 1, "large portrait frame height")
     }
 
-    func testAspetRatioWithCroppingLandscapeScreen() {
+    func testAspectRatioWithCroppingLandscapeScreen() {
         let screenWidth: Float = 1920.0
         let screenHeight: Float = 1080.0
         var (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
@@ -207,7 +207,7 @@ final class DisplayStreamViewModelTests: XCTestCase {
         XCTAssertEqual(height, Double(2560 * (screenWidth / 1440)), accuracy: 1, "large portrait frame height")
     }
 
-    func testAspetRatioWithCroppingPortraitScreen() {
+    func testAspectRatioWithCroppingPortraitScreen() {
         let screenWidth: Float = 1080.0
         let screenHeight: Float = 1920.0
         var (width, height) = viewModel.calculateVideoViewWidthHeight(screenWidth: screenWidth, screenHeight: screenHeight)
