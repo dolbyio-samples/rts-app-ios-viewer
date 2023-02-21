@@ -14,34 +14,37 @@ struct StatisticsView: View {
         _viewModel = StateObject(wrappedValue: StatisticsViewModel(dataStore: dataStore))
     }
 
-    private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption1, style: .caption)
-    private let fontTable = Font.avenirNextRegular(withStyle: .caption, size: FontSize.caption1)
+    private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.body, style: .caption)
+    private let fontTable = Font.avenirNextRegular(withStyle: .body, size: FontSize.body)
 
     private let fontAssetCaption = FontAsset.avenirNextDemiBold(size: FontSize.caption1, style: .caption)
-    private let fontAssetTitle = FontAsset.avenirNextBold(size: FontSize.title1, style: .title)
+    private let fontAssetTitle = FontAsset.avenirNextBold(size: FontSize.title2, style: .title2)
 
     var body: some View {
-        VStack {
-            Text(text: "stream.media-stats.label", fontAsset: fontAssetTitle)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding([.top], 30)
-                .padding([.bottom], 25)
+        ScrollView {
+            VStack {
+                Text(text: "stream.media-stats.label", fontAsset: fontAssetTitle)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding([.top], 30)
+                    .padding([.bottom], 25)
 
-            HStack {
-                Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption).frame(width: 150, alignment: .leading)
-                Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption).frame(width: 200, alignment: .leading)
-            }
-            .padding([.leading], 15)
-
-            ForEach(viewModel.data) { item in
                 HStack {
-                    Text(text: item.key, fontAsset: fontAssetTable).frame(width: 150, alignment: .leading)
-                    Text(item.value).font(fontTable).frame(width: 200, alignment: .leading)
+                    Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption).frame(width: 170, alignment: .leading)
+                    Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption).frame(width: 170, alignment: .leading)
                 }
-                .padding([.top], 5)
-                .padding([.leading], 15)
-            }
-            Spacer().frame(width: Layout.spacing1x).padding([.leading, .top], 40)
+                .padding([.leading, .trailing], 15)
+
+                ForEach(viewModel.data) { item in
+                    HStack {
+                        Text(text: item.key, fontAsset: fontAssetTable, textColor: Color(UIColor.Typography.Dark.secondary))
+                            .frame(width: 170, alignment: .leading)
+                        Text(item.value).font(fontTable)
+                            .frame(width: 170, alignment: .leading)
+                    }
+                    .padding([.top], 5)
+                    .padding([.leading, .trailing], 15)
+                }
+            }.padding([.bottom], 10)
         }
     }
 }
