@@ -23,9 +23,13 @@ struct StatisticsView: View {
     var body: some View {
         ScrollView {
             VStack {
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.gray)
+                    .frame(width: 48, height: 5)
+                    .padding([.top], 5)
                 Text(text: "stream.media-stats.label", fontAsset: fontAssetTitle)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding([.top], 30)
+                    .padding([.top], 20)
                     .padding([.bottom], 25)
 
                 HStack {
@@ -45,6 +49,11 @@ struct StatisticsView: View {
                     .padding([.leading, .trailing], 15)
                 }
             }.padding([.bottom], 10)
-        }
+        }.frame(maxWidth: 500, maxHeight: 600, alignment: .bottom)
+            .background {
+                Rectangle().fill(Color(uiColor: .Neutral.neutral900).opacity(0.7))
+                    .ignoresSafeArea(.container, edges: .all)
+            }
+            .cornerRadius(Layout.cornerRadius14x)
     }
 }

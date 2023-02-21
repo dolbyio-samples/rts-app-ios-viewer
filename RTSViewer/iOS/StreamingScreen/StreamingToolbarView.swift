@@ -71,16 +71,11 @@ struct StreamingToolbarView: View {
                         withAnimation {
                             showStats = !showStats
                         }
-                    }.popover(isPresented: $showStats) {
+                    }.popover(isPresented: $showStats, attachmentAnchor: .point(.bottom)) {
                         StatisticsView(dataStore: viewModel.dataStore)
                             .background(RemoveBackgroundColor())
-                            .presentationDetents([.fraction(0.6), .large])
-                            .presentationDragIndicator(.visible)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background {
-                                Rectangle().fill(Color(uiColor: .Neutral.neutral900).opacity(0.7))
-                                    .ignoresSafeArea(.container, edges: .all)
-                            }
+                            .ignoresSafeArea(.all)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     }
                     if showSimulcast {
                         HStack {
