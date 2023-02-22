@@ -145,16 +145,22 @@ final class DisplayStreamViewModel: ObservableObject {
         _ = await dataStore.stopSubscribe()
     }
 
+    func updateFullScreen(fullScreen: Bool) {
+        updateScreenSize(crop: fullScreen, width: nil, height: nil)
+    }
+
     /** Method to propagate view width and height that will be cached and used
         to calculate video frameWidth / frameHeight to display.
         params: crop = true if the view should be cropped and take the whole screen
         crop = false if the view should not be cropped.
         width, height: current screen size
      */
-    func updateScreenSize(crop: Bool = false, width: Float?, height: Float?) {
+    func updateScreenSize(crop: Bool = false, width: Float? = nil, height: Float? = nil) {
         if width != screenWidth || height != screenHeight || (self.width == 0 && videoFrameWidth != 0) {
-            screenWidth = width
-            screenHeight = height
+            if width != nil && height != nil {
+                screenWidth = width
+                screenHeight = height
+            }
 
             guard let w = screenWidth else { return }
             guard let h = screenHeight else { return }

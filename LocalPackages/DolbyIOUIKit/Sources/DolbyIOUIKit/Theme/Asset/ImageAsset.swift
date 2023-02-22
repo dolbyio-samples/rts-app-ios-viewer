@@ -36,4 +36,6 @@ public enum ImageAsset: String, ImageAssetable {
     case info = "info"
     case liveStream = "live-stream"
     case simulcast = "simulcast"
+    case fullScreen = "full-screen"
+    case exitFullScreen = "exit-full-screen"
 }
