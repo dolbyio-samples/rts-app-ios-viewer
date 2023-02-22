@@ -127,15 +127,6 @@ struct RecentStreamsScreen: View {
                         text: "recent-streams.play-new.button"
                     )
                     .frame(maxWidth: 400)
-
-                    Spacer()
-
-                    VStack {
-                        FooterView(text: "recent-streams.footnote.label")
-
-                        Spacer()
-                            .frame(height: Layout.spacing1x)
-                    }
                 }
             }
             .layoutPriority(1)
@@ -146,6 +137,9 @@ struct RecentStreamsScreen: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     IconView(name: .dolby_logo_dd, tintColor: .white)
+                }
+                ToolbarItem(placement: .bottomBar) {
+                    FooterView(text: "recent-streams.footnote.label")
                 }
             }
             .onAppear {

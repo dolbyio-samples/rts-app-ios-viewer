@@ -110,13 +110,6 @@ struct StreamDetailInputScreen: View {
                 .frame(maxWidth: 400)
 
                 Spacer()
-                    .frame(minHeight: Layout.spacing2x)
-
-                FooterView(text: "stream-detail-input.footnote.label")
-
-                Spacer()
-                    .frame(height: Layout.spacing1x)
-
             }
             .padding([.leading, .trailing], Layout.spacing3x)
         }
@@ -128,8 +121,13 @@ struct StreamDetailInputScreen: View {
                     })
                 }
             }
+
             ToolbarItem(placement: .principal) {
                 IconView(name: .dolby_logo_dd, tintColor: .white)
+            }
+
+            ToolbarItem(placement: .bottomBar) {
+                FooterView(text: "stream-detail-input.footnote.label")
             }
         }
         .navigationBarTitleDisplayMode(.inline)
