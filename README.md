@@ -47,7 +47,7 @@ From the top of the Xcode, Select either the scheme `RTSViewer iOS` or `RTSViewe
 
 From the top of the Xcode, select the actual target to be run on.
 
-> **_Info:_** To run on a real device you need to have an **Apple Developer Account**, see Apple's documentation
+> **_Info:_** To run on a real device you need to have an **Apple Developer Account**. For more information, see Apple documentation.
 
 If a real device is selected, you shall connect or pair the device with your Xcode first. This is not necessary if a simulator is selected. The Xcode shall start the simulator and connect with the selected simulator automatically in the next step.
 
