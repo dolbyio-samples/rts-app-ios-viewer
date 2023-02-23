@@ -32,7 +32,7 @@ struct StreamingScreen: View {
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
-                    .opacity(viewModel.isStreamActive ? (showToolbar ? 0.5: 0.0) : 0.8)
+                    .opacity(viewModel.isStreamActive && viewModel.isNetworkConnected ? (showToolbar ? 0.5: 0.0) : 0.8)
             }
             .edgesIgnoringSafeArea(.all)
             .onReceive(viewModel.$isStreamActive) { isStreamActive in
@@ -63,10 +63,9 @@ struct StreamingScreen: View {
                     dataStore: viewModel.dataStore
                 )
             }
-            if !viewModel.isStreamActive {
+            if !viewModel.isStreamActive || !viewModel.isNetworkConnected {
                 StreamConnectionView(isNetworkConnected: viewModel.isNetworkConnected)
             }
-
         }
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = viewModel.isStreamActive
