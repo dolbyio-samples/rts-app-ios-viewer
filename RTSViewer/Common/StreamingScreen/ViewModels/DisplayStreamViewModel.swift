@@ -151,10 +151,12 @@ final class DisplayStreamViewModel: ObservableObject {
         crop = false if the view should not be cropped.
         width, height: current screen size
      */
-    func updateScreenSize(crop: Bool = false, width: Float?, height: Float?) {
+    func updateScreenSize(crop: Bool = false, width: Float? = nil, height: Float? = nil) {
         if width != screenWidth || height != screenHeight || (self.width == 0 && videoFrameWidth != 0) {
-            screenWidth = width
-            screenHeight = height
+            if width != nil && height != nil {
+                screenWidth = width
+                screenHeight = height
+            }
 
             guard let w = screenWidth else { return }
             guard let h = screenHeight else { return }

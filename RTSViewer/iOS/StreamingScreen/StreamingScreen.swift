@@ -17,6 +17,7 @@ struct StreamingScreen: View {
     @State private var showSettings = false
     @State private var showSimulcastView = false
     @State private var showStats = false
+    @State private var showFullScreen = false
 
     init(dataStore: RTSDataStore) {
         _viewModel = StateObject(wrappedValue: DisplayStreamViewModel(dataStore: dataStore))
@@ -26,14 +27,12 @@ struct StreamingScreen: View {
     var body: some View {
         ZStack {
             ZStack {
-                VideoView(viewModel: viewModel)
+                VideoView(viewModel: viewModel, showFullScreen: showFullScreen)
 
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
                     .opacity(viewModel.isStreamActive ? (showToolbar ? 0.5: 0.0) : 0.8)
-
-                StreamingToolbarView(viewModel: toolbarViewModel, showSimulcast: !viewModel.layersDisabled, showSettings: $showSettings, showToolbar: $showToolbar, showStats: $showStats)
             }
             .edgesIgnoringSafeArea(.all)
             .onReceive(viewModel.$isStreamActive) { isStreamActive in
@@ -42,6 +41,10 @@ struct StreamingScreen: View {
                 }
             }
             .background(Color(uiColor: UIColor.Neutral.neutral900))
+
+            StreamingToolbarView(viewModel: toolbarViewModel, showSimulcast: !viewModel.layersDisabled, showSettings: $showSettings, showToolbar: $showToolbar, showStats: $showStats, showFullScreen: $showFullScreen, onChangeFullScreen: { fullScreen in
+                viewModel.updateScreenSize(crop: fullScreen, width: nil, height: nil)
+            })
             .simultaneousGesture(
                 showSettings || showStats ? TapGesture().onEnded {
                     showSettings = false

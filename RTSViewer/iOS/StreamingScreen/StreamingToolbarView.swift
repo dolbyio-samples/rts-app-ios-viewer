@@ -20,71 +20,105 @@ struct StreamingToolbarView: View {
     @Binding var showSettings: Bool
     @Binding var showToolbar: Bool
     @Binding var showStats: Bool
+    @Binding var showFullScreen: Bool
 
     let showSimulcast: Bool
+    let onChangeFullScreen: (Bool) -> Void
     @EnvironmentObject private var appState: AppState
 
     @State private var showScreenControls = false
     @State private var interactivityTimer = Timer.publish(every: Constants.timeOutConstant, on: .main, in: .common).autoconnect()
 
-    init(viewModel: StreamToolbarViewModel, showSimulcast: Bool, showSettings: Binding<Bool>, showToolbar: Binding<Bool>, showStats: Binding<Bool>) {
+    init(viewModel: StreamToolbarViewModel, showSimulcast: Bool, showSettings: Binding<Bool>, showToolbar: Binding<Bool>, showStats: Binding<Bool>, showFullScreen: Binding<Bool>, onChangeFullScreen: @escaping (Bool) -> Void) {
         self.viewModel = viewModel
         self.showSimulcast = showSimulcast
+        self.onChangeFullScreen = onChangeFullScreen
 
         _showSettings = showSettings
         _showToolbar = showToolbar
         _showStats = showStats
+        _showFullScreen = showFullScreen
     }
 
     var body: some View {
         ZStack {
-            HStack {
-                Text(text: viewModel.isStreamActive ? "stream.live.label" : "stream.offline.label",
-                     fontAsset: .avenirNextBold(
-                        size: FontSize.caption2,
-                        style: .caption2
-                     )
-                )
-                .padding(.leading, 20)
-                .padding(.trailing, 20)
-                .padding(.top, 6)
-                .padding(.bottom, 6)
-                .background(
-                    viewModel.isStreamActive ?
-                        Color(uiColor: UIColor.Feedback.error500) :
-                        Color(uiColor: UIColor.Neutral.neutral400)
-                )
-                .cornerRadius(Layout.cornerRadius6x)
-
-                Text(viewModel.streamName ?? "")
-                if viewModel.isLiveIndicatorEnabled {
+            VStack {
+                ZStack {
                     HStack {
+                        Text(text: viewModel.isStreamActive ? "stream.live.label" : "stream.offline.label",
+                             fontAsset: .avenirNextBold(
+                                size: FontSize.caption2,
+                                style: .caption2
+                             )
+                        )
+                        .padding(.leading, 20)
+                        .padding(.trailing, 20)
+                        .padding(.top, 6)
+                        .padding(.bottom, 6)
+                        .background(
+                            viewModel.isStreamActive ?
+                            Color(uiColor: UIColor.Feedback.error500) :
+                                Color(uiColor: UIColor.Neutral.neutral400)
+                        )
+                        .cornerRadius(Layout.cornerRadius6x)
+
+                        Text(viewModel.streamName ?? "")
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+
+                    HStack {
+                        VStack {
+                            IconButton(
+                                name: .close
+                            ) {
+                                if !showSettings && !showStats {
+                                    appState.popToRootView()
+                                } else {
+                                    showSettings = false
+                                    showStats = false
+                                }
+                            }
+                            .background(Color(uiColor: UIColor.Neutral.neutral400))
+                            .clipShape(Circle())
+
+                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                }
+                HStack {
+                    if !showFullScreen {
                         IconButton(
-                            name: .close
+                            name: .fullScreen
                         ) {
                             if !showSettings && !showStats {
-                                appState.popToRootView()
+                                showFullScreen = true
+                                onChangeFullScreen(showFullScreen)
                             } else {
                                 showSettings = false
                                 showStats = false
                             }
                         }
-                        .background(Color(uiColor: UIColor.Neutral.neutral400))
-                        .clipShape(Circle())
-                        Spacer().frame(width: Layout.spacing1x)
                     }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                }
+                    if showFullScreen {
+                        IconButton(
+                            name: .exitFullScreen
+                        ) {
+                            if !showSettings && !showStats {
+                                showFullScreen = false
+                                onChangeFullScreen(false)
+                            } else {
+                                showSettings = false
+                                showStats = false
+                            }
+                        }
+                    }
+                }.frame(maxWidth: .infinity, alignment: .trailing)
             }
             .offset(x: 0, y: showScreenControls ? 0 : -Constants.animationOffset)
             .frame(maxWidth: .infinity, alignment: .leading)
             .frame(maxHeight: .infinity, alignment: .top)
-            .padding(.leading, 16)
-            .padding(.top, 27)
+            .padding([.all], 10)
 
             if viewModel.isStreamActive {
                 HStack {
-                    Spacer().frame(width: Layout.spacing1x)
                     IconButton(
                         name: .info
                     ) {
@@ -106,7 +140,6 @@ struct StreamingToolbarView: View {
                                     showSettings = !showSettings
                                 }
                             }
-                            Spacer().frame(width: Layout.spacing1x)
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
                     }
@@ -114,13 +147,12 @@ struct StreamingToolbarView: View {
                 .offset(x: 0, y: showScreenControls ? 0 : Constants.animationOffset)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .frame(maxHeight: .infinity, alignment: .bottom)
-                .padding()
+                .padding([.all], 10)
                 .transition(.move(edge: .bottom))
             }
         }
         .contentShape(Rectangle())
         .background(Color.black.opacity(showScreenControls ? 0.5 : 0.0))
-        .ignoresSafeArea(.all)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             showControlsAndObserveInteractions()

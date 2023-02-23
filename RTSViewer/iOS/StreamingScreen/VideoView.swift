@@ -10,8 +10,11 @@ import RTSComponentKit
 struct VideoView: View {
     @ObservedObject private var viewModel: DisplayStreamViewModel
 
-    init(viewModel: DisplayStreamViewModel) {
+    var showFullScreen: Bool
+
+    init(viewModel: DisplayStreamViewModel, showFullScreen: Bool) {
         self.viewModel = viewModel
+        self.showFullScreen = showFullScreen
     }
 
     var body: some View {
@@ -20,7 +23,7 @@ struct VideoView: View {
                 .onRotate { orientation in
                     if orientation.isPortrait || orientation.isLandscape {
                         let currentScreenSize = currentScreenSize(orientation: orientation, geometry: geometry)
-                        viewModel.updateScreenSize(width: currentScreenSize.0, height: currentScreenSize.1)
+                        viewModel.updateScreenSize(crop: showFullScreen, width: currentScreenSize.0, height: currentScreenSize.1)
                     }
                 }
                 .frame(width: viewModel.width, height: viewModel.height)
