@@ -54,7 +54,7 @@ struct StreamingScreen: View {
                 }
             )
             .simultaneousGesture(
-                showSettings || showStats ? TapGesture().onEnded {
+                showSettings || showStats ? DragGesture(minimumDistance: 0).onEnded { _ in
                     showSettings = false
                     showStats = false
                 } : nil)
