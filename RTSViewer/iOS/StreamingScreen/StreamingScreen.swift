@@ -1,6 +1,5 @@
 //
 //  StreamingScreen.swift
-//  RTSViewer
 //
 
 import DolbyIOUIKit

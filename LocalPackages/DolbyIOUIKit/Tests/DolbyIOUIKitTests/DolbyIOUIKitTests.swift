@@ -1,3 +1,7 @@
+//
+//  DolbyIOUIKitTests.swift
+//
+
 import XCTest
 @testable import DolbyIOUIKit
 

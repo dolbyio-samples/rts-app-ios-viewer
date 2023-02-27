@@ -1,5 +1,5 @@
 //
-//  Task+Deplayed.swift
+//  Task+Delayed.swift
 //
 
 import Foundation

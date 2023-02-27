@@ -1,6 +1,5 @@
 //
 //  StreamDetailInputScreen.swift
-//  RTSViewer
 //
 
 import DolbyIOUIKit
