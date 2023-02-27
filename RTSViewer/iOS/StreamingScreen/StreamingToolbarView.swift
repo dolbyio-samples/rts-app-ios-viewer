@@ -125,12 +125,8 @@ struct StreamingToolbarView: View {
                         withAnimation {
                             showStats = !showStats
                         }
-                    }.popover(isPresented: $showStats, attachmentAnchor: .point(.bottom)) {
-                        StatisticsView(dataStore: viewModel.dataStore)
-                            .background(RemoveBackgroundColor())
-                            .ignoresSafeArea(.all)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     }
+
                     if showSimulcast {
                         HStack {
                             IconButton(

@@ -63,6 +63,18 @@ struct StreamingScreen: View {
                     dataStore: viewModel.dataStore
                 )
             }
+
+            if showStats {
+                HStack {
+                    StatisticsView(dataStore: viewModel.dataStore)
+                        .background(RemoveBackgroundColor())
+
+                    Spacer()
+                }
+                .ignoresSafeArea(.all)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+            }
+
             if !viewModel.isStreamActive || !viewModel.isNetworkConnected {
                 StreamConnectionView(isNetworkConnected: viewModel.isNetworkConnected)
             }
