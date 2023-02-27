@@ -54,7 +54,7 @@ struct StreamingScreen: View {
                 }
             )
             .simultaneousGesture(
-                showSettings || showStats ? TapGesture().onEnded {
+                showSettings || showStats ? DragGesture(minimumDistance: 0).onEnded { _ in
                     showSettings = false
                     showStats = false
                 } : nil)
@@ -71,6 +71,18 @@ struct StreamingScreen: View {
                     dataStore: viewModel.dataStore
                 )
             }
+
+            if showStats {
+                HStack {
+                    StatisticsView(dataStore: viewModel.dataStore)
+                        .background(RemoveBackgroundColor())
+
+                    Spacer()
+                }
+                .ignoresSafeArea(.all)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+            }
+
             if !viewModel.isStreamActive || !viewModel.isNetworkConnected {
                 StreamConnectionView(isNetworkConnected: viewModel.isNetworkConnected)
             }
