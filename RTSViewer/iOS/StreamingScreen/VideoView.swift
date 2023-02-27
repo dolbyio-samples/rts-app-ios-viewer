@@ -23,7 +23,7 @@ struct VideoView: View {
                 .onRotate { orientation in
                     if orientation.isPortrait || orientation.isLandscape {
                         let currentScreenSize = currentScreenSize(orientation: orientation, geometry: geometry)
-                        viewModel.updateScreenSize(crop: showFullScreen, width: currentScreenSize.0, height: currentScreenSize.1)
+                        viewModel.updateScreenSize(width: currentScreenSize.0, height: currentScreenSize.1)
                     }
                 }
                 .frame(width: viewModel.width, height: viewModel.height)

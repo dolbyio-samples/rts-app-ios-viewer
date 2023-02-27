@@ -42,9 +42,17 @@ struct StreamingScreen: View {
             }
             .background(Color(uiColor: UIColor.Neutral.neutral900))
 
-            StreamingToolbarView(viewModel: toolbarViewModel, showSimulcast: !viewModel.layersDisabled, showSettings: $showSettings, showToolbar: $showToolbar, showStats: $showStats, showFullScreen: $showFullScreen, onChangeFullScreen: { fullScreen in
-                viewModel.updateScreenSize(crop: fullScreen, width: nil, height: nil)
-            })
+            StreamingToolbarView(
+                viewModel: toolbarViewModel,
+                showSimulcast: !viewModel.layersDisabled,
+                showSettings: $showSettings,
+                showToolbar: $showToolbar,
+                showStats: $showStats,
+                showFullScreen: $showFullScreen,
+                onChangeFullScreen: { fullScreen in
+                    viewModel.showVideoInFullScreen(fullScreen)
+                }
+            )
             .simultaneousGesture(
                 showSettings || showStats ? TapGesture().onEnded {
                     showSettings = false

@@ -21,15 +21,22 @@ final class DisplayStreamViewModel: ObservableObject {
     @Published private(set) var activeStreamTypes: [StreamType] = []
     @Published private(set) var isNetworkConnected = false
     @Published private(set) var statisticsData: StatisticsData?
-    @Published private(set) var width: CGFloat?
-    @Published private(set) var height: CGFloat?
+    @Published private(set) var width: CGFloat = 0.0
+    @Published private(set) var height: CGFloat = 0.0
 
     private var subscriptions: [AnyCancellable] = []
 
-    private var screenWidth: Float?
-    private var screenHeight: Float?
-    private var frameWidth: Float?
-    private var frameHeight: Float?
+    private var screenDimension: Dimensions = .init(width: 0, height: 0) {
+        didSet {
+            recalculateVideoContentWidthAndHeight()
+        }
+    }
+
+    private var showVideoFullScreen: Bool = false {
+        didSet {
+            recalculateVideoContentWidthAndHeight()
+        }
+    }
 
     init(
         dataStore: RTSDataStore,
@@ -96,10 +103,12 @@ final class DisplayStreamViewModel: ObservableObject {
 
         dataStore.$dimensions
             .receive(on: DispatchQueue.main)
-            .sink {[weak self] dimensions in
-                self?.frameWidth = dimensions?.width ?? 0
-                self?.frameHeight = dimensions?.height ?? 0
-                self?.updateScreenSize(width: self?.screenWidth, height: self?.screenHeight)
+            .sink {[weak self] _ in
+                guard let self = self else {
+                    return
+                }
+
+                self.recalculateVideoContentWidthAndHeight()
             }
             .store(in: &subscriptions)
 
@@ -145,66 +154,64 @@ final class DisplayStreamViewModel: ObservableObject {
         _ = await dataStore.stopSubscribe()
     }
 
+    func updateScreenSize(width: Float, height: Float) {
+        screenDimension = .init(width: width, height: height)
+    }
+
+    func showVideoInFullScreen(_ fullScreen: Bool) {
+        showVideoFullScreen = fullScreen
+    }
+
     /** Method to propagate view width and height that will be cached and used
         to calculate video frameWidth / frameHeight to display.
         params: crop = true if the view should be cropped and take the whole screen
         crop = false if the view should not be cropped.
         width, height: current screen size
      */
-    func updateScreenSize(crop: Bool = false, width: Float? = nil, height: Float? = nil) {
-        if width != screenWidth || height != screenHeight || (self.width == 0 && videoFrameWidth != 0) {
-            if width != nil && height != nil {
-                screenWidth = width
-                screenHeight = height
-            }
-
-            guard let w = screenWidth else { return }
-            guard let h = screenHeight else { return }
-
-            let (resultWidth, resultHeight) = calculateVideoViewWidthHeight(crop: crop, screenWidth: w, screenHeight: h)
-            Task {
-                await MainActor.run {
-                    self.width = resultWidth
-                    self.height = resultHeight
-                }
-            }
+    private func recalculateVideoContentWidthAndHeight() {
+        guard screenWidth > 0, screenHeight > 0, videoHeight > 0, videoWidth > 0 else {
+            return
         }
-    }
 
-    /** Method to calculate video view width and height for the current screen size
-        and current stream frameWidth / frameHeight.
-        videoFrameWidth and videoFrameWidth are assumed to be greater than 0.
-        params: crop = true if the view should be cropped and take the whole screen
-        crop = false if the view should not be cropped.
-        */
-    internal func calculateVideoViewWidthHeight(crop: Bool = false, screenWidth: Float, screenHeight: Float) -> (CGFloat, CGFloat) {
-        var ratio: Float = 1.0
-        var width, height: Float
+        let ratio = calculateAspectRatio(
+            crop: showVideoFullScreen,
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
+            frameWidth: videoWidth,
+            frameHeight: videoHeight
+        )
 
-        ratio = calculateAspectRatio(crop: crop, screenWidth: screenWidth, screenHeight: screenHeight, frameWidth: videoFrameWidth, frameHeight: videoFrameHeight)
-
-        width = videoFrameWidth * ratio
-        height = videoFrameHeight * ratio
-
-        return (CGFloat(width), CGFloat(height))
+        let scaledWidth = videoWidth * ratio
+        let scaledHeight = videoHeight * ratio
+        width = CGFloat(scaledWidth)
+        height = CGFloat(scaledHeight)
     }
 }
 
 // MARK: Helper methods
 
 private extension DisplayStreamViewModel {
-    var videoFrameWidth: Float {
-        dataStore.dimensions?.width ?? 0
+    var videoWidth: Float {
+        dataStore.dimensions.width
     }
 
-    var videoFrameHeight: Float {
-        dataStore.dimensions?.height ?? 0
+    var videoHeight: Float {
+        dataStore.dimensions.height
+    }
+
+    var screenWidth: Float {
+        screenDimension.width
+    }
+
+    var screenHeight: Float {
+        screenDimension.height
     }
 
     func calculateAspectRatio(crop: Bool, screenWidth: Float, screenHeight: Float, frameWidth: Float, frameHeight: Float) -> Float {
-        if frameWidth <= 0 || frameHeight <= 0 {
-            return 0
+        guard frameWidth > 0, frameHeight > 0 else {
+            return 0.0
         }
+
         var ratio: Float = 0
         var widthHeading: Bool = true
         if screenWidth >= frameWidth && screenHeight >= frameHeight {

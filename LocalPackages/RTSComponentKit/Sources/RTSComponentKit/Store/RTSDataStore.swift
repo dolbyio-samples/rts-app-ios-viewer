@@ -34,7 +34,7 @@ open class RTSDataStore: ObservableObject {
     @Published public var activeStreamType = [StreamType]()
     @Published public var layerActiveMap: [MCLayerData]?
     @Published public var activeLayer = StreamType.auto
-    @Published public var dimensions: Dimensions?
+    @Published public var dimensions: Dimensions = .init(width: 0, height: 0)
     @Published public var streamName: String?
     #else
     @Published public private(set) var subscribeState: State = .disconnected
@@ -44,7 +44,7 @@ open class RTSDataStore: ObservableObject {
     @Published public private(set) var activeStreamType = [StreamType]()
     @Published public private(set) var layerActiveMap: [MCLayerData]?
     @Published public private(set) var activeLayer = StreamType.auto
-    @Published public private(set) var dimensions: Dimensions?
+    @Published public private(set) var dimensions: Dimensions = .init(width: 0, height: 0)
     @Published public private(set) var streamName: String?
     #endif
 
@@ -56,8 +56,6 @@ open class RTSDataStore: ObservableObject {
     private var audioTrack: MCAudioTrack?
     private var videoTrack: MCVideoTrack?
     private var statsReport: MCStatsReport?
-    private var frameWidth: Float?
-    private var frameHeight: Float?
 
     public init(
         subscriptionManager: SubscriptionManagerProtocol = SubscriptionManager(),
@@ -153,6 +151,14 @@ open class RTSDataStore: ObservableObject {
 // MARK: Helper functions
 
 private extension RTSDataStore {
+    var frameWidth: Float {
+        dimensions.width
+    }
+
+    var frameHeight: Float {
+        dimensions.height
+    }
+
     func layer(for streamType: StreamType) -> MCLayerData? {
         guard let layerActiveMap = layerActiveMap else {
             return nil
@@ -222,10 +228,12 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                 self.statisticsData = value
             }
         }
-        if self.frameWidth != videoRenderer.getWidth() || self.frameHeight != videoRenderer.getHeight() {
-            self.frameWidth = videoRenderer.getWidth()
-            self.frameHeight = videoRenderer.getHeight()
-            self.dimensions = Dimensions(width: self.frameWidth, height: self.frameHeight)
+
+        let videoWidth = videoRenderer.getWidth()
+        let videoHeight = videoRenderer.getHeight()
+
+        if frameWidth != videoWidth || frameHeight != videoHeight {
+            dimensions = Dimensions(width: videoWidth, height: videoHeight)
         }
     }
 
