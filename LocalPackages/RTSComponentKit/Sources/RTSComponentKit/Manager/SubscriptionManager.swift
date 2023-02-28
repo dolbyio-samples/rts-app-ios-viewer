@@ -1,6 +1,5 @@
 //
 //  SubscriptionManager.swift
-//  RTSViewer
 //
 
 import AVFoundation

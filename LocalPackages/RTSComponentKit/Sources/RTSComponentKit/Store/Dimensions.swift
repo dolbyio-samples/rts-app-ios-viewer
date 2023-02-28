@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Dimensions.swift
 //
 
 import Foundation

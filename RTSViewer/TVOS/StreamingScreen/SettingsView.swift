@@ -50,7 +50,6 @@ struct SettingsView: View {
                                  )
                             ).foregroundColor(.white)
 
-                            // TODO use DolbyIOUIKit.Button
                             Button(action: {
                                 showSimulcastView = true
                             }, label: {

@@ -32,7 +32,6 @@ struct SimulcastView: View {
                         ).foregroundColor(.white)
 
                         ForEach(activeStreamTypes, id: \.self) { item in
-                            // TODO use DolbyIOUIKit.Button
                             Button(action: {
                                 viewModel.setLayer(streamType: item)
                             }, label: {

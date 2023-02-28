@@ -1,6 +1,6 @@
 //
 //  VideoRenderer.swift
-//  RTSViewer
+//  
 
 import AVKit
 import Foundation

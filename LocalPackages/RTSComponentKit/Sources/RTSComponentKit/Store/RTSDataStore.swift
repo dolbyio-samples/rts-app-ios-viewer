@@ -1,6 +1,5 @@
 //
 //  RTSDataStore.swift
-//  RTSViewer
 //
 
 import Foundation
