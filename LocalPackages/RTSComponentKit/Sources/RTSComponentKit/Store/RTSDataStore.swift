@@ -121,10 +121,10 @@ open class RTSDataStore: ObservableObject {
         setAudio(false)
         setVideo(false)
 
+        videoTrack?.remove(videoRenderer)
+
         audioTrack = nil
         videoTrack = nil
-
-        videoTrack?.remove(videoRenderer)
 
         updateState(to: .disconnected)
 

@@ -19,16 +19,10 @@ struct StreamDetailInputScreen: View {
     @State private var showingAlert = false
     @FocusState private var inputFocus: InputFocusable?
 
-    @StateObject private var viewModel: StreamDetailInputViewModel
+    @StateObject private var viewModel: StreamDetailInputViewModel = .init()
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
-
-    init(dataStore: RTSDataStore = .init()) {
-        _viewModel = StateObject(
-            wrappedValue: StreamDetailInputViewModel(dataStore: dataStore, streamDataManager: StreamDataManager.shared)
-        )
-    }
 
     var body: some View {
         ZStack {
