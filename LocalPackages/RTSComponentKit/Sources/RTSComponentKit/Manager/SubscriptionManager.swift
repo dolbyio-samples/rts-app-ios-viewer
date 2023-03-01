@@ -113,7 +113,7 @@ public final class SubscriptionManager: SubscriptionManagerProtocol {
         Self.logger.debug("Stop subscription")
 
         let task = Task { [weak self] () -> Bool in
-            guard let self = self, let subscriber = subscriber, isSubscribed else {
+            guard let self = self, let subscriber = subscriber else {
                 return false
             }
             subscriber.enableStats(false)
