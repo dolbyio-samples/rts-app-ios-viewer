@@ -65,40 +65,14 @@ struct SavedStreamsScreen: View {
                 }
                 .edgesIgnoringSafeArea(.all)
             } else {
-                ScrollView {
+                List {
                     Spacer()
-                        .frame(height: Layout.spacing4x)
+                        .frame(height: Layout.spacing2x)
+                        .listRowBackground(Color.clear)
 
                     if let lastPlayedStream = viewModel.lastPlayedStream {
-                        VStack(alignment: .leading) {
-                            DolbyIOUIKit.Text(
-                                text: "saved-streams.section.last-played.label",
-                                font: theme[
-                                    .avenirNextMedium(
-                                        size: FontSize.footnote,
-                                        style: .footnote
-                                    )
-                                ]
-                            )
-
-                            RecentStreamCell(streamName: lastPlayedStream.streamName, accountID: lastPlayedStream.accountID) {
-                                Task {
-                                    let success = await viewModel.connect(streamName: lastPlayedStream.streamName, accountID: lastPlayedStream.accountID)
-                                    await MainActor.run {
-                                        isShowingStreamingView = success
-                                        viewModel.saveStream(streamName: lastPlayedStream.streamName, accountID: lastPlayedStream.accountID)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer()
-                        .frame(height: Layout.spacing3x)
-
-                    VStack(alignment: .leading) {
                         DolbyIOUIKit.Text(
-                            text: "saved-streams.section.all-streams.label",
+                            text: "saved-streams.section.last-played.label",
                             font: theme[
                                 .avenirNextMedium(
                                     size: FontSize.footnote,
@@ -106,24 +80,72 @@ struct SavedStreamsScreen: View {
                                 )
                             ]
                         )
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+                        .frame(height: Layout.spacing4x)
 
-                        VStack {
-                            ForEach(viewModel.streamDetails) { streamDetail in
-                                if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
-                                    RecentStreamCell(streamName: streamName, accountID: accountID) {
-                                        Task {
-                                            let success = await viewModel.connect(streamName: streamName, accountID: accountID)
-                                            await MainActor.run {
-                                                isShowingStreamingView = success
-                                                viewModel.saveStream(streamName: streamName, accountID: accountID)
-                                            }
+                        ForEach([lastPlayedStream]) { streamDetail in
+                            if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
+                                RecentStreamCell(streamName: streamName, accountID: accountID) {
+                                    Task {
+                                        let success = await viewModel.connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
+                                        await MainActor.run {
+                                            isShowingStreamingView = success
+                                            viewModel.saveStream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
                                         }
                                     }
                                 }
                             }
                         }
+                        .onDelete(perform: viewModel.delete(at:))
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+
                     }
+
+                    Spacer()
+                        .frame(height: Layout.spacing2x)
+                        .listRowBackground(Color.clear)
+
+                    DolbyIOUIKit.Text(
+                        text: "saved-streams.section.all-streams.label",
+                        font: theme[
+                            .avenirNextMedium(
+                                size: FontSize.footnote,
+                                style: .footnote
+                            )
+                        ]
+                    )
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
+                    .frame(height: Layout.spacing4x)
+
+                    ForEach(viewModel.streamDetails) { streamDetail in
+                        if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
+                            RecentStreamCell(streamName: streamName, accountID: accountID) {
+                                Task {
+                                    let success = await viewModel.connect(streamName: streamName, accountID: accountID)
+                                    await MainActor.run {
+                                        isShowingStreamingView = success
+                                        viewModel.saveStream(streamName: streamName, accountID: accountID)
+                                    }
+                                }
+                            }
+
+                            Spacer()
+                                .frame(height: Layout.spacing1x)
+                        }
+                    }
+                    .onDelete(perform: viewModel.delete(at:))
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
                 }
+                .environment(\.defaultMinListRowHeight, 0)
+                .listStyle(.plain)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         IconButton(name: .chevronLeft, tintColor: .white, action: {
