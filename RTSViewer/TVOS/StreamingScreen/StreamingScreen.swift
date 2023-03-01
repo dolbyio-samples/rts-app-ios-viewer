@@ -20,6 +20,7 @@ struct StreamingScreen: View {
     @Environment(\.dismiss) var dismiss
 
     init(dataStore: RTSDataStore) {
+        dataStore.activeLayer = .auto
         _viewModel = StateObject(wrappedValue: DisplayStreamViewModel(dataStore: dataStore))
         _toolbarViewModel = StateObject(wrappedValue: StreamToolbarViewModel(dataStore: dataStore))
     }
