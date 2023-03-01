@@ -46,6 +46,7 @@ final class DisplayStreamViewModel: ObservableObject {
         self.dataStore = dataStore
         self.persistentSettings = persistentSettings
         self.networkMonitor = networkMonitor
+        self.dataStore.activeLayer = .auto
 
         setupStateObservers()
     }
