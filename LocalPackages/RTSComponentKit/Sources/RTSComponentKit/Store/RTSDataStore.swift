@@ -32,7 +32,6 @@ open class RTSDataStore: ObservableObject {
     @Published public var statisticsData: StatisticsData?
     @Published public var activeStreamType = [StreamType]()
     @Published public var layerActiveMap: [MCLayerData]?
-    @Published public var activeLayer = StreamType.auto
     @Published public var dimensions: Dimensions = .init(width: 0, height: 0)
     @Published public var streamName: String?
     #else
@@ -42,10 +41,10 @@ open class RTSDataStore: ObservableObject {
     @Published public private(set) var statisticsData: StatisticsData?
     @Published public private(set) var activeStreamType = [StreamType]()
     @Published public private(set) var layerActiveMap: [MCLayerData]?
-    @Published public private(set) var activeLayer = StreamType.auto
     @Published public private(set) var dimensions: Dimensions = .init(width: 0, height: 0)
     @Published public private(set) var streamName: String?
     #endif
+    @Published public var activeLayer = StreamType.auto
 
     private let videoRenderer: MCIosVideoRenderer
     private let subscriptionManager: SubscriptionManagerProtocol
