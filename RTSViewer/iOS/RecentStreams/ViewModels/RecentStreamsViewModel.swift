@@ -36,6 +36,10 @@ final class RecentStreamsViewModel: ObservableObject {
         streamDataManager.fetchStreamDetails()
     }
 
+    func delete(at offsets: IndexSet) {
+        offsets.forEach { streamDataManager.delete(streamDetail: streamDetails[$0]) }
+    }
+
     func clearAllStreams() {
         streamDataManager.clearAllStreams()
     }

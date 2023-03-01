@@ -116,6 +116,40 @@ final class StreamDataManagerTests: XCTestCase {
         XCTAssertEqual(updatedStreamDetail.lastUsedDate, updateMockDate)
     }
 
+    func testDeleteStreamDetail() throws {
+        // Given
+        let expectation = self.expectation(description: "Stream Details Retrieval")
+        dataManager.fetchStreamDetails()
+        dataManager.saveStream("TestStreamName", accountID: "TestAccountID")
+        var savedStreamDetails: [StreamDetail]?
+        let subscription = dataManager.streamDetailsSubject
+            .sink { streamDetails in
+                savedStreamDetails = streamDetails
+                expectation.fulfill()
+            }
+
+        waitForExpectations(timeout: 2.0)
+        subscription.cancel()
+
+        let firstStreamDetail = try XCTUnwrap(savedStreamDetails?.first)
+
+        // When
+        dataManager.delete(streamDetail: firstStreamDetail)
+
+        // Then
+        let refreshStreamsExpectation = self.expectation(description: "Stream Details Refreshed")
+        dataManager.streamDetailsSubject
+            .sink { streamDetails in
+                savedStreamDetails = streamDetails
+                refreshStreamsExpectation.fulfill()
+            }
+            .store(in: &subscriptions)
+
+        waitForExpectations(timeout: 2.0)
+
+        XCTAssertEqual(savedStreamDetails?.isEmpty, true)
+    }
+
     func testSaveStream() throws {
         // Given
         let expectation = self.expectation(description: "Stream Details Retrieval")

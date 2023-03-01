@@ -11,6 +11,7 @@ final class MockStreamDataManager: StreamDataManagerProtocol {
     enum Event: Equatable {
         case fetchStreamDetails
         case updateLastUsedDate(streamDetail: StreamDetail)
+        case delete(streamDetail: StreamDetail)
         case saveStream(streamName: String, accountID: String)
         case clearAllStreams
     }
@@ -53,6 +54,16 @@ final class MockStreamDataManager: StreamDataManagerProtocol {
         )
 
         events.append(.updateLastUsedDate(streamDetail: streamDetail))
+    }
+
+    func delete(streamDetail: RTSViewer_TVOS.StreamDetail) {
+        guard let firstMatchingIndex = streamDetails.firstIndex(where: { $0.streamName == streamDetail.streamName && $0.accountID == streamDetail.accountID }) else {
+            fatalError("Stream Detail does not exists")
+        }
+        let matchingStreamDetail = streamDetails[firstMatchingIndex]
+
+        streamDetails.remove(at: firstMatchingIndex)
+        events.append(.delete(streamDetail: streamDetail))
     }
 
     func saveStream(_ streamName: String, accountID: String) {

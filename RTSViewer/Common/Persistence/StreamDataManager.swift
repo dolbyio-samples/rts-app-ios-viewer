@@ -11,6 +11,7 @@ protocol StreamDataManagerProtocol: AnyObject {
 
     func fetchStreamDetails()
     func updateLastUsedDate(for streamDetail: StreamDetail)
+    func delete(streamDetail: StreamDetail)
     func saveStream(_ streamName: String, accountID: String)
     func clearAllStreams()
 }
@@ -71,6 +72,27 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         if let newStreamDetails = streamDetailFetchResultsController.fetchedObjects {
             let streamDetails = newStreamDetails.compactMap { StreamDetail(managedObject: $0) }
             streamDetailsSubject.send(streamDetails)
+        }
+    }
+
+    func delete(streamDetail: StreamDetail) {
+        let request: NSFetchRequest<StreamDetailManagedObject> = StreamDetailManagedObject.fetchRequest()
+        request.predicate = NSPredicate(
+            format: "streamName == %@ && accountID == %@",
+            streamDetail.streamName,
+            streamDetail.accountID
+        )
+
+        do {
+            let fetchedResults = try coreDataManager.context.fetch(request)
+            guard let stream = fetchedResults.first else {
+                print("Failed to fetch stream detail - \(streamDetail)")
+                return
+            }
+            coreDataManager.context.delete(stream)
+            coreDataManager.saveContext()
+        } catch {
+            print("Failed to fetch stream detail - \(streamDetail)")
         }
     }
 
