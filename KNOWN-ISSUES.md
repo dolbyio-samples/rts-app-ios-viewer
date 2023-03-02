@@ -1,6 +1,6 @@
 # Known Issues
 
-The issues are mainly found in the following areas:
+The issues are mainly found in the following areas
 
 * Audio in Bluetooth Headset is not supported on iOS devices.
 * Video is distorted in low resolution mode when live stream is broadcasted with VP8 video codec.
