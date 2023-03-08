@@ -159,6 +159,7 @@ struct SavedStreamsScreen: View {
                         })
                     }
                 }
+                .frame(maxWidth: 400)
             }
         }
         .layoutPriority(1)
