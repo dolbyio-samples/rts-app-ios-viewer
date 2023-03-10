@@ -110,7 +110,7 @@ struct RecentStreamsScreen: View {
                             }
                         }
                     }
-                    .frame(maxWidth: 400)
+                    .frame(maxWidth: 600)
 
                     Text(
                         text: "recent-streams.option-separator.label",
