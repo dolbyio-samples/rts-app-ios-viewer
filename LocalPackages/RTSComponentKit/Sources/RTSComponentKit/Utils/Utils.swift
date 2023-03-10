@@ -24,15 +24,19 @@ class Utils {
      * - When the Subscriber's audioTrack is rendered, for e.g. at MillicastManager.subRenderAudio(track: MCAudioTrack?).
      * - When the AVAudioSession route changes, for e.g. at MillicastSA.routeChangeHandler(notification: Notification).
      */
-    public static func configureAudioSession() {
+    public static func configureAudioSession(isSubscriber: Bool = false) {
         let logTag = "[Configure][Audio][Session] "
         let session = AVAudioSession.sharedInstance()
         print(logTag + "Now: " + Utils.audioSessionStr(session: session))
+        print(logTag + "Available inputs count: \(session.availableInputs?.count ?? 0)")
         do {
             #if os(iOS)
-            try session.setCategory(AVAudioSession.Category.playAndRecord, mode: .videoChat, options: [.mixWithOthers])
+            // For subscriber, we only need playback. Not recording is required.
+            try session.setCategory(isSubscriber ? .playback : .playAndRecord,
+                                    mode: .videoChat,
+                                    options: [.mixWithOthers])
             #else
-            try session.setCategory(AVAudioSession.Category.playback, options: [.mixWithOthers])
+            try session.setCategory(.playback, options: [.mixWithOthers])
             #endif
             try session.setActive(true)
         } catch {
