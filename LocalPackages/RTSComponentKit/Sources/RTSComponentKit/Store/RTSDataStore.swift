@@ -215,7 +215,7 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         audioTrack = track
         setAudio(true)
         // Configure the AVAudioSession with our settings.
-        Utils.configureAudioSession()
+        Utils.configureAudioSession(isSubscriber: true)
     }
 
     public func onStatsReport(report: MCStatsReport) {
