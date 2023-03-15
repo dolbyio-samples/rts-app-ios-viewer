@@ -33,6 +33,8 @@
 		6D6382B92977BCAE00DF4DA7 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */; };
 		B696B5322987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
+		B6D0F21B29C1365700156116 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D0F21A29C1365700156116 /* ConnectionManager.swift */; };
+		B6D0F21C29C1365700156116 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D0F21A29C1365700156116 /* ConnectionManager.swift */; };
 		E8224313299B00E400F9BB15 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8224312299B00E400F9BB15 /* ContentView.swift */; };
 		E822431A299B057C00F9BB15 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8224319299B057C00F9BB15 /* SplashScreen.swift */; };
 		E822431C299B073100F9BB15 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E822431B299B073100F9BB15 /* Launch Screen.storyboard */; };
@@ -161,6 +163,7 @@
 		6D62954829A2EE90001DD55A /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
+		B6D0F21A29C1365700156116 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = IDETemplateMacros.plist; path = RTSViewer.xcworkspace/xcshareddata/IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
 		E8224312299B00E400F9BB15 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E8224319299B057C00F9BB15 /* SplashScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
@@ -308,6 +311,14 @@
 			path = StreamingScreen;
 			sourceTree = "<group>";
 		};
+		B6D0F21929C134EF00156116 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				B6D0F21A29C1365700156116 /* ConnectionManager.swift */,
+			);
+			path = Connection;
+			sourceTree = "<group>";
+		};
 		E822430B299AFD1E00F9BB15 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -369,6 +380,7 @@
 		E8575F752999A14B001E609C /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B6D0F21929C134EF00156116 /* Connection */,
 				E8C47C6B29778BAA0026E877 /* Persistence */,
 				E8F32B542999AA3300DF3D5B /* Recent Streams */,
 				E8F32B552999AA5D00DF3D5B /* StreamDetailInputScreen */,
@@ -829,6 +841,7 @@
 				3FE90C1C26B2AF4200B206A3 /* RTSViewer.swift in Sources */,
 				E8FE0671299B1FED00ECCB75 /* StreamDetailInputScreen.swift in Sources */,
 				E8AFB76329A2DD54004692D0 /* RecentStreamCell.swift in Sources */,
+				B6D0F21B29C1365700156116 /* ConnectionManager.swift in Sources */,
 				E8BA8E182991E8B30043DEE1 /* SimulcastViewModel.swift in Sources */,
 				E8AFB76529A2DD54004692D0 /* SavedStreamsScreen.swift in Sources */,
 				E8C47C7129778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,
@@ -858,6 +871,7 @@
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
 				6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */,
 				E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,
+				B6D0F21C29C1365700156116 /* ConnectionManager.swift in Sources */,
 				E8752B4B298C72F7002D5C2B /* CoreDataManager.swift in Sources */,
 				E82FC5072977CF3E0050777F /* Task+Delayed.swift in Sources */,
 				E8BA8E232991FE400043DEE1 /* StatisticsViewModel.swift in Sources */,

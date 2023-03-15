@@ -4,7 +4,7 @@
 
 import Foundation
 
-struct StreamDetail: Identifiable, Equatable {
+struct StreamDetail: Identifiable, Equatable, Codable {
     let id: UUID
     let accountID: String
     let streamName: String
@@ -25,4 +25,9 @@ struct StreamDetail: Identifiable, Equatable {
         self.streamName = streamName
         self.lastUsedDate = lastUsedDate
     }
+
+     func data() -> Data? {
+         let encoder = JSONEncoder()
+         return try? encoder.encode(self)
+     }
  }
