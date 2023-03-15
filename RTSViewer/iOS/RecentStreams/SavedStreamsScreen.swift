@@ -96,14 +96,9 @@ struct SavedStreamsScreen: View {
                         .frame(height: Layout.spacing4x)
 
                         ForEach([lastPlayedStream]) { streamDetail in
-                            if let streamName = streamDetail.streamName, let accountID = s treamDetail.accountID {
+                            if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
                                 RecentStreamCell(streamName: streamName, accountID: accountID) {
                                     Task {
-//                                        let success = await viewModel.connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
-//                                        await MainActor.run {
-//                                            isShowingStreamingView = success
-//                                            viewModel.saveStream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
-//                                        }
                                         connectionManager.startBrowsing()
                                     }
                                 }
