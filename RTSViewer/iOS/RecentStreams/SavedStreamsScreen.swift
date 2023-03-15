@@ -19,6 +19,13 @@ struct SavedStreamsScreen: View {
     @Environment(\.presentationMode) private var presentation
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    private var connectionManager: ConnectionManager
+
+    init(viewModel: RecentStreamsViewModel) {
+        self.viewModel = viewModel
+        connectionManager = ConnectionManager()
+    }
+
     var body: some View {
         ZStack {
             NavigationLink(
@@ -34,6 +41,9 @@ struct SavedStreamsScreen: View {
                     EmptyView()
                 }
                 .hidden()
+                .onDisappear {
+                    connectionManager.stopBrowsing()
+                }
 
             if viewModel.streamDetails.isEmpty {
                 VStack(spacing: Layout.spacing1x) {
@@ -86,14 +96,20 @@ struct SavedStreamsScreen: View {
                         .frame(height: Layout.spacing4x)
 
                         ForEach([lastPlayedStream]) { streamDetail in
-                            if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
+                            if let streamName = streamDetail.streamName, let accountID = s treamDetail.accountID {
                                 RecentStreamCell(streamName: streamName, accountID: accountID) {
                                     Task {
-                                        let success = await viewModel.connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
-                                        await MainActor.run {
-                                            isShowingStreamingView = success
-                                            viewModel.saveStream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
-                                        }
+//                                        let success = await viewModel.connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
+//                                        await MainActor.run {
+//                                            isShowingStreamingView = success
+//                                            viewModel.saveStream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
+//                                        }
+                                        connectionManager.startBrowsing()
+                                    }
+                                }
+                                .onReceive(connectionManager.$clients) { clients in
+                                    clients.forEach { client in
+                                        connectionManager.invitePeer(client, to: streamDetail)
                                     }
                                 }
                             }
@@ -102,7 +118,6 @@ struct SavedStreamsScreen: View {
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
                         .listRowSeparator(.hidden)
-
                     }
 
                     Spacer()
