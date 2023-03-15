@@ -7,7 +7,7 @@ import MultipeerConnectivity
 
 class ConnectionManager: NSObject, ObservableObject {
     typealias StreamDetailReceivedHandler = (StreamDetail) -> Void
-    private static let serviceType = "stream-detail-sharing"
+    private static let serviceType = "stream-share"
 
     @Published var clients: [MCPeerID]  = []
 
@@ -15,10 +15,11 @@ class ConnectionManager: NSObject, ObservableObject {
     private let myPeerID = MCPeerID(displayName: UIDevice.current.name)
     private var nearbyServiceAdvertiser: MCNearbyServiceAdvertiser
     private var nearbyServiceBrowser: MCNearbyServiceBrowser
-    private let handler: StreamDetailReceivedHandler?
 
     private var streamDetailbeSent: StreamDetail?
     private var peerInvitee: MCPeerID?
+
+    var handler: StreamDetailReceivedHandler?
 
     var isReceivingStreamDetail: Bool = false {
         didSet {

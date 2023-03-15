@@ -15,6 +15,12 @@ struct StreamDetailInputScreen: View {
 
     @StateObject private var viewModel: StreamDetailInputViewModel = .init()
 
+    private var connectionManager: ConnectionManager
+
+    init() {
+        connectionManager = ConnectionManager()
+    }
+
     var body: some View {
         BackgroundContainerView {
             ZStack {
@@ -29,6 +35,17 @@ struct StreamDetailInputScreen: View {
                     EmptyView()
                 }
                 .hidden()
+                .onAppear {
+                    connectionManager.handler = { streamDetail in
+                        streamName = streamDetail.streamName
+                        accountID = streamDetail.accountID
+                    }
+                    connectionManager.isReceivingStreamDetail = true
+                }
+                .onDisappear {
+                    connectionManager.handler = nil
+                    connectionManager.isReceivingStreamDetail = false
+                }
 
                 VStack {
                     StreamDetailInputBox(
