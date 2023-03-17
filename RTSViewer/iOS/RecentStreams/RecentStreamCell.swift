@@ -11,12 +11,15 @@ struct RecentStreamCell: View {
 
     private let theme = ThemeManager.shared.theme
     private let action: () -> Void
+    private let moreAction: Bool
 
     init(
+        moreAction: Bool = false,
         streamName: String,
         accountID: String,
         action: @escaping () -> Void
     ) {
+        self.moreAction = moreAction
         self.streamName = streamName
         self.accountID = accountID
         self.action = action
@@ -60,7 +63,12 @@ struct RecentStreamCell: View {
                 }
             }
             Spacer()
-            IconButton(name: .playOutlined, tintColor: .white, action: action)
+
+            if moreAction {
+                IconButton(name: .more, tintColor: .white, action: action)
+            } else {
+                IconButton(name: .playOutlined, tintColor: .white, action: action)
+            }
         }
         .padding(.leading, Layout.spacing3x)
         .padding(.trailing, Layout.spacing1x)
