@@ -296,7 +296,6 @@ extension RTSDataStore: SubscriptionManagerDelegate {
                     totalEnergy: statsReportData.total_audio_energy,
                     framesReceived: Int(statsReportData.frames_received),
                     framesDecoded: Int(statsReportData.frames_decoded),
-                    framesBitDepth: Int(statsReportData.frame_bit_depth),
                     nackCount: Int(statsReportData.nack_count),
                     bytesReceived: Int(statsReportData.bytes_received),
                     totalSampleDuration: statsReportData.total_samples_duration,
