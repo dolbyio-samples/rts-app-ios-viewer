@@ -16,7 +16,6 @@ public struct StatsInboundRtp {
     public let totalEnergy: Double
     public let framesReceived: Int
     public let framesDecoded: Int
-    public let framesBitDepth: Int
     public let nackCount: Int
     public let bytesReceived: Int
     public let totalSampleDuration: Double
@@ -28,7 +27,7 @@ public struct StatsInboundRtp {
     public var codecName: String?
 
     public let isVideo: Bool
-    init(sid: String, kind: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, framesBitDepth: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, jitter: Double, packetsReceived: Double, packetsLost: Double, timestamp: Double, codecName: String?) {
+    init(sid: String, kind: String, decoder: String?, frameWidth: Int, frameHeight: Int, fps: Int, audioLevel: Int, totalEnergy: Double, framesReceived: Int, framesDecoded: Int, nackCount: Int, bytesReceived: Int, totalSampleDuration: Double, codecId: String?, jitter: Double, packetsReceived: Double, packetsLost: Double, timestamp: Double, codecName: String?) {
 
         self.sid = sid
         self.kind = kind
@@ -40,7 +39,6 @@ public struct StatsInboundRtp {
         self.totalEnergy = totalEnergy
         self.framesReceived = framesReceived
         self.framesDecoded = framesDecoded
-        self.framesBitDepth = framesBitDepth
         self.nackCount = nackCount
         self.bytesReceived = bytesReceived
         self.totalSampleDuration = totalSampleDuration
