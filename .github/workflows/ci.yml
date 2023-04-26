@@ -1,13 +1,13 @@
 name: Tests
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - feature/upgrade-to-xcode-14.3
 
 jobs:
   Run-UnitTests:
-    runs-on: macos-12
+    runs-on: macos-latest
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3

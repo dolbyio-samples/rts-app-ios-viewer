@@ -3,13 +3,13 @@ name: Interactive Player Build and Distribution
 on:
   push:
     branches:
-      - main
+      - feature/upgrade-to-xcode-14.3
     tags:
       - '*'
 
 jobs:
   Build-And-Deploy-To-Firebase:
-    runs-on: macos-12
+    runs-on: macos-latest
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3

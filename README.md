@@ -14,20 +14,20 @@ This setup guide is validated on both Intel/M1-based MacBook Pro running macOS 1
 
 ### Apple
 
-* Xcode Version 14.2 (14C18)
-* Apple TV simulator running tvOS 15.0
-* iPhone simulator running iOS 15.0
-* iPad simulator running iPadOS 15.0
+- Xcode Version 14.3.1 (14E300b)
+- Apple TV simulator running tvOS 15.0
+- iPhone simulator running iOS 15.0
+- iPad simulator running iPadOS 15.0
 
 ### Other
 
-* A [Dolby.io](https://dashboard.dolby.io/signup/) account
-* Start a video streaming broadcasting, see [here](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard) 
-* The Stream name and Account ID pair from the video streaming above
+- A [Dolby.io](https://dashboard.dolby.io/signup/) account
+- Start a video streaming broadcasting, see [here](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard)
+- The Stream name and Account ID pair from the video streaming above
 
 ### How to get a Dolby.io account
 
-To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
+To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.
 
 ## Cloning the repo
 
