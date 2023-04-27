@@ -11,10 +11,14 @@ struct VideoView: View {
     @ObservedObject private var viewModel: DisplayStreamViewModel
 
     var showFullScreen: Bool
+    var active: Bool
+    var onAction: () -> Void
 
-    init(viewModel: DisplayStreamViewModel, showFullScreen: Bool) {
+    init(viewModel: DisplayStreamViewModel, showFullScreen: Bool, isActive: Bool = false, onAction: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.showFullScreen = showFullScreen
+        self.active = isActive
+        self.onAction = onAction
     }
 
     var body: some View {
@@ -27,7 +31,14 @@ struct VideoView: View {
                     }
                 }
                 .frame(width: viewModel.width, height: viewModel.height)
+                .overlay(active ? Rectangle()
+                    .stroke(
+                        Color(uiColor: UIColor.white),
+                        lineWidth: Layout.border3x
+                    ) : nil)
                 .frame(width: geometry.size.width, height: geometry.size.height)
+        }.onTapGesture {
+            onAction()
         }
     }
 
