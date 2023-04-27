@@ -10,9 +10,9 @@ import RTSComponentKit
 struct VideoView: View {
     @ObservedObject private var viewModel: DisplayStreamViewModel
 
-    var showFullScreen: Bool
-    var active: Bool
-    var onAction: () -> Void
+    private var showFullScreen: Bool
+    private var active: Bool
+    private var onAction: () -> Void
 
     init(viewModel: DisplayStreamViewModel, showFullScreen: Bool, isActive: Bool = false, onAction: @escaping () -> Void = {}) {
         self.viewModel = viewModel
