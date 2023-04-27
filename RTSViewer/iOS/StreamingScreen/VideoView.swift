@@ -11,13 +11,13 @@ struct VideoView: View {
     @ObservedObject private var viewModel: DisplayStreamViewModel
 
     private var showFullScreen: Bool
-    private var active: Bool
+    private var highlighted: Bool
     private var onAction: () -> Void
 
-    init(viewModel: DisplayStreamViewModel, showFullScreen: Bool, isActive: Bool = false, onAction: @escaping () -> Void = {}) {
+    init(viewModel: DisplayStreamViewModel, showFullScreen: Bool, highlighted: Bool = false, onAction: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.showFullScreen = showFullScreen
-        self.active = isActive
+        self.highlighted = highlighted
         self.onAction = onAction
     }
 
@@ -31,7 +31,7 @@ struct VideoView: View {
                     }
                 }
                 .frame(width: viewModel.width, height: viewModel.height)
-                .overlay(active ? Rectangle()
+                .overlay(highlighted ? Rectangle()
                     .stroke(
                         Color(uiColor: UIColor.white),
                         lineWidth: Layout.border3x
