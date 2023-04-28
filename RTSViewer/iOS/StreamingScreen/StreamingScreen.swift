@@ -26,7 +26,12 @@ struct StreamingScreen: View {
     var body: some View {
         ZStack {
             ZStack {
-                VideoView(viewModel: viewModel, showFullScreen: showFullScreen)
+                VideoView(streamingView: viewModel.streamingView,
+                          width: viewModel.width,
+                          height: viewModel.height,
+                          updateScreenSize: { (width: Float, height: Float) in
+                    viewModel.updateScreenSize(width: width, height: height)
+                })
 
                 VStack {}
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
