@@ -8,29 +8,36 @@ import SwiftUI
 import RTSComponentKit
 
 struct VideoView: View {
-    @ObservedObject private var viewModel: DisplayStreamViewModel
+    private var streamingView: UIView
 
-    private var showFullScreen: Bool
+    private var updateScreenSize: (Float, Float) -> Void
+
+    private var width: CGFloat
+    private var height: CGFloat
+
     private var highlighted: Bool
     private var onAction: () -> Void
 
-    init(viewModel: DisplayStreamViewModel, showFullScreen: Bool, highlighted: Bool = false, onAction: @escaping () -> Void = {}) {
-        self.viewModel = viewModel
-        self.showFullScreen = showFullScreen
+    init(streamingView: UIView, width: CGFloat, height: CGFloat, updateScreenSize: @escaping (Float, Float) -> Void, highlighted: Bool = false, onAction: @escaping () -> Void = {}) {
+        self.streamingView = streamingView
+        self.updateScreenSize = updateScreenSize
+        self.width = width
+        self.height = height
+
         self.highlighted = highlighted
         self.onAction = onAction
     }
 
     var body: some View {
         GeometryReader { geometry in
-            VideoRendererView(uiView: viewModel.streamingView)
+            VideoRendererView(uiView: streamingView)
                 .onRotate { orientation in
                     if orientation.isPortrait || orientation.isLandscape {
                         let currentScreenSize = currentScreenSize(orientation: orientation, geometry: geometry)
-                        viewModel.updateScreenSize(width: currentScreenSize.0, height: currentScreenSize.1)
+                        updateScreenSize(currentScreenSize.0, currentScreenSize.1)
                     }
                 }
-                .frame(width: viewModel.width, height: viewModel.height)
+                .frame(width: width, height: height)
                 .overlay(highlighted ? Rectangle()
                     .stroke(
                         Color(uiColor: UIColor.white),
