@@ -33,6 +33,7 @@
 		6D6382B92977BCAE00DF4DA7 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */; };
 		B696B5322987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
+		E8150A572A0DCB53004F0959 /* DolbyIORTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E8150A562A0DCB53004F0959 /* DolbyIORTSCore */; };
 		E8224313299B00E400F9BB15 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8224312299B00E400F9BB15 /* ContentView.swift */; };
 		E822431A299B057C00F9BB15 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8224319299B057C00F9BB15 /* SplashScreen.swift */; };
 		E822431C299B073100F9BB15 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E822431B299B073100F9BB15 /* Launch Screen.storyboard */; };
@@ -216,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E82A0C0F296CEA07007214B8 /* DolbyIOUIKit in Frameworks */,
+				E8150A572A0DCB53004F0959 /* DolbyIORTSCore in Frameworks */,
 				E89B68A52997009400A350F9 /* RTSComponentKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -627,6 +629,7 @@
 			packageProductDependencies = (
 				E82A0C0E296CEA07007214B8 /* DolbyIOUIKit */,
 				E89B68A42997009400A350F9 /* RTSComponentKit */,
+				E8150A562A0DCB53004F0959 /* DolbyIORTSCore */,
 			);
 			productName = "Millicast SDK Sample App in Swift";
 			productReference = 3FE90C1826B2AF4200B206A3 /* RTSViewer iOS.app */;
@@ -1252,6 +1255,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E8150A562A0DCB53004F0959 /* DolbyIORTSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DolbyIORTSCore;
+		};
 		E82A0C0E296CEA07007214B8 /* DolbyIOUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DolbyIOUIKit;
