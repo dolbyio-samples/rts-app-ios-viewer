@@ -3,15 +3,19 @@
 //
 
 import SwiftUI
+import DolbyIORTSCore
 
 public struct StreamingView: View {
+    @StateObject private var viewModel: StreamViewModel = .init()
+
+    public init() {}
+
     public var body: some View {
-        // TODO: Replace with a valid component
-        Text("Test Streaming View")
+        EmptyView()
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct StreamingView_Previews: PreviewProvider {
     static var previews: some View {
         StreamingView()
     }

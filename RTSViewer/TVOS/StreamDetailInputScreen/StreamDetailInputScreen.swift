@@ -143,7 +143,7 @@ private struct StreamDetailInputBox: View {
                         )
                     }
 
-                    RTSComponentKit.SubscribeButton(
+                    SubscribeButton(
                         text: "stream-detail-input.play.button",
                         streamName: streamName,
                         accountID: accountID,
