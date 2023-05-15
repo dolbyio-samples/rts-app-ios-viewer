@@ -30,10 +30,18 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
         }
     }
 
+    public enum TrackType: String, Equatable {
+        case audio, video
+    }
+
+    public enum MediaType: String, Equatable {
+        case audio, video
+    }
+
     public struct AudioTrackInfo: Equatable, Hashable {
         public let mid: String
-        public let trackType: String
-        public let mediaType: String
+        public let trackType: TrackType
+        public let mediaType: MediaType
         public let track: MCAudioTrack
 
         public var trackId: String { track.getId() }
@@ -41,8 +49,8 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
 
     public struct VideoTrackInfo: Equatable, Hashable {
         public let mid: String
-        public let trackType: String
-        public let mediaType: String
+        public let trackType: TrackType
+        public let mediaType: MediaType
         public let track: MCVideoTrack
 
         public var trackId: String { track.getId() }

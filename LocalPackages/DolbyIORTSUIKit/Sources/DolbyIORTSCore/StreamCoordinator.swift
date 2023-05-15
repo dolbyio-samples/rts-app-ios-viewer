@@ -5,7 +5,6 @@
 import Combine
 import Foundation
 import MillicastSDK
-import SwiftUI
 import os
 
 public struct StreamCoordinatorConfiguration {
@@ -92,7 +91,7 @@ open class StreamCoordinator {
 
     public func playAudio(for source: StreamSource) {
         switch stateSubject.value {
-        case let .subscribed(sources: sources, viewerCount: _):
+        case let .subscribed(sources: sources, numberOfStreamViewers: _):
             sources.forEach { source in
                 if source.isPlayingAudio {
                     subscriptionManager.unprojectAudio(for: source)
@@ -223,7 +222,7 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
 
     public func onViewerCount(_ count: Int32) {
         Task {
-            await stateMachine.onViewerCount(count)
+            await stateMachine.updateNumberOfStreamViewers(count)
         }
     }
 

@@ -25,7 +25,7 @@ final class StreamViewModel: ObservableObject {
             .sink { [weak self] state in
                 guard let self = self else { return }
                 switch state {
-                case .subscribed(sources: let sources, viewerCount: _):
+                case let .subscribed(sources: sources, numberOfStreamViewers: _):
                     self.sources = sources
                 default:
                     break

@@ -159,7 +159,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
     }
 
     func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder) {
-        sourceBuilder.supportedTrackItems.forEach { subscriber.addRemoteTrack($0.trackType) }
+        sourceBuilder.supportedTrackItems.forEach { subscriber.addRemoteTrack($0.trackType.rawValue) }
     }
 
     func projectVideo(for source: StreamSource, withQuality quality: StreamSource.VideoQuality) {
@@ -169,9 +169,9 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         }
 
         let projectionData = MCProjectionData()
-        projectionData.media = videoTrack.mediaType
+        projectionData.media = videoTrack.mediaType.rawValue
         projectionData.mid = videoTrack.mid
-        projectionData.trackId = videoTrack.trackType
+        projectionData.trackId = videoTrack.trackType.rawValue
         projectionData.layer = quality.layerData
 
         subscriber.project(source.sourceId.value, withData: [projectionData])
@@ -193,9 +193,9 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         }
 
         let projectionData = MCProjectionData()
-        projectionData.media = audioTrack.mediaType
+        projectionData.media = audioTrack.mediaType.rawValue
         projectionData.mid = audioTrack.mid
-        projectionData.trackId = audioTrack.trackType
+        projectionData.trackId = audioTrack.trackType.rawValue
 
         subscriber.project(source.sourceId.value, withData: [projectionData])
     }

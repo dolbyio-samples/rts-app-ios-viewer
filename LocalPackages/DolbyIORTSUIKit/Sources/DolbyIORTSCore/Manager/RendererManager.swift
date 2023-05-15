@@ -1,5 +1,5 @@
 //
-//  Renderer.swift
+//  RendererManager.swift
 //
 
 import Foundation

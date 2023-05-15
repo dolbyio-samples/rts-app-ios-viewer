@@ -49,13 +49,13 @@ struct SubscribingState {
 struct SubscribedState {
 
     private(set) var streamSourceBuilders: [StreamSourceBuilder]
-    private(set) var viewerCount: Int
+    private(set) var numberOfStreamViewers: Int
     private(set) var streamingStats: StreamingStatistics?
     let streamDetail: StreamDetail
 
     init(streamDetail: StreamDetail) {
         streamSourceBuilders = []
-        viewerCount = 0
+        numberOfStreamViewers = 0
         self.streamDetail = streamDetail
     }
 
@@ -121,7 +121,7 @@ struct SubscribedState {
     }
 
     mutating func updateViewerCount(_ count: Int) {
-        viewerCount = count
+        numberOfStreamViewers = count
     }
 
     mutating func updateStreamingStatistics(_ stats: StreamingStatistics?) {

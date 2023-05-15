@@ -1,8 +1,5 @@
 //
-//  File.swift
-//  
-//
-//  Created by Raveendran, Aravind on 12/5/2023.
+//  StreamError.swift
 //
 
 import Foundation
@@ -10,5 +7,5 @@ import Foundation
 public enum StreamError: Error, Equatable {
     case subscribeFailed(reason: String)
     case connectFailed(reason: String)
-    case signalling(reason: String)
+    case signalingError(reason: String)
 }

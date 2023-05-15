@@ -145,16 +145,16 @@ final actor StateMachine {
     func onSignalingError(_ message: String) {
         switch currentState {
         case let .connected(state):
-            currentState = .error(.init(error: .signalling(reason: message), streamDetail: state.streamDetail))
+            currentState = .error(.init(error: .signalingError(reason: message), streamDetail: state.streamDetail))
 
         case let .connecting(state):
-            currentState = .error(.init(error: .signalling(reason: message), streamDetail: state.streamDetail))
+            currentState = .error(.init(error: .signalingError(reason: message), streamDetail: state.streamDetail))
 
         case let .subscribed(state):
-            currentState = .error(.init(error: .signalling(reason: message), streamDetail: state.streamDetail))
+            currentState = .error(.init(error: .signalingError(reason: message), streamDetail: state.streamDetail))
 
         case let .subscribing(state):
-            currentState = .error(.init(error: .signalling(reason: message), streamDetail: state.streamDetail))
+            currentState = .error(.init(error: .signalingError(reason: message), streamDetail: state.streamDetail))
 
         default:
             Self.rtsCore.error("Unexpected state on onSignalingError \(self.currentState.description)")
@@ -246,7 +246,7 @@ final actor StateMachine {
         }
     }
 
-    func onViewerCount(_ count: Int32) {
+    func updateNumberOfStreamViewers(_ count: Int32) {
         switch currentState {
         case var .subscribed(state):
             state.updateViewerCount(Int(count))

@@ -13,19 +13,23 @@ final class StreamSourceBuilder {
     }
 
     struct TrackItem {
-        let trackType: String
-        let mediaType: String
+        let trackType: StreamSource.TrackType
+        let mediaType: StreamSource.MediaType
 
         /// Initialises the Track Item, if possible from the passed-in String
         /// - Parameter track: A string value passed in by the SDK and is expected to be of format `{mediaType}/{trackType}`
         init?(track: String) {
             let trackInfoList = track.split(separator: "/")
 
-            guard trackInfoList.count == 2 else {
+            guard
+                trackInfoList.count == 2,
+                let mediaType = StreamSource.MediaType(rawValue: String(trackInfoList[0])),
+                let trackType = StreamSource.TrackType(rawValue: String(trackInfoList[1]))
+            else {
                 return nil
             }
-            mediaType = String(trackInfoList[0])
-            trackType = String(trackInfoList[1])
+            self.mediaType = mediaType
+            self.trackType = trackType
         }
     }
 
@@ -50,7 +54,7 @@ final class StreamSourceBuilder {
     }
 
     func addAudioTrack(_ track: MCAudioTrack, mid: String) {
-        let trackItems = supportedTrackItems.filter({ $0.mediaType == "audio" })
+        let trackItems = supportedTrackItems.filter({ $0.mediaType == .audio })
         guard
             !trackItems.isEmpty,
             audioTracks.count < trackItems.count
@@ -68,7 +72,7 @@ final class StreamSourceBuilder {
     }
 
     func addVideoTrack(_ track: MCVideoTrack, mid: String) {
-        guard let trackItem = supportedTrackItems.first(where: { $0.mediaType == "video" }) else {
+        guard let trackItem = supportedTrackItems.first(where: { $0.mediaType == .video }) else {
             return
         }
 
@@ -128,12 +132,12 @@ final class StreamSourceBuilder {
 
 extension StreamSourceBuilder {
     var hasMissingAudioTrack: Bool {
-        let audioTrackItems = supportedTrackItems.filter { $0.mediaType == "audio" }
+        let audioTrackItems = supportedTrackItems.filter { $0.mediaType == .audio }
         return audioTrackItems.count < audioTracks.count
     }
 
     var hasMissingVideoTrack: Bool {
-        let hasVideoTrack = supportedTrackItems.contains { $0.mediaType == "video" }
+        let hasVideoTrack = supportedTrackItems.contains { $0.mediaType == .video }
         return hasVideoTrack && videoTrack == nil
     }
 }

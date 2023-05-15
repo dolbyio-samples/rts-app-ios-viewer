@@ -9,7 +9,7 @@ public enum StreamState {
     case connecting
     case connected
     case subscribing
-    case subscribed(sources: [StreamSource], viewerCount: Int)
+    case subscribed(sources: [StreamSource], numberOfStreamViewers: Int)
     case stopped
     case error(StreamError)
 
@@ -25,7 +25,7 @@ public enum StreamState {
             self = .connected
 
         case let .subscribed(state):
-            self = .subscribed(sources: state.sources, viewerCount: state.viewerCount)
+            self = .subscribed(sources: state.sources, numberOfStreamViewers: state.numberOfStreamViewers)
 
         case .stopped:
             self = .stopped
