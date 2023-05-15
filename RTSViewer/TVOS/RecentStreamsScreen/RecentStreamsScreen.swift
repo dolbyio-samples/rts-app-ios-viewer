@@ -79,13 +79,13 @@ struct RecentStreamsScreen: View {
                     .frame(width: 514.0)
                     List {
                         ForEach(viewModel.streamDetails) { streamDetail in
-                            if let streamName = streamDetail.streamName, let accountID = streamDetail.accountID {
-                                RecentStreamButton(streamName: streamName, accountID: accountID) {
-                                    self.streamName = streamName
-                                    self.accountID = accountID
-                                    isShowingRecentStreams = false
-                                    action()
-                                }
+                            let streamName = streamDetail.streamName
+                            let accountID = streamDetail.accountID
+                            RecentStreamButton(streamName: streamName, accountID: accountID) {
+                                self.streamName = streamName
+                                self.accountID = accountID
+                                isShowingRecentStreams = false
+                                action()
                             }
                         }
                     }
