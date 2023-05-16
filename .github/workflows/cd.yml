@@ -1,4 +1,4 @@
-name: Build and Distribution
+name: RTS Viewer Build and Distribution
 
 on:
   push:
