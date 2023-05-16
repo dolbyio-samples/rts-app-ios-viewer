@@ -129,6 +129,10 @@ final class StreamSourceBuilder {
 }
 
 // MARK: Helper functions
+// Note: Currently the Millicast SDK callbacks do not give us a way to associate the track we receive in onAudioTrack(..) and onVideoTrack(..) callbacks to a particular SourceId
+// The current implementation worked around it be checking for the missing `audio or video tracks` by comparing it with the `supportedTrackItems` - this SDK limitation leads
+// us in making assumptions that the mediaType will either be "audio" or "video".
+// TODO: Refactor this implementation when the SDK Callback API's are refined.
 
 extension StreamSourceBuilder {
     var hasMissingAudioTrack: Bool {
