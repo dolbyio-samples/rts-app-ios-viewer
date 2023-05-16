@@ -144,6 +144,12 @@ struct StreamDetailInputScreen: View {
                 IconView(name: .dolby_logo_dd, tintColor: .white)
             }
 
+            ToolbarItem(placement: .navigationBarTrailing) {
+                IconButton(name: .settings, action: {
+                    // TODO: Open global settings menu
+                }).scaleEffect(0.5, anchor: .trailing)
+            }
+
             ToolbarItem(placement: .bottomBar) {
                 FooterView(text: "stream-detail-input.footnote.label")
             }

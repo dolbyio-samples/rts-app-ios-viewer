@@ -138,6 +138,13 @@ struct RecentStreamsScreen: View {
                 ToolbarItem(placement: .principal) {
                     IconView(name: .dolby_logo_dd, tintColor: .white)
                 }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    IconButton(name: .settings, action: {
+                        // TODO: Open global settings menu
+                    }).scaleEffect(0.5, anchor: .trailing)
+                }
+
                 ToolbarItem(placement: .bottomBar) {
                     FooterView(text: "recent-streams.footnote.label")
                 }
