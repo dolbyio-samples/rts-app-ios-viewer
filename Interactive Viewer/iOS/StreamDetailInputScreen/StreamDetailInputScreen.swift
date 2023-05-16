@@ -49,11 +49,14 @@ struct StreamDetailInputScreen: View {
                     )
                 )
 
+                Spacer()
+                    .frame(height: Layout.spacing3x)
+
                 Text(
                     text: "stream-detail-input.start-a-stream.label",
                     mode: .primary,
                     fontAsset: .avenirNextDemiBold(
-                        size: FontSize.title1,
+                        size: FontSize.title2,
                         style: .title
                     )
                 )
@@ -118,7 +121,13 @@ struct StreamDetailInputScreen: View {
 
                 Spacer()
 
-                demoAStream
+                VStack {
+                    Spacer()
+
+                    demoAStream
+
+                    Spacer()
+                }
             }
             .padding([.leading, .trailing], Layout.spacing3x)
         }
@@ -162,10 +171,13 @@ struct StreamDetailInputScreen: View {
                 text: "stream-detail-input.demo-stream.label",
                 mode: .primary,
                 fontAsset: .avenirNextDemiBold(
-                    size: FontSize.title1,
+                    size: FontSize.title2,
                     style: .title
                 )
             )
+
+            Spacer()
+                .frame(height: Layout.spacing1x)
 
             Text(
                 text: "stream-detail-input.try-a-demo.label",
@@ -174,6 +186,20 @@ struct StreamDetailInputScreen: View {
                     style: .subheadline
                 )
             )
+
+            Spacer()
+                .frame(height: Layout.spacing2x)
+
+            let streamName = "multiview"
+            let accountID = "k9Mwad"
+            RecentStreamCell(streamName: streamName, accountID: accountID) {
+                Task {
+                    let success = await viewModel.connect(streamName: streamName, accountID: accountID)
+                    await MainActor.run {
+                        isShowingStreamingView = success
+                    }
+                }
+            }
         }
     }
 }
