@@ -169,9 +169,9 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         }
 
         let projectionData = MCProjectionData()
-        projectionData.media = videoTrack.mediaType.rawValue
-        projectionData.mid = videoTrack.mid
-        projectionData.trackId = videoTrack.trackType.rawValue
+        projectionData.media = videoTrack.trackInfo.mediaType.rawValue
+        projectionData.mid = videoTrack.trackInfo.mid
+        projectionData.trackId = videoTrack.trackInfo.trackType.rawValue
         projectionData.layer = quality.layerData
 
         subscriber.project(source.sourceId.value, withData: [projectionData])
@@ -183,7 +183,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             return
         }
 
-        subscriber.unproject([videoTrack.mid])
+        subscriber.unproject([videoTrack.trackInfo.mid])
     }
 
     func projectAudio(for source: StreamSource) {
@@ -193,9 +193,9 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         }
 
         let projectionData = MCProjectionData()
-        projectionData.media = audioTrack.mediaType.rawValue
-        projectionData.mid = audioTrack.mid
-        projectionData.trackId = audioTrack.trackType.rawValue
+        projectionData.media = audioTrack.trackInfo.mediaType.rawValue
+        projectionData.mid = audioTrack.trackInfo.mid
+        projectionData.trackId = audioTrack.trackInfo.trackType.rawValue
 
         subscriber.project(source.sourceId.value, withData: [projectionData])
     }
@@ -205,7 +205,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             return
         }
 
-        subscriber.unproject([audioTrack.mid])
+        subscriber.unproject([audioTrack.trackInfo.mid])
     }
 }
 

@@ -113,7 +113,7 @@ struct SubscribedState {
     }
 
     func setAvailableStreamTypes(_ list: [StreamSource.VideoQuality], for mid: String) {
-        guard let builder = streamSourceBuilders.first(where: { $0.videoTrack?.mid == mid }) else {
+        guard let builder = streamSourceBuilders.first(where: { $0.videoTrack?.trackInfo.mid == mid }) else {
             return
         }
 

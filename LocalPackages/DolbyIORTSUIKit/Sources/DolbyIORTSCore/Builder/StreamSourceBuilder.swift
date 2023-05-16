@@ -118,12 +118,12 @@ final class StreamSourceBuilder {
             id: identifier,
             streamId: streamId,
             sourceId: sourceId,
-            audioTracks: audioTracks,
-            videoTrack: videoTrack,
             availableVideoQualityList: availableVideoQualityList,
             preferredVideoQuality: preferredVideoQuality,
             isPlayingAudio: isPlayingAudio,
-            isPlayingVideo: isPlayingVideo
+            isPlayingVideo: isPlayingVideo,
+            audioTracks: audioTracks,
+            videoTrack: videoTrack
         )
     }
 }
