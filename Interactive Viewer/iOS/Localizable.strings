@@ -30,7 +30,7 @@
 
 /** Recent Streams Screen */
 
-"recent-streams.title.label" = "View stream";
+"recent-streams.title.label" = "Interactive Player";
 "recent-streams.subtitle.label" = "Open one of your saved streams or join new.";
 "recent-streams.table-header-label" = "Recently viewed";
 "recent-streams.table-header-button" = "View all";
@@ -43,7 +43,7 @@
 
 /** Saved Streams Screen */
 
-"saved-streams.title.label" = "Viewed streams";
+"saved-streams.title.label" = "Saved streams";
 "saved-streams.section.last-played.label" = "Last played";
 "saved-streams.section.all-streams.label" = "All";
 "saved-streams.empty-streams.title.label" = "You don’t have any streams viewed";
