@@ -3,8 +3,8 @@
 //
 
 import DolbyIOUIKit
+import DolbyIORTSCore
 import SwiftUI
-import RTSComponentKit
 
 struct StreamDetailInputScreen: View {
 
@@ -26,7 +26,7 @@ struct StreamDetailInputScreen: View {
 
     var body: some View {
         ZStack {
-            NavigationLink(destination: LazyNavigationDestinationView(StreamingScreen(dataStore: viewModel.dataStore)), isActive: $isShowingStreamingView) {
+            NavigationLink(destination: LazyNavigationDestinationView(StreamingScreen()), isActive: $isShowingStreamingView) {
                 EmptyView()
             }
             .hidden()
@@ -86,20 +86,24 @@ struct StreamDetailInputScreen: View {
                             accountID = String(accountID.prefix(64))
                         }
 
-                    SubscribeButton(
-                        text: "stream-detail-input.play.button",
-                        streamName: streamName,
-                        accountID: accountID,
-                        dataStore: viewModel.dataStore) { success in
-                            showingAlert = !success
-                            isShowingStreamingView = success
-                            if success {
-                                // A delay is added before saving the stream.
-                                Task.delayed(byTimeInterval: 1.0) {
-                                    await viewModel.saveStream(streamName: streamName, accountID: accountID)
+                    Button(
+                        action: {
+                            Task {
+                                let success = await StreamCoordinator.shared.connect(streamName: streamName, accountID: accountID)
+                                await MainActor.run {
+                                    showingAlert = !success
+                                    isShowingStreamingView = success
+                                    if success {
+                                        // A delay is added before saving the stream.
+                                        Task.delayed(byTimeInterval: 1.0) {
+                                            await viewModel.saveStream(streamName: streamName, accountID: accountID)
+                                        }
+                                    }
                                 }
                             }
-                        }
+                        },
+                        text: "stream-detail-input.play.button"
+                    )
                 }
                 .frame(maxWidth: 400)
 

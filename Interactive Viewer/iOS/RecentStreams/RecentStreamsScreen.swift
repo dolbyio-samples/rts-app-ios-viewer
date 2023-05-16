@@ -3,7 +3,6 @@
 //
 
 import DolbyIOUIKit
-import RTSComponentKit
 import SwiftUI
 
 struct RecentStreamsScreen: View {
@@ -34,7 +33,7 @@ struct RecentStreamsScreen: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(StreamingScreen(dataStore: viewModel.dataStore)),
+                destination: LazyNavigationDestinationView(StreamingScreen()),
                 isActive: $isShowingStreamingView) {
                     EmptyView()
                 }

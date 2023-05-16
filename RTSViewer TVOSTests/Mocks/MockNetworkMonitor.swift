@@ -3,7 +3,7 @@
 //
 
 import Network
-import RTSComponentKit
+import RTSViewer_TVOS
 import XCTest
 
 final class MockNetworkMonitor: NetworkMonitor {
