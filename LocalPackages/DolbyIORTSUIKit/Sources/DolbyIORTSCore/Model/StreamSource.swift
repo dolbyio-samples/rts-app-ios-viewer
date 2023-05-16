@@ -30,30 +30,40 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
         }
     }
 
-    public enum TrackType: String, Equatable {
+    enum TrackType: String, Equatable {
         case audio, video
     }
 
-    public enum MediaType: String, Equatable {
+    enum MediaType: String, Equatable {
         case audio, video
     }
 
-    public struct AudioTrackInfo: Equatable, Hashable {
+    struct TrackInfo: Equatable, Hashable {
         public let mid: String
         public let trackType: TrackType
         public let mediaType: MediaType
+    }
+
+    struct AudioTrackInfo: Equatable, Hashable {
+        public let trackInfo: TrackInfo
         public let track: MCAudioTrack
-
         public var trackId: String { track.getId() }
+
+        init(mid: String, trackType: TrackType, mediaType: MediaType, track: MCAudioTrack) {
+            self.trackInfo = TrackInfo(mid: mid, trackType: trackType, mediaType: mediaType)
+            self.track = track
+        }
     }
 
-    public struct VideoTrackInfo: Equatable, Hashable {
-        public let mid: String
-        public let trackType: TrackType
-        public let mediaType: MediaType
+    struct VideoTrackInfo: Equatable, Hashable {
+        public let trackInfo: TrackInfo
         public let track: MCVideoTrack
-
         public var trackId: String { track.getId() }
+
+        init(mid: String, trackType: TrackType, mediaType: MediaType, track: MCVideoTrack) {
+            self.trackInfo = TrackInfo(mid: mid, trackType: trackType, mediaType: mediaType)
+            self.track = track
+        }
     }
 
     public enum VideoQuality: Equatable, Hashable {
@@ -92,10 +102,10 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     public let id: UUID
     public let streamId: String
     public let sourceId: SourceId
-    public let audioTracks: [AudioTrackInfo]
-    public let videoTrack: VideoTrackInfo?
     public let availableVideoQualityList: [VideoQuality]
     public let preferredVideoQuality: VideoQuality
     public let isPlayingAudio: Bool
     public let isPlayingVideo: Bool
+    let audioTracks: [AudioTrackInfo]
+    let videoTrack: VideoTrackInfo?
 }

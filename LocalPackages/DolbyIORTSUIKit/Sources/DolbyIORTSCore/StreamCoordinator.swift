@@ -196,7 +196,7 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
             // Add Video Renderer for Video Track
             switch await self.stateMachine.currentState {
             case let .subscribed(state):
-                if let builder = state.streamSourceBuilders.first(where: { $0.videoTrack?.mid == mid }) {
+                if let builder = state.streamSourceBuilders.first(where: { $0.videoTrack?.trackInfo.mid == mid }) {
                     await self.rendererManager.addRenderer(sourceId: builder.sourceId, track: track)
                 }
             default:
