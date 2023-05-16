@@ -49,6 +49,15 @@ struct StreamDetailInputScreen: View {
                     )
                 )
 
+                Text(
+                    text: "stream-detail-input.start-a-stream.label",
+                    mode: .primary,
+                    fontAsset: .avenirNextDemiBold(
+                        size: FontSize.title1,
+                        style: .title
+                    )
+                )
+
                 Spacer()
                     .frame(height: Layout.spacing1x)
 
@@ -108,6 +117,8 @@ struct StreamDetailInputScreen: View {
                 .frame(maxWidth: 400)
 
                 Spacer()
+
+                demoAStream
             }
             .padding([.leading, .trailing], Layout.spacing3x)
         }
@@ -142,6 +153,27 @@ struct StreamDetailInputScreen: View {
         }
         .onTapGesture {
             inputFocus = nil
+        }
+    }
+
+    var demoAStream: some View {
+        VStack {
+            Text(
+                text: "stream-detail-input.demo-stream.label",
+                mode: .primary,
+                fontAsset: .avenirNextDemiBold(
+                    size: FontSize.title1,
+                    style: .title
+                )
+            )
+
+            Text(
+                text: "stream-detail-input.try-a-demo.label",
+                fontAsset: .avenirNextRegular(
+                    size: FontSize.subhead,
+                    style: .subheadline
+                )
+            )
         }
     }
 }
