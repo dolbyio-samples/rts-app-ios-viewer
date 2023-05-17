@@ -50,6 +50,18 @@ struct StreamDetailInputScreen: View {
                 )
 
                 Spacer()
+                    .frame(height: Layout.spacing3x)
+
+                Text(
+                    text: "stream-detail-input.start-a-stream.label",
+                    mode: .primary,
+                    fontAsset: .avenirNextDemiBold(
+                        size: FontSize.title2,
+                        style: .title
+                    )
+                )
+
+                Spacer()
                     .frame(height: Layout.spacing1x)
 
                 Text(
@@ -108,6 +120,14 @@ struct StreamDetailInputScreen: View {
                 .frame(maxWidth: 400)
 
                 Spacer()
+
+                VStack {
+                    Spacer()
+
+                    demoAStream
+
+                    Spacer()
+                }
             }
             .padding([.leading, .trailing], Layout.spacing3x)
         }
@@ -122,6 +142,12 @@ struct StreamDetailInputScreen: View {
 
             ToolbarItem(placement: .principal) {
                 IconView(name: .dolby_logo_dd, tintColor: .white)
+            }
+
+            ToolbarItem(placement: .navigationBarTrailing) {
+                IconButton(name: .settings, action: {
+                    // TODO: Open global settings menu
+                }).scaleEffect(0.5, anchor: .trailing)
             }
 
             ToolbarItem(placement: .bottomBar) {
@@ -142,6 +168,44 @@ struct StreamDetailInputScreen: View {
         }
         .onTapGesture {
             inputFocus = nil
+        }
+    }
+
+    var demoAStream: some View {
+        VStack {
+            Text(
+                text: "stream-detail-input.demo-stream.label",
+                mode: .primary,
+                fontAsset: .avenirNextDemiBold(
+                    size: FontSize.title2,
+                    style: .title
+                )
+            )
+
+            Spacer()
+                .frame(height: Layout.spacing1x)
+
+            Text(
+                text: "stream-detail-input.try-a-demo.label",
+                fontAsset: .avenirNextRegular(
+                    size: FontSize.subhead,
+                    style: .subheadline
+                )
+            )
+
+            Spacer()
+                .frame(height: Layout.spacing2x)
+
+            let streamName = "multiview"
+            let accountID = "k9Mwad"
+            RecentStreamCell(streamName: streamName, accountID: accountID) {
+                Task {
+                    let success = await viewModel.connect(streamName: streamName, accountID: accountID)
+                    await MainActor.run {
+                        isShowingStreamingView = success
+                    }
+                }
+            }
         }
     }
 }
