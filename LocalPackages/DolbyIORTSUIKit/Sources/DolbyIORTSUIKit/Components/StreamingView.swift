@@ -11,7 +11,7 @@ public struct StreamingView: View {
     public init() {}
 
     public var body: some View {
-        EmptyView()
+        ListView(viewModel: viewModel, highlighted: 0, onHighlighted: {_ in })
     }
 }
 

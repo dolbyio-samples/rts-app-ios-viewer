@@ -99,6 +99,16 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
         }
     }
 
+    public struct Dimensions {
+        public let width: Float
+        public let height: Float
+
+        public init(width: Float, height: Float) {
+            self.width = width
+            self.height = height
+        }
+    }
+
     public let id: UUID
     public let streamId: String
     public let sourceId: SourceId
@@ -108,4 +118,6 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     public let isPlayingVideo: Bool
     let audioTracks: [AudioTrackInfo]
     let videoTrack: VideoTrackInfo?
+    public let width: Float
+    public let height: Float
 }
