@@ -35,6 +35,8 @@ The Dolby.io Realtime Streaming Monitor sample app is hosted in an Xcode workspa
 
 Get the code by cloning this repo using git.
 
+> **_Info:_** The main branch is constantly under development. Get a tagged branch for a stable release.
+
 ```bash
 git clone git@github.com:dolbyio-samples/rts-app-ios-viewer.git
 ```
