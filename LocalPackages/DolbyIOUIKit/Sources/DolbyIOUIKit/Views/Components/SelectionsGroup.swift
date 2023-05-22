@@ -14,7 +14,7 @@ public struct SelectionsGroup: View {
 
     public struct Item: Hashable {
         public let key: LocalizedStringKey
-        public var bundle: Bundle?
+        public let bundle: Bundle?
         public var selected: Bool
 
         public init(key: LocalizedStringKey,

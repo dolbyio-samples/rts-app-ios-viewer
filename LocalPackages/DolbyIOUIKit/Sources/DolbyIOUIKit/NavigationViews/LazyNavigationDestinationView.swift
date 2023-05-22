@@ -19,7 +19,7 @@ public struct LazyNavigationDestinationView<Content: View>: View {
 #if DEBUG
 struct LazyNavigationDestinationView_Previews: PreviewProvider {
     static var previews: some View {
-        LazyNavigationDestinationView(Text("Hello world"))
+        LazyNavigationDestinationView(SwiftUI.Text("Hello world"))
     }
 }
 #endif

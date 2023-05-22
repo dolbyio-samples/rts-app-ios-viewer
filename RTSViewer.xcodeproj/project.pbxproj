@@ -62,9 +62,6 @@
 		E83CDA3C2A10917A008690FD /* NavigationHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA312A10917A008690FD /* NavigationHeaderView.swift */; };
 		E83CDA3D2A10917A008690FD /* NavigationHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA312A10917A008690FD /* NavigationHeaderView.swift */; };
 		E83CDA3E2A10917A008690FD /* NavigationHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA312A10917A008690FD /* NavigationHeaderView.swift */; };
-		E83CDA3F2A10917A008690FD /* LazyNavigationDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA322A10917A008690FD /* LazyNavigationDestinationView.swift */; };
-		E83CDA402A10917A008690FD /* LazyNavigationDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA322A10917A008690FD /* LazyNavigationDestinationView.swift */; };
-		E83CDA412A10917A008690FD /* LazyNavigationDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA322A10917A008690FD /* LazyNavigationDestinationView.swift */; };
 		E83CDA422A10917A008690FD /* SubscribeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA342A10917A008690FD /* SubscribeButton.swift */; };
 		E83CDA432A10917A008690FD /* SubscribeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA342A10917A008690FD /* SubscribeButton.swift */; };
 		E83CDA452A10917A008690FD /* VideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA362A10917A008690FD /* VideoRenderer.swift */; };
@@ -243,7 +240,6 @@
 		E83CD9F82A10878C008690FD /* SavedStreamsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedStreamsScreen.swift; sourceTree = "<group>"; };
 		E83CDA2F2A10917A008690FD /* FooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		E83CDA312A10917A008690FD /* NavigationHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationHeaderView.swift; sourceTree = "<group>"; };
-		E83CDA322A10917A008690FD /* LazyNavigationDestinationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyNavigationDestinationView.swift; sourceTree = "<group>"; };
 		E83CDA342A10917A008690FD /* SubscribeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribeButton.swift; sourceTree = "<group>"; };
 		E83CDA362A10917A008690FD /* VideoRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoRenderer.swift; sourceTree = "<group>"; };
 		E83CDA382A10917A008690FD /* BackgroundContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundContainerView.swift; sourceTree = "<group>"; };
@@ -552,7 +548,6 @@
 			isa = PBXGroup;
 			children = (
 				E83CDA312A10917A008690FD /* NavigationHeaderView.swift */,
-				E83CDA322A10917A008690FD /* LazyNavigationDestinationView.swift */,
 			);
 			path = NavigationViews;
 			sourceTree = "<group>";
@@ -1119,7 +1114,6 @@
 				6D61A9FF299DD09B004CAF9E /* SettingsView.swift in Sources */,
 				E8752B4E298C75BD002D5C2B /* StreamDetail.swift in Sources */,
 				E83CDA422A10917A008690FD /* SubscribeButton.swift in Sources */,
-				E83CDA3F2A10917A008690FD /* LazyNavigationDestinationView.swift in Sources */,
 				3FE90C1C26B2AF4200B206A3 /* RTSViewer.swift in Sources */,
 				E8FE0671299B1FED00ECCB75 /* StreamDetailInputScreen.swift in Sources */,
 				E8AFB76329A2DD54004692D0 /* RecentStreamCell.swift in Sources */,
@@ -1159,7 +1153,6 @@
 				E8752B4B298C72F7002D5C2B /* CoreDataManager.swift in Sources */,
 				E83CDA432A10917A008690FD /* SubscribeButton.swift in Sources */,
 				E82FC5072977CF3E0050777F /* Task+Delayed.swift in Sources */,
-				E83CDA402A10917A008690FD /* LazyNavigationDestinationView.swift in Sources */,
 				E8E1855C2A10970600BF4726 /* NetworkMonitor.swift in Sources */,
 				E8BA8E232991FE400043DEE1 /* StatisticsViewModel.swift in Sources */,
 				E8C47C6E29778BAA0026E877 /* StreamDataManager.swift in Sources */,
@@ -1203,7 +1196,6 @@
 				E83CDA092A10878C008690FD /* RecentStreamsViewModel.swift in Sources */,
 				E83CD9F92A10878C008690FD /* StreamDetailInputScreen.swift in Sources */,
 				E8816E0A2A1086E400064B1D /* DateProvider.swift in Sources */,
-				E83CDA412A10917A008690FD /* LazyNavigationDestinationView.swift in Sources */,
 				E83CDA3E2A10917A008690FD /* NavigationHeaderView.swift in Sources */,
 				E83CDA0C2A10878C008690FD /* SavedStreamsScreen.swift in Sources */,
 				E83CD9FC2A10878C008690FD /* LandingView.swift in Sources */,
