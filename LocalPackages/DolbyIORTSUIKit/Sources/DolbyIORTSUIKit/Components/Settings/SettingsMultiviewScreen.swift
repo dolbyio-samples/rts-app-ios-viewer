@@ -24,6 +24,11 @@ public struct SettingsMultiviewScreen: View {
         SelectionsScreen(settings: $settings,
                          footer: "default-multi-view-layout.footer.label",
                          footerBundle: bundle)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("default-multi-view-layout.title.label", bundle: .module)
+            }
+        }
     }
 }
 

@@ -39,6 +39,13 @@ public struct SettingsScreen: View {
                 }
                 .hidden()
 
+            NavigationLink(
+                destination: LazyNavigationDestinationView(SettingsStreamSortorderScreen()),
+                isActive: $isShowingStreamSortorderScreen) {
+                    EmptyView()
+                }
+                .hidden()
+
             List {
                 Toggle("Show source labels", isOn: $isShowLabelsOn)
 
@@ -71,9 +78,9 @@ public struct SettingsScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text(title)
+                    Text(title, bundle: .module)
                 }
-                
+
                 ToolbarItem(placement: .navigationBarLeading) {
                     IconButton(name: .chevronLeft, tintColor: .white, action: {
                         presentationMode.wrappedValue.dismiss()
