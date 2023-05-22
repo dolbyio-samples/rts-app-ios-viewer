@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "DolbyIORTSUIKit",
+    defaultLocalization: "en",
     platforms: [.iOS("15.0"), .tvOS("15.0")],
     products: [
         .library(
@@ -25,7 +26,8 @@ let package = Package(
                 .product(name: "DolbyIOUIKit", package: "DolbyIOUIKit"),
                 "DolbyIORTSCore"
             ],
-            path: "Sources/DolbyIORTSUIKit"
+            path: "Sources/DolbyIORTSUIKit",
+            resources: [.process("Resources")]
         ),
         .target(
             name: "DolbyIORTSCore",

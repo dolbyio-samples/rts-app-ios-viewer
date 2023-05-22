@@ -1,0 +1,47 @@
+/*
+  Localizable.strings
+  DolbyIORTSUIKit
+*/
+
+/** Settings screen */
+"settings.global.title.label" = "Global settings";
+"settings.stream.title.label" = "Stream settings";
+"settings.show-source.label" = "Show source lables";
+"settings.default-multiview-layout.label" = "Default multi-view layout";
+"settings.stream-sort-order.label" = "Stream sort order";
+"settings.audio-selection.label" = "Audio Selection";
+
+/** Default multi-view layout screen */
+"default-multi-view-layout.title.label" = "Default multi-view layout";
+"default-multi-view-layout.list-view.label" = "List view";
+"default-multi-view-layout.grid-view.label" = "Grid view";
+"default-multi-view-layout.single-stream-view.label" = "Single stream view";
+"default-multi-view-layout.footer.label" = "List view: Display one large source as the main view with smaller titles for additional feeds.\n\nGird view: Display all video sources as equally sized titles.";
+
+/** Stream sort order screen */
+"stream-sort-order.title.label" = "Stream sort order";
+"stream-sort-order.connection-order.label" = "Connection order";
+"stream-sort-order.alphanumeric.label" = "AlphaNumeric";
+"stream-sort-order.footer.label" = "Connection order: Display the streams in the order that they connected to the service.\n\nAlphaNumeric: Sort the streams alphanumerically by their sourceId.";
+
+/** Audio selection screen */
+"audio-selection.title.label" = "Audio selection";
+"audio-selection.first-source.label" = "First source";
+"audio-selection.main-source.label" = "Main source";
+"audio-selection.follow-video.label" = "Follow video";
+
+/** Audio selection screen global footer */
+"audio-selection.global.footer.label" =
+"First source: Use the audio from the first audio source that is streamed to the service.
+
+Follow video: Switch audio source when a video is selected. If the selected video does not contain an audio source, use the last selected audio source.";
+
+/** Audio selection screen stream footer */
+"audio-selection.stream.footer.label" =
+"First source: Use the audio from the first audio source that is streamed to the service.
+
+Main source: Use the audio from the source that is the \"main source\" and does not contain a `sourceId`.
+
+Follow video: Switch audio source when a video is selected. If the selected video does not contain an audio source, use the last selected audio source.
+
+<Source N>: Use the audio from an explicity selected audio source even if the video is switched.";
