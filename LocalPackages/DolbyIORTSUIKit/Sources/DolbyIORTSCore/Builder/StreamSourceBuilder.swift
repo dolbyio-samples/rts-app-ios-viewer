@@ -144,7 +144,7 @@ final class StreamSourceBuilder {
 extension StreamSourceBuilder {
     var hasMissingAudioTrack: Bool {
         let audioTrackItems = supportedTrackItems.filter { $0.mediaType == .audio }
-        return audioTrackItems.count < audioTracks.count
+        return audioTracks.count < audioTrackItems.count
     }
 
     var hasMissingVideoTrack: Bool {

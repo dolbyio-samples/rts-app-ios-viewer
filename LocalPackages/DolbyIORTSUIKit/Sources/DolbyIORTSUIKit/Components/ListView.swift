@@ -28,9 +28,9 @@ struct ListView: View {
             VStack {
                 let w = Float(geometry.size.width)
                 let h = Float(geometry.size.height) / 3
-                if let videoSource = videoSourceFrom(index: selectedSourceIndex),
-                   let viewProvider = viewModel.streamCoordinator.mainSourceViewProvider(for: videoSource) {
-                    let videoSize = viewModel.calculateVideoSize(videoSourceDimensions: StreamSource.Dimensions(width: videoSource.width, height: videoSource.height), frameWidth: w, frameHeight: h)
+                if let streamSource = videoSourceFrom(index: selectedSourceIndex),
+                   let viewProvider = viewModel.streamCoordinator.mainSourceViewProvider(for: streamSource) {
+                    let videoSize = viewModel.calculateVideoSize(videoSourceDimensions: StreamSource.Dimensions(width: streamSource.width, height: streamSource.height), frameWidth: w, frameHeight: h)
                     VideoRendererView(viewProvider: viewProvider)
                         .overlay(highlightedIndex == selectedSourceIndex ? Rectangle()
                             .stroke(
@@ -39,10 +39,12 @@ struct ListView: View {
                             ) : nil)
                         .frame(width: CGFloat(videoSize.width), height: CGFloat(videoSize.height))
                         .onAppear {
-                            StreamCoordinator.shared.playVideo(for: videoSource, quality: .auto)
+                            StreamCoordinator.shared.playAudio(for: streamSource)
+                            StreamCoordinator.shared.playVideo(for: streamSource, quality: .auto)
                         }
                         .onDisappear {
-                            StreamCoordinator.shared.stopVideo(for: videoSource)
+                            StreamCoordinator.shared.stopAudio(for: streamSource)
+                            StreamCoordinator.shared.stopVideo(for: streamSource)
                         }
                         .onTapGesture {
                             onSelectedSourceClick()
@@ -69,7 +71,7 @@ struct ListView: View {
                                                 StreamCoordinator.shared.playVideo(for: gridVideoSource, quality: .auto)
                                             }
                                             .onDisappear {
-                                                StreamCoordinator.shared.stopVideo(for: videoSource)
+                                                StreamCoordinator.shared.stopVideo(for: gridVideoSource)
                                             }
                                     }
                                 }
