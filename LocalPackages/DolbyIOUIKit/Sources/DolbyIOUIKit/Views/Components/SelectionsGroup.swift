@@ -89,12 +89,25 @@ public struct SelectionsGroup: View {
 struct SelectionsGroup_Previews: PreviewProvider {
 
     static var previews: some View {
-        SelectionsGroup(settings: .constant([
-            .init(key: "testA.localized.key", bundle: .module, selected: true),
-            .init(key: "testB.localized.key", bundle: .module, selected: false),
-            .init(key: "testC.localized.key", bundle: .module, selected: false)
-        ]), footer: "testD.localized.key", footerBundle: .module) { index in
-            print("index: \(index)")
+        VStack {
+            SelectionsGroup(settings: .constant([
+                .init(key: "testA.localized.key", bundle: .module, selected: true),
+                .init(key: "testB.localized.key", bundle: .module, selected: false),
+                .init(key: "testC.localized.key", bundle: .module, selected: false)
+            ]), footer: "testD.localized.key", footerBundle: .module) { index in
+                print("index: \(index)")
+            }
+
+            Spacer()
+
+            SelectionsGroup(settings: .constant([
+                .init(key: "testA.localized.key", bundle: .module, selected: true),
+                .init(key: "testB.localized.key", bundle: .module, selected: false),
+                .init(key: "testC.localized.key", bundle: .module, selected: false)
+            ]), footer: "testD.localized.key", footerBundle: .module) { index in
+                print("index: \(index)")
+            }
+            .environment(\.locale, .init(identifier: "fr"))
         }
     }
 }
