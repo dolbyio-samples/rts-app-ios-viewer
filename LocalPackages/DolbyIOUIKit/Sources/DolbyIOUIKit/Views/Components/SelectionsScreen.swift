@@ -9,16 +9,21 @@ public struct SelectionsScreen: View {
 
     @Binding var settings: [SelectionsGroup.Item]
     let footer: LocalizedStringKey?
+    let footerBundle: Bundle?
 
-    public init(settings: Binding<[SelectionsGroup.Item]>, footer: LocalizedStringKey?) {
+    public init(settings: Binding<[SelectionsGroup.Item]>,
+                footer: LocalizedStringKey?,
+                footerBundle: Bundle? = nil) {
         self._settings = settings
         self.footer = footer
+        self.footerBundle = footerBundle
     }
 
     public var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             SelectionsGroup(settings: $settings,
-                            footer: footer) { _ in
+                            footer: footer,
+            footerBundle: footerBundle) { _ in
                 presentationMode.wrappedValue.dismiss()
             }
                             .listStyle(.plain)
@@ -38,9 +43,9 @@ public struct SelectionsScreen: View {
 struct SelectionsScreen_Previews: PreviewProvider {
     static var previews: some View {
         SelectionsScreen(settings: .constant([
-            .init(key: "List view", selected: true),
-            .init(key: "Grid view", selected: false),
-            .init(key: "Single stream view", selected: false)
-        ]), footer: "LocalizedStringKey")
+            .init(key: "testA.localized.key", bundle: .module, selected: true),
+            .init(key: "testB.localized.key", bundle: .module, selected: false),
+            .init(key: "testC.localized.key", bundle: .module, selected: false)
+        ]), footer: "testD.localized.key", footerBundle: .module)
     }
 }

@@ -8,15 +8,20 @@ public struct SelectionsGroup: View {
 
     let actionOn: (Int) -> Void
     let footer: LocalizedStringKey?
+    let footerBundle: Bundle?
 
     @Binding var settings: [Item]
 
     public struct Item: Hashable {
-        public var key: LocalizedStringKey
+        public let key: LocalizedStringKey
+        public var bundle: Bundle?
         public var selected: Bool
 
-        public init(key: LocalizedStringKey, selected: Bool) {
+        public init(key: LocalizedStringKey,
+                    bundle: Bundle? = nil,
+                    selected: Bool) {
             self.key = key
+            self.bundle = bundle
             self.selected = selected
         }
 
@@ -27,10 +32,12 @@ public struct SelectionsGroup: View {
 
     public init(settings: Binding<[Item]>,
                 footer: LocalizedStringKey? = nil,
+                footerBundle: Bundle? = nil,
                 actionOn: @escaping ((Int) -> Void) = { _ in }
     ) {
         self._settings = settings
         self.footer = footer
+        self.footerBundle = footerBundle
         self.actionOn = actionOn
     }
 
@@ -47,6 +54,7 @@ public struct SelectionsGroup: View {
                         HStack {
                             Text(
                                 text: settings[index].key,
+                                bundle: settings[index].bundle,
                                 mode: .primary,
                                 fontAsset: .avenirNextBold(
                                     size: FontSize.settings,
@@ -65,6 +73,7 @@ public struct SelectionsGroup: View {
             } footer: {
                 if let footer = footer {
                     Text(text: footer,
+                         bundle: footerBundle,
                          mode: .primary,
                          fontAsset: .avenirNextRegular(
                              size: FontSize.caption1,
@@ -81,10 +90,10 @@ struct SelectionsGroup_Previews: PreviewProvider {
 
     static var previews: some View {
         SelectionsGroup(settings: .constant([
-                                .init(key: "List view", selected: true),
-                                .init(key: "Grid view", selected: false),
-                                .init(key: "Single stream view", selected: false)
-        ]), footer: "ABC") { index in
+            .init(key: "testA.localized.key", bundle: .module, selected: true),
+            .init(key: "testB.localized.key", bundle: .module, selected: false),
+            .init(key: "testC.localized.key", bundle: .module, selected: false)
+        ]), footer: "testD.localized.key", footerBundle: .module) { index in
             print("index: \(index)")
         }
     }

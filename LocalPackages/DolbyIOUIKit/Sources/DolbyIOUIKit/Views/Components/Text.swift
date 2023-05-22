@@ -13,17 +13,20 @@ public struct Text: View {
     }
 
     private let text: LocalizedStringKey
+    private let bundle: Bundle?
     private let mode: Mode
     private let font: Font
     private let textColor: Color?
 
     public init(
         text: LocalizedStringKey,
+        bundle: Bundle? = nil,
         mode: Mode = .primary,
         font: Font,
         textColor: Color? = nil
     ) {
         self.text = text
+        self.bundle = bundle
         self.mode = mode
         self.font = font
         self.textColor = textColor
@@ -31,11 +34,13 @@ public struct Text: View {
 
     public init(
         text: LocalizedStringKey,
+        bundle: Bundle? = nil,
         mode: Mode = .primary,
         fontAsset: FontAsset,
         textColor: Color? = nil
     ) {
         self.text = text
+        self.bundle = bundle
         self.mode = mode
         self.font = theme[fontAsset]
         self.textColor = textColor
@@ -45,7 +50,7 @@ public struct Text: View {
     private var theme: Theme = ThemeManager.shared.theme
 
     public var body: some View {
-        SwiftUI.Text(text)
+        SwiftUI.Text(text, bundle: bundle)
             .foregroundColor(_textColor)
             .font(font)
     }
@@ -70,11 +75,33 @@ private extension Text {
     }
 }
 
+extension Bundle {
+    func localizedString(forKey key: String) -> String {
+        self.localizedString(forKey: key, value: nil, table: nil)
+    }
+}
+
+extension String {
+    var localizedString: String {
+        Bundle.module.localizedString(forKey: self)
+    }
+}
+
 #if DEBUG
 struct Text_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             VStack {
+
+                Text(
+                    text: "testA.localized.key",
+                    bundle: .module,
+                    mode: .primary,
+                    fontAsset: .avenirNextRegular(
+                        size: FontSize.title1,
+                        style: .title
+                    )
+                )
 
                 Text(
                     text: "This is a regular text",
