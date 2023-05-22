@@ -38,12 +38,13 @@ struct ListView: View {
                     ScrollView {
                         LazyVGrid(columns: columns) {
                             ForEach(
-                                0..<viewModel.sources.count,
-                                id: \.self) { index in
+                                0..<viewModel.sources.count - 1,
+                                id: \.self) { i in
+                                    let index: Int = highlighted <= i ? i + 1 : i
                                     if let gridVideoSource = videoSourceFrom(index: index) {
                                         if let view = viewModel.streamCoordinator.subSourceViewProvider(for: gridVideoSource)?.playbackView {
                                             VideoRendererView(uiView: view)
-                                                .frame(width: CGFloat(videoSize.width / 2), height: CGFloat(videoSize.height / 2), alignment: Alignment.trailing)
+                                                .frame(width: CGFloat(videoSize.width / 2), height: CGFloat(videoSize.height / 2))
                                                 .onTapGesture {
                                                     onHighlighted(index)
                                                 }
