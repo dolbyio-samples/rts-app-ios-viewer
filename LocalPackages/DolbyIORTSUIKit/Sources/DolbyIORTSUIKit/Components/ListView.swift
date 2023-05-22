@@ -9,14 +9,16 @@ import DolbyIORTSCore
 struct ListView: View {
     private var viewModel: StreamViewModel
     private var highlighted: Int
-    private var onHighlighted: (Int) -> Void
+    private var onHighlightedChange: (Int) -> Void
+    private var onHighlightedClick: () -> Void
 
     let columns = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
 
-    init(viewModel: StreamViewModel, highlighted: Int, onHighlighted: @escaping (Int) -> Void) {
+    init(viewModel: StreamViewModel, highlighted: Int, onHighlightedChange: @escaping (Int) -> Void, onHighlightedClick: @escaping () -> Void) {
         self.viewModel = viewModel
         self.highlighted = highlighted
-        self.onHighlighted = onHighlighted
+        self.onHighlightedChange = onHighlightedChange
+        self.onHighlightedClick = onHighlightedClick
     }
 
     var body: some View {
@@ -34,6 +36,9 @@ struct ListView: View {
                         .onDisappear {
                             StreamCoordinator.shared.stopVideo(for: videoSource)
                         }
+                        .onTapGesture {
+                            onHighlightedClick()
+                        }
                     ScrollView {
                         LazyVGrid(columns: columns) {
                             ForEach(
@@ -45,7 +50,7 @@ struct ListView: View {
                                         VideoRendererView(viewProvider: viewProvider)
                                             .frame(width: CGFloat(videoSize.width / 2), height: CGFloat(videoSize.height / 2))
                                             .onTapGesture {
-                                                onHighlighted(index)
+                                                onHighlightedChange(index)
                                             }
                                             .onAppear {
                                                 StreamCoordinator.shared.playVideo(for: gridVideoSource, quality: .auto)

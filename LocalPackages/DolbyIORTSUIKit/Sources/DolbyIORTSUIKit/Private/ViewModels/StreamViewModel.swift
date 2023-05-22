@@ -12,6 +12,8 @@ final class StreamViewModel: ObservableObject {
 
     private var subscriptions: [AnyCancellable] = []
     @Published private(set) var sources: [StreamSource] = []
+    @Published private(set) var highlighted: Int = 0
+    @Published private(set) var mode: StreamViewMode = .list
 
     init(streamCoordinator: StreamCoordinator = .shared) {
         self.streamCoordinator = streamCoordinator
@@ -48,6 +50,19 @@ final class StreamViewModel: ObservableObject {
         return StreamSource.Dimensions(width: scaledWidth, height: scaledHeight)
     }
 
+    func highlightedChange(index: Int) {
+        highlighted = index
+    }
+
+    func highlightedClick() {
+        switch mode {
+        case .list:
+            mode = .single
+        case .single:
+            mode = .list
+        }
+    }
+
     private func calculateAspectRatio(crop: Bool, frameWidth: Float, frameHeight: Float, videoWidth: Float, videoHeight: Float) -> Float {
         guard videoWidth > 0, videoHeight > 0 else {
             return 0.0
@@ -79,5 +94,8 @@ final class StreamViewModel: ObservableObject {
         }
         return ratio
     }
+}
 
+enum StreamViewMode {
+    case single, list
 }

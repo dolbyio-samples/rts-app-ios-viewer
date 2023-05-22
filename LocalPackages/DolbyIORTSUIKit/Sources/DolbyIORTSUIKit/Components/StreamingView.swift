@@ -8,12 +8,13 @@ import DolbyIORTSCore
 public struct StreamingView: View {
     @StateObject private var viewModel: StreamViewModel = .init()
 
-    @State private var highlighted: Int = 0
-
     public init() {}
 
     public var body: some View {
-        ListView(viewModel: viewModel, highlighted: highlighted, onHighlighted: { index in highlighted = index })
+        switch viewModel.mode {
+        case .list, .single:
+            ListView(viewModel: viewModel, highlighted: viewModel.highlighted, onHighlightedChange: { index in viewModel.highlightedChange(index: index) }, onHighlightedClick: { viewModel.highlightedClick() })
+        }
     }
 }
 
