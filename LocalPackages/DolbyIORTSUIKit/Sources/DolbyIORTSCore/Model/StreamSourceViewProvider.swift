@@ -13,38 +13,28 @@ public protocol SourceViewProviding {
 }
 
 class StreamSourceViewProvider {
-//    let renderer: MCIosVideoRenderer
-    var renderer: MCIosVideoRenderer?
+    var renderer: MCIosVideoRenderer
     var view: UIView?
-    let track: MCVideoTrack
-//    init(renderer: MCIosVideoRenderer) {
-//        print("+++++++++++> renderer created: \(renderer)")
-//        self.renderer = renderer
-//    }
-    init(_ track: MCVideoTrack) {
-        self.track = track
+    init(renderer: MCIosVideoRenderer) {
+        self.renderer = renderer
     }
 }
 
 extension StreamSourceViewProvider: SourceViewProviding {
     var frameWidth: CGFloat {
-        CGFloat(renderer?.getWidth() ?? 0)
+        CGFloat(renderer.getWidth() )
     }
 
     var frameHeight: CGFloat {
-        CGFloat(renderer?.getHeight() ?? 0)
+        CGFloat(renderer.getHeight() )
     }
 
     var playbackView: UIView {
         if let view = self.view {
             return view
         } else {
-            let renderer = MCIosVideoRenderer()
-            track.add(renderer)
             let view: UIView = renderer.getView()
             self.view = view
-            self.renderer = renderer
-            print("+++++++++++> view created: \(view)")
             return view
         }
     }

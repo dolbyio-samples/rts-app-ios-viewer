@@ -24,37 +24,35 @@ struct ListView: View {
             VStack {
                 let w = Float(geometry.size.width)
                 let h = Float(geometry.size.height) / 3
-                if let videoSource = videoSourceFrom(index: highlighted) {
+                if let videoSource = videoSourceFrom(index: highlighted),
+                    let viewProvider = viewModel.streamCoordinator.mainSourceViewProvider(for: videoSource) {
                     let videoSize = viewModel.calculateVideoSize(videoSourceDimensions: StreamSource.Dimensions(width: videoSource.width, height: videoSource.height), frameWidth: w, frameHeight: h)
-                    if let view = viewModel.streamCoordinator.mainSourceViewProvider(for: videoSource)?.playbackView {
-                        VideoRendererView(uiView: view).frame(width: CGFloat(videoSize.width), height: CGFloat(videoSize.height))
-                            .onAppear {
-                                StreamCoordinator.shared.playVideo(for: videoSource, quality: .auto)
-                            }
-                            .onDisappear {
-                                StreamCoordinator.shared.stopVideo(for: videoSource)
-                            }
-                    }
+                    VideoRendererView(viewProvider: viewProvider).frame(width: CGFloat(videoSize.width), height: CGFloat(videoSize.height))
+                        .onAppear {
+                            StreamCoordinator.shared.playVideo(for: videoSource, quality: .auto)
+                        }
+                        .onDisappear {
+                            StreamCoordinator.shared.stopVideo(for: videoSource)
+                        }
                     ScrollView {
                         LazyVGrid(columns: columns) {
                             ForEach(
-                                0..<viewModel.sources.count - 1,
+                                0..<(viewModel.sources.count - 1),
                                 id: \.self) { i in
                                     let index: Int = highlighted <= i ? i + 1 : i
-                                    if let gridVideoSource = videoSourceFrom(index: index) {
-                                        if let view = viewModel.streamCoordinator.subSourceViewProvider(for: gridVideoSource)?.playbackView {
-                                            VideoRendererView(uiView: view)
-                                                .frame(width: CGFloat(videoSize.width / 2), height: CGFloat(videoSize.height / 2))
-                                                .onTapGesture {
-                                                    onHighlighted(index)
-                                                }
-                                                .onAppear {
-                                                    StreamCoordinator.shared.playVideo(for: gridVideoSource, quality: .auto)
-                                                }
-                                                .onDisappear {
-                                                    StreamCoordinator.shared.stopVideo(for: videoSource)
-                                                }
-                                        }
+                                    if let gridVideoSource = videoSourceFrom(index: index),
+                                        let viewProvider = viewModel.streamCoordinator.subSourceViewProvider(for: gridVideoSource) {
+                                        VideoRendererView(viewProvider: viewProvider)
+                                            .frame(width: CGFloat(videoSize.width / 2), height: CGFloat(videoSize.height / 2))
+                                            .onTapGesture {
+                                                onHighlighted(index)
+                                            }
+                                            .onAppear {
+                                                StreamCoordinator.shared.playVideo(for: gridVideoSource, quality: .auto)
+                                            }
+                                            .onDisappear {
+                                                StreamCoordinator.shared.stopVideo(for: videoSource)
+                                            }
                                     }
                                 }
                         }
