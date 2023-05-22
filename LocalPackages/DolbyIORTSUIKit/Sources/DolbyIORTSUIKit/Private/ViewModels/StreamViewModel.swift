@@ -12,7 +12,7 @@ final class StreamViewModel: ObservableObject {
 
     private var subscriptions: [AnyCancellable] = []
     @Published private(set) var sources: [StreamSource] = []
-    @Published private(set) var highlightedIndex: Int = 0
+    @Published private(set) var audioSelectedIndex: Int = 0
     @Published private(set) var selectedSourceIndex: Int = 0
     @Published private(set) var mode: StreamViewMode = .list
 

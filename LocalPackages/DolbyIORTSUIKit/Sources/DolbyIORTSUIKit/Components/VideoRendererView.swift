@@ -1,9 +1,8 @@
 //
-//  VideoRenderer.swift
+//  VideoRendererView.swift
 //
 
 import DolbyIORTSCore
-import Foundation
 import SwiftUI
 
 struct VideoRendererView: UIViewRepresentable {
