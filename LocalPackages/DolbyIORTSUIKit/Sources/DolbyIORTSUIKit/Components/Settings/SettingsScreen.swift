@@ -46,6 +46,13 @@ public struct SettingsScreen: View {
                 }
                 .hidden()
 
+            NavigationLink(
+                destination: LazyNavigationDestinationView(SettingsAudioSelectionScreen()),
+                isActive: $isShowingAudioSelectionScreen) {
+                    EmptyView()
+                }
+                .hidden()
+
             List {
                 Toggle("Show source labels", isOn: $isShowLabelsOn)
 
