@@ -13,7 +13,7 @@ public struct StreamingView: View {
     public var body: some View {
         switch viewModel.mode {
         case .list, .single:
-            ListView(viewModel: viewModel, highlighted: viewModel.highlighted, onHighlightedChange: { index in viewModel.highlightedChange(index: index) }, onHighlightedClick: { viewModel.highlightedClick() })
+            ListView(viewModel: viewModel, selectedSourceIndex: viewModel.selectedSourceIndex, onSelectedSourceIndexChange: { index in viewModel.selectedSourceIndexChange(index: index) }, onSelectedSourceClick: { viewModel.selectedSourceClick() })
         }
     }
 }

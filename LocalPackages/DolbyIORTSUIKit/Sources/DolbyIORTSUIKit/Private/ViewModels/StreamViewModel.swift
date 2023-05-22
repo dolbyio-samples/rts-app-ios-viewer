@@ -12,7 +12,7 @@ final class StreamViewModel: ObservableObject {
 
     private var subscriptions: [AnyCancellable] = []
     @Published private(set) var sources: [StreamSource] = []
-    @Published private(set) var highlighted: Int = 0
+    @Published private(set) var selectedSourceIndex: Int = 0
     @Published private(set) var mode: StreamViewMode = .list
 
     init(streamCoordinator: StreamCoordinator = .shared) {
@@ -50,11 +50,11 @@ final class StreamViewModel: ObservableObject {
         return StreamSource.Dimensions(width: scaledWidth, height: scaledHeight)
     }
 
-    func highlightedChange(index: Int) {
-        highlighted = index
+    func selectedSourceIndexChange(index: Int) {
+        selectedSourceIndex = index
     }
 
-    func highlightedClick() {
+    func selectedSourceClick() {
         switch mode {
         case .list:
             mode = .single
