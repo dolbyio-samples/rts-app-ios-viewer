@@ -5,6 +5,7 @@
 import Foundation
 import MillicastSDK
 import os
+import AVFAudio
 
 protocol SubscriptionManagerDelegate: AnyObject {
     func onSubscribed()
@@ -192,7 +193,10 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             return
         }
 
+        Utils.configureAudioSession()
         let projectionData = MCProjectionData()
+        audioTrack.track.enable(true)
+        audioTrack.track.setVolume(1)
         projectionData.media = audioTrack.trackInfo.mediaType.rawValue
         projectionData.mid = audioTrack.trackInfo.mid
         projectionData.trackId = audioTrack.trackInfo.trackType.rawValue
