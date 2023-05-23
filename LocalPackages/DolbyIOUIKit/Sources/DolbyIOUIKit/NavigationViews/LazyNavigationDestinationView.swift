@@ -4,14 +4,14 @@
 
 import SwiftUI
 
-struct LazyNavigationDestinationView<Content: View>: View {
+public struct LazyNavigationDestinationView<Content: View>: View {
     private let build: () -> Content
 
-    init(_ build: @autoclosure @escaping () -> Content) {
+    public init(_ build: @autoclosure @escaping () -> Content) {
         self.build = build
     }
 
-    var body: Content {
+    public var body: Content {
         build()
     }
 }
@@ -19,7 +19,7 @@ struct LazyNavigationDestinationView<Content: View>: View {
 #if DEBUG
 struct LazyNavigationDestinationView_Previews: PreviewProvider {
     static var previews: some View {
-        LazyNavigationDestinationView(Text("Hello world"))
+        LazyNavigationDestinationView(SwiftUI.Text("Hello world"))
     }
 }
 #endif

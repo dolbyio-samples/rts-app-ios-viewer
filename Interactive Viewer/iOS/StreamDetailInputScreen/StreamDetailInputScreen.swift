@@ -4,6 +4,7 @@
 
 import DolbyIOUIKit
 import DolbyIORTSCore
+import DolbyIORTSUIKit
 import SwiftUI
 
 struct StreamDetailInputScreen: View {
@@ -17,6 +18,10 @@ struct StreamDetailInputScreen: View {
     @State private var accountID: String = ""
     @State private var isShowingStreamingView = false
     @State private var showingAlert = false
+
+    @State private var isShowingSettingScreenView: Bool = false
+    @State var isShowLabelOn: Bool = false
+
     @FocusState private var inputFocus: InputFocusable?
 
     @StateObject private var viewModel: StreamDetailInputViewModel = .init()
@@ -27,6 +32,11 @@ struct StreamDetailInputScreen: View {
     var body: some View {
         ZStack {
             NavigationLink(destination: LazyNavigationDestinationView(StreamingScreen()), isActive: $isShowingStreamingView) {
+                EmptyView()
+            }
+            .hidden()
+
+            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen(mode: .global, isShowLableOn: $isShowLabelOn)), isActive: $isShowingSettingScreenView) {
                 EmptyView()
             }
             .hidden()
@@ -146,7 +156,7 @@ struct StreamDetailInputScreen: View {
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 IconButton(name: .settings, action: {
-                    // TODO: Open global settings menu
+                    isShowingSettingScreenView = true
                 }).scaleEffect(0.5, anchor: .trailing)
             }
 
