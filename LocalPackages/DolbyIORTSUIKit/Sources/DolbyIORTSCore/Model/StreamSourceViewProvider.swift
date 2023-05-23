@@ -22,20 +22,14 @@ class StreamSourceViewProvider {
 
 extension StreamSourceViewProvider: SourceViewProviding {
     var frameWidth: CGFloat {
-        CGFloat(renderer.getWidth() )
+        CGFloat(renderer.getWidth())
     }
 
     var frameHeight: CGFloat {
-        CGFloat(renderer.getHeight() )
+        CGFloat(renderer.getHeight())
     }
 
     var playbackView: UIView {
-        if let view = self.view {
-            return view
-        } else {
-            let view: UIView = renderer.getView()
-            self.view = view
-            return view
-        }
+        renderer.getView()
     }
 }

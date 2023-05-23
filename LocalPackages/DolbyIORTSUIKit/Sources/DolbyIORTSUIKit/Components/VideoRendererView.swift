@@ -32,7 +32,7 @@ private final class ContainerView<ChildView: UIView>: UIView {
     private var childView: ChildView?
 
     init() {
-        super.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        super.init(frame: CGRect(x: 0, y: 0, width: .zero, height: .zero))
     }
 
     required init?(coder: NSCoder) {

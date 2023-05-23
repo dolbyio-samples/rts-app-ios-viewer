@@ -13,7 +13,7 @@ final class StreamViewModel: ObservableObject {
     private var subscriptions: [AnyCancellable] = []
     @Published private(set) var sources: [StreamSource] = []
     @Published private(set) var audioSelectedIndex: Int = 0
-    @Published private(set) var selectedSourceIndex: Int = 0
+    @Published private(set) var videoSelectedIndex: Int = 0
     @Published private(set) var mode: StreamViewMode = .list
 
     init(streamCoordinator: StreamCoordinator = .shared) {
@@ -51,8 +51,8 @@ final class StreamViewModel: ObservableObject {
         return CGSize(width: CGFloat(scaledWidth), height: CGFloat(scaledHeight))
     }
 
-    func selectedSourceIndexChange(index: Int) {
-        selectedSourceIndex = index
+    func videoSelectedChange(index: Int) {
+        videoSelectedIndex = index
     }
 
     func selectedSourceClick() {

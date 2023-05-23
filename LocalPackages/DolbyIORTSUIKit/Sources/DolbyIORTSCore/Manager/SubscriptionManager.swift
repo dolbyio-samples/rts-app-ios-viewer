@@ -193,7 +193,7 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
             return
         }
 
-        Self.configureAudioSession(isSubscriber: true)
+        Utils.configureAudioSession()
         let projectionData = MCProjectionData()
         audioTrack.track.enable(true)
         audioTrack.track.setVolume(1)
@@ -202,24 +202,6 @@ final class SubscriptionManager: SubscriptionManagerProtocol {
         projectionData.trackId = audioTrack.trackInfo.trackType.rawValue
 
         subscriber.project(source.sourceId.value, withData: [projectionData])
-    }
-
-    private static func configureAudioSession(isSubscriber: Bool = false) {
-        let session = AVAudioSession.sharedInstance()
-        do {
-            #if os(iOS)
-            // For subscriber, we only need playback. Not recording is required.
-            try session.setCategory(isSubscriber ? .playback : .playAndRecord,
-                                    mode: .videoChat,
-                                    options: [.mixWithOthers])
-            #else
-            try session.setCategory(.playback, options: [.mixWithOthers])
-            #endif
-            try session.setActive(true)
-        } catch {
-            print("Failed audio session: \(error)")
-            return
-        }
     }
 
     func unprojectAudio(for source: StreamSource) {
