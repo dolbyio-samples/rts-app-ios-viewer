@@ -11,7 +11,15 @@ public struct StreamingView: View {
     public init() {}
 
     public var body: some View {
-        EmptyView()
+        switch viewModel.mode {
+        case .list, .single:
+            ListView(
+                viewModel: viewModel,
+                selectedAudioIndex: viewModel.audioSelectedIndex,
+                selectedVideoIndex: viewModel.videoSelectedIndex,
+                onSelectVideoSource: { index in viewModel.videoSelectedChange(index: index) },
+                onChangeOfViewMode: { viewModel.selectedSourceClick() })
+        }
     }
 }
 

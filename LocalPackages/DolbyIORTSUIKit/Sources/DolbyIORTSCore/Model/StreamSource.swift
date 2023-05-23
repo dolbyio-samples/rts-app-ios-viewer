@@ -108,4 +108,6 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     public let isPlayingVideo: Bool
     let audioTracks: [AudioTrackInfo]
     let videoTrack: VideoTrackInfo?
+    public let width: CGFloat
+    public let height: CGFloat
 }

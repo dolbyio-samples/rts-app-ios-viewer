@@ -12,8 +12,12 @@ public protocol SourceViewProviding {
     var frameHeight: CGFloat { get }
 }
 
-struct StreamSourceViewProvider {
-    let renderer: MCIosVideoRenderer
+class StreamSourceViewProvider {
+    var renderer: MCIosVideoRenderer
+    var view: UIView?
+    init(renderer: MCIosVideoRenderer) {
+        self.renderer = renderer
+    }
 }
 
 extension StreamSourceViewProvider: SourceViewProviding {
