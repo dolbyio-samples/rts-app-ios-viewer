@@ -31,6 +31,7 @@
 		6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61AA06299F51AC004CAF9E /* VideoView.swift */; };
 		6D62954929A2EE90001DD55A /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D62954829A2EE90001DD55A /* StatisticsView.swift */; };
 		6D6382B92977BCAE00DF4DA7 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */; };
+		B6376BC22A1C4120007AD9D9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6376BC12A1C4120007AD9D9 /* Constants.swift */; };
 		B696B5322987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		E8224313299B00E400F9BB15 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8224312299B00E400F9BB15 /* ContentView.swift */; };
@@ -216,6 +217,7 @@
 		6D61AA06299F51AC004CAF9E /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		6D62954829A2EE90001DD55A /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
+		B6376BC12A1C4120007AD9D9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = IDETemplateMacros.plist; path = RTSViewer.xcworkspace/xcshareddata/IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
 		E8224312299B00E400F9BB15 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -448,6 +450,7 @@
 				E83CD9E62A10878C008690FD /* SplashScreen */,
 				E83CD9E82A10878C008690FD /* Launch Screen.storyboard */,
 				E83CD9E92A10878C008690FD /* StreamingScreen */,
+				B6376BC12A1C4120007AD9D9 /* Constants.swift */,
 				E83CD9F12A10878C008690FD /* ContentView.swift */,
 				E83CD9F22A10878C008690FD /* Info.plist */,
 				E83CD9F32A10878C008690FD /* RecentStreams */,
@@ -1197,6 +1200,7 @@
 				E83CD9F92A10878C008690FD /* StreamDetailInputScreen.swift in Sources */,
 				E8816E0A2A1086E400064B1D /* DateProvider.swift in Sources */,
 				E83CDA3E2A10917A008690FD /* NavigationHeaderView.swift in Sources */,
+				B6376BC22A1C4120007AD9D9 /* Constants.swift in Sources */,
 				E83CDA0C2A10878C008690FD /* SavedStreamsScreen.swift in Sources */,
 				E83CD9FC2A10878C008690FD /* LandingView.swift in Sources */,
 				E8816E122A1086E400064B1D /* AnyGestureRecognizer.swift in Sources */,

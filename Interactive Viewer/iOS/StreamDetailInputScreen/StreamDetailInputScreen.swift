@@ -206,8 +206,8 @@ struct StreamDetailInputScreen: View {
             Spacer()
                 .frame(height: Layout.spacing2x)
 
-            let streamName = "multiview"
-            let accountID = "k9Mwad"
+            let streamName = Constants.streamName
+            let accountID = Constants.streamName
             RecentStreamCell(streamName: streamName, accountID: accountID) {
                 Task {
                     let success = await viewModel.connect(streamName: streamName, accountID: accountID)
