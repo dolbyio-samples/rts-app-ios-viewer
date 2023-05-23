@@ -16,6 +16,7 @@ public enum FontSize {
     public static let subtitle: CGFloat = 38.0
     public static let callout: CGFloat = 31
     public static let body: CGFloat = 29
+    public static let settings: CGFloat = 27.0
     public static let caption1: CGFloat = 25.0
     public static let caption2: CGFloat = 23.0
 #else

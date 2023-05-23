@@ -1,9 +1,10 @@
 //
-//  SettingsButton.swift
+//  SettingsCell.swift
 //
 
 import SwiftUI
 
+@available(tvOS, unavailable)
 public struct SettingsCell: View {
 
     public let action: (() -> Void)
@@ -73,6 +74,7 @@ public struct SettingsCell: View {
 }
 
 @available(iOS 16.0, *)
+@available(tvOS, unavailable)
 struct SettingsCell_Previews: PreviewProvider {
     static var previews: some View {
         List {

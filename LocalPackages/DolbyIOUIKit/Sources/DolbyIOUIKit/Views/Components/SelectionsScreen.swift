@@ -4,6 +4,7 @@
 
 import SwiftUI
 
+@available(tvOS, unavailable)
 public struct SelectionsScreen: View {
     @Environment(\.presentationMode) var presentationMode
 
@@ -40,6 +41,7 @@ public struct SelectionsScreen: View {
     }
 }
 
+@available(tvOS, unavailable)
 struct SelectionsScreen_Previews: PreviewProvider {
     static var previews: some View {
         SelectionsScreen(settings: .constant([
