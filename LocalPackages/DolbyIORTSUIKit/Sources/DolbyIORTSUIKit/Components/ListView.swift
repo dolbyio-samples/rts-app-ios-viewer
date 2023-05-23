@@ -29,7 +29,7 @@ struct ListView: View {
                 let h = Float(geometry.size.height) / 3
                 if let streamSource = videoSourceFrom(index: selectedSourceIndex),
                    let viewProvider = viewModel.streamCoordinator.mainSourceViewProvider(for: streamSource) {
-                    let videoSize = viewModel.calculateVideoSize(videoSourceDimensions: StreamSource.Dimensions(width: streamSource.width, height: streamSource.height), frameWidth: w, frameHeight: h)
+                    let videoSize = viewModel.calculateVideoSize(videoSourceDimensions: CGSize(width: streamSource.width, height: streamSource.height), frameWidth: w, frameHeight: h)
                     VideoRendererView(viewProvider: viewProvider)
                         .overlay(highlightedIndex == selectedSourceIndex ? Rectangle()
                             .stroke(

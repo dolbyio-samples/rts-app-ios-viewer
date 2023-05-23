@@ -37,18 +37,18 @@ final class StreamViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
-    func calculateVideoSize(videoSourceDimensions: StreamSource.Dimensions, frameWidth: Float, frameHeight: Float) -> StreamSource.Dimensions {
+    func calculateVideoSize(videoSourceDimensions: CGSize, frameWidth: Float, frameHeight: Float) -> CGSize {
         let ratio = calculateAspectRatio(
             crop: false,
             frameWidth: frameWidth,
             frameHeight: frameHeight,
-            videoWidth: videoSourceDimensions.width,
-            videoHeight: videoSourceDimensions.height
+            videoWidth: Float(videoSourceDimensions.width),
+            videoHeight: Float(videoSourceDimensions.height)
         )
 
-        let scaledWidth = videoSourceDimensions.width * ratio
-        let scaledHeight = videoSourceDimensions.height * ratio
-        return StreamSource.Dimensions(width: scaledWidth, height: scaledHeight)
+        let scaledWidth = Float(videoSourceDimensions.width) * ratio
+        let scaledHeight = Float(videoSourceDimensions.height) * ratio
+        return CGSize(width: CGFloat(scaledWidth), height: CGFloat(scaledHeight))
     }
 
     func selectedSourceIndexChange(index: Int) {

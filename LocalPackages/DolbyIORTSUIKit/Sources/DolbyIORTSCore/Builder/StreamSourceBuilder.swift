@@ -43,7 +43,7 @@ final class StreamSourceBuilder {
     private(set) var preferredVideoQuality: StreamSource.VideoQuality = .auto
     private(set) var isPlayingAudio = false
     private(set) var isPlayingVideo = false
-    private(set) var dimensions: StreamSource.Dimensions = StreamSource.Dimensions(width: 533, height: 300)
+    private(set) var dimensions: CGSize = CGSize(width: 533, height: 300)
 
     init(streamId: String, sourceId: String?, tracks: [String]) {
         identifier = UUID()
@@ -106,8 +106,8 @@ final class StreamSourceBuilder {
         isPlayingVideo = enable
     }
 
-    func setDimensions(width: Float, height: Float) {
-        dimensions = StreamSource.Dimensions(width: width, height: height)
+    func setDimensions(width: CGFloat, height: CGFloat) {
+        dimensions = CGSize(width: width, height: height)
     }
 
     func build() throws -> StreamSource {
