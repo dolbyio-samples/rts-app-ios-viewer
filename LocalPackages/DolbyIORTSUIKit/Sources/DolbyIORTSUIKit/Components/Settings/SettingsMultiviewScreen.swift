@@ -5,7 +5,7 @@
 import SwiftUI
 import DolbyIOUIKit
 
-public struct SettingsMultiviewScreen: View {
+struct SettingsMultiviewScreen: View {
     @Environment(\.presentationMode) var presentationMode
 
     @State var settings: [SelectionsGroup.Item] = [
@@ -14,7 +14,7 @@ public struct SettingsMultiviewScreen: View {
         .init(key: "default-multi-view-layout.single-stream-view.label", bundle: .module, selected: false)
     ]
 
-    public var body: some View {
+    var body: some View {
         SelectionsScreen(settings: $settings,
                          footer: "default-multi-view-layout.footer.label",
                          footerBundle: .module)
