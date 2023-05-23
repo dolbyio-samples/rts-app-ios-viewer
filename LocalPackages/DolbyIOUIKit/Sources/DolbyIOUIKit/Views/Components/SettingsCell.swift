@@ -10,15 +10,14 @@ public struct SettingsCell: View {
     public let action: (() -> Void)
     public let text: LocalizedStringKey?
     public let textColor: Color
+    public var value: LocalizedStringKey?
     public let valueColor: Color
     public let bundle: Bundle?
     public let image: ImageAsset?
 
-    @Binding public var value: LocalizedStringKey?
-
     public init(text: LocalizedStringKey? = nil,
                 textColor: Color = .black,
-                value: Binding<LocalizedStringKey?> = .constant(nil),
+                value: LocalizedStringKey? = nil,
                 valueColor: Color = .gray,
                 image: ImageAsset? = nil,
                 bundle: Bundle? = nil,
@@ -26,7 +25,7 @@ public struct SettingsCell: View {
     ) {
         self.text = text
         self.textColor = textColor
-        self._value = value
+        self.value = value
         self.valueColor = valueColor
         self.image = image
         self.bundle = bundle
@@ -43,7 +42,7 @@ public struct SettingsCell: View {
                         bundle: bundle,
                         mode: .primary,
                         fontAsset: .avenirNextRegular(
-                            size: FontSize.settings,
+                            size: CGFloat(14.0),
                             style: .body
                         ),
                         textColor: textColor
@@ -58,7 +57,7 @@ public struct SettingsCell: View {
                         bundle: bundle,
                         mode: .primary,
                         fontAsset: .avenirNextRegular(
-                            size: FontSize.settings,
+                            size: CGFloat(14.0),
                             style: .body
                         ),
                         textColor: valueColor
@@ -80,7 +79,7 @@ struct SettingsCell_Previews: PreviewProvider {
         List {
             Section {
                 SettingsCell(text: "testA.localized.key",
-                             value: .constant("Connection order"),
+                             value: "Connection order",
                              image: .arrowRight,
                              bundle: .module,
                              action: {}
@@ -88,7 +87,7 @@ struct SettingsCell_Previews: PreviewProvider {
                 .listRowSeparator(.visible)
 
                 SettingsCell(text: "Audio selection",
-                             value: .constant("First source"),
+                             value: "First source",
                              image: .textLink,
                              action: {}
                 ).listRowSeparator(.visible)

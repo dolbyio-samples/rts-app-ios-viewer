@@ -75,18 +75,6 @@ private extension Text {
     }
 }
 
-extension Bundle {
-    func localizedString(forKey key: String) -> String {
-        self.localizedString(forKey: key, value: nil, table: nil)
-    }
-}
-
-extension String {
-    var localizedString: String {
-        Bundle.module.localizedString(forKey: self)
-    }
-}
-
 #if DEBUG
 struct Text_Previews: PreviewProvider {
     static var previews: some View {

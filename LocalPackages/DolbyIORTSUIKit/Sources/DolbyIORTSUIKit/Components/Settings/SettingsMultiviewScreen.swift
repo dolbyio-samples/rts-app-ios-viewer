@@ -6,7 +6,6 @@ import SwiftUI
 import DolbyIOUIKit
 
 struct SettingsMultiviewScreen: View {
-    @Environment(\.presentationMode) var presentationMode
 
     @State var settings: [SelectionsGroup.Item] = [
         .init(key: "default-multi-view-layout.list-view.label", bundle: .module, selected: true),

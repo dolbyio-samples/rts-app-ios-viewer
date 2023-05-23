@@ -6,7 +6,6 @@ import SwiftUI
 import DolbyIOUIKit
 
 struct SettingsAudioSelectionScreen: View {
-    @Environment(\.presentationMode) var presentationMode
 
     @State var globalAudioSelections: [SelectionsGroup.Item] = [
         .init(key: "audio-selection.first-source.label", bundle: .module, selected: true),

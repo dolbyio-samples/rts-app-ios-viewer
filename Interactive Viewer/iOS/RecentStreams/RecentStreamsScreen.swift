@@ -15,8 +15,8 @@ struct RecentStreamsScreen: View {
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingStreamingView: Bool = false
 
-    @State private var isSettingScreenView: Bool = false
-    @State var isShowLableOn: Bool = false
+    @State private var isShowingSettingScreenView: Bool = false
+    @State var isShowLabelOn: Bool = false
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -46,9 +46,9 @@ struct RecentStreamsScreen: View {
             NavigationLink(
                 destination: LazyNavigationDestinationView(SettingsScreen(
                     mode: .global,
-                    isShowLableOn: $isShowLableOn
+                    isShowLableOn: $isShowLabelOn
                 )),
-                isActive: $isSettingScreenView) {
+                isActive: $isShowingSettingScreenView) {
                     EmptyView()
                 }
                 .hidden()
@@ -155,7 +155,7 @@ struct RecentStreamsScreen: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     IconButton(name: .settings, action: {
-                        isSettingScreenView = true
+                        isShowingSettingScreenView = true
                     }).scaleEffect(0.5, anchor: .trailing)
                 }
 

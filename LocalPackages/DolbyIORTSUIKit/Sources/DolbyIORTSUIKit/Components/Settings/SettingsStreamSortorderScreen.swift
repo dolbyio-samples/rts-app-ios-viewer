@@ -6,7 +6,6 @@ import SwiftUI
 import DolbyIOUIKit
 
 struct SettingsStreamSortorderScreen: View {
-    @Environment(\.presentationMode) var presentationMode
 
     @State var settings: [SelectionsGroup.Item] = [
         .init(key: "stream-sort-order.connection-order.label", bundle: .module, selected: true),

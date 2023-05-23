@@ -24,7 +24,7 @@ public struct SelectionsScreen: View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             SelectionsGroup(settings: $settings,
                             footer: footer,
-                            footerBundle: footerBundle) { _ in
+                            bundle: footerBundle) { _ in
                 presentationMode.wrappedValue.dismiss()
             }
                             .listStyle(.plain)

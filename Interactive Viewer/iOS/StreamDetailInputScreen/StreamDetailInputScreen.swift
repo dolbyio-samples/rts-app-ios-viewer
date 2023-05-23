@@ -19,8 +19,8 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingStreamingView = false
     @State private var showingAlert = false
 
-    @State private var isSettingScreenView: Bool = false
-    @State var isShowLableOn: Bool = false
+    @State private var isShowingSettingScreenView: Bool = false
+    @State var isShowLabelOn: Bool = false
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -36,7 +36,7 @@ struct StreamDetailInputScreen: View {
             }
             .hidden()
 
-            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen(mode: .global, isShowLableOn: $isShowLableOn)), isActive: $isSettingScreenView) {
+            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen(mode: .global, isShowLableOn: $isShowLabelOn)), isActive: $isShowingSettingScreenView) {
                 EmptyView()
             }
             .hidden()
@@ -156,7 +156,7 @@ struct StreamDetailInputScreen: View {
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 IconButton(name: .settings, action: {
-                    isSettingScreenView = true
+                    isShowingSettingScreenView = true
                 }).scaleEffect(0.5, anchor: .trailing)
             }
 

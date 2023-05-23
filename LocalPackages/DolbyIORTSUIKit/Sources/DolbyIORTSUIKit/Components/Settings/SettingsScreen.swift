@@ -13,7 +13,7 @@ public struct SettingsScreen: View {
     @Binding public var isShowLabelsOn: Bool
 
     @State private var isShowingMultiviewScreen: Bool = false
-    @State private var isShowingStreamSortorderScreen: Bool = false
+    @State private var isShowingStreamSortOrderScreen: Bool = false
     @State private var isShowingAudioSelectionScreen: Bool = false
 
     public enum Mode {
@@ -41,7 +41,7 @@ public struct SettingsScreen: View {
 
             NavigationLink(
                 destination: LazyNavigationDestinationView(SettingsStreamSortorderScreen()),
-                isActive: $isShowingStreamSortorderScreen) {
+                isActive: $isShowingStreamSortOrderScreen) {
                     EmptyView()
                 }
                 .hidden()
@@ -58,7 +58,7 @@ public struct SettingsScreen: View {
 
                 SettingsCell(text: "settings.default-multiview-layout.label",
                              textColor: .white,
-                             value: .constant("List view"),
+                             value: "List view",
                              valueColor: .gray,
                              image: .textLink,
                              bundle: .module,
@@ -67,15 +67,15 @@ public struct SettingsScreen: View {
 
                 SettingsCell(text: "settings.stream-sort-order.label",
                              textColor: .white,
-                             value: .constant("Connection order"),
+                             value: "Connection order",
                              image: .textLink,
                              bundle: .module,
-                             action: { isShowingStreamSortorderScreen = true }
+                             action: { isShowingStreamSortOrderScreen = true }
                 )
 
                 SettingsCell(text: "settings.audio-selection.label",
                              textColor: .white,
-                             value: .constant("First source"),
+                             value: "First source",
                              image: .textLink,
                              bundle: .module,
                              action: { isShowingAudioSelectionScreen = true }

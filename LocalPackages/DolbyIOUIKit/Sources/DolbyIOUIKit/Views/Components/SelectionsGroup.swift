@@ -4,11 +4,12 @@
 
 import SwiftUI
 
+@available(tvOS, unavailable)
 public struct SelectionsGroup: View {
 
-    let actionOn: (Int) -> Void
+    let onSelection: (Int) -> Void
     let footer: LocalizedStringKey?
-    let footerBundle: Bundle?
+    let bundle: Bundle?
 
     @Binding var settings: [Item]
 
@@ -32,13 +33,13 @@ public struct SelectionsGroup: View {
 
     public init(settings: Binding<[Item]>,
                 footer: LocalizedStringKey? = nil,
-                footerBundle: Bundle? = nil,
-                actionOn: @escaping ((Int) -> Void) = { _ in }
+                bundle: Bundle? = nil,
+                onSelection: @escaping ((Int) -> Void) = { _ in }
     ) {
         self._settings = settings
         self.footer = footer
-        self.footerBundle = footerBundle
-        self.actionOn = actionOn
+        self.bundle = bundle
+        self.onSelection = onSelection
     }
 
     public var body: some View {
@@ -49,7 +50,7 @@ public struct SelectionsGroup: View {
                         settings.indices.forEach { i in
                             settings[i].selected = (index == i) ? true : false
                         }
-                        actionOn(index)
+                        onSelection(index)
                     }) {
                         HStack {
                             Text(
@@ -57,7 +58,7 @@ public struct SelectionsGroup: View {
                                 bundle: settings[index].bundle,
                                 mode: .primary,
                                 fontAsset: .avenirNextBold(
-                                    size: FontSize.settings,
+                                    size: CGFloat(14.0),
                                     style: .body
                                 )
                             )
@@ -73,7 +74,7 @@ public struct SelectionsGroup: View {
             } footer: {
                 if let footer = footer {
                     Text(text: footer,
-                         bundle: footerBundle,
+                         bundle: bundle,
                          mode: .primary,
                          fontAsset: .avenirNextRegular(
                              size: FontSize.caption1,
@@ -86,6 +87,7 @@ public struct SelectionsGroup: View {
     }
 }
 
+@available(tvOS, unavailable)
 struct SelectionsGroup_Previews: PreviewProvider {
 
     static var previews: some View {
@@ -94,7 +96,7 @@ struct SelectionsGroup_Previews: PreviewProvider {
                 .init(key: "testA.localized.key", bundle: .module, selected: true),
                 .init(key: "testB.localized.key", bundle: .module, selected: false),
                 .init(key: "testC.localized.key", bundle: .module, selected: false)
-            ]), footer: "testD.localized.key", footerBundle: .module) { index in
+            ]), footer: "testD.localized.key", bundle: .module) { index in
                 print("index: \(index)")
             }
 
@@ -104,7 +106,7 @@ struct SelectionsGroup_Previews: PreviewProvider {
                 .init(key: "testA.localized.key", bundle: .module, selected: true),
                 .init(key: "testB.localized.key", bundle: .module, selected: false),
                 .init(key: "testC.localized.key", bundle: .module, selected: false)
-            ]), footer: "testD.localized.key", footerBundle: .module) { index in
+            ]), footer: "testD.localized.key", bundle: .module) { index in
                 print("index: \(index)")
             }
             .environment(\.locale, .init(identifier: "fr"))
