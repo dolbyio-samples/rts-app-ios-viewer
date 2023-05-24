@@ -7,30 +7,35 @@ import DolbyIORTSUIKit
 import SwiftUI
 
 struct RecentStreamsScreen: View {
+
     @StateObject private var viewModel: RecentStreamsViewModel = .init()
+
+    @ObservedObject private var globalSettingsViewModel: StreamSettingsViewModel
 
     private let theme = ThemeManager.shared.theme
 
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingStreamingView: Bool = false
-
     @State private var isShowingSettingScreenView: Bool = false
-    @State var isShowLabelOn: Bool = false
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    init(_ globalSettingsViewModel: StreamSettingsViewModel) {
+        self.globalSettingsViewModel = globalSettingsViewModel
+    }
 
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             NavigationLink(
-                destination: LazyNavigationDestinationView(StreamDetailInputScreen()),
+                destination: LazyNavigationDestinationView(StreamDetailInputScreen(globalSettingsViewModel)),
                 isActive: $isShowingStreamInputView) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SavedStreamsScreen(viewModel: viewModel)),
+                destination: LazyNavigationDestinationView(SavedStreamsScreen(viewModel, globalSettingsViewModel: globalSettingsViewModel)),
                 isActive: $isShowingFullStreamHistoryView) {
                     EmptyView()
                 }
@@ -46,8 +51,8 @@ struct RecentStreamsScreen: View {
             NavigationLink(
                 destination: LazyNavigationDestinationView(SettingsScreen(
                     mode: .global,
-                    isShowLableOn: $isShowLabelOn
-                )),
+                    viewModel: globalSettingsViewModel)
+                ),
                 isActive: $isShowingSettingScreenView) {
                     EmptyView()
                 }
@@ -173,7 +178,7 @@ struct RecentStreamsScreen: View {
 #if DEBUG
 struct RecentStreamsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamsScreen()
+        RecentStreamsScreen(StreamSettingsViewModel())
     }
 }
 #endif

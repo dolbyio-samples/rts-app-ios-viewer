@@ -10,7 +10,7 @@ public struct SettingsScreen: View {
     @Environment(\.presentationMode) var presentationMode
 
     public let title: LocalizedStringKey
-    @Binding public var isShowLabelsOn: Bool
+    @ObservedObject private var viewModel: StreamSettingsViewModel
 
     @State private var isShowingMultiviewScreen: Bool = false
     @State private var isShowingStreamSortOrderScreen: Bool = false
@@ -22,43 +22,46 @@ public struct SettingsScreen: View {
     }
 
     public init(mode: Mode = .stream,
-                isShowLableOn: Binding<Bool>) {
+                viewModel: StreamSettingsViewModel) {
         switch mode {
         case .global: title = "settings.global.title.label"
         default: title = "settings.stream.title.label"
         }
-        self._isShowLabelsOn = isShowLableOn
+        self.viewModel = viewModel
     }
 
     public var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsMultiviewScreen()),
+                destination: LazyNavigationDestinationView(SettingsMultiviewScreen(viewModel)),
                 isActive: $isShowingMultiviewScreen) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsStreamSortorderScreen()),
+                destination: LazyNavigationDestinationView(SettingsStreamSortorderScreen(viewModel)),
                 isActive: $isShowingStreamSortOrderScreen) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsAudioSelectionScreen()),
+                destination: LazyNavigationDestinationView(SettingsAudioSelectionScreen(viewModel)),
                 isActive: $isShowingAudioSelectionScreen) {
                     EmptyView()
                 }
                 .hidden()
 
             List {
-                Toggle("Show source labels", isOn: $isShowLabelsOn)
+                Toggle("Show source labels", isOn: Binding<Bool>(
+                    get: { viewModel.showSourceLabels },
+                    set: { viewModel.setShowSourceLabels($0) })
+                )
 
                 SettingsCell(text: "settings.default-multiview-layout.label",
                              textColor: .white,
-                             value: "List view",
+                             value: .init(viewModel.multiviewLayout.rawValue),
                              valueColor: .gray,
                              image: .textLink,
                              bundle: .module,
@@ -67,7 +70,7 @@ public struct SettingsScreen: View {
 
                 SettingsCell(text: "settings.stream-sort-order.label",
                              textColor: .white,
-                             value: "Connection order",
+                             value: .init(viewModel.streamSortOrder.rawValue),
                              image: .textLink,
                              bundle: .module,
                              action: { isShowingStreamSortOrderScreen = true }
@@ -75,7 +78,7 @@ public struct SettingsScreen: View {
 
                 SettingsCell(text: "settings.audio-selection.label",
                              textColor: .white,
-                             value: "First source",
+                             value: .init(viewModel.audioSelection.name),
                              image: .textLink,
                              bundle: .module,
                              action: { isShowingAudioSelectionScreen = true }
@@ -102,7 +105,7 @@ public struct SettingsScreen: View {
 struct SettingsScreen_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SettingsScreen(isShowLableOn: .constant(false))
+            SettingsScreen(viewModel: .init())
         }
     }
 }

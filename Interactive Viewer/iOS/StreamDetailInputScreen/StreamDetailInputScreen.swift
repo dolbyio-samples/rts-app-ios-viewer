@@ -26,8 +26,14 @@ struct StreamDetailInputScreen: View {
 
     @StateObject private var viewModel: StreamDetailInputViewModel = .init()
 
+    @ObservedObject private var globalSettingsViewModel: StreamSettingsViewModel
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
+
+    init(_ globalSettingsViewModel: StreamSettingsViewModel) {
+        self.globalSettingsViewModel = globalSettingsViewModel
+    }
 
     var body: some View {
         ZStack {
@@ -36,7 +42,8 @@ struct StreamDetailInputScreen: View {
             }
             .hidden()
 
-            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen(mode: .global, isShowLableOn: $isShowLabelOn)), isActive: $isShowingSettingScreenView) {
+            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen(mode: .global, viewModel: globalSettingsViewModel)),
+                           isActive: $isShowingSettingScreenView) {
                 EmptyView()
             }
             .hidden()
@@ -222,6 +229,6 @@ struct StreamDetailInputScreen: View {
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputScreen()
+        StreamDetailInputScreen(.init())
     }
 }

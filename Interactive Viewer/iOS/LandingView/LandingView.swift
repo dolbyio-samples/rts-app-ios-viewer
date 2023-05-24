@@ -3,18 +3,20 @@
 //
 
 import SwiftUI
+import DolbyIORTSUIKit
 
 struct LandingView: View {
+
     @StateObject private var viewModel: LandingViewModel = .init()
-    @State private var isShowingStreamInputView = false
+    @StateObject private var globalSettingsViewModel: StreamSettingsViewModel = .init()
     @EnvironmentObject private var appState: AppState
 
     var body: some View {
         ZStack {
             if viewModel.hasSavedStreams {
-                RecentStreamsScreen()
+                RecentStreamsScreen(globalSettingsViewModel)
             } else {
-                StreamDetailInputScreen()
+                StreamDetailInputScreen(globalSettingsViewModel)
             }
         }
         .layoutPriority(1)

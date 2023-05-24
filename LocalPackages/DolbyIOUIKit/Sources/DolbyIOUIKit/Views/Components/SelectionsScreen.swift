@@ -11,20 +11,24 @@ public struct SelectionsScreen: View {
     @Binding var settings: [SelectionsGroup.Item]
     let footer: LocalizedStringKey?
     let footerBundle: Bundle?
+    let onSelection: ((Int) -> Void)?
 
     public init(settings: Binding<[SelectionsGroup.Item]>,
                 footer: LocalizedStringKey?,
-                footerBundle: Bundle? = nil) {
+                footerBundle: Bundle? = nil,
+                onSelection: ((Int) -> Void)? = nil) {
         self._settings = settings
         self.footer = footer
         self.footerBundle = footerBundle
+        self.onSelection = onSelection
     }
 
     public var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             SelectionsGroup(settings: $settings,
                             footer: footer,
-                            bundle: footerBundle) { _ in
+                            bundle: footerBundle) { index in
+                onSelection?(index)
                 presentationMode.wrappedValue.dismiss()
             }
                             .listStyle(.plain)
