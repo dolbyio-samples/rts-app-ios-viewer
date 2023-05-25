@@ -22,22 +22,22 @@ final public class StreamSettingsViewModel: ObservableObject {
         self.audioSelection = settings.audioSelection
     }
 
-    public func setShowSourceLabels(_ showSourceLabels: Bool) {
+    func setShowSourceLabels(_ showSourceLabels: Bool) {
         self.showSourceLabels = showSourceLabels
         settings.showSourceLabels = showSourceLabels
     }
 
-    public func setMultiviewLayout(_ multiviewLayout: StreamSettings.MultiviewLayout) {
+    func setMultiviewLayout(_ multiviewLayout: StreamSettings.MultiviewLayout) {
         self.multiviewLayout = multiviewLayout
         settings.multiviewLayout = multiviewLayout
     }
 
-    public func setStreamSortOrder(_ streamSortOrder: StreamSettings.StreamSortOrder) {
+    func setStreamSortOrder(_ streamSortOrder: StreamSettings.StreamSortOrder) {
         self.streamSortOrder = streamSortOrder
         settings.streamSortOrder = streamSortOrder
     }
 
-    public func setAudioSelection(_ audioSelection: StreamSettings.AudioSelection) {
+    func setAudioSelection(_ audioSelection: StreamSettings.AudioSelection) {
         self.audioSelection = audioSelection
         settings.audioSelection = audioSelection
     }

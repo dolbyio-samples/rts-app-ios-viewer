@@ -11,8 +11,6 @@ struct RecentStreamsScreen: View {
 
     @StateObject private var viewModel: RecentStreamsViewModel = .init()
 
-    @EnvironmentObject private var globalSettingsViewModel: StreamSettingsViewModel
-
     private let theme = ThemeManager.shared.theme
 
     @State private var isShowingStreamInputView: Bool = false
@@ -46,10 +44,7 @@ struct RecentStreamsScreen: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsScreen(
-                    mode: .global,
-                    viewModel: globalSettingsViewModel)
-                ),
+                destination: LazyNavigationDestinationView(SettingsScreen()),
                 isActive: $isShowingSettingScreenView) {
                     EmptyView()
                 }
@@ -175,9 +170,7 @@ struct RecentStreamsScreen: View {
 #if DEBUG
 struct RecentStreamsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        ScrollView {
-            RecentStreamsScreen()
-        }.environmentObject(StreamSettingsViewModel(settings: GlobalStreamSettings()))
+        RecentStreamsScreen()
     }
 }
 #endif

@@ -10,25 +10,21 @@ public struct SettingsScreen: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    public let title: LocalizedStringKey
+    let title: LocalizedStringKey
     @ObservedObject private var viewModel: StreamSettingsViewModel
 
     @State private var isShowingMultiviewScreen: Bool = false
     @State private var isShowingStreamSortOrderScreen: Bool = false
     @State private var isShowingAudioSelectionScreen: Bool = false
 
-    public enum Mode {
-        case global
-        case stream
-    }
-
-    public init(mode: Mode = .stream,
-                viewModel: StreamSettingsViewModel) {
-        switch mode {
-        case .global: title = "settings.global.title.label"
-        default: title = "settings.stream.title.label"
+    public init(viewModel: StreamSettingsViewModel? = nil) {
+        if let viewModel = viewModel {
+            title = "settings.stream.title.label"
+            self.viewModel = viewModel
+        } else {
+            title = "settings.global.title.label"
+            self.viewModel = StreamSettingsViewModel(settings: GlobalStreamSettings())
         }
-        self.viewModel = viewModel
     }
 
     public var body: some View {

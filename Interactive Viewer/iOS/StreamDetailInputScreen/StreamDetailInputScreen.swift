@@ -26,8 +26,6 @@ struct StreamDetailInputScreen: View {
 
     @StateObject private var viewModel: StreamDetailInputViewModel = .init()
 
-    @EnvironmentObject private var globalSettingsViewModel: StreamSettingsViewModel
-
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
 
@@ -38,7 +36,7 @@ struct StreamDetailInputScreen: View {
             }
             .hidden()
 
-            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen(mode: .global, viewModel: globalSettingsViewModel)),
+            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen()),
                            isActive: $isShowingSettingScreenView) {
                 EmptyView()
             }
@@ -225,9 +223,6 @@ struct StreamDetailInputScreen: View {
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        ScrollView {
-            StreamDetailInputScreen()
-        }
-        .environmentObject(StreamSettingsViewModel(settings: GlobalStreamSettings()))
+        StreamDetailInputScreen()
     }
 }
