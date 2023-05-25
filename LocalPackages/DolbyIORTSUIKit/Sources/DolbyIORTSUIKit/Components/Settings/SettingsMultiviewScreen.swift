@@ -46,6 +46,6 @@ struct SettingsMultiviewScreen: View {
 
 struct SettingsMultiviewScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsMultiviewScreen(.init())
+        SettingsMultiviewScreen(.init(settings: StreamSettings()))
     }
 }

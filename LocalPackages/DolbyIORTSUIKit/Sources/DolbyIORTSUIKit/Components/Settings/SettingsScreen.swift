@@ -3,6 +3,7 @@
 //
 
 import SwiftUI
+import DolbyIORTSCore
 import DolbyIOUIKit
 
 public struct SettingsScreen: View {
@@ -105,7 +106,7 @@ public struct SettingsScreen: View {
 struct SettingsScreen_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SettingsScreen(viewModel: .init())
+            SettingsScreen(viewModel: .init(settings: StreamSettings()))
         }
     }
 }

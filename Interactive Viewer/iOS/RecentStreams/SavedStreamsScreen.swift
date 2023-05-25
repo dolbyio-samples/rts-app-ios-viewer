@@ -3,6 +3,7 @@
 //
 
 import DolbyIOUIKit
+import DolbyIORTSCore
 import DolbyIORTSUIKit
 import SwiftUI
 
@@ -196,6 +197,6 @@ struct SavedStreamsScreen: View {
 
 struct SavedStreamsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SavedStreamsScreen(.init(), globalSettingsViewModel: .init())
+        SavedStreamsScreen(.init(), globalSettingsViewModel: .init(settings: StreamSettings()))
     }
 }

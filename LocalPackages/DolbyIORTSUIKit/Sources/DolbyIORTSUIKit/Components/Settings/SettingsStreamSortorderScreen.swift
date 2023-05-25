@@ -41,6 +41,6 @@ struct SettingsStreamSortorderScreen: View {
 
 struct SettingsStreamSortorderScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsStreamSortorderScreen(.init())
+        SettingsStreamSortorderScreen(.init(settings: StreamSettings()))
     }
 }

@@ -3,12 +3,13 @@
 //
 
 import SwiftUI
+import DolbyIORTSCore
 import DolbyIORTSUIKit
 
 struct LandingView: View {
 
     @StateObject private var viewModel: LandingViewModel = .init()
-    @StateObject private var globalSettingsViewModel: StreamSettingsViewModel = .init()
+    @StateObject private var globalSettingsViewModel: StreamSettingsViewModel = .init(settings: GlobalStreamSettings())
     @EnvironmentObject private var appState: AppState
 
     var body: some View {

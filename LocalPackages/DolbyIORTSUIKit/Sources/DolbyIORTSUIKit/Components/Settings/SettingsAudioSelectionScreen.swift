@@ -43,6 +43,6 @@ struct SettingsAudioSelectionScreen: View {
 
 struct SettingsAudioSelectionScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsAudioSelectionScreen(.init())
+        SettingsAudioSelectionScreen(.init(settings: StreamSettings()))
     }
 }

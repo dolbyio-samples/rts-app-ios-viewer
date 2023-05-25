@@ -4,7 +4,14 @@
 
 import Foundation
 
-public struct StreamSettings {
+public protocol StreamSettingsProtocol {
+    var showSourceLabels: Bool { get set }
+    var multiviewLayout: StreamSettings.MultiviewLayout { get set }
+    var streamSortOrder: StreamSettings.StreamSortOrder { get set }
+    var audioSelection: StreamSettings.AudioSelection { get set }
+}
+
+public class StreamSettings: StreamSettingsProtocol, Codable {
 
     public enum MultiviewLayout: String {
         case list = "List view"
@@ -105,11 +112,7 @@ public struct StreamSettings {
         self.audioSelection = audioSelection
     }
 
-}
-
-extension StreamSettings: Codable {
-
-    public init(from decoder: Decoder) throws {
+    public required init(from decoder: Decoder) throws {
         var rawValue: String
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -130,5 +133,56 @@ extension StreamSettings: Codable {
         try container.encode(multiviewLayout.rawValue, forKey: .multiviewLayout)
         try container.encode(streamSortOrder.rawValue, forKey: .streamSortOrder)
         try container.encode(audioSelection, forKey: .audioSelection)
+    }
+}
+
+public class GlobalStreamSettings: StreamSettingsProtocol {
+
+    private var settings: StreamSettings
+
+    public var showSourceLabels: Bool {
+        get { settings.showSourceLabels }
+        set {
+            settings.showSourceLabels = newValue
+            updateUserDefault()
+        }
+    }
+
+    public var multiviewLayout: StreamSettings.MultiviewLayout {
+        get { settings.multiviewLayout }
+        set {
+            settings.multiviewLayout = newValue
+            updateUserDefault()
+        }
+    }
+
+    public var streamSortOrder: StreamSettings.StreamSortOrder {
+        get { settings.streamSortOrder }
+        set {
+            settings.streamSortOrder = newValue
+            updateUserDefault()
+        }
+    }
+
+    public var audioSelection: StreamSettings.AudioSelection {
+        get { settings.audioSelection }
+        set {
+            settings.audioSelection = newValue
+            updateUserDefault()
+        }
+    }
+
+    public init() {
+        self.settings = .init()
+        if let data = UserDefaults.standard.object(forKey: "DolbyIORTSCore") as? Data,
+           let settings = try? JSONDecoder().decode(StreamSettings.self, from: data) {
+            self.settings = settings
+        }
+    }
+
+    private func updateUserDefault() {
+        if let encoded = try? JSONEncoder().encode(settings) {
+            UserDefaults.standard.set(encoded, forKey: "DolbyIORTSCore")
+        }
     }
 }

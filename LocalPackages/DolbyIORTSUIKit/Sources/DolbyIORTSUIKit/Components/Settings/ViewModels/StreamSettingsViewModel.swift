@@ -12,50 +12,33 @@ final public class StreamSettingsViewModel: ObservableObject {
     @Published private(set) var streamSortOrder: StreamSettings.StreamSortOrder
     @Published private(set) var audioSelection: StreamSettings.AudioSelection
 
-    private var globalSettings: StreamSettings
-    private let userDefaults: UserDefaults
+    private var settings: StreamSettingsProtocol
 
-    public init() {
-        userDefaults = .standard
-        globalSettings = .init()
-        if let data = userDefaults.object(forKey: "DolbyIORTSCore") as? Data,
-           let globalSettings = try? JSONDecoder().decode(StreamSettings.self, from: data) {
-            self.globalSettings = globalSettings
-        }
-
-        self.showSourceLabels = globalSettings.showSourceLabels
-        self.multiviewLayout = globalSettings.multiviewLayout
-        self.streamSortOrder = globalSettings.streamSortOrder
-        self.audioSelection = globalSettings.audioSelection
+    public init(settings: StreamSettingsProtocol) {
+        self.settings = settings
+        self.showSourceLabels = settings.showSourceLabels
+        self.multiviewLayout = settings.multiviewLayout
+        self.streamSortOrder = settings.streamSortOrder
+        self.audioSelection = settings.audioSelection
     }
 
     public func setShowSourceLabels(_ showSourceLabels: Bool) {
         self.showSourceLabels = showSourceLabels
-        globalSettings.showSourceLabels = showSourceLabels
-        updateUserDefault()
+        settings.showSourceLabels = showSourceLabels
     }
 
     public func setMultiviewLayout(_ multiviewLayout: StreamSettings.MultiviewLayout) {
         self.multiviewLayout = multiviewLayout
-        globalSettings.multiviewLayout = multiviewLayout
-        updateUserDefault()
+        settings.multiviewLayout = multiviewLayout
     }
 
     public func setStreamSortOrder(_ streamSortOrder: StreamSettings.StreamSortOrder) {
         self.streamSortOrder = streamSortOrder
-        globalSettings.streamSortOrder = streamSortOrder
-        updateUserDefault()
+        settings.streamSortOrder = streamSortOrder
     }
 
     public func setAudioSelection(_ audioSelection: StreamSettings.AudioSelection) {
         self.audioSelection = audioSelection
-        globalSettings.audioSelection = audioSelection
-        updateUserDefault()
-    }
-
-    private func updateUserDefault() {
-        if let encoded = try? JSONEncoder().encode(globalSettings) {
-            userDefaults.set(encoded, forKey: "DolbyIORTSCore")
-        }
+        settings.audioSelection = audioSelection
     }
 }

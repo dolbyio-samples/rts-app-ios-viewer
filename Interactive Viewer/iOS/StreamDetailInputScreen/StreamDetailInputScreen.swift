@@ -229,6 +229,6 @@ struct StreamDetailInputScreen: View {
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputScreen(.init())
+        StreamDetailInputScreen(.init(settings: StreamSettings()))
     }
 }

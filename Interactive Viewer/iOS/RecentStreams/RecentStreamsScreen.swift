@@ -2,6 +2,7 @@
 //  RecentStreamsScreen.swift
 //
 
+import DolbyIORTSCore
 import DolbyIOUIKit
 import DolbyIORTSUIKit
 import SwiftUI
@@ -178,7 +179,7 @@ struct RecentStreamsScreen: View {
 #if DEBUG
 struct RecentStreamsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamsScreen(StreamSettingsViewModel())
+        RecentStreamsScreen(.init(settings: StreamSettings()))
     }
 }
 #endif
