@@ -15,9 +15,9 @@ struct LandingView: View {
     var body: some View {
         ZStack {
             if viewModel.hasSavedStreams {
-                RecentStreamsScreen(globalSettingsViewModel)
+                RecentStreamsScreen()
             } else {
-                StreamDetailInputScreen(globalSettingsViewModel)
+                StreamDetailInputScreen()
             }
         }
         .layoutPriority(1)
@@ -29,6 +29,7 @@ struct LandingView: View {
         .onDisappear {
             viewModel.stopStreamObservations()
         }
+        .environmentObject(globalSettingsViewModel)
     }
 }
 

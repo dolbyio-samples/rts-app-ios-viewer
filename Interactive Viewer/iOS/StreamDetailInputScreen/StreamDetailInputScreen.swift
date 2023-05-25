@@ -26,14 +26,10 @@ struct StreamDetailInputScreen: View {
 
     @StateObject private var viewModel: StreamDetailInputViewModel = .init()
 
-    @ObservedObject private var globalSettingsViewModel: StreamSettingsViewModel
+    @EnvironmentObject private var globalSettingsViewModel: StreamSettingsViewModel
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
-
-    init(_ globalSettingsViewModel: StreamSettingsViewModel) {
-        self.globalSettingsViewModel = globalSettingsViewModel
-    }
 
     var body: some View {
         ZStack {
@@ -229,6 +225,9 @@ struct StreamDetailInputScreen: View {
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputScreen(.init(settings: StreamSettings()))
+        ScrollView {
+            StreamDetailInputScreen()
+        }
+        .environmentObject(StreamSettingsViewModel(settings: GlobalStreamSettings()))
     }
 }

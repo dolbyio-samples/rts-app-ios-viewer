@@ -10,7 +10,6 @@ import SwiftUI
 struct SavedStreamsScreen: View {
 
     @ObservedObject var viewModel: RecentStreamsViewModel
-    @ObservedObject private var globalSettingsViewModel: StreamSettingsViewModel
 
     private let theme = ThemeManager.shared.theme
     @State private var isShowingStreamInputView: Bool = false
@@ -22,16 +21,14 @@ struct SavedStreamsScreen: View {
     @Environment(\.presentationMode) private var presentation
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    init(_ viewModel: RecentStreamsViewModel,
-         globalSettingsViewModel: StreamSettingsViewModel) {
+    init(_ viewModel: RecentStreamsViewModel) {
         self.viewModel = viewModel
-        self.globalSettingsViewModel = globalSettingsViewModel
     }
 
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: LazyNavigationDestinationView(StreamDetailInputScreen(globalSettingsViewModel)),
+                destination: LazyNavigationDestinationView(StreamDetailInputScreen()),
                 isActive: $isShowingStreamInputView) {
                     EmptyView()
                 }
@@ -197,6 +194,6 @@ struct SavedStreamsScreen: View {
 
 struct SavedStreamsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SavedStreamsScreen(.init(), globalSettingsViewModel: .init(settings: StreamSettings()))
+        SavedStreamsScreen(.init())
     }
 }

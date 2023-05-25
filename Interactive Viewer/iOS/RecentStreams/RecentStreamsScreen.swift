@@ -11,7 +11,7 @@ struct RecentStreamsScreen: View {
 
     @StateObject private var viewModel: RecentStreamsViewModel = .init()
 
-    @ObservedObject private var globalSettingsViewModel: StreamSettingsViewModel
+    @EnvironmentObject private var globalSettingsViewModel: StreamSettingsViewModel
 
     private let theme = ThemeManager.shared.theme
 
@@ -22,21 +22,17 @@ struct RecentStreamsScreen: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    init(_ globalSettingsViewModel: StreamSettingsViewModel) {
-        self.globalSettingsViewModel = globalSettingsViewModel
-    }
-
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             NavigationLink(
-                destination: LazyNavigationDestinationView(StreamDetailInputScreen(globalSettingsViewModel)),
+                destination: LazyNavigationDestinationView(StreamDetailInputScreen()),
                 isActive: $isShowingStreamInputView) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SavedStreamsScreen(viewModel, globalSettingsViewModel: globalSettingsViewModel)),
+                destination: LazyNavigationDestinationView(SavedStreamsScreen(viewModel)),
                 isActive: $isShowingFullStreamHistoryView) {
                     EmptyView()
                 }
@@ -179,7 +175,9 @@ struct RecentStreamsScreen: View {
 #if DEBUG
 struct RecentStreamsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamsScreen(.init(settings: StreamSettings()))
+        ScrollView {
+            RecentStreamsScreen()
+        }.environmentObject(StreamSettingsViewModel(settings: GlobalStreamSettings()))
     }
 }
 #endif
