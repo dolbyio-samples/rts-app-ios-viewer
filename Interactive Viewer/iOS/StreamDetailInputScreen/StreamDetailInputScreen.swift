@@ -208,7 +208,7 @@ struct StreamDetailInputScreen: View {
                 .frame(height: Layout.spacing2x)
 
             let streamName = Constants.streamName
-            let accountID = Constants.streamName
+            let accountID = Constants.accountID
             RecentStreamCell(streamName: streamName, accountID: accountID) {
                 Task {
                     let success = await viewModel.connect(streamName: streamName, accountID: accountID)
