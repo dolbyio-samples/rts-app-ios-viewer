@@ -17,7 +17,7 @@ public struct StreamSettings {
         case alphaNunmeric = "AlphaNumeric"
     }
 
-    public enum AudioSelection: Equatable {
+    public enum AudioSelection: Equatable, Codable {
         case firstSource
         case mainSource
         case followVideo
@@ -29,6 +29,43 @@ public struct StreamSettings {
             case .followVideo: return "Follow video"
             case .mainSource: return "Main source"
             case .source(label: let l): return l
+            }
+        }
+
+        private enum CodingKeys: CodingKey {
+            case firstSource, mainSource, followSource, source
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            switch self {
+            case .firstSource:
+                try container.encode(self.name, forKey: .firstSource)
+            case .mainSource:
+                try container.encode(self.name, forKey: .mainSource)
+            case .followVideo:
+                try container.encode(self.name, forKey: .followSource)
+            case let .source(label: label):
+                try container.encode(label, forKey: .source)
+            }
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            switch container.allKeys.first {
+            case .firstSource: self = .firstSource
+            case .mainSource: self = .mainSource
+            case .followSource: self = .followVideo
+            case .source:
+                if let label = try? container.decode(String.self, forKey: .source) {
+                    self = .source(label: label)
+                } else {
+                    self = .source(label: "unknown")
+                }
+            default:
+                throw DecodingError.dataCorrupted(
+                    .init(codingPath: container.codingPath, debugDescription: "Invalid data")
+                )
             }
         }
 
@@ -84,7 +121,7 @@ extension StreamSettings: Codable {
         rawValue = try container.decode(String.self, forKey: .streamSortOrder)
         streamSortOrder = StreamSortOrder(rawValue: rawValue) ?? .connectionOrder
 
-        audioSelection = .firstSource
+        audioSelection = try container.decode(StreamSettings.AudioSelection.self, forKey: .audioSelection)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -92,5 +129,6 @@ extension StreamSettings: Codable {
         try container.encode(showSourceLabels, forKey: .showSourceLabels)
         try container.encode(multiviewLayout.rawValue, forKey: .multiviewLayout)
         try container.encode(streamSortOrder.rawValue, forKey: .streamSortOrder)
+        try container.encode(audioSelection, forKey: .audioSelection)
     }
 }
