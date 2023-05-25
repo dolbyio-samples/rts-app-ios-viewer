@@ -46,18 +46,51 @@ public struct StreamSettings {
         }
     }
 
-//    public var showSourceLabels: Bool
-//    public var multiviewLayout: MultiviewLayout
-//    public var streamSortOrder: StreamSortOrder
-//    public var audioSelection: AudioSelection
-//
-//    public init(showSourceLabels: Bool = true,
-//                multiviewLayout: MultiviewLayout = .list,
-//                streamSortOrder: StreamSortOrder = .connectionOrder,
-//                audioSelection: AudioSelection = .firstSource) {
-//        self.showSourceLabels = showSourceLabels
-//        self.multiviewLayout = multiviewLayout
-//        self.streamSortOrder = streamSortOrder
-//        self.audioSelection = audioSelection
-//    }
+    enum CodingKeys: String, CodingKey {
+        case showSourceLabels
+        case multiviewLayout
+        case streamSortOrder
+        case audioSelection
+    }
+
+    public var showSourceLabels: Bool
+    public var multiviewLayout: MultiviewLayout
+    public var streamSortOrder: StreamSortOrder
+    public var audioSelection: AudioSelection
+
+    public init(showSourceLabels: Bool = true,
+                multiviewLayout: MultiviewLayout = .list,
+                streamSortOrder: StreamSortOrder = .connectionOrder,
+                audioSelection: AudioSelection = .firstSource) {
+        self.showSourceLabels = showSourceLabels
+        self.multiviewLayout = multiviewLayout
+        self.streamSortOrder = streamSortOrder
+        self.audioSelection = audioSelection
+    }
+
+}
+
+extension StreamSettings: Codable {
+
+    public init(from decoder: Decoder) throws {
+        var rawValue: String
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        showSourceLabels = try container.decode(Bool.self, forKey: .showSourceLabels)
+
+        rawValue = try container.decode(String.self, forKey: .multiviewLayout)
+        multiviewLayout = MultiviewLayout(rawValue: rawValue) ?? .list
+
+        rawValue = try container.decode(String.self, forKey: .streamSortOrder)
+        streamSortOrder = StreamSortOrder(rawValue: rawValue) ?? .connectionOrder
+
+        audioSelection = .firstSource
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(showSourceLabels, forKey: .showSourceLabels)
+        try container.encode(multiviewLayout.rawValue, forKey: .multiviewLayout)
+        try container.encode(streamSortOrder.rawValue, forKey: .streamSortOrder)
+    }
 }
