@@ -36,7 +36,7 @@ struct StreamDetailInputScreen: View {
             }
             .hidden()
 
-            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen(mode: .global, isShowLableOn: $isShowLabelOn)), isActive: $isShowingSettingScreenView) {
+            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen()), isActive: $isShowingSettingScreenView) {
                 EmptyView()
             }
             .hidden()
@@ -207,7 +207,7 @@ struct StreamDetailInputScreen: View {
                 .frame(height: Layout.spacing2x)
 
             let streamName = Constants.streamName
-            let accountID = Constants.streamName
+            let accountID = Constants.accountID
             RecentStreamCell(streamName: streamName, accountID: accountID) {
                 Task {
                     let success = await viewModel.connect(streamName: streamName, accountID: accountID)

@@ -44,10 +44,7 @@ struct RecentStreamsScreen: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsScreen(
-                    mode: .global,
-                    isShowLableOn: $isShowLabelOn
-                )),
+                destination: LazyNavigationDestinationView(SettingsScreen()),
                 isActive: $isShowingSettingScreenView) {
                     EmptyView()
                 }

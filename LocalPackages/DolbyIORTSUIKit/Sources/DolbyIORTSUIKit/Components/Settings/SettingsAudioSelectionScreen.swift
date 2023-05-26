@@ -7,14 +7,13 @@ import DolbyIOUIKit
 
 struct SettingsAudioSelectionScreen: View {
 
-    @State var globalAudioSelections: [SelectionsGroup.Item] = [
-        .init(key: "audio-selection.first-source.label", bundle: .module, selected: true),
-        .init(key: "audio-selection.main-source.label", bundle: .module, selected: false)]
+    @ObservedObject var viewModel: SettingsViewModel
 
     var body: some View {
-        SelectionsScreen(settings: $globalAudioSelections,
+        SelectionsScreen(settings: viewModel.audioSelectionsItems,
                          footer: "audio-selection.global.footer.label",
-                         footerBundle: .module)
+                         footerBundle: .module,
+                         onSelection: { viewModel.selectAudioSelection(with: $0) })
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text("audio-selection.title.label", bundle: .module)
@@ -25,6 +24,6 @@ struct SettingsAudioSelectionScreen: View {
 
 struct SettingsAudioSelectionScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsAudioSelectionScreen()
+        SettingsAudioSelectionScreen(viewModel: .init())
     }
 }
