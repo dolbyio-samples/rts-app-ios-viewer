@@ -136,52 +136,49 @@ public class StreamSettings: StreamSettingsProtocol, Codable {
     }
 }
 
-public class GlobalStreamSettings: StreamSettingsProtocol {
+public class GlobalStreamSettings: StreamSettings {
 
-    private var settings: StreamSettings
-
-    public var showSourceLabels: Bool {
-        get { settings.showSourceLabels }
-        set {
-            settings.showSourceLabels = newValue
+    public override var showSourceLabels: Bool {
+        didSet {
             updateUserDefault()
         }
     }
 
-    public var multiviewLayout: StreamSettings.MultiviewLayout {
-        get { settings.multiviewLayout }
-        set {
-            settings.multiviewLayout = newValue
+    public override var multiviewLayout: StreamSettings.MultiviewLayout {
+        didSet {
             updateUserDefault()
         }
     }
 
-    public var streamSortOrder: StreamSettings.StreamSortOrder {
-        get { settings.streamSortOrder }
-        set {
-            settings.streamSortOrder = newValue
+    public override var streamSortOrder: StreamSettings.StreamSortOrder {
+        didSet {
             updateUserDefault()
         }
     }
 
-    public var audioSelection: StreamSettings.AudioSelection {
-        get { settings.audioSelection }
-        set {
-            settings.audioSelection = newValue
+    public override var audioSelection: StreamSettings.AudioSelection {
+        didSet {
             updateUserDefault()
         }
     }
 
     public init() {
-        self.settings = .init()
+        super.init()
         if let data = UserDefaults.standard.object(forKey: "DolbyIORTSCore") as? Data,
            let settings = try? JSONDecoder().decode(StreamSettings.self, from: data) {
-            self.settings = settings
+            showSourceLabels = settings.showSourceLabels
+            multiviewLayout = settings.multiviewLayout
+            streamSortOrder = settings.streamSortOrder
+            audioSelection = settings.audioSelection
         }
     }
 
+    public required init(from decoder: Decoder) throws {
+        try super.init(from: decoder)
+    }
+
     private func updateUserDefault() {
-        if let encoded = try? JSONEncoder().encode(settings) {
+        if let encoded = try? JSONEncoder().encode(self) {
             UserDefaults.standard.set(encoded, forKey: "DolbyIORTSCore")
         }
     }
