@@ -13,20 +13,29 @@ public protocol SourceViewProviding {
 }
 
 class StreamSourceViewProvider {
+
+    enum Constants {
+        static let defaultVideoTileSize = CGSize(width: 533, height: 300)
+    }
+
     var renderer: MCIosVideoRenderer
     var view: UIView?
     init(renderer: MCIosVideoRenderer) {
         self.renderer = renderer
     }
+
+    private var hasValidDimensions: Bool {
+        renderer.getWidth() != 0 && renderer.getHeight() != 0
+    }
 }
 
 extension StreamSourceViewProvider: SourceViewProviding {
     var frameWidth: CGFloat {
-        CGFloat(renderer.getWidth())
+        hasValidDimensions ? CGFloat(renderer.getWidth()) : Constants.defaultVideoTileSize.width
     }
 
     var frameHeight: CGFloat {
-        CGFloat(renderer.getHeight())
+        hasValidDimensions ? CGFloat(renderer.getHeight()) : Constants.defaultVideoTileSize.height
     }
 
     var playbackView: UIView {

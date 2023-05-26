@@ -89,7 +89,7 @@ open class StreamCoordinator {
         subscriptionManager.selectVideoQuality(quality, for: source)
     }
 
-    public func playAudio(for source: StreamSource) {
+    public func playAudio(for source: StreamSource) async {
         switch stateSubject.value {
         case let .subscribed(sources: sources, numberOfStreamViewers: _):
             sources.forEach { source in
@@ -98,22 +98,60 @@ open class StreamCoordinator {
                 }
             }
             subscriptionManager.projectAudio(for: source)
+            await stateMachine.setPlayingAudio(true, for: source)
 
         default:
             return
         }
     }
 
-    public func stopAudio(for source: StreamSource) {
-        subscriptionManager.unprojectAudio(for: source)
+    public func stopAudio(for source: StreamSource) async {
+        switch stateSubject.value {
+        case let .subscribed(sources: sources, numberOfStreamViewers: _):
+            guard sources.contains(where: {
+                $0.id == source.id
+            }) else {
+                return
+            }
+            subscriptionManager.unprojectAudio(for: source)
+            await stateMachine.setPlayingAudio(false, for: source)
+
+        default:
+            return
+        }
     }
 
-    public func playVideo(for source: StreamSource, quality: StreamSource.VideoQuality) {
-        subscriptionManager.projectVideo(for: source, withQuality: quality)
+    public func playVideo(for source: StreamSource, quality: StreamSource.VideoQuality) async {
+        switch stateSubject.value {
+        case let .subscribed(sources: sources, numberOfStreamViewers: _):
+            guard sources.contains(where: {
+                $0.id == source.id
+            }) else {
+                return
+            }
+            subscriptionManager.projectVideo(for: source, withQuality: quality)
+            _ = await (
+                stateMachine.setPlayingVideo(true, for: source),
+                stateMachine.selectVideoQuality(quality, for: source)
+            )
+        default:
+            return
+        }
     }
 
-    public func stopVideo(for source: StreamSource) {
-        subscriptionManager.unprojectVideo(for: source)
+    public func stopVideo(for source: StreamSource) async {
+        switch stateSubject.value {
+        case let .subscribed(sources: sources, numberOfStreamViewers: _):
+            guard sources.contains(where: {
+                $0.id == source.id
+            }) else {
+                return
+            }
+            subscriptionManager.unprojectVideo(for: source)
+            await stateMachine.setPlayingVideo(false, for: source)
+        default:
+            return
+        }
     }
 
     public func mainSourceViewProvider(for source: StreamSource) -> SourceViewProviding? {

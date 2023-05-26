@@ -3,6 +3,7 @@
 //
 
 import DolbyIOUIKit
+import DolbyIORTSUIKit
 import SwiftUI
 
 struct SavedStreamsScreen: View {
@@ -28,7 +29,7 @@ struct SavedStreamsScreen: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(StreamingScreen()),
+                destination: LazyNavigationDestinationView(StreamingScreen(isShowingStreamView: $isShowingStreamingView)),
                 isActive: $isShowingStreamingView) {
                     EmptyView()
                 }

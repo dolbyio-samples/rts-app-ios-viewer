@@ -6,15 +6,60 @@ import Combine
 import DolbyIORTSCore
 import Foundation
 
+enum StreamViewMode {
+    case single, list
+}
+
 final class StreamViewModel: ObservableObject {
 
-    let streamCoordinator: StreamCoordinator
+    private enum Constants {
+        static let interactivityTimeOut: CGFloat = 5
+    }
 
+    private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
-    @Published private(set) var sources: [StreamSource] = []
-    @Published private(set) var audioSelectedIndex: Int = 0
-    @Published private(set) var videoSelectedIndex: Int = 0
+
+    private var selectedVideoStreamSourceId: UUID? {
+        didSet {
+            updateState()
+        }
+    }
+
+    private var selectedAudioStreamSourceId: UUID? {
+        didSet {
+            updateState()
+            guard let audioSource = selectedAudioSource else {
+                return
+            }
+            playAudio(for: audioSource)
+        }
+    }
+
+    private var sources: [StreamSource] = [] {
+        didSet {
+            if selectedVideoStreamSourceId == nil, let firstSource = sources.first {
+                selectedVideoStreamSourceId = firstSource.id
+                selectedAudioStreamSourceId = firstSource.id
+            }
+
+            updateState()
+        }
+    }
+
+    private func updateState() {
+        isStreamActive = sources.isEmpty == false
+        selectedVideoSource = sources.first { $0.id == selectedVideoStreamSourceId }
+        selectedAudioSource = sources.first { $0.id == selectedAudioStreamSourceId }
+        otherSources = sources.filter { $0.id != selectedVideoStreamSourceId }
+        allSources = sources
+    }
+
     @Published private(set) var mode: StreamViewMode = .list
+    @Published private(set) var selectedVideoSource: StreamSource?
+    @Published private(set) var selectedAudioSource: StreamSource?
+    @Published private(set) var otherSources: [StreamSource] = []
+    @Published private(set) var allSources: [StreamSource] = []
+    @Published private(set) var isStreamActive: Bool = false
 
     init(streamCoordinator: StreamCoordinator = .shared) {
         self.streamCoordinator = streamCoordinator
@@ -37,66 +82,61 @@ final class StreamViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
-    func calculateVideoSize(videoSourceDimensions: CGSize, frameWidth: Float, frameHeight: Float) -> CGSize {
-        let ratio = calculateAspectRatio(
-            crop: false,
-            frameWidth: frameWidth,
-            frameHeight: frameHeight,
-            videoWidth: Float(videoSourceDimensions.width),
-            videoHeight: Float(videoSourceDimensions.height)
-        )
-
-        let scaledWidth = Float(videoSourceDimensions.width) * ratio
-        let scaledHeight = Float(videoSourceDimensions.height) * ratio
-        return CGSize(width: CGFloat(scaledWidth), height: CGFloat(scaledHeight))
+    func selectVideoSource(_ source: StreamSource) {
+        selectedVideoStreamSourceId = source.id
+        selectedAudioStreamSourceId = source.id
     }
 
-    func videoSelectedChange(index: Int) {
-        videoSelectedIndex = index
+    func selectVideoSourceAtIndex(_ index: Int) {
+        let sourceAtIndex = allSources[index]
+        selectVideoSource(sourceAtIndex)
     }
 
-    func selectedSourceClick() {
-        switch mode {
-        case .list:
-            mode = .single
-        case .single:
-            mode = .list
+    func mainViewProvider(for source: StreamSource) -> SourceViewProviding? {
+        streamCoordinator.mainSourceViewProvider(for: source)
+    }
+
+    func subViewProvider(for source: StreamSource) -> SourceViewProviding? {
+        streamCoordinator.subSourceViewProvider(for: source)
+    }
+
+    func endStream() async {
+        _ = await streamCoordinator.stopSubscribe()
+    }
+
+    func playVideo(for source: StreamSource) {
+        Task {
+            await self.streamCoordinator.playVideo(for: source, quality: .auto)
         }
     }
 
-    private func calculateAspectRatio(crop: Bool, frameWidth: Float, frameHeight: Float, videoWidth: Float, videoHeight: Float) -> Float {
-        guard videoWidth > 0, videoHeight > 0 else {
-            return 0.0
+    func playAudio(for source: StreamSource) {
+        Task {
+            await self.streamCoordinator.playAudio(for: source)
         }
-
-        var ratio: Float = 0
-        var widthHeading: Bool = true
-        if frameWidth >= videoWidth && frameHeight >= videoHeight {
-            if (frameWidth / videoWidth) < (frameHeight / videoHeight) {
-                widthHeading = !crop
-            } else {
-                widthHeading = crop
-            }
-        } else if frameWidth >= videoWidth {
-            widthHeading = crop
-        } else if frameHeight >= videoHeight {
-            widthHeading = !crop
-        } else {
-            if (frameWidth / videoWidth) > (frameHeight / videoHeight) {
-                widthHeading = crop
-            } else {
-                widthHeading = !crop
-            }
-        }
-        if widthHeading {
-            ratio = frameWidth / videoWidth
-        } else {
-            ratio = frameHeight / videoHeight
-        }
-        return ratio
     }
-}
 
-enum StreamViewMode {
-    case single, list
+    func stopVideo(for source: StreamSource) {
+        Task {
+            await self.streamCoordinator.stopVideo(for: source)
+        }
+    }
+
+    func stopAudio(for source: StreamSource) {
+        Task {
+            await self.streamCoordinator.stopAudio(for: source)
+        }
+    }
+
+    // MARK: Manage interactivity on views
+
+    private(set) var interactivityTimer = Timer.publish(every: Constants.interactivityTimeOut, on: .main, in: .common).autoconnect()
+
+    func startInteractivityTimer() {
+        interactivityTimer = Timer.publish(every: Constants.interactivityTimeOut, on: .main, in: .common).autoconnect()
+    }
+
+    func stopInteractivityTimer() {
+        interactivityTimer.upstream.connect().cancel()
+    }
 }
