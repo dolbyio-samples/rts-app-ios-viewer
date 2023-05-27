@@ -10,11 +10,10 @@ import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
 
-    let settingsManager: SettingsManager
-
+    private let settingsManager: SettingsManager
     private(set) var settingsScreenTitle: LocalizedStringKey
-
     private var subscriptions: [AnyCancellable] = []
+
     @Published private(set) var showSourceLabels: Bool
     @Published private(set) var multiviewLayout: StreamSettings.MultiviewLayout
     @Published private(set) var streamSortOrder: StreamSettings.StreamSortOrder
@@ -89,7 +88,7 @@ final class SettingsViewModel: ObservableObject {
             if case .stream = settingsManager.mode {
                 if settingsManager.settings.audioSources.isEmpty == false {
                     let label = settingsManager.settings.audioSources[index - 3]
-                    setAudioSelection(.source(label: label))
+                    setAudioSelection(.source(sourceId: label))
                 }
             }
         }
@@ -189,7 +188,7 @@ extension SettingsViewModel {
                 items.append(
                     .init(key: LocalizedStringKey($0),
                           bundle: .module,
-                          selected: audioSelection == .source(label: $0))
+                          selected: audioSelection == .source(sourceId: $0))
                 )
             }
         }
@@ -198,7 +197,7 @@ extension SettingsViewModel {
         case .firstSource: audioSelectedLabelKey = "audio-selection.first-source.label"
         case .followVideo: audioSelectedLabelKey = "audio-selection.follow-video.label"
         case .mainSource: audioSelectedLabelKey = "audio-selection.main-source.label"
-        case .source(label: let label): audioSelectedLabelKey = LocalizedStringKey(label)
+        case .source(sourceId: let sourceId): audioSelectedLabelKey = LocalizedStringKey(sourceId)
         }
 
         audioSelectionsItems = items

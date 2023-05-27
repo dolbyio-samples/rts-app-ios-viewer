@@ -18,10 +18,6 @@ public struct SettingsScreen: View {
 
     }
 
-    func getSettingScreenTitle() -> LocalizedStringKey {
-        return viewModel.settingsScreenTitle
-    }
-
     public var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             NavigationLink(
@@ -90,7 +86,7 @@ public struct SettingsScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text(getSettingScreenTitle(), bundle: .module)
+                    Text(viewModel.settingsScreenTitle, bundle: .module)
                 }
 
                 ToolbarItem(placement: .navigationBarLeading) {

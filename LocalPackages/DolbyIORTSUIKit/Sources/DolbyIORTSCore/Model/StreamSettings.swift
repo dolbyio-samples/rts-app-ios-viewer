@@ -22,7 +22,7 @@ public struct StreamSettings: Codable {
         case firstSource
         case followVideo
         case mainSource
-        case source(label: String)
+        case source(sourceId: String)
     }
 
     public var showSourceLabels: Bool

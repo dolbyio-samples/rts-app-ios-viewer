@@ -14,7 +14,13 @@ open class SettingsManager {
 
     public static let shared: SettingsManager = .init()
     public private(set) var mode: Mode = .global
-    public var currentStreamId: String { getStreamId(for: mode) }
+
+    public var currentStreamId: String {
+        switch mode {
+        case .global: return SettingsDictionary.GlobalStreamId
+        case .stream(let streamId): return streamId
+        }
+    }
 
     public var settings: StreamSettings {
         didSet {
@@ -47,22 +53,11 @@ open class SettingsManager {
             try? SettingsDictionary.saveSettings(for: currentStreamId, settings: self.settings)
         }
     }
-
-    public func setAudioLabels(_ labels: [String]) {
-        settings.audioSources = labels
-    }
-
-    private func getStreamId(for mode: Mode) -> String {
-        switch mode {
-        case .global: return SettingsDictionary.GlobalStreamId
-        case .stream(let streamId): return streamId
-        }
-    }
 }
 
 class SettingsDictionary {
-
-    static let GlobalStreamId = "global/settings"   // Fake an ID for global settings
+    // Fake an ID for global settings
+    static let GlobalStreamId = "global/settings"
 
     private static let UserDefaultKey = "stream-settings"
     typealias Dictionary =  [String: StreamSettings]
