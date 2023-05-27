@@ -6,7 +6,7 @@
 /** Settings screen */
 "settings.global.title.label" = "Global settings";
 "settings.stream.title.label" = "Stream settings";
-"settings.show-source.label" = "Show source lables";
+"settings.show-source-labels.label" = "Show source labels";
 "settings.default-multiview-layout.label" = "Default multi-view layout";
 "settings.stream-sort-order.label" = "Stream sort order";
 "settings.audio-selection.label" = "Audio Selection";

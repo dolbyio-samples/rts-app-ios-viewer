@@ -29,6 +29,7 @@ public struct StreamSettings: Codable {
     public var multiviewLayout: MultiviewLayout
     public var streamSortOrder: StreamSortOrder
     public var audioSelection: AudioSelection
+    public var audioSources: [String] = []
 
     public init(showSourceLabels: Bool = true,
                 multiviewLayout: MultiviewLayout = .list,

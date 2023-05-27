@@ -14,7 +14,6 @@ open class SettingsManager {
 
     public static let shared: SettingsManager = .init()
     public private(set) var mode: Mode = .global
-    public private(set) var audioLabels: [String] = []
     public var currentStreamId: String { getStreamId(for: mode) }
 
     public var settings: StreamSettings {
@@ -40,18 +39,17 @@ open class SettingsManager {
         if let settings = try? SettingsDictionary.getSettings(for: currentStreamId) {
             self.settings = settings
         } else {
-            self.settings = .init()
+            if let globalSettings = try? SettingsDictionary.getSettings(for: SettingsDictionary.GlobalStreamId) {
+                self.settings = globalSettings
+            } else {
+                self.settings = .init()
+            }
             try? SettingsDictionary.saveSettings(for: currentStreamId, settings: self.settings)
         }
     }
 
     public func setAudioLabels(_ labels: [String]) {
-        audioLabels = labels
-        if case .stream = mode {
-            if let label = labels.first {
-                settings.audioSelection = .source(label: label)
-            }
-        }
+        settings.audioSources = labels
     }
 
     private func getStreamId(for mode: Mode) -> String {
@@ -72,7 +70,8 @@ class SettingsDictionary {
     static func getDictionary() throws -> [String: StreamSettings] {
         var dictionary: [String: StreamSettings] = [:]
         let userDefaults = UserDefaults.standard
-        if let data = userDefaults.object(forKey: SettingsDictionary.UserDefaultKey) as? Data {
+        let object = userDefaults.object(forKey: SettingsDictionary.UserDefaultKey)
+        if let data = object as? Data {
             dictionary = try JSONDecoder().decode(Dictionary.self, from: data)
         }
         return dictionary
@@ -89,7 +88,10 @@ class SettingsDictionary {
     }
 
     static func saveSettings(for streamId: String, settings: StreamSettings) throws {
-        var dictionary = try getDictionary()
+        var dictionary: [String: StreamSettings] = [:]
+        if let dict = try? getDictionary() {
+            dictionary = dict
+        }
         dictionary[streamId] = settings
         try saveDictionary(dictionary: dictionary)
     }

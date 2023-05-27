@@ -86,7 +86,12 @@ final class SettingsViewModel: ObservableObject {
         case 1: setAudioSelection(.followVideo)
         case 2: setAudioSelection(.mainSource)
         default:
-            setAudioSelection(.firstSource)
+            if case .stream = settingsManager.mode {
+                if settingsManager.settings.audioSources.isEmpty == false {
+                    let label = settingsManager.settings.audioSources[index - 3]
+                    setAudioSelection(.source(label: label))
+                }
+            }
         }
     }
 }
@@ -179,6 +184,14 @@ extension SettingsViewModel {
                       bundle: .module,
                       selected: audioSelection == .mainSource)
             ]
+
+            settingsManager.settings.audioSources.forEach {
+                items.append(
+                    .init(key: LocalizedStringKey($0),
+                          bundle: .module,
+                          selected: audioSelection == .source(label: $0))
+                )
+            }
         }
 
         switch audioSelection {
@@ -187,6 +200,7 @@ extension SettingsViewModel {
         case .mainSource: audioSelectedLabelKey = "audio-selection.main-source.label"
         case .source(label: let label): audioSelectedLabelKey = LocalizedStringKey(label)
         }
+
         audioSelectionsItems = items
     }
 }

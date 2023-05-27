@@ -46,10 +46,20 @@ public struct SettingsScreen: View {
                 .hidden()
 
             List {
-                Toggle("settings.show-source.label", isOn: Binding<Bool>(
+                Toggle(isOn: Binding<Bool>(
                     get: { viewModel.showSourceLabels },
                     set: { viewModel.setShowSourceLabels($0) })
-                )
+                ) {
+                    Text(
+                        text: "settings.show-source-labels.label",
+                        bundle: .module,
+                        mode: .primary,
+                        fontAsset: .avenirNextRegular(
+                            size: CGFloat(14.0),
+                            style: .body
+                        )
+                    )
+                }
 
                 SettingsCell(text: "settings.default-multiview-layout.label",
                              textColor: .white,
