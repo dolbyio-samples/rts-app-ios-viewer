@@ -96,17 +96,6 @@ struct SelectionsGroup_Previews: PreviewProvider {
             ], footer: "testD.localized.key", bundle: .module) { index in
                 print("index: \(index)")
             }
-
-            Spacer()
-
-            SelectionsGroup(settings: [
-                .init(key: "testA.localized.key", bundle: .module, selected: true),
-                .init(key: "testB.localized.key", bundle: .module, selected: false),
-                .init(key: "testC.localized.key", bundle: .module, selected: false)
-            ], footer: "testD.localized.key", bundle: .module) { index in
-                print("index: \(index)")
-            }
-            .environment(\.locale, .init(identifier: "fr"))
         }
     }
 }
