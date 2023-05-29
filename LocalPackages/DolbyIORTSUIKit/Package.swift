@@ -39,6 +39,10 @@ let package = Package(
         .testTarget(
             name: "DolbyIORTSUIKitTests",
             dependencies: ["DolbyIORTSUIKit", "DolbyIORTSCore"]
+        ),
+        .testTarget(
+            name: "DolbyIORTSCoreTests",
+            dependencies: ["DolbyIORTSCore"]
         )
     ]
 )

@@ -11,7 +11,7 @@ public struct SelectionsGroup: View {
     let footer: LocalizedStringKey?
     let bundle: Bundle?
 
-    @Binding var settings: [Item]
+    var settings: [Item]
 
     public struct Item: Hashable {
         public let key: LocalizedStringKey
@@ -31,12 +31,12 @@ public struct SelectionsGroup: View {
         }
     }
 
-    public init(settings: Binding<[Item]>,
+    public init(settings: [Item],
                 footer: LocalizedStringKey? = nil,
                 bundle: Bundle? = nil,
                 onSelection: @escaping ((Int) -> Void) = { _ in }
     ) {
-        self._settings = settings
+        self.settings = settings
         self.footer = footer
         self.bundle = bundle
         self.onSelection = onSelection
@@ -47,9 +47,6 @@ public struct SelectionsGroup: View {
             Section {
                 ForEach(settings.indices, id: \.self) { index in
                     SwiftUI.Button(action: {
-                        settings.indices.forEach { i in
-                            settings[i].selected = (index == i) ? true : false
-                        }
                         onSelection(index)
                     }) {
                         HStack {
@@ -92,24 +89,13 @@ struct SelectionsGroup_Previews: PreviewProvider {
 
     static var previews: some View {
         VStack {
-            SelectionsGroup(settings: .constant([
+            SelectionsGroup(settings: [
                 .init(key: "testA.localized.key", bundle: .module, selected: true),
                 .init(key: "testB.localized.key", bundle: .module, selected: false),
                 .init(key: "testC.localized.key", bundle: .module, selected: false)
-            ]), footer: "testD.localized.key", bundle: .module) { index in
+            ], footer: "testD.localized.key", bundle: .module) { index in
                 print("index: \(index)")
             }
-
-            Spacer()
-
-            SelectionsGroup(settings: .constant([
-                .init(key: "testA.localized.key", bundle: .module, selected: true),
-                .init(key: "testB.localized.key", bundle: .module, selected: false),
-                .init(key: "testC.localized.key", bundle: .module, selected: false)
-            ]), footer: "testD.localized.key", bundle: .module) { index in
-                print("index: \(index)")
-            }
-            .environment(\.locale, .init(identifier: "fr"))
         }
     }
 }

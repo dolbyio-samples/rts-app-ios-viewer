@@ -8,57 +8,58 @@ import DolbyIOUIKit
 public struct SettingsScreen: View {
 
     @Environment(\.presentationMode) var presentationMode
-
-    public let title: LocalizedStringKey
-    @Binding public var isShowLabelsOn: Bool
+    @StateObject private var viewModel: SettingsViewModel = .init()
 
     @State private var isShowingMultiviewScreen: Bool = false
     @State private var isShowingStreamSortOrderScreen: Bool = false
     @State private var isShowingAudioSelectionScreen: Bool = false
 
-    public enum Mode {
-        case global
-        case stream
-    }
+    public init() {
 
-    public init(mode: Mode = .stream,
-                isShowLableOn: Binding<Bool>) {
-        switch mode {
-        case .global: title = "settings.global.title.label"
-        default: title = "settings.stream.title.label"
-        }
-        self._isShowLabelsOn = isShowLableOn
     }
 
     public var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsMultiviewScreen()),
+                destination: LazyNavigationDestinationView(SettingsMultiviewScreen(viewModel: viewModel)),
                 isActive: $isShowingMultiviewScreen) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsStreamSortorderScreen()),
+                destination: LazyNavigationDestinationView(SettingsStreamSortorderScreen(viewModel: viewModel)),
                 isActive: $isShowingStreamSortOrderScreen) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsAudioSelectionScreen()),
+                destination: LazyNavigationDestinationView(SettingsAudioSelectionScreen(viewModel: viewModel)),
                 isActive: $isShowingAudioSelectionScreen) {
                     EmptyView()
                 }
                 .hidden()
 
             List {
-                Toggle("Show source labels", isOn: $isShowLabelsOn)
+                Toggle(isOn: Binding<Bool>(
+                    get: { viewModel.showSourceLabels },
+                    set: { viewModel.setShowSourceLabels($0) })
+                ) {
+                    Text(
+                        text: "settings.show-source-labels.label",
+                        bundle: .module,
+                        mode: .primary,
+                        fontAsset: .avenirNextRegular(
+                            size: CGFloat(14.0),
+                            style: .body
+                        )
+                    )
+                }
 
                 SettingsCell(text: "settings.default-multiview-layout.label",
                              textColor: .white,
-                             value: "List view",
+                             value: viewModel.mutliviewSelectedLabelKey,
                              valueColor: .gray,
                              image: .textLink,
                              bundle: .module,
@@ -67,7 +68,7 @@ public struct SettingsScreen: View {
 
                 SettingsCell(text: "settings.stream-sort-order.label",
                              textColor: .white,
-                             value: "Connection order",
+                             value: viewModel.streamSortOrderSelectedLabelKey,
                              image: .textLink,
                              bundle: .module,
                              action: { isShowingStreamSortOrderScreen = true }
@@ -75,7 +76,7 @@ public struct SettingsScreen: View {
 
                 SettingsCell(text: "settings.audio-selection.label",
                              textColor: .white,
-                             value: "First source",
+                             value: viewModel.audioSelectedLabelKey,
                              image: .textLink,
                              bundle: .module,
                              action: { isShowingAudioSelectionScreen = true }
@@ -85,7 +86,7 @@ public struct SettingsScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text(title, bundle: .module)
+                    Text(viewModel.settingsScreenTitle, bundle: .module)
                 }
 
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -102,7 +103,7 @@ public struct SettingsScreen: View {
 struct SettingsScreen_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SettingsScreen(isShowLableOn: .constant(false))
+            SettingsScreen()
         }
     }
 }
