@@ -9,14 +9,14 @@
 "settings.show-source-labels.label" = "Show source labels";
 "settings.default-multiview-layout.label" = "Default multi-view layout";
 "settings.stream-sort-order.label" = "Stream sort order";
-"settings.audio-selection.label" = "Audio Selection";
+"settings.audio-selection.label" = "Audio selection";
 
 /** Default multi-view layout screen */
 "default-multi-view-layout.title.label" = "Default multi-view layout";
 "default-multi-view-layout.list-view.label" = "List view";
 "default-multi-view-layout.grid-view.label" = "Grid view";
 "default-multi-view-layout.single-stream-view.label" = "Single stream view";
-"default-multi-view-layout.footer.label" = "List view: Display one large source as the main view with smaller titles for additional feeds.\n\nGird view: Display all video sources as equally sized titles.";
+"default-multi-view-layout.footer.label" = "List view: Display one large source as the main view with smaller titles for additional feeds.\n\nGrid view: Display all video sources as equally sized titles.";
 
 /** Stream sort order screen */
 "stream-sort-order.title.label" = "Stream sort order";
