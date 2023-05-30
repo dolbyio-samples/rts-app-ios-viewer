@@ -16,8 +16,10 @@ final class StreamViewModel: ObservableObject {
         static let interactivityTimeOut: CGFloat = 5
     }
 
+    private let settingsManager: SettingsManager
     private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
+    private var settingsSubscriptions: [AnyCancellable] = []
 
     private(set) var selectedVideoStreamSourceId: UUID? {
         didSet {
@@ -50,21 +52,24 @@ final class StreamViewModel: ObservableObject {
         isStreamActive = sources.isEmpty == false
         selectedVideoSource = sources.first { $0.id == selectedVideoStreamSourceId }
         selectedAudioSource = sources.first { $0.id == selectedAudioStreamSourceId }
-        otherSources = sources.filter { $0.id != selectedVideoStreamSourceId }
-        allSources = sources
+        updateSortedSource()
+        otherSources = sortedSources.filter { $0.id != selectedVideoStreamSourceId }
     }
 
     @Published private(set) var mode: StreamViewMode = .list
     @Published private(set) var selectedVideoSource: StreamSource?
     @Published private(set) var selectedAudioSource: StreamSource?
+    @Published private(set) var sortedSources: [StreamSource] = []
     @Published private(set) var otherSources: [StreamSource] = []
-    @Published private(set) var allSources: [StreamSource] = []
     @Published private(set) var isStreamActive: Bool = false
 
-    init(streamCoordinator: StreamCoordinator = .shared) {
+    init(streamCoordinator: StreamCoordinator = .shared,
+         settingsManager: SettingsManager = .shared) {
         self.streamCoordinator = streamCoordinator
+        self.settingsManager = settingsManager
 
         setupStateObservers()
+        setupSettingsObservers()
     }
 
     private func setupStateObservers() {
@@ -74,6 +79,9 @@ final class StreamViewModel: ObservableObject {
                 guard let self = self else { return }
                 switch state {
                 case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
+                    if self.sources.isEmpty, let source = sources.first {
+                        settingsManager.setActiveSetting(for: .stream(streamID: source.streamId))
+                    }
                     self.sources = sources
                 default:
                     break
@@ -82,13 +90,34 @@ final class StreamViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
+    private func setupSettingsObservers() {
+        settingsManager.settingsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.updateSortedSource()
+            }
+            .store(in: &settingsSubscriptions)
+    }
+
+    private func updateSortedSource() {
+        switch settingsManager.settings.streamSortOrder {
+        case .connectionOrder:
+            sortedSources = sources
+        case .alphaNumeric:
+            sortedSources = sources.sorted {
+                $0.streamId.localizedStandardCompare($1.streamId) == .orderedAscending
+            }
+        }
+    }
+
     func selectVideoSource(_ source: StreamSource) {
         selectedVideoStreamSourceId = source.id
         selectedAudioStreamSourceId = source.id
     }
 
     func selectVideoSourceWithId(_ id: UUID) {
-        guard let source = allSources.first(where: { $0.id == id }) else {
+        guard let source = sortedSources.first(where: { $0.id == id }) else {
             return
         }
         selectVideoSource(source)
