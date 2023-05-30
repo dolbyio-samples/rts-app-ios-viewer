@@ -45,3 +45,8 @@ Main source: Use the audio from the source that is the \"main source\" and does 
 Follow video: Switch audio source when a video is selected. If the selected video does not contain an audio source, use the last selected audio source.
 
 <Source N>: Use the audio from an explicity selected audio source even if the video is switched.";
+
+/** Live Indicator */
+
+"stream.live.label" = "LIVE";
+"stream.offline.label" = "OFFLINE";

@@ -31,7 +31,12 @@ struct StreamDetailInputScreen: View {
 
     var body: some View {
         ZStack {
-            NavigationLink(destination: LazyNavigationDestinationView(StreamingScreen()), isActive: $isShowingStreamingView) {
+            NavigationLink(
+                destination: LazyNavigationDestinationView(
+                    StreamingScreen(isShowingStreamView: $isShowingStreamingView)
+                ),
+                isActive: $isShowingStreamingView
+            ) {
                 EmptyView()
             }
             .hidden()

@@ -37,6 +37,7 @@
 		E8224313299B00E400F9BB15 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8224312299B00E400F9BB15 /* ContentView.swift */; };
 		E822431A299B057C00F9BB15 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8224319299B057C00F9BB15 /* SplashScreen.swift */; };
 		E822431C299B073100F9BB15 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E822431B299B073100F9BB15 /* Launch Screen.storyboard */; };
+		E8264D682A25B32D00660507 /* RTSViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */; };
 		E82A0C0F296CEA07007214B8 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C0E296CEA07007214B8 /* DolbyIOUIKit */; };
 		E82A0C13296CEA0F007214B8 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */; };
 		E82A0C15296CEA12007214B8 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C14296CEA12007214B8 /* RTSComponentKit */; };
@@ -51,7 +52,6 @@
 		E83CD9FD2A10878C008690FD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E83CD9E52A10878C008690FD /* Localizable.strings */; };
 		E83CD9FE2A10878C008690FD /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CD9E72A10878C008690FD /* SplashScreen.swift */; };
 		E83CD9FF2A10878C008690FD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E83CD9E82A10878C008690FD /* Launch Screen.storyboard */; };
-		E83CDA062A10878C008690FD /* StreamingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CD9F02A10878C008690FD /* StreamingScreen.swift */; };
 		E83CDA072A10878C008690FD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CD9F12A10878C008690FD /* ContentView.swift */; };
 		E83CDA092A10878C008690FD /* RecentStreamsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CD9F52A10878C008690FD /* RecentStreamsViewModel.swift */; };
 		E83CDA0A2A10878C008690FD /* RecentStreamCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CD9F62A10878C008690FD /* RecentStreamCell.swift */; };
@@ -95,7 +95,6 @@
 		E8816E162A1086E400064B1D /* Task+Delayed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82FC5052977CF3B0050777F /* Task+Delayed.swift */; };
 		E8816E182A1086E400064B1D /* StreamDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6C29778BAA0026E877 /* StreamDataManager.swift */; };
 		E8816E1A2A1086E400064B1D /* StreamDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B4D298C75BD002D5C2B /* StreamDetail.swift */; };
-		E8816E1B2A1086E400064B1D /* RTSViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */; };
 		E8816E202A1086E400064B1D /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6F29778BD00026E877 /* RTSViewer.xcdatamodeld */; };
 		E8816E222A1086E400064B1D /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		E8816E242A1086E400064B1D /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8816E002A1086E400064B1D /* DolbyIOUIKit */; };
@@ -233,7 +232,6 @@
 		E83CD9E52A10878C008690FD /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E83CD9E72A10878C008690FD /* SplashScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		E83CD9E82A10878C008690FD /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		E83CD9F02A10878C008690FD /* StreamingScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamingScreen.swift; sourceTree = "<group>"; };
 		E83CD9F12A10878C008690FD /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E83CD9F22A10878C008690FD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E83CD9F52A10878C008690FD /* RecentStreamsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentStreamsViewModel.swift; sourceTree = "<group>"; };
@@ -449,7 +447,6 @@
 				E83CD9E52A10878C008690FD /* Localizable.strings */,
 				E83CD9E62A10878C008690FD /* SplashScreen */,
 				E83CD9E82A10878C008690FD /* Launch Screen.storyboard */,
-				E83CD9E92A10878C008690FD /* StreamingScreen */,
 				B6376BC12A1C4120007AD9D9 /* Constants.swift */,
 				E83CD9F12A10878C008690FD /* ContentView.swift */,
 				E83CD9F22A10878C008690FD /* Info.plist */,
@@ -490,14 +487,6 @@
 				E83CD9E72A10878C008690FD /* SplashScreen.swift */,
 			);
 			path = SplashScreen;
-			sourceTree = "<group>";
-		};
-		E83CD9E92A10878C008690FD /* StreamingScreen */ = {
-			isa = PBXGroup;
-			children = (
-				E83CD9F02A10878C008690FD /* StreamingScreen.swift */,
-			);
-			path = StreamingScreen;
 			sourceTree = "<group>";
 		};
 		E83CD9F32A10878C008690FD /* RecentStreams */ = {
@@ -1194,7 +1183,6 @@
 			files = (
 				E8E1855F2A1099F900BF4726 /* StreamDetailInputViewModel.swift in Sources */,
 				E83CDA0B2A10878C008690FD /* RecentStreamsScreen.swift in Sources */,
-				E83CDA062A10878C008690FD /* StreamingScreen.swift in Sources */,
 				E83CDA072A10878C008690FD /* ContentView.swift in Sources */,
 				E83CDA092A10878C008690FD /* RecentStreamsViewModel.swift in Sources */,
 				E83CD9F92A10878C008690FD /* StreamDetailInputScreen.swift in Sources */,
@@ -1212,11 +1200,11 @@
 				E8816E1A2A1086E400064B1D /* StreamDetail.swift in Sources */,
 				E83CDA0A2A10878C008690FD /* RecentStreamCell.swift in Sources */,
 				E83CDA3B2A10917A008690FD /* FooterView.swift in Sources */,
-				E8816E1B2A1086E400064B1D /* RTSViewer.swift in Sources */,
 				E83CD9FE2A10878C008690FD /* SplashScreen.swift in Sources */,
 				E83CD9FB2A10878C008690FD /* LandingViewModel.swift in Sources */,
 				E83CDA4A2A10917A008690FD /* BackgroundContainerView.swift in Sources */,
 				E83CDA472A10917A008690FD /* VideoRenderer.swift in Sources */,
+				E8264D682A25B32D00660507 /* RTSViewer.swift in Sources */,
 				E8816E202A1086E400064B1D /* RTSViewer.xcdatamodeld in Sources */,
 				E8816E222A1086E400064B1D /* PersistentSettings.swift in Sources */,
 			);

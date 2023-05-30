@@ -37,7 +37,7 @@ struct RecentStreamsScreen: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(StreamingScreen()),
+                destination: LazyNavigationDestinationView(StreamingScreen(isShowingStreamView: $isShowingStreamingView)),
                 isActive: $isShowingStreamingView) {
                     EmptyView()
                 }
