@@ -8,9 +8,9 @@ import Foundation
 extension SourceViewProviding {
 
     func videoViewDisplaySize(
-        forAvailableScreenWidth screenWidth: CGFloat,
+        availableScreenWidth screenWidth: CGFloat,
         availableScreenHeight screenHeight: CGFloat,
-        shouldCrop: Bool
+        shouldCrop: Bool = false
     ) -> CGSize {
         let ratio = calculateAspectRatio(
             crop: shouldCrop,
