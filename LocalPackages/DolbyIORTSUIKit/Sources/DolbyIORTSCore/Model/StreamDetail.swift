@@ -4,7 +4,7 @@
 
 import Foundation
 
-struct StreamDetail: Equatable {
-    let streamName: String
-    let accountID: String
+public struct StreamDetail: Equatable {
+    public let streamName: String
+    public let accountID: String
 }

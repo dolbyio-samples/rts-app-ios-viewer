@@ -19,7 +19,7 @@ final class StreamViewModel: ObservableObject {
     private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
 
-    private var selectedVideoStreamSourceId: UUID? {
+    private(set) var selectedVideoStreamSourceId: UUID? {
         didSet {
             updateState()
         }
@@ -73,7 +73,7 @@ final class StreamViewModel: ObservableObject {
             .sink { [weak self] state in
                 guard let self = self else { return }
                 switch state {
-                case let .subscribed(sources: sources, numberOfStreamViewers: _):
+                case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
                     self.sources = sources
                 default:
                     break
@@ -87,9 +87,11 @@ final class StreamViewModel: ObservableObject {
         selectedAudioStreamSourceId = source.id
     }
 
-    func selectVideoSourceAtIndex(_ index: Int) {
-        let sourceAtIndex = allSources[index]
-        selectVideoSource(sourceAtIndex)
+    func selectVideoSourceWithId(_ id: UUID) {
+        guard let source = allSources.first(where: { $0.id == id }) else {
+            return
+        }
+        selectVideoSource(source)
     }
 
     func mainViewProvider(for source: StreamSource) -> SourceViewProviding? {
