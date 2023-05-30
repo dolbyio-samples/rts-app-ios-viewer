@@ -20,7 +20,7 @@ final class DolbyIORTSCoreTests: XCTestCase {
 
         XCTAssertEqual(settings.showSourceLabels, false)
         XCTAssertEqual(settings.multiviewLayout, StreamSettings.MultiviewLayout.single)
-        XCTAssertEqual(settings.streamSortOrder, StreamSettings.StreamSortOrder.alphaNunmeric)
+        XCTAssertEqual(settings.streamSortOrder, StreamSettings.StreamSortOrder.alphaNumeric)
         XCTAssertEqual(settings.audioSelection, StreamSettings.AudioSelection.source(label: "CAM-1"))
     }
 

@@ -70,7 +70,7 @@ final class SettingsViewModel: ObservableObject {
 
     func selectStreamSortOrder(with index: Int) {
         switch index {
-        case 1: setStreamSortOrder(.alphaNunmeric)
+        case 1: setStreamSortOrder(.alphaNumeric)
         default: setStreamSortOrder(.connectionOrder)
         }
     }
@@ -148,13 +148,13 @@ extension SettingsViewModel {
                   selected: streamSortOrder == .connectionOrder),
             .init(key: "stream-sort-order.alphanumeric.label",
                   bundle: .module,
-                  selected: streamSortOrder == .alphaNunmeric)
+                  selected: streamSortOrder == .alphaNumeric)
         ]
 
         switch streamSortOrder {
         case .connectionOrder:
             streamSortOrderSelectedLabelKey = "stream-sort-order.connection-order.label"
-        case .alphaNunmeric:
+        case .alphaNumeric:
             streamSortOrderSelectedLabelKey = "stream-sort-order.alphanumeric.label"
         }
     }
