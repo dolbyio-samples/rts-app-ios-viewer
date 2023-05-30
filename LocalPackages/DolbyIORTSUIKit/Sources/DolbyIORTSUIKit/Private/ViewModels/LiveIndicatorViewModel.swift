@@ -23,7 +23,7 @@ final class LiveIndicatorViewModel: ObservableObject {
             .sink { [weak self] state in
                 guard let self = self else { return }
                 switch state {
-                case let .subscribed(sources: sources, numberOfStreamViewers: _):
+                case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
                     self.isStreamActive = !sources.isEmpty
                 default:
                     break

@@ -9,7 +9,7 @@ import DolbyIOUIKit
 struct SingleStreamView: View {
     @ObservedObject private var viewModel: StreamViewModel
     @State private var showScreenControls = false
-    @State private var currentIndex: Int = 0
+    @State private var selectedVideoStreamSourceId: UUID
     private let isShowingDetailPresentation: Bool
     private let onClose: (() -> Void)?
 
@@ -23,6 +23,7 @@ struct SingleStreamView: View {
         self.viewModel = viewModel
         self.isShowingDetailPresentation = isShowingDetailPresentation
         self.onClose = onClose
+        _selectedVideoStreamSourceId = State(wrappedValue: viewModel.selectedVideoStreamSourceId!)
     }
 
     @ViewBuilder
@@ -64,34 +65,36 @@ struct SingleStreamView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            TabView(selection: $currentIndex) {
-                ForEach(
-                    0..<viewModel.allSources.count,
-                    id: \.self) { index in
-                        let source = viewModel.allSources[index]
+            TabView(selection: $selectedVideoStreamSourceId) {
+                ForEach(viewModel.allSources, id: \.id) { source in
+                    if let viewProvider = viewModel.mainViewProvider(for: source) {
+                        let maxAllowedVideoWidth = proxy.size.width
+                        let maxAllowedVideoHeight = proxy.size.height
+
+                        let videoSize = viewProvider.videoViewDisplaySize(
+                            forAvailableScreenWidth: maxAllowedVideoWidth,
+                            availableScreenHeight: maxAllowedVideoHeight,
+                            shouldCrop: false
+                        )
+
                         HStack {
-                            if let viewProvider = viewModel.mainViewProvider(for: source) {
-                                let maxAllowedVideoWidth = proxy.size.width
-                                let maxAllowedVideoHeight = proxy.size.height
-
-                                let videoSize = viewProvider.videoViewDisplaySize(
-                                    forAvailableScreenWidth: maxAllowedVideoWidth,
-                                    availableScreenHeight: maxAllowedVideoHeight,
-                                    shouldCrop: false
-                                )
-
-                                VideoRendererView(viewProvider: viewProvider)
-                                    .frame(width: videoSize.width, height: videoSize.height)
-                                    .onAppear {
-                                        viewModel.playVideo(for: source)
-                                        viewModel.playAudio(for: source)
-                                    }
-                            }
+                            VideoRendererView(viewProvider: viewProvider)
+                                .frame(width: videoSize.width, height: videoSize.height)
+                                .onAppear {
+                                    viewModel.playVideo(for: source)
+                                    viewModel.playAudio(for: source)
+                                }
+                                .onDisappear {
+                                    viewModel.stopAudio(for: source)
+                                    viewModel.stopVideo(for: source)
+                                }
                         }
+                        .tag(source.id)
                         .frame(width: proxy.size.width, height: proxy.size.height)
-                        .tag(index)
                     }
+                }
             }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .overlay(alignment: .top) {
                 topToolBarView
                     .offset(x: 0, y: showScreenControls ? 0 : -Animation.offset)
@@ -119,10 +122,9 @@ struct SingleStreamView: View {
                     showControlsAndObserveInteractions()
                 }
             }
-        }
-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-        .onChange(of: currentIndex) { newValue in
-            viewModel.selectVideoSourceAtIndex(newValue)
+            .onChange(of: selectedVideoStreamSourceId) { newValue in
+                viewModel.selectVideoSourceWithId(newValue)
+            }
         }
         .navigationBarHidden(isShowingDetailPresentation)
     }
