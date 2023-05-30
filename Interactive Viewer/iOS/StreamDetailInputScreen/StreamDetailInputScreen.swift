@@ -46,102 +46,104 @@ struct StreamDetailInputScreen: View {
             }
             .hidden()
 
-            VStack(spacing: 0) {
-                if horizontalSizeClass == .regular {
-                    Spacer()
-                        .frame(height: Layout.spacing5x)
-                } else {
+            ScrollView {
+                VStack(spacing: 0) {
+                    if horizontalSizeClass == .regular {
+                        Spacer()
+                            .frame(height: Layout.spacing5x)
+                    } else {
+                        Spacer()
+                            .frame(height: Layout.spacing3x)
+                    }
+
+                    Text(
+                        text: "stream-detail-input.title.label",
+                        mode: .primary,
+                        fontAsset: .avenirNextDemiBold(
+                            size: FontSize.title1,
+                            style: .title
+                        )
+                    )
+
                     Spacer()
                         .frame(height: Layout.spacing3x)
-                }
 
-                Text(
-                    text: "stream-detail-input.title.label",
-                    mode: .primary,
-                    fontAsset: .avenirNextDemiBold(
-                        size: FontSize.title1,
-                        style: .title
+                    Text(
+                        text: "stream-detail-input.start-a-stream.label",
+                        mode: .primary,
+                        fontAsset: .avenirNextDemiBold(
+                            size: FontSize.title2,
+                            style: .title
+                        )
                     )
-                )
 
-                Spacer()
-                    .frame(height: Layout.spacing3x)
+                    Spacer()
+                        .frame(height: Layout.spacing1x)
 
-                Text(
-                    text: "stream-detail-input.start-a-stream.label",
-                    mode: .primary,
-                    fontAsset: .avenirNextDemiBold(
-                        size: FontSize.title2,
-                        style: .title
+                    Text(
+                        text: "stream-detail-input.subtitle.label",
+                        fontAsset: .avenirNextRegular(
+                            size: FontSize.subhead,
+                            style: .subheadline
+                        )
                     )
-                )
+                    .multilineTextAlignment(.center)
 
-                Spacer()
-                    .frame(height: Layout.spacing1x)
+                    Spacer()
+                        .frame(height: Layout.spacing3x)
 
-                Text(
-                    text: "stream-detail-input.subtitle.label",
-                    fontAsset: .avenirNextRegular(
-                        size: FontSize.subhead,
-                        style: .subheadline
-                    )
-                )
-                .multilineTextAlignment(.center)
-
-                Spacer()
-                    .frame(height: Layout.spacing3x)
-
-                VStack(spacing: Layout.spacing3x) {
-                    DolbyIOUIKit.TextField(text: $streamName, placeholderText: "stream-detail-streamname-placeholder-label")
-                        .focused($inputFocus, equals: .streamName)
-                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
-                        .submitLabel(.next)
-                        .onReceive(streamName.publisher) { _ in
-                            streamName = String(streamName.prefix(64))
-                        }
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                                self.inputFocus = .streamName
+                    VStack(spacing: Layout.spacing3x) {
+                        DolbyIOUIKit.TextField(text: $streamName, placeholderText: "stream-detail-streamname-placeholder-label")
+                            .focused($inputFocus, equals: .streamName)
+                            .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                            .submitLabel(.next)
+                            .onReceive(streamName.publisher) { _ in
+                                streamName = String(streamName.prefix(64))
                             }
-                        }
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                                    self.inputFocus = .streamName
+                                }
+                            }
 
-                    DolbyIOUIKit.TextField(text: $accountID, placeholderText: "stream-detail-accountid-placeholder-label")
-                        .focused($inputFocus, equals: .accountID)
-                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
-                        .submitLabel(.done)
-                        .onReceive(accountID.publisher) { _ in
-                            accountID = String(accountID.prefix(64))
-                        }
+                        DolbyIOUIKit.TextField(text: $accountID, placeholderText: "stream-detail-accountid-placeholder-label")
+                            .focused($inputFocus, equals: .accountID)
+                            .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                            .submitLabel(.done)
+                            .onReceive(accountID.publisher) { _ in
+                                accountID = String(accountID.prefix(64))
+                            }
 
-                    Button(
-                        action: {
-                            Task {
-                                let success = await StreamCoordinator.shared.connect(streamName: streamName, accountID: accountID)
-                                await MainActor.run {
-                                    showingAlert = !success
-                                    isShowingStreamingView = success
-                                    if success {
-                                        // A delay is added before saving the stream.
-                                        Task.delayed(byTimeInterval: 1.0) {
-                                            await viewModel.saveStream(streamName: streamName, accountID: accountID)
+                        Button(
+                            action: {
+                                Task {
+                                    let success = await StreamCoordinator.shared.connect(streamName: streamName, accountID: accountID)
+                                    await MainActor.run {
+                                        showingAlert = !success
+                                        isShowingStreamingView = success
+                                        if success {
+                                            // A delay is added before saving the stream.
+                                            Task.delayed(byTimeInterval: 1.0) {
+                                                await viewModel.saveStream(streamName: streamName, accountID: accountID)
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        },
-                        text: "stream-detail-input.play.button"
-                    )
-                }
-                .frame(maxWidth: 400)
-
-                Spacer()
-
-                VStack {
-                    Spacer()
-
-                    demoAStream
+                            },
+                            text: "stream-detail-input.play.button"
+                        )
+                    }
+                    .frame(maxWidth: 400)
 
                     Spacer()
+
+                    VStack {
+                        Spacer()
+
+                        demoAStream
+
+                        Spacer()
+                    }
                 }
             }
             .padding([.leading, .trailing], Layout.spacing3x)
