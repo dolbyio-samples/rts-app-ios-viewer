@@ -19,7 +19,7 @@ open class StreamCoordinator {
 
     private let stateMachine: StateMachine = StateMachine(initialState: .disconnected)
     private let subscriptionManager: SubscriptionManagerProtocol
-    private let rendererManager: RendererManagerProtocol
+    private let rendererRegistry: RendererRegistryProtocol
     private let taskScheduler: TaskSchedulerProtocol
 
     private static var configuration: StreamCoordinatorConfiguration = .init()
@@ -31,7 +31,7 @@ open class StreamCoordinator {
     private init() {
         subscriptionManager = SubscriptionManager()
         taskScheduler = TaskScheduler()
-        rendererManager = RendererManager()
+        rendererRegistry = RendererRegistry()
 
         subscriptionManager.delegate = self
 
@@ -39,10 +39,14 @@ open class StreamCoordinator {
     }
 
     #if DEBUG
-    init(subscriptionManager: SubscriptionManagerProtocol, taskScheduler: TaskSchedulerProtocol, rendererManager: RendererManagerProtocol) {
+    init(
+        subscriptionManager: SubscriptionManagerProtocol,
+        taskScheduler: TaskSchedulerProtocol,
+        rendererRegistry: RendererRegistryProtocol
+    ) {
         self.subscriptionManager = subscriptionManager
         self.taskScheduler = taskScheduler
-        self.rendererManager = rendererManager
+        self.rendererRegistry = rendererRegistry
 
         self.subscriptionManager.delegate = self
 
@@ -81,7 +85,7 @@ open class StreamCoordinator {
 
     public func stopSubscribe() async -> Bool {
         await stateMachine.stopSubscribe()
-        rendererManager.reset()
+        rendererRegistry.reset()
         return await subscriptionManager.stopSubscribe()
     }
 
@@ -101,6 +105,9 @@ open class StreamCoordinator {
 
             sources.forEach { source in
                 if source.isPlayingAudio {
+                    Task {
+                        await stateMachine.setPlayingAudio(false, for: source)
+                    }
                     subscriptionManager.unprojectAudio(for: source)
                 }
             }
@@ -153,7 +160,9 @@ open class StreamCoordinator {
         case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
             guard
                 let matchingSource = sources.first(where: { $0.id == source.id }),
-                matchingSource.isPlayingVideo
+                matchingSource.isPlayingVideo,
+                let videoTrack = source.videoTrack?.track,
+                !rendererRegistry.hasActiveRenderer(for: videoTrack)
             else {
                 return
             }
@@ -164,12 +173,11 @@ open class StreamCoordinator {
         }
     }
 
-    public func mainSourceViewProvider(for source: StreamSource) -> SourceViewProviding? {
-        rendererManager.mainRenderer(for: source.sourceId).map { StreamSourceViewProvider(renderer: $0) }
-    }
-
-    public func subSourceViewProvider(for source: StreamSource) -> SourceViewProviding? {
-        rendererManager.subRenderer(for: source.sourceId).map { StreamSourceViewProvider(renderer: $0) }
+    public func registerRenderer(_ renderer: StreamSourceViewRenderer, source: StreamSource, viewIdentifier: String) {
+        guard let videoTrack = source.videoTrack?.track else {
+            fatalError("Can't register renderer for a source which does not have video track")
+        }
+        return rendererRegistry.registerRenderer(renderer, for: videoTrack)
     }
 }
 
@@ -240,16 +248,6 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
                 return
             }
             await self.stateMachine.onVideoTrack(track, withMid: mid)
-
-            // Add Video Renderer for Video Track
-            switch await self.stateMachine.currentState {
-            case let .subscribed(state):
-                if let builder = state.streamSourceBuilders.first(where: { $0.videoTrack?.trackInfo.mid == mid }) {
-                    await self.rendererManager.addRenderer(sourceId: builder.sourceId, track: track)
-                }
-            default:
-                break
-            }
         }
     }
 
@@ -301,18 +299,7 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
             guard let self = self else {
                 return
             }
-            // Remove Video Renderer for Video Track
-            let streamSourceId: StreamSource.SourceId?
-            switch await self.stateMachine.currentState {
-            case let .subscribed(state):
-                let builder = state.streamSourceBuilders.first(where: { $0.sourceId.value == sourceId })
-                streamSourceId = builder?.sourceId
-            default:
-                streamSourceId = nil
-            }
-
-            await stateMachine.onInactive(streamId, sourceId: sourceId)
-            streamSourceId.map { self.rendererManager.removeRenderer(sourceId: $0) }
+            await self.stateMachine.onInactive(streamId, sourceId: sourceId)
         }
     }
 }

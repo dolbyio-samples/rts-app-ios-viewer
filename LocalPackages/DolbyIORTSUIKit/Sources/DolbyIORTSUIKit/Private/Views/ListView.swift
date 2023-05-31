@@ -11,14 +11,20 @@ struct ListView: View {
         static let maximumNumberOfTilesRatio: CGFloat = 1 / 3
     }
 
-    @ObservedObject private var viewModel: StreamViewModel
-    private var onMainSourceSelection: () -> Void
+    private let viewModel: ListViewModel
+    private let onPrimaryVideoSelection: (StreamSource) -> Void
+    private let onSecondaryVideoSelection: (StreamSource) -> Void
 
     private let columns = [GridItem(.flexible(), spacing: Layout.spacing1x), GridItem(.flexible(), spacing: Layout.spacing1x)]
 
-    init(viewModel: StreamViewModel, onMainSourceSelection: @escaping () -> Void) {
+    init(
+        viewModel: ListViewModel,
+        onPrimaryVideoSelection: @escaping (StreamSource) -> Void,
+        onSecondaryVideoSelection: @escaping (StreamSource) -> Void
+    ) {
         self.viewModel = viewModel
-        self.onMainSourceSelection = onMainSourceSelection
+        self.onPrimaryVideoSelection = onPrimaryVideoSelection
+        self.onSecondaryVideoSelection = onSecondaryVideoSelection
     }
 
     @ViewBuilder
@@ -32,51 +38,36 @@ struct ListView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            if viewModel.isStreamActive {
-                ScrollView {
-                    let maxAllowedMainVideoWidth = proxy.size.width
-                    let maxAllowedMainVideoHeight = proxy.size.height * Defaults.maximumNumberOfTilesRatio
+            ScrollView {
+                let maxAllowedMainVideoWidth = proxy.size.width
+                let maxAllowedMainVideoHeight = proxy.size.height * Defaults.maximumNumberOfTilesRatio
 
-                    LazyVGrid(columns: columns, pinnedViews: [.sectionHeaders]) {
-                        Section(
-                            header: HStack {
-                                if let source = viewModel.selectedVideoSource, let mainViewProvider = viewModel.mainViewProvider(for: source) {
-
-                                    VideoRendererView(viewProvider: mainViewProvider)
-                                        .frame(width: maxAllowedMainVideoWidth, height: maxAllowedMainVideoHeight)
-                                        .overlay(
-                                            viewModel.selectedAudioSource == source ? audioPlaybackIndicatorView : nil
-                                        )
-                                        .onAppear {
-                                            viewModel.playVideo(for: source)
-                                        }
-                                        .onTapGesture {
-                                            onMainSourceSelection()
-                                        }
-                                }
+                LazyVGrid(columns: columns, pinnedViews: [.sectionHeaders]) {
+                    Section(
+                        header: HStack {
+                            let primaryVideoViewModel = viewModel.primaryVideoViewModel
+                            VideoRendererView(
+                                viewModel: viewModel.primaryVideoViewModel,
+                                maxWidth: maxAllowedMainVideoWidth,
+                                maxHeight: maxAllowedMainVideoHeight,
+                                contentMode: .scaleToFill
+                            ) { source in
+                                onPrimaryVideoSelection(source)
                             }
-                                .clipped()
-                        ) {
-                            ForEach(viewModel.otherSources, id: \.id) { subVideosource in
-                                let maxAllowedSubVideoWidth = proxy.size.width / 2
-                                let maxAllowedSubVideoHeight = proxy.size.height * Defaults.maximumNumberOfTilesRatio / 2
+                        }
+                            .clipped()
+                    ) {
+                        ForEach(viewModel.secondaryVideoViewModels, id: \.streamSource.id) { viewModel in
+                            let maxAllowedSubVideoWidth = proxy.size.width / 2
+                            let maxAllowedSubVideoHeight = proxy.size.height * Defaults.maximumNumberOfTilesRatio / 2
 
-                                HStack {
-                                    if let subViewProvider = viewModel.subViewProvider(for: subVideosource) {
-
-                                        VideoRendererView(viewProvider: subViewProvider)
-                                            .frame(width: maxAllowedSubVideoWidth, height: maxAllowedSubVideoHeight)
-                                            .overlay(
-                                                viewModel.selectedAudioSource == subVideosource ? audioPlaybackIndicatorView : nil
-                                            )
-                                            .onTapGesture {
-                                                viewModel.selectVideoSource(subVideosource)
-                                            }
-                                            .onAppear {
-                                                viewModel.playVideo(for: subVideosource)
-                                            }
-                                    }
-                                }
+                            VideoRendererView(
+                                viewModel: viewModel,
+                                maxWidth: maxAllowedSubVideoWidth,
+                                maxHeight: maxAllowedSubVideoHeight,
+                                contentMode: .scaleToFill
+                            ) { source in
+                                onSecondaryVideoSelection(source)
                             }
                         }
                     }

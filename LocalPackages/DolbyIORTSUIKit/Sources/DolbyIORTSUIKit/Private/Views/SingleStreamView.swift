@@ -7,11 +7,12 @@ import DolbyIORTSCore
 import DolbyIOUIKit
 
 struct SingleStreamView: View {
-    @ObservedObject private var viewModel: StreamViewModel
+    private let viewModel: SingleStreamViewModel
     @State private var showScreenControls = false
-    @State private var selectedVideoStreamSourceId: UUID
+//    @State private var selectedVideoStreamSourceId: UUID
     private let isShowingDetailPresentation: Bool
     private let onClose: (() -> Void)?
+    @State private var currentState: Int = 0
 
     private enum Animation {
         static let duration: CGFloat = 0.75
@@ -19,11 +20,11 @@ struct SingleStreamView: View {
         static let offset: CGFloat = 200.0
     }
 
-    init(viewModel: StreamViewModel, isShowingDetailPresentation: Bool = false, onClose: (() -> Void)? = nil) {
+    init(viewModel: SingleStreamViewModel, isShowingDetailPresentation: Bool, onClose: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.isShowingDetailPresentation = isShowingDetailPresentation
         self.onClose = onClose
-        _selectedVideoStreamSourceId = State(wrappedValue: viewModel.selectedVideoStreamSourceId!)
+//        _selectedVideoStreamSourceId = State(wrappedValue: viewModel.selectedVideoStreamSourceId!)
     }
 
     @ViewBuilder
@@ -41,17 +42,19 @@ struct SingleStreamView: View {
 
     @ViewBuilder
     private var bottomToolBarView: some View {
-        if let source = viewModel.selectedVideoSource {
-            HStack {
-                StatsInfoButton(streamSource: source)
-                Spacer()
-                if isShowingDetailPresentation {
-                    SettingsButton()
-                }
-            }
-            .ignoresSafeArea()
-            .padding(Layout.spacing1x)
-        }
+        EmptyView()
+//        if let source = viewModel.selectedVideoSource {
+//            HStack {
+//                StatsInfoButton(streamSource: source)
+//                Spacer()
+//                if isShowingDetailPresentation {
+//                    SettingsButton()
+//                        .padding(Layout.spacing1x)
+//                }
+//            }
+//            .ignoresSafeArea()
+//            .padding(Layout.spacing1x)
+//        }
     }
 
     @ViewBuilder
@@ -65,33 +68,21 @@ struct SingleStreamView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            TabView(selection: $selectedVideoStreamSourceId) {
-                ForEach(viewModel.sortedSources, id: \.id) { source in
-                    if let viewProvider = viewModel.mainViewProvider(for: source) {
-                        let maxAllowedVideoWidth = proxy.size.width
-                        let maxAllowedVideoHeight = proxy.size.height
-                        
-                        let videoSize = viewProvider.videoViewDisplaySize(
-                            forAvailableScreenWidth: maxAllowedVideoWidth,
-                            availableScreenHeight: maxAllowedVideoHeight,
-                            shouldCrop: false
-                        )
+            TabView(selection: $currentState) {
+                ForEach(viewModel.videoViewModels, id: \.streamSource.id) { viewModel in
+                    let maxAllowedVideoWidth = proxy.size.width
+                    let maxAllowedVideoHeight = proxy.size.height
 
-                        HStack {
-                            VideoRendererView(viewProvider: viewProvider)
-                                .frame(width: videoSize.width, height: videoSize.height)
-                                .onAppear {
-                                    viewModel.playVideo(for: source)
-                                    viewModel.playAudio(for: source)
-                                }
-                                .onDisappear {
-                                    viewModel.stopAudio(for: source)
-                                    viewModel.stopVideo(for: source)
-                                }
-                        }
-                        .tag(source.id)
-                        .frame(width: proxy.size.width, height: proxy.size.height)
+                    HStack {
+                        VideoRendererView(
+                            viewModel: viewModel,
+                            maxWidth: maxAllowedVideoWidth,
+                            maxHeight: maxAllowedVideoHeight,
+                            contentMode: .aspectFit
+                        )
                     }
+                    .tag(viewModel.streamSource.id)
+                    .frame(width: proxy.size.width, height: proxy.size.height)
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -106,12 +97,12 @@ struct SingleStreamView: View {
             .onAppear {
                 showControlsAndObserveInteractions()
             }
-            .onReceive(viewModel.interactivityTimer) { _ in
-                guard isShowingDetailPresentation else {
-                    return
-                }
-                hideControlsAndStopObservingInteractions()
-            }
+//            .onReceive(viewModel.interactivityTimer) { _ in
+//                guard isShowingDetailPresentation else {
+//                    return
+//                }
+//                hideControlsAndStopObservingInteractions()
+//            }
             .onTapGesture {
                 guard isShowingDetailPresentation else {
                     return
@@ -122,9 +113,9 @@ struct SingleStreamView: View {
                     showControlsAndObserveInteractions()
                 }
             }
-            .onChange(of: selectedVideoStreamSourceId) { newValue in
-                viewModel.selectVideoSourceWithId(newValue)
-            }
+//            .onChange(of: selectedVideoStreamSourceId) { newValue in
+//                viewModel.selectVideoSourceWithId(newValue)
+//            }
         }
         .navigationBarHidden(isShowingDetailPresentation)
     }
@@ -136,13 +127,13 @@ struct SingleStreamView: View {
         guard isShowingDetailPresentation else {
             return
         }
-        viewModel.startInteractivityTimer()
+//        viewModel.startInteractivityTimer()
     }
 
     private func hideControlsAndStopObservingInteractions() {
         withAnimation(.easeOut(duration: Animation.duration)) {
             showScreenControls = false
         }
-        viewModel.stopInteractivityTimer()
+//        viewModel.stopInteractivityTimer()
     }
 }

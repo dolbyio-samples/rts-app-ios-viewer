@@ -5,17 +5,75 @@
 import DolbyIORTSCore
 import SwiftUI
 
-struct VideoRendererView: UIViewRepresentable {
-    private let viewProvider: SourceViewProviding
+struct VideoRendererView: View {
+    private let viewModel: VideoRendererViewModel
+    private let maxWidth: CGFloat
+    private let maxHeight: CGFloat
+    private let contentMode: VideoRendererContentMode
+    private let action: ((StreamSource) -> Void)?
 
-    init(viewProvider: SourceViewProviding) {
-        self.viewProvider = viewProvider
+    init(
+        viewModel: VideoRendererViewModel,
+        maxWidth: CGFloat,
+        maxHeight: CGFloat,
+        contentMode: VideoRendererContentMode,
+        action: ((StreamSource) -> Void)? = nil
+    ) {
+        self.viewModel = viewModel
+        self.maxWidth = maxWidth
+        self.maxHeight = maxHeight
+        self.contentMode = contentMode
+        self.action = action
+    }
+
+    var body: some View {
+        HStack {
+            let viewRenderer = viewModel.viewRenderer
+            let videoSize: CGSize = {
+                switch contentMode {
+                case .aspectFit:
+                    return viewRenderer.videoViewDisplaySize(
+                        forAvailableScreenWidth: maxWidth,
+                        availableScreenHeight: maxHeight,
+                        shouldCrop: false
+                    )
+                case .aspectFill:
+                    return viewRenderer.videoViewDisplaySize(
+                        forAvailableScreenWidth: maxWidth,
+                        availableScreenHeight: maxHeight,
+                        shouldCrop: true
+                    )
+                case .scaleToFill:
+                    return CGSize(width: maxWidth, height: maxHeight)
+                }
+            }()
+
+            VideoRendererViewInteral(viewRenderer: viewRenderer)
+                .frame(width: videoSize.width, height: videoSize.height)
+                .onTapGesture {
+                    action?(viewModel.streamSource)
+                }
+                .onAppear {
+                    viewModel.playVideo(for: viewModel.streamSource)
+                }
+                .onDisappear {
+                    viewModel.stopVideo(for: viewModel.streamSource)
+                }
+        }
+        .frame(width: maxWidth, height: maxHeight)
+    }
+}
+
+private struct VideoRendererViewInteral: UIViewRepresentable {
+    private let viewRenderer: StreamSourceViewRenderer
+
+    init(viewRenderer: StreamSourceViewRenderer) {
+        self.viewRenderer = viewRenderer
     }
 
     func makeUIView(context: Context) -> UIView {
         let containerView = ContainerView<UIView>()
-        containerView.updateChildView(viewProvider.playbackView)
-
+        containerView.updateChildView(viewRenderer.playbackView)
         return containerView
     }
 
@@ -23,7 +81,7 @@ struct VideoRendererView: UIViewRepresentable {
         guard let containerView = uiView as? ContainerView<UIView> else {
             return
         }
-        containerView.updateChildView(viewProvider.playbackView)
+        containerView.updateChildView(viewRenderer.playbackView)
     }
 }
 

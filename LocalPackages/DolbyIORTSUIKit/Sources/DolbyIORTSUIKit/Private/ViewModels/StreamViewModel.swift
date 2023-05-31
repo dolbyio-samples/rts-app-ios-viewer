@@ -6,100 +6,81 @@ import Combine
 import DolbyIORTSCore
 import Foundation
 
-enum StreamViewMode {
-    case single, list
-}
-
 final class StreamViewModel: ObservableObject {
+    
+    enum State {
+        case loading
+        case success(displayMode: DisplayMode)
+        case error(title: String, subtitle: String)
+        
+        fileprivate init(_ state: InternalState) {
+            switch state {
+            case .loading:
+                self = .loading
+            case let .success(
+                displayMode: displayMode,
+                sources: _,
+                selectedVideoSource: _,
+                selectedAudioSource: _,
+                sourceAndViewRenderers: _,
+                settings: _
+            ):
+                self = .success(displayMode: displayMode)
+            case let .error(title: title, subtitle: subtitle):
+                self = .error(title: title, subtitle: subtitle)
+            }
+        }
+    }
+    
+    fileprivate enum InternalState {
+        case loading
+        case success(
+            displayMode: DisplayMode,
+            sources: [StreamSource],
+            selectedVideoSource: StreamSource,
+            selectedAudioSource: StreamSource,
+            sourceAndViewRenderers: StreamSourceAndViewRenderers,
+            settings: StreamSettings
+        )
+        case error(title: String, subtitle: String)
+    }
+    
+    enum DisplayMode {
+        case single(SingleStreamViewModel)
+        case list(ListViewModel)
+    }
 
     private enum Constants {
         static let interactivityTimeOut: CGFloat = 5
     }
-
+    
     private let settingsManager: SettingsManager
     private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
 
-    private(set) var selectedVideoStreamSourceId: UUID? {
+    @Published private(set) var state: State = .loading
+    private var internalState: InternalState = .loading {
         didSet {
-            updateState()
+            state = State(internalState)
         }
     }
 
-    private var selectedAudioStreamSourceId: UUID? {
-        didSet {
-            updateState()
-            guard let audioSource = selectedAudioSource else {
-                return
-            }
-            playAudio(for: audioSource)
+    private var sources: [StreamSource] = []
+    
+    private func updateState(from sources: [StreamSource], streamDetail: StreamDetail, settings: StreamSettings) {
+        guard !sources.isEmpty else {
+            // TODO: Set proper error messages
+            internalState = .error(title: "", subtitle: "")
+            return
         }
-    }
-
-    private var sources: [StreamSource] = [] {
-        didSet {
-            if selectedVideoStreamSourceId == nil, let firstSource = sources.first {
-                selectedVideoStreamSourceId = firstSource.id
-                selectedAudioStreamSourceId = firstSource.id
-            }
-
-            updateState()
+        
+        // When retreiving sources for the first time
+        if self.sources.isEmpty {
+            // Update settings manager with the current stream information
+            settingsManager.setActiveSetting(for: .stream(streamID: streamDetail.streamId))
         }
-    }
-
-    private func updateState() {
-        isStreamActive = sources.isEmpty == false
-        selectedVideoSource = sources.first { $0.id == selectedVideoStreamSourceId }
-        selectedAudioSource = sources.first { $0.id == selectedAudioStreamSourceId }
-        updateSortedSource()
-        otherSources = sortedSources.filter { $0.id != selectedVideoStreamSourceId }
-    }
-
-    @Published private(set) var mode: StreamViewMode = .list
-    @Published private(set) var selectedVideoSource: StreamSource?
-    @Published private(set) var selectedAudioSource: StreamSource?
-    @Published private(set) var sortedSources: [StreamSource] = []
-    @Published private(set) var otherSources: [StreamSource] = []
-    @Published private(set) var isStreamActive: Bool = false
-
-    init(streamCoordinator: StreamCoordinator = .shared,
-         settingsManager: SettingsManager = .shared) {
-        self.streamCoordinator = streamCoordinator
-        self.settingsManager = settingsManager
-
-        setupStateObservers()
-        setupSettingsObservers()
-    }
-
-    private func setupStateObservers() {
-        streamCoordinator.statePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                guard let self = self else { return }
-                switch state {
-                case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: steamDetail):
-                    if self.sources.isEmpty, sources.isEmpty == false {
-                        settingsManager.setActiveSetting(for: .stream(streamID: steamDetail.streamId))
-                    }
-                    self.sources = sources
-                default:
-                    break
-                }
-            }
-            .store(in: &subscriptions)
-    }
-
-    private func setupSettingsObservers() {
-        settingsManager.settingsPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-                self.updateSortedSource()
-            }
-            .store(in: &subscriptions)
-    }
-
-    private func updateSortedSource() {
+        
+        let sortedSources: [StreamSource]
         switch settingsManager.settings.streamSortOrder {
         case .connectionOrder:
             sortedSources = sources
@@ -108,47 +89,157 @@ final class StreamViewModel: ObservableObject {
                 $0.streamId.localizedStandardCompare($1.streamId) == .orderedAscending
             }
         }
+        
+        let selectedVideoSource: StreamSource
+        let sourceAndViewRenderers: StreamSourceAndViewRenderers
+
+        switch internalState {
+        case .error, .loading:
+            selectedVideoSource = sortedSources[0]
+            sourceAndViewRenderers = StreamSourceAndViewRenderers()
+
+        case let .success(
+            displayMode: _,
+            sources: _,
+            selectedVideoSource: currentlySelectedVideoSource,
+            selectedAudioSource: _,
+            sourceAndViewRenderers: existingSourceAndViewRenderers,
+            settings: _
+        ):
+            selectedVideoSource = currentlySelectedVideoSource
+            sourceAndViewRenderers = existingSourceAndViewRenderers
+        }
+        
+        let selectedAudioSource: StreamSource
+        switch settings.audioSelection {
+        case .firstSource, .mainSource:
+            selectedAudioSource = sortedSources[0]
+        case .followVideo:
+            selectedAudioSource = selectedVideoSource
+        case let .source(sourceId: sourceId):
+            selectedAudioSource = sortedSources.first { $0.sourceId.value == sourceId } ?? sortedSources[0]
+        }
+        
+        let displayMode: DisplayMode
+        switch settings.multiviewLayout {
+        case .list:
+            let secondaryVideoSources = sortedSources.filter { $0 != selectedVideoSource }
+
+            let listViewModel = ListViewModel(
+                primaryVideoViewModel: VideoRendererViewModel(
+                    streamSource: selectedVideoSource,
+                    viewRenderer: sourceAndViewRenderers.primaryRenderer(for: selectedVideoSource),
+                    isSelectedVideoSource: true,
+                    isSelectedAudioSource: selectedVideoSource == selectedAudioSource
+                ),
+                secondaryVideoViewModels: secondaryVideoSources.map {
+                    VideoRendererViewModel(
+                        streamSource: $0,
+                        viewRenderer: sourceAndViewRenderers.primaryRenderer(for: $0),
+                        isSelectedVideoSource: false,
+                        isSelectedAudioSource: $0 == selectedAudioSource
+                    )
+                }
+            )
+            displayMode = .list(listViewModel)
+        case .single:
+            let singleStreamViewModel = SingleStreamViewModel(
+                videoViewModels: sortedSources.map {
+                    VideoRendererViewModel(
+                        streamSource: $0,
+                        viewRenderer: sourceAndViewRenderers.primaryRenderer(for: $0),
+                        isSelectedVideoSource: false,
+                        isSelectedAudioSource: $0 == selectedAudioSource
+                    )
+                }
+            )
+            displayMode = .single(singleStreamViewModel)
+        default:
+            fatalError("Display mode is unhandled")
+            break
+        }
+        
+        self.internalState = .success(
+            displayMode: displayMode,
+            sources: sortedSources,
+            selectedVideoSource: selectedVideoSource,
+            selectedAudioSource: selectedAudioSource,
+            sourceAndViewRenderers: sourceAndViewRenderers,
+            settings: settings
+        )
+    }
+
+    init(
+        streamCoordinator: StreamCoordinator = .shared,
+        settingsManager: SettingsManager = .shared
+    ) {
+        self.streamCoordinator = streamCoordinator
+        self.settingsManager = settingsManager
+
+        startObservers()
+    }
+
+    private func startObservers() {
+        streamCoordinator.statePublisher
+            .combineLatest(settingsManager.settingsPublisher)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state, settings in
+                guard let self = self else { return }
+                switch state {
+                case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: streamDetail):
+                    self.updateState(from: sources, streamDetail: streamDetail, settings: settings)
+                default:
+                    break
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     func selectVideoSource(_ source: StreamSource) {
-        selectedVideoStreamSourceId = source.id
-        selectedAudioStreamSourceId = source.id
-    }
-
-    func selectVideoSourceWithId(_ id: UUID) {
-        guard let source = sortedSources.first(where: { $0.id == id }) else {
-            return
+        switch internalState {
+        case let .success(
+            displayMode: displayMode,
+            sources: sources,
+            selectedVideoSource: selectedVideoSource,
+            selectedAudioSource: _,
+            sourceAndViewRenderers: sourceAndViewRenderers,
+            settings: settings
+        ):
+            guard self.sources.contains(where: { $0 == source }) else {
+                fatalError("Cannot select source thats not part of the current source list")
+            }
+            
+            let selectedAudioSource: StreamSource
+            switch settings.audioSelection {
+            case .firstSource, .mainSource:
+                selectedAudioSource = sources[0]
+            case .followVideo:
+                selectedAudioSource = selectedVideoSource
+            case let .source(sourceId: sourceId):
+                selectedAudioSource = sources.first { $0.sourceId.value == sourceId } ?? sources[0]
+            }
+            
+            internalState = .success(
+                displayMode: displayMode,
+                sources: sources,
+                selectedVideoSource: source,
+                selectedAudioSource: selectedAudioSource,
+                sourceAndViewRenderers: sourceAndViewRenderers,
+                settings: settings
+            )
+        default:
+            fatalError("Cannot select source when the state is not `.success`")
+            break
         }
-        selectVideoSource(source)
-    }
-
-    func mainViewProvider(for source: StreamSource) -> SourceViewProviding? {
-        streamCoordinator.mainSourceViewProvider(for: source)
-    }
-
-    func subViewProvider(for source: StreamSource) -> SourceViewProviding? {
-        streamCoordinator.subSourceViewProvider(for: source)
     }
 
     func endStream() async {
         _ = await streamCoordinator.stopSubscribe()
     }
 
-    func playVideo(for source: StreamSource) {
-        Task {
-            await self.streamCoordinator.playVideo(for: source, quality: .auto)
-        }
-    }
-
     func playAudio(for source: StreamSource) {
         Task {
             await self.streamCoordinator.playAudio(for: source)
-        }
-    }
-
-    func stopVideo(for source: StreamSource) {
-        Task {
-            await self.streamCoordinator.stopVideo(for: source)
         }
     }
 

@@ -17,28 +17,43 @@ public struct StreamingScreen: View {
 
     public var body: some View {
         ZStack {
-            NavigationLink(
-                destination: LazyNavigationDestinationView(
-                    SingleStreamView(
-                        viewModel: viewModel,
-                        isShowingDetailPresentation: true
-                    ) {
-                        isShowingSingleViewScreen = false
-                    }
-                ),
-                isActive: $isShowingSingleViewScreen
-            ) {
-                EmptyView()
-            }
-            .hidden()
+//            NavigationLink(
+//                destination: LazyNavigationDestinationView(
+//                    SingleStreamView(
+//                        viewModel: viewModel,
+//                        isShowingDetailPresentation: true
+//                    ) {
+//                        isShowingSingleViewScreen = false
+//                    }
+//                ),
+//                isActive: $isShowingSingleViewScreen
+//            ) {
+//                EmptyView()
+//            }
+//            .hidden()
 
-            switch viewModel.mode {
-            case .list:
-                ListView(viewModel: viewModel) {
-                    isShowingSingleViewScreen = true
+            switch viewModel.state {
+            case let .success(displayMode: displayMode):
+                switch displayMode {
+                case let .list(listViewModel):
+                    ListView(
+                        viewModel: listViewModel,
+                        onPrimaryVideoSelection: { _ in
+                            isShowingSingleViewScreen = true
+                        },
+                        onSecondaryVideoSelection: {
+                            viewModel.selectVideoSource($0)
+                        }
+                    )
+                case let .single(singleStreamViewModel):
+                    SingleStreamView(viewModel: singleStreamViewModel, isShowingDetailPresentation: false)
                 }
-            case .single:
-                SingleStreamView(viewModel: viewModel)
+            case .loading:
+                // TODO: Handle loading state
+                EmptyView()
+            case .error:
+                // TODO: Handle error state
+                EmptyView()
             }
         }
         .navigationBarBackButtonHidden(true)

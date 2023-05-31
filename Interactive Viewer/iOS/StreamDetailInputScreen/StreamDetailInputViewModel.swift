@@ -9,29 +9,14 @@ import DolbyIORTSCore
 final class StreamDetailInputViewModel: ObservableObject {
     let streamCoordinator: StreamCoordinator
     private let streamDataManager: StreamDataManagerProtocol
-
-    private var subscriptions: [AnyCancellable] = []
-
-    @Published var streamDetails: [StreamDetail] = [] {
-        didSet {
-            hasSavedStreams = !streamDetails.isEmpty
-        }
-    }
-    @Published private(set) var hasSavedStreams: Bool = false
-
+    let identifier = UUID()
+    
     init(
         streamCoordinator: StreamCoordinator = .shared,
         streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared
     ) {
         self.streamCoordinator = streamCoordinator
         self.streamDataManager = streamDataManager
-
-        streamDataManager.streamDetailsSubject
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] streamDetails in
-                self?.streamDetails = streamDetails
-            }
-        .store(in: &subscriptions)
     }
 
     func connect(streamName: String, accountID: String) async -> Bool {
