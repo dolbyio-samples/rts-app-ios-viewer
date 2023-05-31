@@ -13,7 +13,7 @@ struct ListView: View {
         static let sideListThumbnailSizeRatio: CGFloat = 1 / 4
         static let sideMainViewSizeRatio: CGFloat = 3 / 4
     }
-    
+
     /**
         ListViewLayout describes the layout modes for the ListView:
      leftVertical - main tile on left, vertically scrollable 1 column grid on the right
@@ -30,7 +30,7 @@ struct ListView: View {
     @ObservedObject private var viewModel: StreamViewModel
     private var onMainSourceSelection: () -> Void
 
-    private var layout: ListViewLayout
+    private let layout: ListViewLayout
 
     init(viewModel: StreamViewModel, onMainSourceSelection: @escaping () -> Void, layout: ListViewLayout = .topVertical()) {
         self.viewModel = viewModel
