@@ -15,7 +15,7 @@ public struct StreamSettings: Codable {
 
     public enum StreamSortOrder: String, Codable {
         case connectionOrder
-        case alphaNunmeric
+        case alphaNumeric
     }
 
     public enum AudioSelection: Equatable, Codable {

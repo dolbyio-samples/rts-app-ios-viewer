@@ -66,11 +66,11 @@ struct SingleStreamView: View {
     var body: some View {
         GeometryReader { proxy in
             TabView(selection: $selectedVideoStreamSourceId) {
-                ForEach(viewModel.allSources, id: \.id) { source in
+                ForEach(viewModel.sortedSources, id: \.id) { source in
                     if let viewProvider = viewModel.mainViewProvider(for: source) {
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
-
+                        
                         let videoSize = viewProvider.videoViewDisplaySize(
                             forAvailableScreenWidth: maxAllowedVideoWidth,
                             availableScreenHeight: maxAllowedVideoHeight,
