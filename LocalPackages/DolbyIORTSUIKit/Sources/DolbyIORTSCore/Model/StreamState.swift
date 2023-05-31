@@ -4,7 +4,7 @@
 
 import Foundation
 
-public enum StreamState {
+public enum StreamState: Equatable {
     case disconnected
     case connecting
     case connected

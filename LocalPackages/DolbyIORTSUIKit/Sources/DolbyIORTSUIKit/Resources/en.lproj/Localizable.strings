@@ -50,3 +50,7 @@ Follow video: Switch audio source when a video is selected. If the selected vide
 
 "stream.live.label" = "LIVE";
 "stream.offline.label" = "OFFLINE";
+
+/** Video View */
+
+"video-view.main.label" = "Main";

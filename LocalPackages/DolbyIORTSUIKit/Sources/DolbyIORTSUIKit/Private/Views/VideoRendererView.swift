@@ -3,19 +3,105 @@
 //
 
 import DolbyIORTSCore
+import DolbyIOUIKit
 import SwiftUI
 
-struct VideoRendererView: UIViewRepresentable {
-    private let viewProvider: SourceViewProviding
+struct VideoRendererView: View {
+    private let viewModel: VideoRendererViewModel
+    private let maxWidth: CGFloat
+    private let maxHeight: CGFloat
+    private let contentMode: VideoRendererContentMode
+    private let action: ((StreamSource) -> Void)?
 
-    init(viewProvider: SourceViewProviding) {
-        self.viewProvider = viewProvider
+    init(
+        viewModel: VideoRendererViewModel,
+        maxWidth: CGFloat,
+        maxHeight: CGFloat,
+        contentMode: VideoRendererContentMode,
+        action: ((StreamSource) -> Void)? = nil
+    ) {
+        self.viewModel = viewModel
+        self.maxWidth = maxWidth
+        self.maxHeight = maxHeight
+        self.contentMode = contentMode
+        self.action = action
+
+        Task {
+            viewModel.playVideo(for: viewModel.streamSource)
+        }
+    }
+
+    @ViewBuilder
+    private var audioPlaybackIndicatorView: some View {
+        if viewModel.showAudioIndicator {
+            Rectangle()
+                .stroke(
+                    Color(uiColor: UIColor.Primary.neonPurple400),
+                    lineWidth: Layout.border2x
+                )
+        } else {
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private func showLabel(for source: StreamSource) -> some View {
+        if viewModel.showSourceLabel {
+            SourceLabel(sourceId: source.sourceId.displayLabel)
+                .padding(5)
+        } else {
+            EmptyView()
+        }
+    }
+
+    var body: some View {
+        let viewRenderer = viewModel.viewRenderer
+        let videoSize: CGSize = {
+            switch contentMode {
+            case .aspectFit:
+                return viewRenderer.videoViewDisplaySize(
+                    forAvailableScreenWidth: maxWidth,
+                    availableScreenHeight: maxHeight,
+                    shouldCrop: false
+                )
+            case .aspectFill:
+                return viewRenderer.videoViewDisplaySize(
+                    forAvailableScreenWidth: maxWidth,
+                    availableScreenHeight: maxHeight,
+                    shouldCrop: true
+                )
+            case .scaleToFill:
+                return CGSize(width: maxWidth, height: maxHeight)
+            }
+        }()
+
+        VideoRendererViewInteral(viewRenderer: viewRenderer)
+            .frame(width: videoSize.width, height: videoSize.height)
+            .overlay(alignment: .bottomLeading) {
+                showLabel(for: viewModel.streamSource)
+            }
+            .overlay {
+                audioPlaybackIndicatorView
+            }
+            .onTapGesture {
+                action?(viewModel.streamSource)
+            }
+            .onDisappear {
+                viewModel.stopVideo(for: viewModel.streamSource)
+            }
+    }
+}
+
+private struct VideoRendererViewInteral: UIViewRepresentable {
+    private let viewRenderer: StreamSourceViewRenderer
+
+    init(viewRenderer: StreamSourceViewRenderer) {
+        self.viewRenderer = viewRenderer
     }
 
     func makeUIView(context: Context) -> UIView {
         let containerView = ContainerView<UIView>()
-        containerView.updateChildView(viewProvider.playbackView)
-
+        containerView.updateChildView(viewRenderer.playbackView)
         return containerView
     }
 
@@ -23,7 +109,7 @@ struct VideoRendererView: UIViewRepresentable {
         guard let containerView = uiView as? ContainerView<UIView> else {
             return
         }
-        containerView.updateChildView(viewProvider.playbackView)
+        containerView.updateChildView(viewRenderer.playbackView)
     }
 }
 
