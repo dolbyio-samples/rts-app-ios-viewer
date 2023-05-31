@@ -79,7 +79,7 @@ final class StreamViewModel: ObservableObject {
                 switch state {
                 case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: steamDetail):
                     if self.sources.isEmpty, sources.isEmpty == false {
-                        settingsManager.setActiveSetting(for: .stream(streamID: steamDetail.streamId))
+                        self.settingsManager.setActiveSetting(for: .stream(streamID: steamDetail.streamId))
                     }
                     self.sources = sources
                 default:
