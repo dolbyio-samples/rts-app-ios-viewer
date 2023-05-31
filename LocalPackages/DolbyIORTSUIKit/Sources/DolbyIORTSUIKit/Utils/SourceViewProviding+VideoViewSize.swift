@@ -8,7 +8,7 @@ import Foundation
 extension SourceViewProviding {
 
     func videoViewDisplaySize(
-        availableScreenWidth screenWidth: CGFloat,
+        forAvailableScreenWidth screenWidth: CGFloat,
         availableScreenHeight screenHeight: CGFloat,
         shouldCrop: Bool = false
     ) -> CGSize {
