@@ -70,7 +70,7 @@ struct SingleStreamView: View {
                     if let viewProvider = viewModel.mainViewProvider(for: source) {
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
-                        
+
                         let videoSize = viewProvider.videoViewDisplaySize(
                             forAvailableScreenWidth: maxAllowedVideoWidth,
                             availableScreenHeight: maxAllowedVideoHeight,
