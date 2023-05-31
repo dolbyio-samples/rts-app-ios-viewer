@@ -19,7 +19,6 @@ final class StreamViewModel: ObservableObject {
     private let settingsManager: SettingsManager
     private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
-    private var settingsSubscriptions: [AnyCancellable] = []
 
     private(set) var selectedVideoStreamSourceId: UUID? {
         didSet {
@@ -78,9 +77,9 @@ final class StreamViewModel: ObservableObject {
             .sink { [weak self] state in
                 guard let self = self else { return }
                 switch state {
-                case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
-                    if self.sources.isEmpty, let source = sources.first {
-                        settingsManager.setActiveSetting(for: .stream(streamID: source.streamId))
+                case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: steamDetail):
+                    if self.sources.isEmpty, sources.isEmpty == false {
+                        settingsManager.setActiveSetting(for: .stream(streamID: steamDetail.streamId))
                     }
                     self.sources = sources
                 default:
@@ -97,7 +96,7 @@ final class StreamViewModel: ObservableObject {
                 guard let self = self else { return }
                 self.updateSortedSource()
             }
-            .store(in: &settingsSubscriptions)
+            .store(in: &subscriptions)
     }
 
     private func updateSortedSource() {
