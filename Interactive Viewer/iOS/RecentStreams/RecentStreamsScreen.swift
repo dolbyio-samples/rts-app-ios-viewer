@@ -3,6 +3,7 @@
 //
 
 import DolbyIOUIKit
+import DolbyIORTSCore
 import DolbyIORTSUIKit
 import SwiftUI
 
@@ -152,6 +153,7 @@ struct RecentStreamsScreen: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     IconButton(name: .settings, action: {
+                        SettingsManager.shared.setActiveSetting(for: .global)
                         isShowingSettingScreenView = true
                     }).scaleEffect(0.5, anchor: .trailing)
                 }

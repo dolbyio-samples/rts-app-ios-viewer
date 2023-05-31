@@ -7,7 +7,7 @@ import Foundation
 
 open class SettingsManager {
 
-    public enum Mode {
+    public enum Mode: Equatable {
         case global
         case stream(streamID: String)
     }
@@ -41,6 +41,7 @@ open class SettingsManager {
     }
 
     public func setActiveSetting(for mode: Mode) {
+        if self.mode == mode { return }
         self.mode = mode
         if let settings = try? SettingsDictionary.getSettings(for: currentStreamId) {
             self.settings = settings
