@@ -15,13 +15,13 @@ final class DolbyIORTSCoreTests: XCTestCase {
 
         settings = StreamSettings(showSourceLabels: false,
                                   multiviewLayout: .single,
-                                  streamSortOrder: .alphaNunmeric,
-                                  audioSelection: .source(label: "CAM-1"))
+                                  streamSortOrder: .alphaNumeric,
+                                  audioSelection: .source(sourceId: "CAM-1"))
 
         XCTAssertEqual(settings.showSourceLabels, false)
         XCTAssertEqual(settings.multiviewLayout, StreamSettings.MultiviewLayout.single)
         XCTAssertEqual(settings.streamSortOrder, StreamSettings.StreamSortOrder.alphaNumeric)
-        XCTAssertEqual(settings.audioSelection, StreamSettings.AudioSelection.source(label: "CAM-1"))
+        XCTAssertEqual(settings.audioSelection, StreamSettings.AudioSelection.source(sourceId: "CAM-1"))
     }
 
     func testSettingDictionary() {
@@ -48,8 +48,8 @@ final class DolbyIORTSCoreTests: XCTestCase {
             let expectedDictKey = "VIDEO-1"
             expectedSettings = StreamSettings(showSourceLabels: false,
                                               multiviewLayout: .single,
-                                              streamSortOrder: .alphaNunmeric,
-                                              audioSelection: .source(label: "CAM-1"))
+                                              streamSortOrder: .alphaNumeric,
+                                              audioSelection: .source(sourceId: "CAM-1"))
             expectedDict[expectedDictKey] = expectedSettings
 
             try SettingsDictionary.saveDictionary(dictionary: expectedDict)
