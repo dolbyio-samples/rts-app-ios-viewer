@@ -79,7 +79,7 @@ final class StreamViewModel: ObservableObject {
                 switch state {
                 case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: steamDetail):
                     if self.sources.isEmpty, sources.isEmpty == false {
-                        settingsManager.setActiveSetting(for: .stream(streamID: steamDetail.streamId))
+                        self.settingsManager.setActiveSetting(for: .stream(streamID: steamDetail.streamId))
                     }
                     self.sources = sources
                 default:
@@ -122,33 +122,13 @@ final class StreamViewModel: ObservableObject {
         selectVideoSource(source)
     }
 
-    func mainViewProvider(for source: StreamSource) -> SourceViewProviding? {
-        streamCoordinator.mainSourceViewProvider(for: source)
-    }
-
-    func subViewProvider(for source: StreamSource) -> SourceViewProviding? {
-        streamCoordinator.subSourceViewProvider(for: source)
-    }
-
     func endStream() async {
         _ = await streamCoordinator.stopSubscribe()
-    }
-
-    func playVideo(for source: StreamSource) {
-        Task {
-            await self.streamCoordinator.playVideo(for: source, quality: .auto)
-        }
     }
 
     func playAudio(for source: StreamSource) {
         Task {
             await self.streamCoordinator.playAudio(for: source)
-        }
-    }
-
-    func stopVideo(for source: StreamSource) {
-        Task {
-            await self.streamCoordinator.stopVideo(for: source)
         }
     }
 

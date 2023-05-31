@@ -6,20 +6,15 @@ import Foundation
 import MillicastSDK
 import UIKit
 
-public protocol SourceViewProviding {
-    var playbackView: UIView { get }
-    var frameWidth: CGFloat { get }
-    var frameHeight: CGFloat { get }
-}
-
-class StreamSourceViewProvider {
+public class StreamSourceViewRenderer: Identifiable {
 
     enum Constants {
         static let defaultVideoTileSize = CGSize(width: 533, height: 300)
     }
 
-    var renderer: MCIosVideoRenderer
-    var view: UIView?
+    let renderer: MCIosVideoRenderer
+    public let id = UUID()
+
     init(renderer: MCIosVideoRenderer) {
         self.renderer = renderer
     }
@@ -27,18 +22,16 @@ class StreamSourceViewProvider {
     private var hasValidDimensions: Bool {
         renderer.getWidth() != 0 && renderer.getHeight() != 0
     }
-}
 
-extension StreamSourceViewProvider: SourceViewProviding {
-    var frameWidth: CGFloat {
+    public var frameWidth: CGFloat {
         hasValidDimensions ? CGFloat(renderer.getWidth()) : Constants.defaultVideoTileSize.width
     }
 
-    var frameHeight: CGFloat {
+    public var frameHeight: CGFloat {
         hasValidDimensions ? CGFloat(renderer.getHeight()) : Constants.defaultVideoTileSize.height
     }
 
-    var playbackView: UIView {
+    public var playbackView: UIView {
         renderer.getView()
     }
 }

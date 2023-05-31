@@ -5,7 +5,7 @@
 import DolbyIORTSCore
 import Foundation
 
-extension SourceViewProviding {
+extension StreamSourceViewRenderer {
 
     func videoViewDisplaySize(
         forAvailableScreenWidth screenWidth: CGFloat,

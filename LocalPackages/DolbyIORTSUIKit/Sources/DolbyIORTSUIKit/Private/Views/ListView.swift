@@ -40,19 +40,19 @@ struct ListView: View {
                     LazyVGrid(columns: columns, pinnedViews: [.sectionHeaders]) {
                         Section(
                             header: HStack {
-                                if let source = viewModel.selectedVideoSource, let mainViewProvider = viewModel.mainViewProvider(for: source) {
-
-                                    VideoRendererView(viewProvider: mainViewProvider)
-                                        .frame(width: maxAllowedMainVideoWidth, height: maxAllowedMainVideoHeight)
-                                        .overlay(
-                                            viewModel.selectedAudioSource == source ? audioPlaybackIndicatorView : nil
-                                        )
-                                        .onAppear {
-                                            viewModel.playVideo(for: source)
-                                        }
-                                        .onTapGesture {
-                                            onMainSourceSelection()
-                                        }
+                                if let source = viewModel.selectedVideoSource {
+                                    VideoRendererView(
+                                        source: source,
+                                        maxWidth: maxAllowedMainVideoWidth,
+                                        maxHeight: maxAllowedMainVideoHeight,
+                                        contentMode: .scaleToFill
+                                    )
+                                    .overlay(
+                                        viewModel.selectedAudioSource == source ? audioPlaybackIndicatorView : nil
+                                    )
+                                    .onTapGesture {
+                                        onMainSourceSelection()
+                                    }
                                 }
                             }
                                 .clipped()
@@ -61,21 +61,17 @@ struct ListView: View {
                                 let maxAllowedSubVideoWidth = proxy.size.width / 2
                                 let maxAllowedSubVideoHeight = proxy.size.height * Defaults.maximumNumberOfTilesRatio / 2
 
-                                HStack {
-                                    if let subViewProvider = viewModel.subViewProvider(for: subVideosource) {
-
-                                        VideoRendererView(viewProvider: subViewProvider)
-                                            .frame(width: maxAllowedSubVideoWidth, height: maxAllowedSubVideoHeight)
-                                            .overlay(
-                                                viewModel.selectedAudioSource == subVideosource ? audioPlaybackIndicatorView : nil
-                                            )
-                                            .onTapGesture {
-                                                viewModel.selectVideoSource(subVideosource)
-                                            }
-                                            .onAppear {
-                                                viewModel.playVideo(for: subVideosource)
-                                            }
-                                    }
+                                VideoRendererView(
+                                    source: subVideosource,
+                                    maxWidth: maxAllowedSubVideoWidth,
+                                    maxHeight: maxAllowedSubVideoHeight,
+                                    contentMode: .scaleToFill
+                                )
+                                .overlay(
+                                    viewModel.selectedAudioSource == subVideosource ? audioPlaybackIndicatorView : nil
+                                )
+                                .onTapGesture {
+                                    viewModel.selectVideoSource(subVideosource)
                                 }
                             }
                         }

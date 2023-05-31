@@ -47,6 +47,7 @@ struct SingleStreamView: View {
                 Spacer()
                 if isShowingDetailPresentation {
                     SettingsButton()
+                        .padding(Layout.spacing1x)
                 }
             }
             .ignoresSafeArea()
@@ -67,31 +68,19 @@ struct SingleStreamView: View {
         GeometryReader { proxy in
             TabView(selection: $selectedVideoStreamSourceId) {
                 ForEach(viewModel.sortedSources, id: \.id) { source in
-                    if let viewProvider = viewModel.mainViewProvider(for: source) {
-                        let maxAllowedVideoWidth = proxy.size.width
-                        let maxAllowedVideoHeight = proxy.size.height
-                        
-                        let videoSize = viewProvider.videoViewDisplaySize(
-                            forAvailableScreenWidth: maxAllowedVideoWidth,
-                            availableScreenHeight: maxAllowedVideoHeight,
-                            shouldCrop: false
-                        )
+                    let maxAllowedVideoWidth = proxy.size.width
+                    let maxAllowedVideoHeight = proxy.size.height
 
-                        HStack {
-                            VideoRendererView(viewProvider: viewProvider)
-                                .frame(width: videoSize.width, height: videoSize.height)
-                                .onAppear {
-                                    viewModel.playVideo(for: source)
-                                    viewModel.playAudio(for: source)
-                                }
-                                .onDisappear {
-                                    viewModel.stopAudio(for: source)
-                                    viewModel.stopVideo(for: source)
-                                }
-                        }
-                        .tag(source.id)
-                        .frame(width: proxy.size.width, height: proxy.size.height)
+                    HStack {
+                        VideoRendererView(
+                            source: source,
+                            maxWidth: maxAllowedVideoWidth,
+                            maxHeight: maxAllowedVideoHeight,
+                            contentMode: .aspectFit
+                        )
                     }
+                    .tag(source.id)
+                    .frame(width: proxy.size.width, height: proxy.size.height)
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))

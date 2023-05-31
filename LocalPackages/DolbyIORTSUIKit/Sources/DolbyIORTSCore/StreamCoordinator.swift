@@ -101,6 +101,9 @@ open class StreamCoordinator {
 
             sources.forEach { source in
                 if source.isPlayingAudio {
+                    Task {
+                        await stateMachine.setPlayingAudio(false, for: source)
+                    }
                     subscriptionManager.unprojectAudio(for: source)
                 }
             }
@@ -153,7 +156,9 @@ open class StreamCoordinator {
         case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
             guard
                 let matchingSource = sources.first(where: { $0.id == source.id }),
-                matchingSource.isPlayingVideo
+                matchingSource.isPlayingVideo,
+                let videoTrack = source.videoTrack?.track,
+                rendererManager.numberOfRenderers(for: videoTrack) == 0
             else {
                 return
             }
@@ -164,12 +169,18 @@ open class StreamCoordinator {
         }
     }
 
-    public func mainSourceViewProvider(for source: StreamSource) -> SourceViewProviding? {
-        rendererManager.mainRenderer(for: source.sourceId).map { StreamSourceViewProvider(renderer: $0) }
+    public func getRenderer(for source: StreamSource, viewIdentifier: String) -> StreamSourceViewRenderer {
+        guard let videoTrack = source.videoTrack?.track else {
+            fatalError("Can't request renderer for a source which does not have video track")
+        }
+        return rendererManager.renderer(for: videoTrack, viewIdentifier: viewIdentifier)
     }
 
-    public func subSourceViewProvider(for source: StreamSource) -> SourceViewProviding? {
-        rendererManager.subRenderer(for: source.sourceId).map { StreamSourceViewProvider(renderer: $0) }
+    public func removeRenderer(for source: StreamSource, viewIdentifier: String) {
+        guard let videoTrack = source.videoTrack?.track else {
+            fatalError("Can't request remove renderer for a source which does not have video track")
+        }
+        return rendererManager.removeRenderer(for: videoTrack, viewIdentifier: viewIdentifier)
     }
 }
 
@@ -243,10 +254,8 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
 
             // Add Video Renderer for Video Track
             switch await self.stateMachine.currentState {
-            case let .subscribed(state):
-                if let builder = state.streamSourceBuilders.first(where: { $0.videoTrack?.trackInfo.mid == mid }) {
-                    await self.rendererManager.addRenderer(sourceId: builder.sourceId, track: track)
-                }
+            case .subscribed:
+                self.rendererManager.addTrack(track)
             default:
                 break
             }
@@ -302,17 +311,17 @@ extension StreamCoordinator: SubscriptionManagerDelegate {
                 return
             }
             // Remove Video Renderer for Video Track
-            let streamSourceId: StreamSource.SourceId?
+            let sourceVideoTrack: MCVideoTrack?
             switch await self.stateMachine.currentState {
             case let .subscribed(state):
                 let builder = state.streamSourceBuilders.first(where: { $0.sourceId.value == sourceId })
-                streamSourceId = builder?.sourceId
+                sourceVideoTrack = builder?.videoTrack?.track
             default:
-                streamSourceId = nil
+                sourceVideoTrack = nil
             }
 
+            sourceVideoTrack.map { self.rendererManager.removeTrack($0) }
             await stateMachine.onInactive(streamId, sourceId: sourceId)
-            streamSourceId.map { self.rendererManager.removeRenderer(sourceId: $0) }
         }
     }
 }
