@@ -11,7 +11,6 @@ struct SingleStreamView: View {
     @State private var showScreenControls = false
     @State private var selectedVideoStreamSourceId: UUID
     @State private var isShowingSettingsScreen: Bool = false
-    @State private var streamId: String?
 
     private let isShowingDetailPresentation: Bool
     private let onClose: (() -> Void)?
