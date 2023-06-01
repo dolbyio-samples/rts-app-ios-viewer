@@ -10,6 +10,7 @@ struct ListView: View {
     private enum Defaults {
         static let maximumNumberOfTilesRatio: CGFloat = 1 / 3
         static let defaultThumbnailSizeRatio: CGFloat = 1 / 2
+        static let horizontalGridThumbnailSizeRatio: CGFloat = 1 / 4
         static let sideListThumbnailSizeRatio: CGFloat = 1 / 4
         static let sideMainViewSizeRatio: CGFloat = 3 / 4
     }
@@ -100,10 +101,10 @@ struct ListView: View {
                 mainView(screenSize, mainViewProvider, source, maxAllowedMainVideoSize)
             }
             ScrollView(.horizontal) {
-                let availableHeight = (screenSize.height - maxAllowedMainVideoSize.height) / (rowsCount <= 4 ? 4 :  CGFloat(rowsCount))
-                let rows = [GridItem](repeating: GridItem(.fixed(CGFloat(availableHeight)), spacing: Layout.spacing1x), count: rowsCount)
+                let availableRowHeight = horizontalGridTileAvailableHeight(screenSize: screenSize, maxAllowedMainVideoSize: maxAllowedMainVideoSize, rowsCount: rowsCount)
+                let rows = [GridItem](repeating: GridItem(.fixed(CGFloat(availableRowHeight)), spacing: Layout.spacing1x), count: rowsCount)
                 LazyHGrid(rows: rows, alignment: .top, spacing: Layout.spacing1x) {
-                    gridHorizontal(availableHeight: availableHeight)
+                    gridHorizontal(availableHeight: availableRowHeight)
                 }
             }
         }
@@ -135,12 +136,11 @@ struct ListView: View {
         VStack {
             let maxAllowedMainVideoSize = CGSize(width: screenSize.width, height: screenSize.height * Defaults.maximumNumberOfTilesRatio)
             ScrollView(.horizontal) {
-                let availableHeight = rowsCount == 1 ? maxAllowedMainVideoSize.height / 2 : (screenSize.height - maxAllowedMainVideoSize.height) / CGFloat(rowsCount + 1)
-
-                let rows = [GridItem](repeating: GridItem(.fixed(CGFloat(availableHeight)), spacing: Layout.spacing1x), count: rowsCount)
+                let availableRowHeight = horizontalGridTileAvailableHeight(screenSize: screenSize, maxAllowedMainVideoSize: maxAllowedMainVideoSize, rowsCount: rowsCount)
+                let rows = [GridItem](repeating: GridItem(.fixed(CGFloat(availableRowHeight)), spacing: Layout.spacing1x), count: rowsCount)
                 LazyHGrid(rows: rows, alignment: .top, spacing: Layout.spacing1x) {
-                    gridHorizontal(availableHeight: availableHeight)
-                }.frame(height: availableHeight * CGFloat(rowsCount))
+                    gridHorizontal(availableHeight: availableRowHeight)
+                }.frame(height: availableRowHeight * CGFloat(rowsCount))
             }
             if let source = viewModel.selectedVideoSource, let mainViewProvider = viewModel.mainViewProvider(for: source) {
                 mainView(screenSize, mainViewProvider, source, maxAllowedMainVideoSize)
@@ -273,7 +273,7 @@ struct ListView: View {
         return columnCount <= 2 ? Defaults.defaultThumbnailSizeRatio : 1 / CGFloat(columnCount)
     }
 
-    func thumbnailRatioForRowCount(rowCount: Int) -> CGFloat {
-        return rowCount <= 2 ? Defaults.defaultThumbnailSizeRatio : 1 / CGFloat(rowCount - 1)
+    func horizontalGridTileAvailableHeight(screenSize: CGSize, maxAllowedMainVideoSize: CGSize, rowsCount: Int) -> CGFloat {
+        return (screenSize.height - maxAllowedMainVideoSize.height) * (rowsCount <= 4 ? Defaults.horizontalGridThumbnailSizeRatio : 1 / CGFloat(rowsCount))
     }
 }
