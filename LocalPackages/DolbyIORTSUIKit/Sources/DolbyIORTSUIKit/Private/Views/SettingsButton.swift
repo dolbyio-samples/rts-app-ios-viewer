@@ -10,9 +10,8 @@ struct SettingsButton: View {
 
     @Binding private var isShowingSettingsScreen: Bool
 
-    init(streamId: String, isShowingSettingsScreen: Binding<Bool>, settingsManager: SettingsManager = .shared) {
+    init(isShowingSettingsScreen: Binding<Bool>) {
         _isShowingSettingsScreen = isShowingSettingsScreen
-        settingsManager.setActiveSetting(for: .stream(streamID: streamId))
     }
 
     var body: some View {

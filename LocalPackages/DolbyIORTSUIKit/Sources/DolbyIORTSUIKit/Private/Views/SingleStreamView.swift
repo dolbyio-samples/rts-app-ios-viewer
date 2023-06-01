@@ -14,7 +14,6 @@ struct SingleStreamView: View {
     @State private var streamId: String?
 
     private let isShowingDetailPresentation: Bool
-    private let settingsManager: SettingsManager
     private let onClose: (() -> Void)?
 
     private enum Animation {
@@ -25,11 +24,9 @@ struct SingleStreamView: View {
 
     init(viewModel: StreamViewModel,
          isShowingDetailPresentation: Bool = false,
-         settingsManager: SettingsManager = .shared,
          onClose: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.isShowingDetailPresentation = isShowingDetailPresentation
-        self.settingsManager = settingsManager
         self.onClose = onClose
         _selectedVideoStreamSourceId = State(wrappedValue: viewModel.selectedVideoStreamSourceId!)
     }
@@ -56,7 +53,7 @@ struct SingleStreamView: View {
                 Spacer()
 
                 if isShowingDetailPresentation {
-                    SettingsButton(streamId: source.streamId, isShowingSettingsScreen: $isShowingSettingsScreen)
+                    SettingsButton(isShowingSettingsScreen: $isShowingSettingsScreen)
                 }
             }
             .ignoresSafeArea()

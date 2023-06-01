@@ -13,12 +13,9 @@ public struct StreamingScreen: View {
     @State private var isShowingSettingsScreen: Bool = false
     @State private var streamId: String?
 
-    private let settingsManager: SettingsManager
-
     public init(isShowingStreamView: Binding<Bool>,
                 settingManager: SettingsManager = .shared) {
         _isShowingStreamView = isShowingStreamView
-        self.settingsManager = settingManager
     }
 
     public var body: some View {
@@ -64,9 +61,7 @@ public struct StreamingScreen: View {
                 // TODO: Add title
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                if let streamId = viewModel.sortedSources.first?.streamId {
-                    SettingsButton(streamId: streamId, isShowingSettingsScreen: $isShowingSettingsScreen)
-                }
+                SettingsButton(isShowingSettingsScreen: $isShowingSettingsScreen)
             }
         }
     }

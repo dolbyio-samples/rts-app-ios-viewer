@@ -12,11 +12,12 @@ enum StreamViewMode {
 
 final class StreamViewModel: ObservableObject {
 
+    let settingsManager: SettingsManager
+
     private enum Constants {
         static let interactivityTimeOut: CGFloat = 5
     }
 
-    private let settingsManager: SettingsManager
     private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
 
@@ -104,11 +105,7 @@ final class StreamViewModel: ObservableObject {
         case .connectionOrder:
             sortedSources = sources
         case .alphaNumeric:
-            sortedSources = sources.sorted {
-                let a = $0.sourceId.value ?? " "
-                let b = $1.sourceId.value ?? " "
-                return a.localizedStandardCompare(b) == .orderedAscending
-            }
+            sortedSources = sources.sorted { $0 < $1 }
         }
     }
 

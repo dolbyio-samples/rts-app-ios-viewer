@@ -20,7 +20,7 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
             }
         }
 
-        public var value: String? {
+        var value: String? {
             switch self {
             case .main:
                 return nil
@@ -108,4 +108,17 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     public let isPlayingVideo: Bool
     let audioTracks: [AudioTrackInfo]
     let videoTrack: VideoTrackInfo?
+}
+
+extension StreamSource: Comparable {
+    public static func < (lhs: StreamSource, rhs: StreamSource) -> Bool {
+        switch (lhs.sourceId, rhs.sourceId) {
+        case (.main, .main), (.other, .main):
+            return false
+        case (.main, .other):
+            return true
+        case let (.other(lhsSourceId), .other(rhsSourceId)):
+            return lhsSourceId < rhsSourceId
+        }
+    }
 }
