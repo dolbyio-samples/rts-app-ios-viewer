@@ -3,19 +3,21 @@
 //
 
 import DolbyIOUIKit
+import DolbyIORTSCore
 import SwiftUI
 
 struct SettingsButton: View {
 
-    let onClick: (() -> Void)
+    @Binding private var isShowingSettingsScreen: Bool
 
-    init(onClick: @escaping (() -> Void) = {}) {
-        self.onClick = onClick
+    init(streamId: String, isShowingSettingsScreen: Binding<Bool>, settingsManager: SettingsManager = .shared) {
+        _isShowingSettingsScreen = isShowingSettingsScreen
+        settingsManager.setActiveSetting(for: .stream(streamID: streamId))
     }
 
     var body: some View {
         IconButton(name: .settings, action: {
-            onClick()
+            _isShowingSettingsScreen.wrappedValue = true
         })
         .scaleEffect(0.5, anchor: .trailing)
     }

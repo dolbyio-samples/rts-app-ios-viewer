@@ -56,14 +56,7 @@ struct SingleStreamView: View {
                 Spacer()
 
                 if isShowingDetailPresentation {
-                    SettingsButton {
-                        if self.streamId == nil {
-                            let streamId = source.streamId
-                            settingsManager.setActiveSetting(for: .stream(streamID: streamId))
-                            self.streamId = streamId
-                        }
-                        isShowingSettingsScreen = true
-                    }
+                    SettingsButton(streamId: source.streamId, isShowingSettingsScreen: $isShowingSettingsScreen)
                 }
             }
             .ignoresSafeArea()

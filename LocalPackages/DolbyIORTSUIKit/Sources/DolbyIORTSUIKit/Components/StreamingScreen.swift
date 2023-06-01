@@ -65,13 +65,7 @@ public struct StreamingScreen: View {
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 if let streamId = viewModel.sortedSources.first?.streamId {
-                    SettingsButton {
-                        if self.streamId == nil {
-                            settingsManager.setActiveSetting(for: .stream(streamID: streamId))
-                            self.streamId = streamId
-                        }
-                        isShowingSettingsScreen = true
-                    }
+                    SettingsButton(streamId: streamId, isShowingSettingsScreen: $isShowingSettingsScreen)
                 }
             }
         }
