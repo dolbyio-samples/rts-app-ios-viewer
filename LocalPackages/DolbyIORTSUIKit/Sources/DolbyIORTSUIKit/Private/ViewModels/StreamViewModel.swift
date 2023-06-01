@@ -105,8 +105,8 @@ final class StreamViewModel: ObservableObject {
             sortedSources = sources
         case .alphaNumeric:
             sortedSources = sources.sorted {
-                let a = $0.sourceId.value ?? "1"
-                let b = $1.sourceId.value ?? "1"
+                let a = $0.sourceId.value ?? " "
+                let b = $1.sourceId.value ?? " "
                 return a.localizedStandardCompare(b) == .orderedAscending
             }
         }
