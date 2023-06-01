@@ -10,9 +10,15 @@ public struct StreamingScreen: View {
     @StateObject private var viewModel: StreamViewModel = .init()
     @Binding private var isShowingStreamView: Bool
     @State private var isShowingSingleViewScreen: Bool = false
+    @State private var isShowingSettingsScreen: Bool = false
+    @State private var streamId: String?
 
-    public init(isShowingStreamView: Binding<Bool>) {
+    private let settingsManager: SettingsManager
+
+    public init(isShowingStreamView: Binding<Bool>,
+                settingManager: SettingsManager = .shared) {
         _isShowingStreamView = isShowingStreamView
+        self.settingsManager = settingManager
     }
 
     public var body: some View {
@@ -31,6 +37,12 @@ public struct StreamingScreen: View {
                 EmptyView()
             }
             .hidden()
+
+            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen()),
+                           isActive: $isShowingSettingsScreen
+            ) {
+                EmptyView()
+            }.hidden()
 
             switch viewModel.mode {
             case .list:
@@ -52,7 +64,15 @@ public struct StreamingScreen: View {
                 // TODO: Add title
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                SettingsButton()
+                if let streamId = viewModel.sortedSources.first?.streamId {
+                    SettingsButton {
+                        if self.streamId == nil {
+                            settingsManager.setActiveSetting(for: .stream(streamID: streamId))
+                            self.streamId = streamId
+                        }
+                        isShowingSettingsScreen = true
+                    }
+                }
             }
         }
     }

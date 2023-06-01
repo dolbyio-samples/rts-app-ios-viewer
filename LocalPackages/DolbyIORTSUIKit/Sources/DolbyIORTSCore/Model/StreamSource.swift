@@ -20,7 +20,7 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
             }
         }
 
-        var value: String? {
+        public var value: String? {
             switch self {
             case .main:
                 return nil
