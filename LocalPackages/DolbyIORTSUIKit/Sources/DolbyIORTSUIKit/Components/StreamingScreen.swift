@@ -11,10 +11,8 @@ public struct StreamingScreen: View {
     @Binding private var isShowingStreamView: Bool
     @State private var isShowingSingleViewScreen: Bool = false
     @State private var isShowingSettingsScreen: Bool = false
-    @State private var streamId: String?
 
-    public init(isShowingStreamView: Binding<Bool>,
-                settingManager: SettingsManager = .shared) {
+    public init(isShowingStreamView: Binding<Bool>) {
         _isShowingStreamView = isShowingStreamView
     }
 
