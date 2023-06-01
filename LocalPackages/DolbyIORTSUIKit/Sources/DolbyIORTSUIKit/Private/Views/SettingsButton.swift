@@ -2,7 +2,6 @@
 //  SettingsButton.swift
 //
 
-import DolbyIORTSCore
 import DolbyIOUIKit
 import SwiftUI
 
