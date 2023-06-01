@@ -12,12 +12,11 @@ enum StreamViewMode {
 
 final class StreamViewModel: ObservableObject {
 
-    let settingsManager: SettingsManager
-
     private enum Constants {
         static let interactivityTimeOut: CGFloat = 5
     }
 
+    private let settingsManager: SettingsManager
     private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
 
