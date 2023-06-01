@@ -17,15 +17,15 @@ struct ListView: View {
 
     /**
      ListViewLayout describes the layout modes for the ListView:
-     leftVertical - main tile on left, vertically scrollable 1 column grid on the right
-     rightVertical - vertically scrollable 1 column grid on left, main tile on the right
+     leadingVertical - main tile on left, vertically scrollable 1 column grid on the right
+     trailingVertical - vertically scrollable 1 column grid on left, main tile on the right
      bottomHorizontal - horizontally scrollable grid on top, main tile below
      bottomVertical - vertically scrollable grid on top, main tile below
      topHorizontal - main tile on top, horizontally scrollable grid below
      topVertical - main tile on top, vertically scrollable grid below
      */
     enum ListViewLayout {
-        case leftVertical, rightVertical, bottomHorizontal(rows: Int = 2), bottomVertical(columns: Int = 2), topHorizontal(rows: Int = 2), topVertical(columns: Int = 2)
+        case leadingVertical, trailingVertical, bottomHorizontal(rows: Int = 2), bottomVertical(columns: Int = 2), topHorizontal(rows: Int = 2), topVertical(columns: Int = 2)
     }
 
     @ObservedObject private var viewModel: StreamViewModel
@@ -62,10 +62,10 @@ struct ListView: View {
                     bottomVerticalLayout(screenSize, columns)
                 case .bottomHorizontal(rows: let rows):
                     bottomHorizontalLayout(screenSize, rows)
-                case .leftVertical:
-                    leftVerticalLayout(screenSize)
-                case .rightVertical:
-                    rightVerticalLayout(screenSize)
+                case .leadingVertical:
+                    leadingVerticalLayout(screenSize)
+                case .trailingVertical:
+                    trailingVerticalLayout(screenSize)
                 }
             }
         }
@@ -149,7 +149,7 @@ struct ListView: View {
         }
     }
 
-    private func leftVerticalLayout(_ screenSize: CGSize) -> some View {
+    private func leadingVerticalLayout(_ screenSize: CGSize) -> some View {
         let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: 1)
         return HStack {
             if let source = viewModel.selectedVideoSource, let mainViewProvider = viewModel.mainViewProvider(for: source) {
@@ -169,7 +169,7 @@ struct ListView: View {
         }
     }
 
-    private func rightVerticalLayout(_ screenSize: CGSize) -> some View {
+    private func trailingVerticalLayout(_ screenSize: CGSize) -> some View {
         let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: 1)
         return HStack {
             if let source = viewModel.selectedVideoSource, let mainViewProvider = viewModel.mainViewProvider(for: source) {
