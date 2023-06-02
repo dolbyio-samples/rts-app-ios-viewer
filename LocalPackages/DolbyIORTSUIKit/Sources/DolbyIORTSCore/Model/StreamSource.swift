@@ -109,3 +109,16 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     let audioTracks: [AudioTrackInfo]
     let videoTrack: VideoTrackInfo?
 }
+
+extension StreamSource: Comparable {
+    public static func < (lhs: StreamSource, rhs: StreamSource) -> Bool {
+        switch (lhs.sourceId, rhs.sourceId) {
+        case (.main, .main), (.other, .main):
+            return false
+        case (.main, .other):
+            return true
+        case let (.other(lhsSourceId), .other(rhsSourceId)):
+            return lhsSourceId < rhsSourceId
+        }
+    }
+}

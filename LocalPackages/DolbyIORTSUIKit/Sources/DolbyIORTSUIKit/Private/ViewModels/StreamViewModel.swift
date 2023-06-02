@@ -104,9 +104,7 @@ final class StreamViewModel: ObservableObject {
         case .connectionOrder:
             sortedSources = sources
         case .alphaNumeric:
-            sortedSources = sources.sorted {
-                $0.streamId.localizedStandardCompare($1.streamId) == .orderedAscending
-            }
+            sortedSources = sources.sorted { $0 < $1 }
         }
     }
 

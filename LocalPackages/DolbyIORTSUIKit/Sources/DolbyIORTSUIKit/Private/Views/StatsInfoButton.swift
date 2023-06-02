@@ -22,12 +22,3 @@ struct StatsInfoButton: View {
         }
     }
 }
-
-struct SettingsButton: View {
-
-    var body: some View {
-        IconButton(name: .settings, action: {
-            // TODO: Handle as part of status info screen ticket
-        }).scaleEffect(0.5, anchor: .trailing)
-    }
-}

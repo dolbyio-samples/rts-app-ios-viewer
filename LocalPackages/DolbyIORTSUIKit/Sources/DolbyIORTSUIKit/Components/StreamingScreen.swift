@@ -10,6 +10,7 @@ public struct StreamingScreen: View {
     @StateObject private var viewModel: StreamViewModel = .init()
     @Binding private var isShowingStreamView: Bool
     @State private var isShowingSingleViewScreen: Bool = false
+    @State private var isShowingSettingsScreen: Bool = false
 
     public init(isShowingStreamView: Binding<Bool>) {
         _isShowingStreamView = isShowingStreamView
@@ -32,6 +33,12 @@ public struct StreamingScreen: View {
             }
             .hidden()
 
+            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen()),
+                           isActive: $isShowingSettingsScreen
+            ) {
+                EmptyView()
+            }.hidden()
+
             switch viewModel.mode {
             case .list:
                 ListView(viewModel: viewModel) {
@@ -52,7 +59,7 @@ public struct StreamingScreen: View {
                 // TODO: Add title
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                SettingsButton()
+                SettingsButton(isShowingSettingsScreen: $isShowingSettingsScreen)
             }
         }
     }
