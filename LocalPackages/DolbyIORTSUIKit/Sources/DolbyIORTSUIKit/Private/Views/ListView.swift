@@ -217,6 +217,11 @@ struct ListView: View {
             .onTapGesture {
                 onMainSourceSelection()
             }
+            .overlay(alignment: .bottomLeading) {
+                if viewModel.showSourceLabels {
+                    SourceLabel(sourceId: source.sourceId.label).padding(5)
+                }
+            }
     }
 
     private func gridVertical(screenSize: CGSize, thumbnailSizeRatio: CGFloat) -> ForEach<[StreamSource], UUID, HStack<(some View)?>> {
@@ -239,6 +244,11 @@ struct ListView: View {
                         }
                         .onAppear {
                             viewModel.playVideo(for: subVideosource)
+                        }
+                        .overlay(alignment: .bottomLeading) {
+                            if viewModel.showSourceLabels {
+                                SourceLabel(sourceId: subVideosource.sourceId.label).padding(5)
+                            }
                         }
                 }
             }
@@ -263,6 +273,11 @@ struct ListView: View {
                         }
                         .onAppear {
                             viewModel.playVideo(for: subVideosource)
+                        }
+                        .overlay(alignment: .bottomLeading) {
+                            if viewModel.showSourceLabels {
+                                SourceLabel(sourceId: subVideosource.sourceId.label).padding(5)
+                            }
                         }
                 }
             }

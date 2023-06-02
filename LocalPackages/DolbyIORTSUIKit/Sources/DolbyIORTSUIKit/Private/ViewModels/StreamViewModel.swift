@@ -62,6 +62,8 @@ final class StreamViewModel: ObservableObject {
     @Published private(set) var otherSources: [StreamSource] = []
     @Published private(set) var isStreamActive: Bool = false
 
+    @Published private(set) var showSourceLabels: Bool = false
+
     init(streamCoordinator: StreamCoordinator = .shared,
          settingsManager: SettingsManager = .shared) {
         self.streamCoordinator = streamCoordinator
@@ -95,6 +97,7 @@ final class StreamViewModel: ObservableObject {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.updateSortedSource()
+                showSourceLabels = settingsManager.settings.showSourceLabels
             }
             .store(in: &subscriptions)
     }

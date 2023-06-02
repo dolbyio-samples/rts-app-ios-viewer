@@ -28,6 +28,10 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
                 return id
             }
         }
+
+        public var label: String {
+            self.value ?? "Main"
+        }
     }
 
     enum TrackType: String, Equatable {

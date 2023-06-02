@@ -12,7 +12,7 @@ struct SourceLabel: View {
     var body: some View {
         SwiftUI.Text(sourceId)
             .foregroundColor(.white)
-            .font(.avenirNextRegular(withStyle: .body, size: FontSize.body))
+            .font(.avenirNextRegular(withStyle: .body, size: FontSize.caption1))
             .padding(.horizontal, Layout.spacing1x)
             .background(Color(uiColor: UIColor.Neutral.neutral400))
             .cornerRadius(Layout.cornerRadius4x)
