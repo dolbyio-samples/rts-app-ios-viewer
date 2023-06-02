@@ -5,6 +5,7 @@
 import UIKit
 import SwiftUI
 
+#if os(iOS)
 public struct DeviceRotationViewModifier: ViewModifier {
     let action: (UIDeviceOrientation) -> Void
 
@@ -15,7 +16,8 @@ public struct DeviceRotationViewModifier: ViewModifier {
                     action(UIDevice.current.orientation)
                     return
                 }
-                action(UIDeviceOrientation(rawValue: (interfaceOrientation).rawValue)!)
+                guard let orientationValue = UIDeviceOrientation(rawValue: (interfaceOrientation).rawValue) else { return }
+                action(orientationValue)
             }
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
                 action(UIDevice.current.orientation)
@@ -28,3 +30,4 @@ public extension View {
         self.modifier(DeviceRotationViewModifier(action: action))
     }
 }
+#endif
