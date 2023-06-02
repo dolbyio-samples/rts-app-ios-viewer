@@ -69,6 +69,9 @@ struct ListView: View {
                 }
             }
         }
+        .overlay(alignment: .topLeading) {
+            LiveIndicatorView().padding(5)
+        }
     }
 
     private func topVerticalLayout(_ screenSize: CGSize, _ columnsCount: Int) -> some View {
