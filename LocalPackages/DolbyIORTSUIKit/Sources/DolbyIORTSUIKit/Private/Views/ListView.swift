@@ -49,6 +49,13 @@ struct ListView: View {
             )
     }
 
+    @ViewBuilder
+    private func showLabel(for source: StreamSource) -> some View {
+        if viewModel.showSourceLabels {
+            SourceLabel(sourceId: source.sourceId.label).padding(5)
+        }
+    }
+
     var body: some View {
         GeometryReader { proxy in
             if viewModel.isStreamActive {
@@ -221,9 +228,7 @@ struct ListView: View {
                 onMainSourceSelection()
             }
             .overlay(alignment: .bottomLeading) {
-                if viewModel.showSourceLabels {
-                    SourceLabel(sourceId: source.sourceId.label).padding(5)
-                }
+                showLabel(for: source)
             }
     }
 
@@ -249,9 +254,7 @@ struct ListView: View {
                             viewModel.playVideo(for: subVideosource)
                         }
                         .overlay(alignment: .bottomLeading) {
-                            if viewModel.showSourceLabels {
-                                SourceLabel(sourceId: subVideosource.sourceId.label).padding(5)
-                            }
+                            showLabel(for: subVideosource)
                         }
                 }
             }
@@ -278,9 +281,7 @@ struct ListView: View {
                             viewModel.playVideo(for: subVideosource)
                         }
                         .overlay(alignment: .bottomLeading) {
-                            if viewModel.showSourceLabels {
-                                SourceLabel(sourceId: subVideosource.sourceId.label).padding(5)
-                            }
+                            showLabel(for: subVideosource)
                         }
                 }
             }
