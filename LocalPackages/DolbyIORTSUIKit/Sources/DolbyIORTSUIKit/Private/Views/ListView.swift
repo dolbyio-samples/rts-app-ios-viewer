@@ -49,6 +49,13 @@ struct ListView: View {
             )
     }
 
+    @ViewBuilder
+    private func showLabel(for source: StreamSource) -> some View {
+        if viewModel.showSourceLabels {
+            SourceLabel(sourceId: source.sourceId.label).padding(5)
+        }
+    }
+
     var body: some View {
         GeometryReader { proxy in
             if viewModel.isStreamActive {
@@ -68,6 +75,9 @@ struct ListView: View {
                     trailingVerticalLayout(screenSize)
                 }
             }
+        }
+        .overlay(alignment: .topLeading) {
+            LiveIndicatorView().padding(5)
         }
     }
 
@@ -217,6 +227,9 @@ struct ListView: View {
             .onTapGesture {
                 onMainSourceSelection()
             }
+            .overlay(alignment: .bottomLeading) {
+                showLabel(for: source)
+            }
     }
 
     private func gridVertical(screenSize: CGSize, thumbnailSizeRatio: CGFloat) -> ForEach<[StreamSource], UUID, HStack<(some View)?>> {
@@ -239,6 +252,9 @@ struct ListView: View {
                         }
                         .onAppear {
                             viewModel.playVideo(for: subVideosource)
+                        }
+                        .overlay(alignment: .bottomLeading) {
+                            showLabel(for: subVideosource)
                         }
                 }
             }
@@ -263,6 +279,9 @@ struct ListView: View {
                         }
                         .onAppear {
                             viewModel.playVideo(for: subVideosource)
+                        }
+                        .overlay(alignment: .bottomLeading) {
+                            showLabel(for: subVideosource)
                         }
                 }
             }
