@@ -12,16 +12,20 @@ public struct DeviceRotationViewModifier: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .onAppear {
-                guard let interfaceOrientation = UIApplication.shared.connectedScenes.map({ $0 as? UIWindowScene }).compactMap({ $0 }).first?.windows.first?.windowScene?.interfaceOrientation else {
-                    action(UIDevice.current.orientation)
-                    return
-                }
-                guard let orientationValue = UIDeviceOrientation(rawValue: (interfaceOrientation).rawValue) else { return }
-                action(orientationValue)
+                handleOrientation()
             }
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-                action(UIDevice.current.orientation)
+                handleOrientation()
             }
+    }
+
+    func handleOrientation() {
+        guard let interfaceOrientation = UIApplication.shared.connectedScenes.map({ $0 as? UIWindowScene }).compactMap({ $0 }).first?.windows.first?.windowScene?.interfaceOrientation else {
+            action(UIDevice.current.orientation)
+            return
+        }
+        guard let orientationValue = UIDeviceOrientation(rawValue: (interfaceOrientation).rawValue) else { return }
+        action(orientationValue)
     }
 }
 
