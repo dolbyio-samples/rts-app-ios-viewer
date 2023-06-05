@@ -97,7 +97,7 @@ final class StreamViewModel: ObservableObject {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.updateSortedSource()
-                showSourceLabels = settingsManager.settings.showSourceLabels
+                self.showSourceLabels = self.settingsManager.settings.showSourceLabels
             }
             .store(in: &subscriptions)
     }
