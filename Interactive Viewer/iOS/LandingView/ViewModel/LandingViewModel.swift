@@ -11,7 +11,10 @@ final class LandingViewModel: ObservableObject {
 
     private var streamDetails: [StreamDetail] = [] {
         didSet {
-            hasSavedStreams = !streamDetails.isEmpty
+            let hasSavedStreamsOnLastUpdate = !streamDetails.isEmpty
+            if hasSavedStreams != hasSavedStreamsOnLastUpdate {
+                hasSavedStreams = hasSavedStreamsOnLastUpdate
+            }
         }
     }
     @Published private(set) var hasSavedStreams: Bool = false

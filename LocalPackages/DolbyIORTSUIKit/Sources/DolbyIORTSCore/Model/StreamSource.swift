@@ -20,17 +20,13 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
             }
         }
 
-        var value: String? {
+        public var value: String? {
             switch self {
             case .main:
                 return nil
             case let .other(sourceId: id):
                 return id
             }
-        }
-
-        public var label: String {
-            self.value ?? "Main"
         }
     }
 
@@ -108,8 +104,8 @@ public struct StreamSource: Equatable, Hashable, Identifiable {
     public let sourceId: SourceId
     public let availableVideoQualityList: [VideoQuality]
     public let preferredVideoQuality: VideoQuality
-    public let isPlayingAudio: Bool
-    public let isPlayingVideo: Bool
+    let isPlayingAudio: Bool
+    let isPlayingVideo: Bool
     let audioTracks: [AudioTrackInfo]
     let videoTrack: VideoTrackInfo?
 }

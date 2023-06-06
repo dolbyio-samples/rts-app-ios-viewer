@@ -16,16 +16,29 @@ public struct StreamingScreen: View {
         _isShowingStreamView = isShowingStreamView
     }
 
+    @ViewBuilder
+    private var singleStreamView: some View {
+        if let detailSingleStreamViewModel = viewModel.detailSingleStreamViewModel {
+            SingleStreamView(
+                viewModel: detailSingleStreamViewModel,
+                isShowingDetailPresentation: true,
+                onSelect: {
+                    viewModel.selectVideoSource($0)
+                },
+                onClose: {
+                    isShowingSingleViewScreen = false
+                }
+            )
+        } else {
+            EmptyView()
+        }
+    }
+
     public var body: some View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    SingleStreamView(
-                        viewModel: viewModel,
-                        isShowingDetailPresentation: true
-                    ) {
-                        isShowingSingleViewScreen = false
-                    }
+                    singleStreamView
                 ),
                 isActive: $isShowingSingleViewScreen
             ) {
@@ -39,13 +52,34 @@ public struct StreamingScreen: View {
                 EmptyView()
             }.hidden()
 
-            switch viewModel.mode {
-            case .list:
-                ListView(viewModel: viewModel) {
-                    isShowingSingleViewScreen = true
+            switch viewModel.state {
+            case let .success(displayMode: displayMode):
+                switch displayMode {
+                case let .list(listViewModel):
+                    ListView(
+                        viewModel: listViewModel,
+                        onPrimaryVideoSelection: { _ in
+                            isShowingSingleViewScreen = true
+                        },
+                        onSecondaryVideoSelection: {
+                            viewModel.selectVideoSource($0)
+                        }
+                    )
+                case let .single(singleStreamViewModel):
+                    SingleStreamView(
+                        viewModel: singleStreamViewModel,
+                        isShowingDetailPresentation: false,
+                        onSelect: {
+                            viewModel.selectVideoSource($0)
+                        }
+                    )
                 }
-            case .single:
-                SingleStreamView(viewModel: viewModel)
+            case .loading:
+                // TODO: Handle loading state
+                EmptyView()
+            case .error:
+                // TODO: Handle error state
+                EmptyView()
             }
         }
         .navigationBarBackButtonHidden(true)
