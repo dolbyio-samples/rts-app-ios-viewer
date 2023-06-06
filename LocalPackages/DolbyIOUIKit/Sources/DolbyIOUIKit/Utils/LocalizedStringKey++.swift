@@ -13,7 +13,7 @@ extension LocalizedStringKey {
     /**
      Return localized value of thisLocalizedStringKey
      */
-    public func toString() -> String {
+    public func toString(with bundle: Bundle = .main) -> String {
         // Use reflection
         let mirror = Mirror(reflecting: self)
 
@@ -29,7 +29,7 @@ extension LocalizedStringKey {
         if attributeLabelAndValue != nil {
             // Ask for localization of found key via NSLocalizedString
             // swiftlint:disable force_cast
-            return String.localizedStringWithFormat(NSLocalizedString(attributeLabelAndValue!.value as! String, comment: ""))
+            return String.localizedStringWithFormat(NSLocalizedString(attributeLabelAndValue!.value as! String, bundle: bundle, comment: ""))
             // swiftlint:enable force_cast
         } else {
             return ""
