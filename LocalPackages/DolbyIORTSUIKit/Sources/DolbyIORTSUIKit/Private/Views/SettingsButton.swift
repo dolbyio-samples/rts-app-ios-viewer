@@ -7,15 +7,15 @@ import SwiftUI
 
 struct SettingsButton: View {
 
-    @Binding private var isShowingSettingsScreen: Bool
+    private let onAction: () -> Void
 
-    init(isShowingSettingsScreen: Binding<Bool>) {
-        _isShowingSettingsScreen = isShowingSettingsScreen
+    init(onAction: @escaping (() -> Void) = {}) {
+        self.onAction = onAction
     }
 
     var body: some View {
         IconButton(name: .settings, action: {
-            _isShowingSettingsScreen.wrappedValue = true
+            onAction()
         })
         .scaleEffect(0.5, anchor: .trailing)
     }

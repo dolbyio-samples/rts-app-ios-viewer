@@ -93,7 +93,9 @@ public struct StreamingScreen: View {
                 // TODO: Add title
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                SettingsButton(isShowingSettingsScreen: $isShowingSettingsScreen)
+                if case .stream = viewModel.settingsManager.mode {
+                    SettingsButton { isShowingSettingsScreen = true }
+                }
             }
         }
     }
@@ -105,6 +107,7 @@ extension StreamingScreen {
     func endStream() {
         Task {
             await viewModel.endStream()
+            viewModel.settingsManager.setActiveSetting(for: .global)
             _isShowingStreamView.wrappedValue = false
         }
     }

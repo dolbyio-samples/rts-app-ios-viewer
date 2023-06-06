@@ -59,7 +59,7 @@ struct SingleStreamView: View {
             Spacer()
 
             if isShowingDetailPresentation {
-                SettingsButton(isShowingSettingsScreen: $isShowingSettingsScreen)
+                SettingsButton { isShowingSettingsScreen = true }
             }
         }
         .ignoresSafeArea()
