@@ -217,6 +217,7 @@ final class StreamViewModel: ObservableObject {
     // swiftlint:enable function_body_length
 
     func endStream() async {
+        settingsManager.setActiveSetting(for: .global)
         _ = await streamCoordinator.stopSubscribe()
     }
 

@@ -105,7 +105,6 @@ extension StreamingScreen {
     func endStream() {
         Task {
             await viewModel.endStream()
-            viewModel.settingsManager.setActiveSetting(for: .global)
             _isShowingStreamView.wrappedValue = false
         }
     }
