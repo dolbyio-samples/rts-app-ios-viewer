@@ -57,6 +57,8 @@ final class StreamViewModel: ObservableObject {
     private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
 
+    let streamDetail: StreamDetail?
+
     @Published private(set) var state: State = .loading
     private var internalState: InternalState = .loading {
         didSet {
@@ -93,6 +95,7 @@ final class StreamViewModel: ObservableObject {
     ) {
         self.streamCoordinator = streamCoordinator
         self.settingsManager = settingsManager
+        self.streamDetail = streamCoordinator.activeStreamDetail
         if let streamId = streamCoordinator.activeStreamDetail?.streamId {
             settingsManager.setActiveSetting(for: .stream(streamID: streamId))
         }
