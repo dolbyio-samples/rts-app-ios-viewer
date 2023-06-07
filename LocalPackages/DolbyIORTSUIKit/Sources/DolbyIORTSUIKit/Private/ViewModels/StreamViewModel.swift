@@ -60,6 +60,7 @@ final class StreamViewModel: ObservableObject {
     let streamDetail: StreamDetail?
 
     @Published private(set) var state: State = .loading
+
     private var internalState: InternalState = .loading {
         didSet {
             state = State(internalState)
@@ -149,15 +150,7 @@ final class StreamViewModel: ObservableObject {
                 fatalError("Cannot select source thats not part of the current source list")
             }
 
-            let selectedAudioSource: StreamSource
-            switch settings.audioSelection {
-            case .firstSource, .mainSource:
-                selectedAudioSource = sources[0]
-            case .followVideo:
-                selectedAudioSource = matchingSource
-            case let .source(sourceId: sourceId):
-                selectedAudioSource = sources.first { $0.sourceId.value == sourceId } ?? sources[0]
-            }
+            let selectedAudioSource = audioSelection(from: sources, settings: settings, selectedVideoSource: matchingSource)
 
             let updatedDisplayMode: DisplayMode
             switch displayMode {
@@ -261,6 +254,8 @@ final class StreamViewModel: ObservableObject {
             return
         }
 
+        updateStreamSettings(from: sources, settings: settings)
+
         let sortedSources: [StreamSource]
         switch settings.streamSortOrder {
         case .connectionOrder:
@@ -293,15 +288,7 @@ final class StreamViewModel: ObservableObject {
             detailSourceAndViewRenderers = existingDetailSourceAndViewRenderers
         }
 
-        let selectedAudioSource: StreamSource
-        switch settings.audioSelection {
-        case .firstSource, .mainSource:
-            selectedAudioSource = sortedSources[0]
-        case .followVideo:
-            selectedAudioSource = selectedVideoSource
-        case let .source(sourceId: sourceId):
-            selectedAudioSource = sortedSources.first { $0.sourceId.value == sourceId } ?? sortedSources[0]
-        }
+        let selectedAudioSource = audioSelection(from: sortedSources, settings: settings, selectedVideoSource: selectedVideoSource)
 
         let displayMode: DisplayMode
         switch settings.multiviewLayout {
@@ -346,6 +333,7 @@ final class StreamViewModel: ObservableObject {
                 selectedVideoSource: selectedVideoSource
             )
             displayMode = .single(singleStreamViewModel)
+
         default:
             fatalError("Display mode is unhandled")
         }
@@ -360,8 +348,42 @@ final class StreamViewModel: ObservableObject {
             settings: settings
         )
     }
+
+    private func updateStreamSettings(from sources: [StreamSource], settings: StreamSettings) {
+        // Only update the settings when the sources change
+        let sourceIds = sources.compactMap { source in
+            source.sourceId.value
+        }
+        if sourceIds != settingsManager.settings.audioSources {
+            settingsManager.settings.audioSources = sourceIds
+
+            // If source selected in settings is no longer available, update the settings
+            if case let .source(sourceId) = settingsManager.settings.audioSelection {
+                if !settingsManager.settings.audioSources.contains(sourceId) {
+                    settingsManager.settings.audioSelection = .firstSource
+                }
+            }
+        }
+    }
+
+    private func audioSelection(from sources: [StreamSource], settings: StreamSettings, selectedVideoSource: StreamSource) -> StreamSource {
+        let selectedAudioSource: StreamSource
+        switch settings.audioSelection {
+        case .firstSource:
+            selectedAudioSource = sources[0]
+        case .mainSource:
+            // If no main source available, use first source as main
+            selectedAudioSource = sources.first(where: { $0.sourceId == StreamSource.SourceId.main }) ?? sources[0]
+        case .followVideo:
+            selectedAudioSource = selectedVideoSource
+        case let .source(sourceId: sourceId):
+            selectedAudioSource = sources.first(where: { $0.sourceId.value == sourceId }) ?? sources[0]
+        }
+        return selectedAudioSource
+    }
     // swiftlint:enable cyclomatic_complexity function_body_length
 }
+
 // swiftlint:enable type_body_length
 
 fileprivate extension StreamViewModel.InternalState {
