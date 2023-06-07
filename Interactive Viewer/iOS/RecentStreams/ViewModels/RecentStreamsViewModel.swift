@@ -36,9 +36,9 @@ final class RecentStreamsViewModel: ObservableObject {
 
     func delete(at offsets: IndexSet) {
         offsets.forEach {
-            streamDataManager.delete(streamDetail: streamDetails[$0])
-            let streamDetail = DolbyIORTSCore.StreamDetail(streamName: streamDetails[$0].streamName, accountID: streamDetails[$0].accountID)
-            _ = SettingsManager.shared.removeSettings(for: streamDetail.streamId)
+            let streamDetail = streamDetails[$0]
+            streamDataManager.delete(streamDetail: streamDetail)
+            _ = SettingsManager.shared.removeSettings(for: streamDetail.streamName, with: streamDetail.accountID)
         }
     }
 

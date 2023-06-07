@@ -55,7 +55,8 @@ open class SettingsManager {
         }
     }
 
-    public func removeSettings(for streamId: String) -> Bool {
+    public func removeSettings(for streamName: String, with accountID: String) -> Bool {
+        let streamId = StreamDetail(streamName: streamName, accountID: accountID).streamId
         if case let .stream(Id) = mode {
             guard Id != streamId else { return false }
         }
