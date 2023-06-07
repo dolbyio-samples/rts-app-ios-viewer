@@ -257,12 +257,6 @@ final class StreamViewModel: ObservableObject {
             return
         }
 
-        // When retreiving sources for the first time
-        if self.sources.isEmpty {
-            // Update settings manager with the current stream information
-            settingsManager.setActiveSetting(for: .stream(streamID: streamDetail.streamId))
-        }
-
         let sortedSources: [StreamSource]
         switch settings.streamSortOrder {
         case .connectionOrder:
