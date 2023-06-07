@@ -54,6 +54,18 @@ open class SettingsManager {
             try? SettingsDictionary.saveSettings(for: currentStreamId, settings: self.settings)
         }
     }
+
+    public func removeSettings(for streamId: String) -> Bool {
+        if case let .stream(Id) = mode {
+            guard Id != streamId else { return false }
+        }
+        do {
+            try SettingsDictionary.removeSettings(for: streamId)
+        } catch {
+            return false
+        }
+        return true
+    }
 }
 
 class SettingsDictionary {
