@@ -95,6 +95,10 @@ final class StreamViewModel: ObservableObject {
         self.streamCoordinator = streamCoordinator
         self.settingsManager = settingsManager
 
+        if let streamId = streamCoordinator.activeStreamDetail?.streamId {
+            settingsManager.setActiveSetting(for: .stream(streamID: streamId))
+        }
+
         startObservers()
     }
 
@@ -207,6 +211,7 @@ final class StreamViewModel: ObservableObject {
     // swiftlint:enable function_body_length
 
     func endStream() async {
+        settingsManager.setActiveSetting(for: .global)
         _ = await streamCoordinator.stopSubscribe()
     }
 
@@ -229,8 +234,8 @@ final class StreamViewModel: ObservableObject {
             .sink { [weak self] state, settings in
                 guard let self = self else { return }
                 switch state {
-                case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: streamDetail):
-                    self.updateState(from: sources, streamDetail: streamDetail, settings: settings)
+                case let .subscribed(sources: sources, numberOfStreamViewers: _):
+                    self.updateState(from: sources, settings: settings)
                 default:
                     // TODO: Handle other scenarios (including errors)
                     break
@@ -240,14 +245,14 @@ final class StreamViewModel: ObservableObject {
     }
 
     // swiftlint:disable cyclomatic_complexity function_body_length
-    private func updateState(from sources: [StreamSource], streamDetail: StreamDetail, settings: StreamSettings) {
+    private func updateState(from sources: [StreamSource], settings: StreamSettings) {
         guard !sources.isEmpty else {
             // TODO: Set proper error messages
             internalState = .error(title: "", subtitle: "")
             return
         }
 
-        updateStreamSettings(from: sources, streamDetail: streamDetail, settings: settings)
+        updateStreamSettings(from: sources, settings: settings)
 
         let sortedSources: [StreamSource]
         switch settings.streamSortOrder {
@@ -341,13 +346,7 @@ final class StreamViewModel: ObservableObject {
         )
     }
 
-    private func updateStreamSettings(from sources: [StreamSource], streamDetail: StreamDetail, settings: StreamSettings) {
-        // When retreiving sources for the first time
-        if self.sources.isEmpty {
-            // Update settings manager with the current stream information
-            settingsManager.setActiveSetting(for: .stream(streamID: streamDetail.streamId))
-        }
-
+    private func updateStreamSettings(from sources: [StreamSource], settings: StreamSettings) {
         // Only update the settings when the sources change
         let sourceIds = sources.compactMap { source in
             source.sourceId.value
