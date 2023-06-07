@@ -58,6 +58,7 @@ final class StreamViewModel: ObservableObject {
     private var subscriptions: [AnyCancellable] = []
 
     @Published private(set) var state: State = .loading
+
     private var internalState: InternalState = .loading {
         didSet {
             state = State(internalState)
@@ -93,9 +94,6 @@ final class StreamViewModel: ObservableObject {
     ) {
         self.streamCoordinator = streamCoordinator
         self.settingsManager = settingsManager
-        if let streamId = streamCoordinator.activeStreamDetail?.streamId {
-            settingsManager.setActiveSetting(for: .stream(streamID: streamId))
-        }
 
         startObservers()
     }
@@ -146,15 +144,7 @@ final class StreamViewModel: ObservableObject {
                 fatalError("Cannot select source thats not part of the current source list")
             }
 
-            let selectedAudioSource: StreamSource
-            switch settings.audioSelection {
-            case .firstSource, .mainSource:
-                selectedAudioSource = sources[0]
-            case .followVideo:
-                selectedAudioSource = matchingSource
-            case let .source(sourceId: sourceId):
-                selectedAudioSource = sources.first { $0.sourceId.value == sourceId } ?? sources[0]
-            }
+            let selectedAudioSource: StreamSource = updateAudioSelection(settings: settings, sources: sources, selectedVideoSource: matchingSource)
 
             let updatedDisplayMode: DisplayMode
             switch displayMode {
@@ -217,7 +207,6 @@ final class StreamViewModel: ObservableObject {
     // swiftlint:enable function_body_length
 
     func endStream() async {
-        settingsManager.setActiveSetting(for: .global)
         _ = await streamCoordinator.stopSubscribe()
     }
 
@@ -240,8 +229,8 @@ final class StreamViewModel: ObservableObject {
             .sink { [weak self] state, settings in
                 guard let self = self else { return }
                 switch state {
-                case let .subscribed(sources: sources, numberOfStreamViewers: _):
-                    self.updateState(from: sources, settings: settings)
+                case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: streamDetail):
+                    self.updateState(from: sources, streamDetail: streamDetail, settings: settings)
                 default:
                     // TODO: Handle other scenarios (including errors)
                     break
@@ -251,11 +240,25 @@ final class StreamViewModel: ObservableObject {
     }
 
     // swiftlint:disable cyclomatic_complexity function_body_length
-    private func updateState(from sources: [StreamSource], settings: StreamSettings) {
+    private func updateState(from sources: [StreamSource], streamDetail: StreamDetail, settings: StreamSettings) {
         guard !sources.isEmpty else {
             // TODO: Set proper error messages
             internalState = .error(title: "", subtitle: "")
             return
+        }
+
+        // When retreiving sources for the first time
+        if self.sources.isEmpty {
+            // Update settings manager with the current stream information
+            settingsManager.setActiveSetting(for: .stream(streamID: streamDetail.streamId))
+        }
+
+        // Only update the settings when the sources change
+        let sourceIds = sources.compactMap { source in
+            source.sourceId.value
+        }
+        if sourceIds != self.settingsManager.settings.audioSources {
+            self.settingsManager.settings.audioSources = sourceIds
         }
 
         let sortedSources: [StreamSource]
@@ -290,15 +293,7 @@ final class StreamViewModel: ObservableObject {
             detailSourceAndViewRenderers = existingDetailSourceAndViewRenderers
         }
 
-        let selectedAudioSource: StreamSource
-        switch settings.audioSelection {
-        case .firstSource, .mainSource:
-            selectedAudioSource = sortedSources[0]
-        case .followVideo:
-            selectedAudioSource = selectedVideoSource
-        case let .source(sourceId: sourceId):
-            selectedAudioSource = sortedSources.first { $0.sourceId.value == sourceId } ?? sortedSources[0]
-        }
+        let selectedAudioSource: StreamSource = updateAudioSelection(settings: settings, sources: sortedSources, selectedVideoSource: selectedVideoSource)
 
         let displayMode: DisplayMode
         switch settings.multiviewLayout {
@@ -357,8 +352,36 @@ final class StreamViewModel: ObservableObject {
             settings: settings
         )
     }
+
+    private func updateAudioSelection(settings: StreamSettings, sources: [StreamSource], selectedVideoSource: StreamSource) -> StreamSource {
+        let selectedAudioSource: StreamSource
+        switch settings.audioSelection {
+        case .firstSource:
+            selectedAudioSource = sources[0]
+        case .mainSource:
+            // If no main source available, use first source as main
+            selectedAudioSource = sources.first(where: { $0.sourceId.value == StreamSource.SourceId.main.value }) ?? sources[0]
+        case .followVideo:
+            selectedAudioSource = selectedVideoSource
+        case let .source(sourceId: sourceId):
+            if let source = sources.first(where: { $0.sourceId.value == sourceId }) {
+                selectedAudioSource = source
+            } else {
+                selectedAudioSource = sources[0]
+
+                // Source no longer available, so update the settings
+                if selectedAudioSource.sourceId.value != nil {
+                    settingsManager.settings.audioSelection = .source(sourceId: selectedAudioSource.sourceId.displayLabel)
+                } else {
+                    settingsManager.settings.audioSelection = .mainSource
+                }
+            }
+        }
+        return selectedAudioSource
+    }
     // swiftlint:enable cyclomatic_complexity function_body_length
 }
+
 // swiftlint:enable type_body_length
 
 fileprivate extension StreamViewModel.InternalState {
