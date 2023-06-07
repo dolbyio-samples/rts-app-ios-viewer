@@ -144,7 +144,7 @@ final class StreamViewModel: ObservableObject {
                 fatalError("Cannot select source thats not part of the current source list")
             }
 
-            let selectedAudioSource: StreamSource = updateAudioSelection(settings: settings, sources: sources, selectedVideoSource: matchingSource)
+            let selectedAudioSource: StreamSource = audioSelection(from: sources, settings: settings, selectedVideoSource: matchingSource)
 
             let updatedDisplayMode: DisplayMode
             switch displayMode {
@@ -257,8 +257,15 @@ final class StreamViewModel: ObservableObject {
         let sourceIds = sources.compactMap { source in
             source.sourceId.value
         }
-        if sourceIds != self.settingsManager.settings.audioSources {
-            self.settingsManager.settings.audioSources = sourceIds
+        if sourceIds != settingsManager.settings.audioSources {
+            settingsManager.settings.audioSources = sourceIds
+
+            // If source selected in settings is no longer available, update the settings
+            if case let .source(sourceId) = settingsManager.settings.audioSelection {
+                if !settingsManager.settings.audioSources.contains(sourceId) {
+                    settingsManager.settings.audioSelection = .firstSource
+                }
+            }
         }
 
         let sortedSources: [StreamSource]
@@ -293,7 +300,7 @@ final class StreamViewModel: ObservableObject {
             detailSourceAndViewRenderers = existingDetailSourceAndViewRenderers
         }
 
-        let selectedAudioSource: StreamSource = updateAudioSelection(settings: settings, sources: sortedSources, selectedVideoSource: selectedVideoSource)
+        let selectedAudioSource = audioSelection(from: sortedSources, settings: settings, selectedVideoSource: selectedVideoSource)
 
         let displayMode: DisplayMode
         switch settings.multiviewLayout {
@@ -353,29 +360,18 @@ final class StreamViewModel: ObservableObject {
         )
     }
 
-    private func updateAudioSelection(settings: StreamSettings, sources: [StreamSource], selectedVideoSource: StreamSource) -> StreamSource {
+    private func audioSelection(from sources: [StreamSource], settings: StreamSettings, selectedVideoSource: StreamSource) -> StreamSource {
         let selectedAudioSource: StreamSource
         switch settings.audioSelection {
         case .firstSource:
             selectedAudioSource = sources[0]
         case .mainSource:
             // If no main source available, use first source as main
-            selectedAudioSource = sources.first(where: { $0.sourceId.value == StreamSource.SourceId.main.value }) ?? sources[0]
+            selectedAudioSource = sources.first(where: { $0.sourceId == StreamSource.SourceId.main }) ?? sources[0]
         case .followVideo:
             selectedAudioSource = selectedVideoSource
         case let .source(sourceId: sourceId):
-            if let source = sources.first(where: { $0.sourceId.value == sourceId }) {
-                selectedAudioSource = source
-            } else {
-                selectedAudioSource = sources[0]
-
-                // Source no longer available, so update the settings
-                if selectedAudioSource.sourceId.value != nil {
-                    settingsManager.settings.audioSelection = .source(sourceId: selectedAudioSource.sourceId.displayLabel)
-                } else {
-                    settingsManager.settings.audioSelection = .mainSource
-                }
-            }
+            selectedAudioSource = sources.first(where: { $0.sourceId.value == sourceId }) ?? sources[0]
         }
         return selectedAudioSource
     }
