@@ -93,9 +93,7 @@ public struct StreamingScreen: View {
                 // TODO: Add title
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                if case .stream = viewModel.settingsManager.mode {
-                    SettingsButton { isShowingSettingsScreen = true }
-                }
+                SettingsButton { isShowingSettingsScreen = true }
             }
         }
     }

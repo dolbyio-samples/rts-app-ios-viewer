@@ -93,6 +93,9 @@ final class StreamViewModel: ObservableObject {
     ) {
         self.streamCoordinator = streamCoordinator
         self.settingsManager = settingsManager
+        if let streamId = streamCoordinator.activeStreamDetail?.streamId {
+            settingsManager.setActiveSetting(for: .stream(streamID: streamId))
+        }
 
         startObservers()
     }
