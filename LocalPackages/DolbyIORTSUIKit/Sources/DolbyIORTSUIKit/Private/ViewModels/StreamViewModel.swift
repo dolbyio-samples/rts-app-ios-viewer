@@ -144,7 +144,7 @@ final class StreamViewModel: ObservableObject {
                 fatalError("Cannot select source thats not part of the current source list")
             }
 
-            let selectedAudioSource: StreamSource = audioSelection(from: sources, settings: settings, selectedVideoSource: matchingSource)
+            let selectedAudioSource = audioSelection(from: sources, settings: settings, selectedVideoSource: matchingSource)
 
             let updatedDisplayMode: DisplayMode
             switch displayMode {
@@ -247,26 +247,7 @@ final class StreamViewModel: ObservableObject {
             return
         }
 
-        // When retreiving sources for the first time
-        if self.sources.isEmpty {
-            // Update settings manager with the current stream information
-            settingsManager.setActiveSetting(for: .stream(streamID: streamDetail.streamId))
-        }
-
-        // Only update the settings when the sources change
-        let sourceIds = sources.compactMap { source in
-            source.sourceId.value
-        }
-        if sourceIds != settingsManager.settings.audioSources {
-            settingsManager.settings.audioSources = sourceIds
-
-            // If source selected in settings is no longer available, update the settings
-            if case let .source(sourceId) = settingsManager.settings.audioSelection {
-                if !settingsManager.settings.audioSources.contains(sourceId) {
-                    settingsManager.settings.audioSelection = .firstSource
-                }
-            }
-        }
+        updateStreamSettings(from: sources, streamDetail: streamDetail, settings: settings)
 
         let sortedSources: [StreamSource]
         switch settings.streamSortOrder {
@@ -358,6 +339,29 @@ final class StreamViewModel: ObservableObject {
             detailSourceAndViewRenderers: detailSourceAndViewRenderers,
             settings: settings
         )
+    }
+
+    private func updateStreamSettings(from sources: [StreamSource], streamDetail: StreamDetail, settings: StreamSettings) {
+        // When retreiving sources for the first time
+        if self.sources.isEmpty {
+            // Update settings manager with the current stream information
+            settingsManager.setActiveSetting(for: .stream(streamID: streamDetail.streamId))
+        }
+
+        // Only update the settings when the sources change
+        let sourceIds = sources.compactMap { source in
+            source.sourceId.value
+        }
+        if sourceIds != settingsManager.settings.audioSources {
+            settingsManager.settings.audioSources = sourceIds
+
+            // If source selected in settings is no longer available, update the settings
+            if case let .source(sourceId) = settingsManager.settings.audioSelection {
+                if !settingsManager.settings.audioSources.contains(sourceId) {
+                    settingsManager.settings.audioSelection = .firstSource
+                }
+            }
+        }
     }
 
     private func audioSelection(from sources: [StreamSource], settings: StreamSettings, selectedVideoSource: StreamSource) -> StreamSource {
