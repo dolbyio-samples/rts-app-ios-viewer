@@ -29,6 +29,7 @@ open class StreamCoordinator {
     public lazy var statePublisher: AnyPublisher<StreamState, Never> = stateSubject
         .removeDuplicates()
         .eraseToAnyPublisher()
+    public private(set) var activeStreamDetail: StreamDetail?
 
     private init() {
         subscriptionManager = SubscriptionManager()
@@ -77,7 +78,11 @@ open class StreamCoordinator {
 
     public func connect(streamName: String, accountID: String) async -> Bool {
         await stateMachine.startConnection(streamName: streamName, accountID: accountID)
-        return await subscriptionManager.connect(streamName: streamName, accountID: accountID)
+        let result = await subscriptionManager.connect(streamName: streamName, accountID: accountID)
+        if result {
+            activeStreamDetail = StreamDetail(streamName: streamName, accountID: accountID)
+        }
+        return result
     }
 
     public func startSubscribe() async -> Bool {
@@ -86,6 +91,7 @@ open class StreamCoordinator {
     }
 
     public func stopSubscribe() async -> Bool {
+        activeStreamDetail = nil
         async let stateResetResult: Void = stateMachine.stopSubscribe()
         async let rendererResetResult: Void = rendererRegistry.reset()
         async let stopSubscribeResult: Bool = await subscriptionManager.stopSubscribe()
@@ -99,7 +105,7 @@ open class StreamCoordinator {
 
     public func playAudio(for source: StreamSource) async {
         switch stateSubject.value {
-        case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
+        case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
                 let matchingSource = sources.first(where: { $0.id == source.id }),
                 !matchingSource.isPlayingAudio
@@ -125,7 +131,7 @@ open class StreamCoordinator {
 
     public func stopAudio(for source: StreamSource) async {
         switch stateSubject.value {
-        case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
+        case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
                 let matchingSource = sources.first(where: { $0.id == source.id }),
                 matchingSource.isPlayingAudio
@@ -142,7 +148,7 @@ open class StreamCoordinator {
 
     public func playVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer, quality: StreamSource.VideoQuality) async {
         switch stateSubject.value {
-        case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
+        case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
                 let matchingSource = sources.first(where: { $0.id == source.id }),
                 let videoTrack = source.videoTrack?.track
@@ -166,7 +172,7 @@ open class StreamCoordinator {
 
     public func stopVideo(for source: StreamSource, on renderer: StreamSourceViewRenderer) async {
         switch stateSubject.value {
-        case let .subscribed(sources: sources, numberOfStreamViewers: _, streamDetail: _):
+        case let .subscribed(sources: sources, numberOfStreamViewers: _):
             guard
                 let matchingSource = sources.first(where: { $0.id == source.id }),
                 matchingSource.isPlayingVideo,

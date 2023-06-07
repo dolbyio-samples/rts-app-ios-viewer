@@ -93,7 +93,7 @@ public struct StreamingScreen: View {
                 // TODO: Add title
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                SettingsButton(isShowingSettingsScreen: $isShowingSettingsScreen)
+                SettingsButton { isShowingSettingsScreen = true }
             }
         }
     }

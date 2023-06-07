@@ -9,7 +9,7 @@ public enum StreamState: Equatable {
     case connecting
     case connected
     case subscribing
-    case subscribed(sources: [StreamSource], numberOfStreamViewers: Int, streamDetail: StreamDetail)
+    case subscribed(sources: [StreamSource], numberOfStreamViewers: Int)
     case stopped
     case error(StreamError)
 
@@ -27,8 +27,7 @@ public enum StreamState: Equatable {
         case let .subscribed(state):
             self = .subscribed(
                 sources: state.sources,
-                numberOfStreamViewers: state.numberOfStreamViewers,
-                streamDetail: state.streamDetail
+                numberOfStreamViewers: state.numberOfStreamViewers
             )
 
         case .stopped:
