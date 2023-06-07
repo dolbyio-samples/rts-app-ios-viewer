@@ -53,7 +53,7 @@ final class StreamViewModel: ObservableObject {
         case list(ListViewModel)
     }
 
-    let settingsManager: SettingsManager
+    private let settingsManager: SettingsManager
     private let streamCoordinator: StreamCoordinator
     private var subscriptions: [AnyCancellable] = []
 
