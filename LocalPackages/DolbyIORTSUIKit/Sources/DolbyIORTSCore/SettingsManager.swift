@@ -54,6 +54,23 @@ open class SettingsManager {
             try? SettingsDictionary.saveSettings(for: currentStreamId, settings: self.settings)
         }
     }
+
+    @discardableResult
+    public func removeSettings(for streamName: String, with accountID: String) -> Bool {
+        let streamId = StreamDetail(streamName: streamName, accountID: accountID).streamId
+        if case let .stream(id) = mode {
+            guard id != streamId else {
+                // Invalid use case
+                fatalError("Can't remove an active stream settings")
+            }
+        }
+        do {
+            try SettingsDictionary.removeSettings(for: streamId)
+        } catch {
+            return false
+        }
+        return true
+    }
 }
 
 class SettingsDictionary {

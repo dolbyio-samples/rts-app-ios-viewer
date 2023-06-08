@@ -90,7 +90,10 @@ public struct StreamingScreen: View {
                 }
             }
             ToolbarItem(placement: .principal) {
-                // TODO: Add title
+                if let streamName = viewModel.streamDetail?.streamName {
+                    SwiftUI.Text(streamName)
+                        .font(.avenirNextRegular(withStyle: .title, size: FontSize.subhead))
+                }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 SettingsButton { isShowingSettingsScreen = true }
