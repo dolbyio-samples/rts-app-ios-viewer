@@ -10,6 +10,7 @@ final class RecentStreamsViewModel: ObservableObject {
 
     private let streamDataManager: StreamDataManagerProtocol
     private var subscriptions: [AnyCancellable] = []
+    private let settingsManager: SettingsManager
 
     @Published private(set) var streamDetails: [StreamDetail] = [] {
         didSet {
@@ -20,8 +21,10 @@ final class RecentStreamsViewModel: ObservableObject {
     @Published private(set) var topStreamDetails: [StreamDetail] = []
     @Published private(set) var lastPlayedStream: StreamDetail?
 
-    init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared) {
+    init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
+         settingsManager: SettingsManager = .shared) {
         self.streamDataManager = streamDataManager
+        self.settingsManager = settingsManager
         streamDataManager.streamDetailsSubject
             .receive(on: DispatchQueue.main)
             .sink { [weak self] streamDetails in
@@ -37,8 +40,9 @@ final class RecentStreamsViewModel: ObservableObject {
     func delete(at offsets: IndexSet) {
         offsets.forEach {
             let streamDetail = streamDetails[$0]
-            streamDataManager.delete(streamDetail: streamDetail)
-            _ = SettingsManager.shared.removeSettings(for: streamDetail.streamName, with: streamDetail.accountID)
+            if settingsManager.removeSettings(for: streamDetail.streamName, with: streamDetail.accountID) {
+                streamDataManager.delete(streamDetail: streamDetail)
+            }
         }
     }
 
