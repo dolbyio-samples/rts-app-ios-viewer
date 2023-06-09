@@ -218,6 +218,7 @@
 		6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		B6376BC12A1C4120007AD9D9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
+		E8067F482A329F680083E94B /* InteractiveVieweriOSFirebaseReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSFirebaseReleaseSettings.xcconfig; sourceTree = "<group>"; };
 		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = IDETemplateMacros.plist; path = RTSViewer.xcworkspace/xcshareddata/IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
 		E8224312299B00E400F9BB15 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E8224319299B057C00F9BB15 /* SplashScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
@@ -633,10 +634,11 @@
 		E8649BED295284F400309BF7 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				E8E185632A10A47000BF4726 /* InteractiveVieweriOSDebugSettings.xcconfig */,
+				E8067F482A329F680083E94B /* InteractiveVieweriOSFirebaseReleaseSettings.xcconfig */,
+				E8E185642A10A47000BF4726 /* InteractiveVieweriOSReleaseSettings.xcconfig */,
 				E8649BEE295284F400309BF7 /* iOSDebugSettings.xcconfig */,
 				E8649BEF295284F400309BF7 /* iOSReleaseSettings.xcconfig */,
-				E8E185632A10A47000BF4726 /* InteractiveVieweriOSDebugSettings.xcconfig */,
-				E8E185642A10A47000BF4726 /* InteractiveVieweriOSReleaseSettings.xcconfig */,
 				E8649BF0295284F400309BF7 /* TVOSDebugSettings.xcconfig */,
 				E8649BF1295284F400309BF7 /* TVOSReleaseSettings.xcconfig */,
 			);
@@ -1558,7 +1560,7 @@
 		};
 		E8816E302A1086E400064B1D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8E185642A10A47000BF4726 /* InteractiveVieweriOSReleaseSettings.xcconfig */;
+			baseConfigurationReference = E8067F482A329F680083E94B /* InteractiveVieweriOSFirebaseReleaseSettings.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
