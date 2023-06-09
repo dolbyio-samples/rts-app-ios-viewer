@@ -16,7 +16,7 @@
 "default-multi-view-layout.list-view.label" = "List view";
 "default-multi-view-layout.grid-view.label" = "Grid view";
 "default-multi-view-layout.single-stream-view.label" = "Single stream view";
-"default-multi-view-layout.footer.label" = "List view: Display one large source as the main view with smaller titles for additional feeds.\n\nGrid view: Display all video sources as equally sized titles.";
+"default-multi-view-layout.footer.label" = "List view: Display one large source as the main view with smaller titles for additional feeds.";
 
 /** Stream sort order screen */
 "stream-sort-order.title.label" = "Stream sort order";
