@@ -4,6 +4,51 @@ before_all do
   xcode_select(ENV['XCODE_SELECT_PATH'])
 end
 
+
+desc "Build, Export and Upload an enterprise app to Firebase"
+lane :build_and_deploy_to_firebase do |options|
+  # Install code signing assets
+  if is_ci
+    create_temp_keychain
+    decode_and_install_provisioning_profile
+    decode_and_install_certificate
+  end
+
+  get_build_number
+
+  build_number = options[:build_number] ? options[:build_number] : lane_context[SharedValues::BUILD_NUMBER]
+  
+  # Install code signing assets, if required
+  if is_ci
+    decode_and_install_provisioning_profile
+    decode_and_install_certificate
+  end
+
+  write_export_options_plist
+
+  # Build and export
+  gym(
+    workspace: ENV['GYM_WORKSPACE'],
+    scheme: ENV['GYM_SCHEME'],
+    clean: true,
+    output_directory: ENV['GYM_OUTPUT_DIR'],
+    configuration: ENV['GYM_CONFIGURATION'],
+    build_path: ENV['GYM_BUILD_PATH'],
+    destination: ENV['GYM_DESTINATION'],
+    export_method: ENV['GYM_EXPORT_METHOD'],
+    xcargs: "MARKETING_VERSION='1.1.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'", # TODO: App versions are picked up from these hardcoded values in the script. Refactor app versioning logic.
+    xcconfig: ENV['GYM_XCCONFIG'],
+    skip_codesigning: true,
+    export_options: ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH']
+  )
+  upload_to_firebase
+
+  FileUtils.rm_rf('../Tmp') if File.directory?('../Tmp')
+  next if !is_ci
+  delete_temp_keychain_if_exists
+  delete_temp_provisioning_profiles
+end
+
 desc "Build, Export and Upload a build to Appstore Connect for Beta Testing In TestFlight. This lanes wait for the TestFlight build processing to complete"
 lane :build_and_deploy_to_appstore do |options|
   # Install code signing assets
@@ -30,7 +75,8 @@ lane :build_and_deploy_to_appstore do |options|
     destination: ENV['GYM_DESTINATION'],
     export_method: ENV['GYM_EXPORT_METHOD'],
     xcargs: "MARKETING_VERSION='1.1.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'",
-    xcconfig: ENV['XCCONFIG'],
+    xcconfig: ENV['GYM_XCCONFIG'],
+    skip_codesigning: true,
     export_options: ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH']
   )
 
@@ -134,6 +180,21 @@ private_lane :deliver_to_testflight do
     distribute_external: false,
     notify_external_testers: false,
     ipa: lane_context[SharedValues::IPA_OUTPUT_PATH]
+  )
+end
+
+private_lane :upload_to_firebase do
+  create_file("../#{ENV['TMP_GOOGLE_APP_CREDENTIALS_PATH']}")
+
+  sh '''
+      base64 --decode <<< $GOOGLE_APPLICATION_CREDENTIALS_BASE64 > ../$TMP_GOOGLE_APP_CREDENTIALS_PATH
+  '''
+  
+  firebase_app_distribution(
+    app: ENV['FIREBASE_APP_ID'],
+    service_credentials_file: ENV['TMP_GOOGLE_APP_CREDENTIALS_PATH'],
+    ipa_path: lane_context[SharedValues::IPA_OUTPUT_PATH],
+    groups: ENV['FIREBASE_TESTER_GROUPS']
   )
 end
 
