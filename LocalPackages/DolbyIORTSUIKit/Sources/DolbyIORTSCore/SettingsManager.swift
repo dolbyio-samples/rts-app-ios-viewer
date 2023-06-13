@@ -51,8 +51,12 @@ open class SettingsManager {
             } else {
                 self.settings = .init()
             }
-            try? SettingsDictionary.saveSettings(for: currentStreamId, settings: self.settings)
         }
+    }
+
+    public func isActiveSetting(streamName: String, with accountID: String) -> Bool {
+        let streamId = StreamDetail(streamName: streamName, accountID: accountID).streamId
+        return self.mode == Mode.stream(streamID: streamId)
     }
 
     @discardableResult
