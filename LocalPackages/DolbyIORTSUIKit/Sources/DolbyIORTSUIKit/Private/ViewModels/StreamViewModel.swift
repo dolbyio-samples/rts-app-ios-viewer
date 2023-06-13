@@ -350,9 +350,6 @@ final class StreamViewModel: ObservableObject {
     }
 
     private func updateStreamSettings(from sources: [StreamSource], settings: StreamSettings) {
-        guard let detail = streamDetail,
-              settingsManager.isActiveSettings(streamName: detail.streamName, with: detail.accountID) else { return }
-
         // Only update the settings when the sources change
         let sourceIds = sources.compactMap { source in
             source.sourceId.value

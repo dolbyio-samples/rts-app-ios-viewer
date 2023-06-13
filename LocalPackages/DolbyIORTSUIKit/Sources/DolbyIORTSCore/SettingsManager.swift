@@ -10,11 +10,6 @@ open class SettingsManager {
     public enum Mode: Equatable {
         case global
         case stream(streamID: String)
-
-        init(streamName: String, accountID: String) {
-            let streamId = StreamDetail(streamName: streamName, accountID: accountID).streamId
-            self = Mode.stream(streamID: streamId)
-        }
     }
 
     public static let shared: SettingsManager = .init()
@@ -57,10 +52,6 @@ open class SettingsManager {
                 self.settings = .init()
             }
         }
-    }
-
-    public func isActiveSettings(streamName: String, with accountID: String) -> Bool {
-        return self.mode == Mode.init(streamName: streamName, accountID: accountID)
     }
 
     @discardableResult
