@@ -10,6 +10,11 @@ open class SettingsManager {
     public enum Mode: Equatable {
         case global
         case stream(streamID: String)
+
+        init(streamName: String, accountID: String) {
+            let streamId = StreamDetail(streamName: streamName, accountID: accountID).streamId
+            self = Mode.stream(streamID: streamId)
+        }
     }
 
     public static let shared: SettingsManager = .init()
@@ -40,7 +45,7 @@ open class SettingsManager {
         }
     }
 
-    public func setActiveSetting(for mode: Mode) {
+    public func setActiveSettings(for mode: Mode) {
         if self.mode == mode { return }
         self.mode = mode
         if let settings = try? SettingsDictionary.getSettings(for: currentStreamId) {
@@ -54,9 +59,8 @@ open class SettingsManager {
         }
     }
 
-    public func isActiveSetting(streamName: String, with accountID: String) -> Bool {
-        let streamId = StreamDetail(streamName: streamName, accountID: accountID).streamId
-        return self.mode == Mode.stream(streamID: streamId)
+    public func isActiveSettings(streamName: String, with accountID: String) -> Bool {
+        return self.mode == Mode.init(streamName: streamName, accountID: accountID)
     }
 
     @discardableResult

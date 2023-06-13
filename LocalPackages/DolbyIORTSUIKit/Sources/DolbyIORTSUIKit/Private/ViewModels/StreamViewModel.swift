@@ -98,7 +98,7 @@ final class StreamViewModel: ObservableObject {
         self.settingsManager = settingsManager
         self.streamDetail = streamCoordinator.activeStreamDetail
         if let streamId = streamCoordinator.activeStreamDetail?.streamId {
-            settingsManager.setActiveSetting(for: .stream(streamID: streamId))
+            settingsManager.setActiveSettings(for: .stream(streamID: streamId))
         }
 
         startObservers()
@@ -214,7 +214,7 @@ final class StreamViewModel: ObservableObject {
 
     func endStream() async {
         _ = await streamCoordinator.stopSubscribe()
-        settingsManager.setActiveSetting(for: .global)
+        settingsManager.setActiveSettings(for: .global)
     }
 
     func playAudio(for source: StreamSource) {
@@ -351,7 +351,7 @@ final class StreamViewModel: ObservableObject {
 
     private func updateStreamSettings(from sources: [StreamSource], settings: StreamSettings) {
         guard let detail = streamDetail,
-              settingsManager.isActiveSetting(streamName: detail.streamName, with: detail.accountID) else { return }
+              settingsManager.isActiveSettings(streamName: detail.streamName, with: detail.accountID) else { return }
 
         // Only update the settings when the sources change
         let sourceIds = sources.compactMap { source in
