@@ -40,7 +40,7 @@ open class SettingsManager {
         }
     }
 
-    public func setActiveSetting(for mode: Mode) {
+    public func setActiveSettings(for mode: Mode) {
         if self.mode == mode { return }
         self.mode = mode
         if let settings = try? SettingsDictionary.getSettings(for: currentStreamId) {
@@ -51,7 +51,6 @@ open class SettingsManager {
             } else {
                 self.settings = .init()
             }
-            try? SettingsDictionary.saveSettings(for: currentStreamId, settings: self.settings)
         }
     }
 

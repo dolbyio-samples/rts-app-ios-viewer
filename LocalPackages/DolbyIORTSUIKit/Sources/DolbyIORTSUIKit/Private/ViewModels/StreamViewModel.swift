@@ -98,7 +98,7 @@ final class StreamViewModel: ObservableObject {
         self.settingsManager = settingsManager
         self.streamDetail = streamCoordinator.activeStreamDetail
         if let streamId = streamCoordinator.activeStreamDetail?.streamId {
-            settingsManager.setActiveSetting(for: .stream(streamID: streamId))
+            settingsManager.setActiveSettings(for: .stream(streamID: streamId))
         }
 
         startObservers()
@@ -213,8 +213,8 @@ final class StreamViewModel: ObservableObject {
     // swiftlint:enable function_body_length
 
     func endStream() async {
-        settingsManager.setActiveSetting(for: .global)
         _ = await streamCoordinator.stopSubscribe()
+        settingsManager.setActiveSettings(for: .global)
     }
 
     func playAudio(for source: StreamSource) {
