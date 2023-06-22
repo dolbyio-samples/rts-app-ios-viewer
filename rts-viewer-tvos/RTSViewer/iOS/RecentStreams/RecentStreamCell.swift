@@ -38,7 +38,7 @@ struct RecentStreamCell: View {
 
                     DolbyIOUIKit.Text(
                         text: "recent-streams.account-id.format.label \(accountID)",
-                        style: .secondary,
+                        style: .labelMedium,
                         font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
 

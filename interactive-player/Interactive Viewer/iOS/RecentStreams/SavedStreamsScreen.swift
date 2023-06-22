@@ -45,7 +45,7 @@ struct SavedStreamsScreen: View {
 
                     Text(
                         text: "saved-streams.empty-streams.subtitle.label",
-                        style: .secondary,
+                        style: .labelMedium,
                         font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
                     .multilineTextAlignment(.center)
