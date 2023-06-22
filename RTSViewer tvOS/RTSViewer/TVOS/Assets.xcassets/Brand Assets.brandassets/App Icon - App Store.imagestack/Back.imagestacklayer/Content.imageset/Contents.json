@@ -1,0 +1,18 @@
+{
+  "images" : [
+    {
+      "filename" : "appstore_icon@1x.png",
+      "idiom" : "tv",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "appstore_icon@2x.png",
+      "idiom" : "tv",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

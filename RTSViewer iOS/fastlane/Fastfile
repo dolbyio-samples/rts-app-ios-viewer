@@ -1,0 +1,207 @@
+require 'fileutils'
+
+before_all do
+  xcode_select(ENV['XCODE_SELECT_PATH'])
+end
+
+
+desc "Build, Export and Upload an enterprise app to Firebase"
+lane :build_and_deploy_to_firebase do |options|
+  # Install code signing assets
+  if is_ci
+    create_temp_keychain
+    decode_and_install_provisioning_profile
+    decode_and_install_certificate
+  end
+
+  get_build_number
+
+  build_number = options[:build_number] ? options[:build_number] : lane_context[SharedValues::BUILD_NUMBER]
+  
+  # Install code signing assets, if required
+  if is_ci
+    decode_and_install_provisioning_profile
+    decode_and_install_certificate
+  end
+
+  write_export_options_plist
+
+  # Build and export
+  gym(
+    workspace: ENV['GYM_WORKSPACE'],
+    scheme: ENV['GYM_SCHEME'],
+    clean: true,
+    output_directory: ENV['GYM_OUTPUT_DIR'],
+    configuration: ENV['GYM_CONFIGURATION'],
+    build_path: ENV['GYM_BUILD_PATH'],
+    destination: ENV['GYM_DESTINATION'],
+    export_method: ENV['GYM_EXPORT_METHOD'],
+    xcargs: "MARKETING_VERSION='1.1.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'", # TODO: App versions are picked up from these hardcoded values in the script. Refactor app versioning logic.
+    export_options: ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH'],
+  )
+  upload_to_firebase
+
+  FileUtils.rm_rf('../Tmp') if File.directory?('../Tmp')
+  next if !is_ci
+  delete_temp_keychain_if_exists
+  delete_temp_provisioning_profiles
+end
+
+desc "Build, Export and Upload a build to Appstore Connect for Beta Testing In TestFlight. This lanes wait for the TestFlight build processing to complete"
+lane :build_and_deploy_to_appstore do |options|
+  # Install code signing assets
+  if is_ci
+    create_temp_keychain
+    decode_and_install_provisioning_profile
+    decode_and_install_certificate
+  end
+
+  get_build_number
+
+  build_number = options[:build_number] ? options[:build_number] : lane_context[SharedValues::BUILD_NUMBER]
+
+  write_export_options_plist
+
+  # Build and export
+  gym(
+    workspace: ENV['GYM_WORKSPACE'],
+    scheme: ENV['GYM_SCHEME'],
+    clean: true,
+    output_directory: ENV['GYM_OUTPUT_DIR'],
+    configuration: ENV['GYM_CONFIGURATION'],
+    build_path: ENV['GYM_BUILD_PATH'],
+    destination: ENV['GYM_DESTINATION'],
+    export_method: ENV['GYM_EXPORT_METHOD'],
+    xcargs: "MARKETING_VERSION='1.1.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'",
+    xcconfig: ENV['GYM_XCCONFIG'],
+    skip_codesigning: true,
+    export_options: ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH']
+  )
+
+  deliver_to_testflight
+
+  FileUtils.rm_rf('../Tmp') if File.directory?('../Tmp')
+  next if !is_ci
+  delete_temp_keychain_if_exists
+  delete_temp_provisioning_profiles
+end
+
+desc "Run All Unit tests"
+lane :run_all_unit_tests do
+  test_schemes = ENV['TEST_SCHEMES'].split(", ")
+  test_schemes.each do |scheme_name|
+    scan(
+      scheme: scheme_name,
+      device: ENV['TEST_DEVICE']
+    )
+  end
+end
+
+# Private Helper Lanes
+
+private_lane :create_temp_keychain do  
+  delete_temp_keychain_if_exists
+
+  create_keychain(
+    name: ENV['TEMP_KEYCHAIN_NAME'],
+    password: ENV['TEMP_KEYCHAIN_PASSWORD'],
+    default_keychain: true,
+    unlock: true,
+    timeout: 3600,
+    lock_when_sleeps: true
+  )
+end
+
+private_lane :delete_temp_keychain_if_exists do
+  keychain_name = ENV['TEMP_KEYCHAIN_NAME']
+  delete_keychain(
+    name: keychain_name
+  ) if File.exist? File.expand_path "~/Library/Keychains/#{keychain_name}-db"
+end
+
+desc "Deletes the provisioning profile from it's installation path"
+private_lane :delete_temp_provisioning_profiles do
+  sh '''
+    rm "$INSTALLED_PROVISIONING_PROFILE_PATH"
+  '''
+end
+
+private_lane :decode_and_install_provisioning_profile do  
+  create_file("../#{ENV['TMP_PROVISIONING_PROFILE_PATH']}")
+
+  sh '''
+    base64 --decode <<< $PROVISIONING_PROFILE_BASE64 > ../$TMP_PROVISIONING_PROFILE_PATH
+  '''
+  ENV['INSTALLED_PROVISIONING_PROFILE_PATH'] = install_provisioning_profile(
+    path: ENV['TMP_PROVISIONING_PROFILE_PATH']
+  )
+
+  File.delete("../#{ENV['TMP_PROVISIONING_PROFILE_PATH']}")
+end
+
+private_lane :decode_and_install_certificate do  
+  create_file("../#{ENV['TMP_CERTIFICATE_PATH']}")
+
+  sh '''
+      base64 --decode <<< $CERTIFICATE_BASE64 > ../$TMP_CERTIFICATE_PATH
+  '''
+  import_certificate(
+    certificate_path: ENV['TMP_CERTIFICATE_PATH'],
+    certificate_password: ENV['P12_PASSWORD'],
+    keychain_name: ENV['TEMP_KEYCHAIN_NAME'],
+    keychain_password: ENV['TEMP_KEYCHAIN_PASSWORD']
+  )
+
+  File.delete("../#{ENV['TMP_CERTIFICATE_PATH']}")
+end
+
+private_lane :write_export_options_plist do  
+  create_file("../#{ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH']}")
+
+  sh '''
+    base64 --decode <<< $EXPORT_OPTIONS_PLIST_BASE64 > ../$TMP_PROVISIONING_EXPORT_OPTIONS_PATH
+  '''
+end
+
+private_lane :deliver_to_testflight do
+  api_key = app_store_connect_api_key(
+    key_id: ENV['APPSTORE_CONNECT_KEY_ID'],
+    issuer_id: ENV['APPSTORE_CONNECT_ISSUER_ID'],
+    key_content: ENV['APPSTORE_CONNECT_KEY_CONTENT'],
+    duration: 1200,
+    in_house: false
+  )
+
+  pilot(
+    skip_waiting_for_build_processing: true,
+    skip_submission: true,
+    distribute_external: false,
+    notify_external_testers: false,
+    ipa: lane_context[SharedValues::IPA_OUTPUT_PATH]
+  )
+end
+
+private_lane :upload_to_firebase do
+  create_file("../#{ENV['TMP_GOOGLE_APP_CREDENTIALS_PATH']}")
+
+  sh '''
+      base64 --decode <<< $GOOGLE_APPLICATION_CREDENTIALS_BASE64 > ../$TMP_GOOGLE_APP_CREDENTIALS_PATH
+  '''
+  
+  firebase_app_distribution(
+    app: ENV['FIREBASE_APP_ID'],
+    service_credentials_file: ENV['TMP_GOOGLE_APP_CREDENTIALS_PATH'],
+    ipa_path: lane_context[SharedValues::IPA_OUTPUT_PATH],
+    groups: ENV['FIREBASE_TESTER_GROUPS']
+  )
+end
+
+def create_file(path)
+  dir = File.dirname(path)
+
+  unless File.directory?(dir)
+    FileUtils.mkdir_p(dir)
+  end
+
+  File.new(path, 'w')
+end

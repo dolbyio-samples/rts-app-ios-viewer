@@ -1,0 +1,3443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MillicastManager Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Class/MillicastManager" class="dashAnchor"></a>
+
+    <a title="MillicastManager Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+           Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html"> Reference</a>
+      <img class="carat" src="../img/carat.png" alt=""/>
+      MillicastManager Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/CurrentCreds.html">CurrentCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/FileCreds.html">FileCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/MillicastManager.html">MillicastManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/MillicastSA.html">MillicastSA</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PubListener.html">PubListener</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/SavedCreds.html">SavedCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/SubListener.html">SubListener</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/UiCreds.html">UiCreds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Utils.html">Utils</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Bitrate.html">Bitrate</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/CaptureState.html">CaptureState</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PublisherState.html">PublisherState</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/SourceType.html">SourceType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/SubscriberState.html">SubscriberState</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/CredentialSource.html">CredentialSource</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Constants.html">Constants</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ContentView.html">ContentView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/MCSwiftVideoRenderer.html">MCSwiftVideoRenderer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Millicast_SDK_Sample_App_in_SwiftApp.html">Millicast_SDK_Sample_App_in_SwiftApp</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PublishView.html">PublishView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PublishView_Previews.html">PublishView_Previews</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SettingsMcView.html">SettingsMcView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SettingsView_Previews.html">SettingsView_Previews</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SubscribeView.html">SubscribeView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SubscribeView_Previews.html">SubscribeView_Previews</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>MillicastManager</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">MillicastManager</span> <span class="p">:</span> <span class="kt">ObservableObject</span></code></pre>
+
+                </div>
+              </div>
+            <p>The MillicastManager helps to manage the Millicast SDK and provides
+a simple set of public APIs for common operations so that UI layer can achieve goals
+such as publishing / subscribing without knowledge of SDK operations.
+It takes care of:</p>
+<div class="aside aside-important">
+    <p class="aside-title">Important</p>
+    Important operations using the SDK, such as managing audio/video sources and renderers,
+Publisher/Subscriber credentials, options and preferred codecs.
+
+</div><ul>
+<li>Managing Millicast related states to ensure operations are valid before executing them.</li>
+</ul>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC5alertSbvp"></a>
+                    <a name="//apple_ref/swift/Property/alert" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC5alertSbvp">alert</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">alert</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8alertMsgSSvp"></a>
+                    <a name="//apple_ref/swift/Property/alertMsg" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8alertMsgSSvp">alertMsg</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">alertMsg</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8queuePubSo0d10_dispatch_G0Cvp"></a>
+                    <a name="//apple_ref/swift/Property/queuePub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8queuePubSo0d10_dispatch_G0Cvp">queuePub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">queuePub</span><span class="p">:</span> <span class="kt">DispatchQueue</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8queueSubSo0d10_dispatch_G0Cvp"></a>
+                    <a name="//apple_ref/swift/Property/queueSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8queueSubSo0d10_dispatch_G0Cvp">queueSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">queueSub</span><span class="p">:</span> <span class="kt">DispatchQueue</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13queueLabelKey8Dispatch0j8SpecificI0CySSGvp"></a>
+                    <a name="//apple_ref/swift/Property/queueLabelKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13queueLabelKey8Dispatch0j8SpecificI0CySSGvp">queueLabelKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">queueLabelKey</span><span class="p">:</span> <span class="kt">DispatchSpecificKey</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8instanceACSgvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/instance" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8instanceACSgvpZ">instance</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">instance</span><span class="p">:</span> <span class="kt">MillicastManager</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8capStateAA07CaptureH0Ovp"></a>
+                    <a name="//apple_ref/swift/Property/capState" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8capStateAA07CaptureH0Ovp">capState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">capState</span><span class="p">:</span> <span class="kt"><a href="../Enums/CaptureState.html">CaptureState</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8pubStateAA09PublisherH0Ovp"></a>
+                    <a name="//apple_ref/swift/Property/pubState" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8pubStateAA09PublisherH0Ovp">pubState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">pubState</span><span class="p">:</span> <span class="kt"><a href="../Enums/PublisherState.html">PublisherState</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8subStateAA010SubscriberH0Ovp"></a>
+                    <a name="//apple_ref/swift/Property/subState" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8subStateAA010SubscriberH0Ovp">subState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">subState</span><span class="p">:</span> <span class="kt"><a href="../Enums/SubscriberState.html">SubscriberState</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15audioEnabledPubSbvp"></a>
+                    <a name="//apple_ref/swift/Property/audioEnabledPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15audioEnabledPubSbvp">audioEnabledPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">audioEnabledPub</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15videoEnabledPubSbvp"></a>
+                    <a name="//apple_ref/swift/Property/videoEnabledPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15videoEnabledPubSbvp">videoEnabledPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">videoEnabledPub</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15audioEnabledSubSbvp"></a>
+                    <a name="//apple_ref/swift/Property/audioEnabledSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15audioEnabledSubSbvp">audioEnabledSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">audioEnabledSub</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15videoEnabledSubSbvp"></a>
+                    <a name="//apple_ref/swift/Property/videoEnabledSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15videoEnabledSubSbvp">videoEnabledSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">videoEnabledSub</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14ndiOutputVideoSbvp"></a>
+                    <a name="//apple_ref/swift/Property/ndiOutputVideo" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14ndiOutputVideoSbvp">ndiOutputVideo</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">ndiOutputVideo</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14ndiOutputAudioSbvp"></a>
+                    <a name="//apple_ref/swift/Property/ndiOutputAudio" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14ndiOutputAudioSbvp">ndiOutputAudio</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">ndiOutputAudio</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC9fileCredsAA04FileH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/fileCreds" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC9fileCredsAA04FileH0CSgvp">fileCreds</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">fileCreds</span><span class="p">:</span> <span class="kt"><a href="../Classes/FileCreds.html">FileCreds</a></span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10savedCredsAA05SavedH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/savedCreds" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10savedCredsAA05SavedH0CSgvp">savedCreds</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">savedCreds</span><span class="p">:</span> <span class="kt"><a href="../Classes/SavedCreds.html">SavedCreds</a></span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC12currentCredsAA07CurrentH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/currentCreds" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC12currentCredsAA07CurrentH0CSgvp">currentCreds</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">currentCreds</span><span class="p">:</span> <span class="kt"><a href="../Classes/CurrentCreds.html">CurrentCreds</a></span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8credsPubSo22MCPublisherCredentialsCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/credsPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8credsPubSo22MCPublisherCredentialsCSgvp">credsPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">credsPub</span><span class="p">:</span> <span class="kt">MCPublisherCredentials</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8credsSubSo23MCSubscriberCredentialsCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/credsSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8credsSubSo23MCSubscriberCredentialsCSgvp">credsSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">credsSub</span><span class="p">:</span> <span class="kt">MCSubscriberCredentials</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15audioSourceListSaySo07MCAudioH0CGSgvp"></a>
+                    <a name="//apple_ref/swift/Property/audioSourceList" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15audioSourceListSaySo07MCAudioH0CGSgvp">audioSourceList</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioSourceList</span><span class="p">:</span> <span class="p">[</span><span class="kt">MCAudioSource</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC19audioSourceIndexKeySSvp"></a>
+                    <a name="//apple_ref/swift/Property/audioSourceIndexKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC19audioSourceIndexKeySSvp">audioSourceIndexKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">audioSourceIndexKey</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC23audioSourceIndexDefaultSivp"></a>
+                    <a name="//apple_ref/swift/Property/audioSourceIndexDefault" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC23audioSourceIndexDefaultSivp">audioSourceIndexDefault</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioSourceIndexDefault</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC16audioSourceIndexSivp"></a>
+                    <a name="//apple_ref/swift/Property/audioSourceIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC16audioSourceIndexSivp">audioSourceIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">audioSourceIndex</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11audioSourceSo07MCAudioH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/audioSource" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11audioSourceSo07MCAudioH0CSgvp">audioSource</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioSource</span><span class="p">:</span> <span class="kt">MCAudioSource</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15videoSourceListSaySo07MCVideoH0CGSgvp"></a>
+                    <a name="//apple_ref/swift/Property/videoSourceList" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15videoSourceListSaySo07MCVideoH0CGSgvp">videoSourceList</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoSourceList</span><span class="p">:</span> <span class="p">[</span><span class="kt">MCVideoSource</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC19videoSourceIndexKeySSvp"></a>
+                    <a name="//apple_ref/swift/Property/videoSourceIndexKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC19videoSourceIndexKeySSvp">videoSourceIndexKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">videoSourceIndexKey</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC23videoSourceIndexDefaultSivp"></a>
+                    <a name="//apple_ref/swift/Property/videoSourceIndexDefault" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC23videoSourceIndexDefaultSivp">videoSourceIndexDefault</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoSourceIndexDefault</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC16videoSourceIndexSivp"></a>
+                    <a name="//apple_ref/swift/Property/videoSourceIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC16videoSourceIndexSivp">videoSourceIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">videoSourceIndex</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11videoSourceSo07MCVideoH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/videoSource" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11videoSourceSo07MCVideoH0CSgvp">videoSource</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoSource</span><span class="p">:</span> <span class="kt">MCVideoSource</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14capabilityListSaySo19MCVideoCapabilitiesCGSgvp"></a>
+                    <a name="//apple_ref/swift/Property/capabilityList" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14capabilityListSaySo19MCVideoCapabilitiesCGSgvp">capabilityList</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">capabilityList</span><span class="p">:</span> <span class="p">[</span><span class="kt">MCVideoCapabilities</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18capabilityIndexKeySSvp"></a>
+                    <a name="//apple_ref/swift/Property/capabilityIndexKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18capabilityIndexKeySSvp">capabilityIndexKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">capabilityIndexKey</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC22capabilityIndexDefaultSivp"></a>
+                    <a name="//apple_ref/swift/Property/capabilityIndexDefault" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC22capabilityIndexDefaultSivp">capabilityIndexDefault</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">capabilityIndexDefault</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15capabilityIndexSivp"></a>
+                    <a name="//apple_ref/swift/Property/capabilityIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15capabilityIndexSivp">capabilityIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">capabilityIndex</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10capabilitySo19MCVideoCapabilitiesCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/capability" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10capabilitySo19MCVideoCapabilitiesCSgvp">capability</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">capability</span><span class="p">:</span> <span class="kt">MCVideoCapabilities</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14audioCodecListSaySSGSgvp"></a>
+                    <a name="//apple_ref/swift/Property/audioCodecList" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14audioCodecListSaySSGSgvp">audioCodecList</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioCodecList</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18audioCodecIndexKeySSvp"></a>
+                    <a name="//apple_ref/swift/Property/audioCodecIndexKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18audioCodecIndexKeySSvp">audioCodecIndexKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">audioCodecIndexKey</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC22audioCodecIndexDefaultSivp"></a>
+                    <a name="//apple_ref/swift/Property/audioCodecIndexDefault" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC22audioCodecIndexDefaultSivp">audioCodecIndexDefault</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioCodecIndexDefault</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15audioCodecIndexSivp"></a>
+                    <a name="//apple_ref/swift/Property/audioCodecIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15audioCodecIndexSivp">audioCodecIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">audioCodecIndex</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10audioCodecSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/audioCodec" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10audioCodecSSSgvp">audioCodec</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioCodec</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14videoCodecListSaySSGSgvp"></a>
+                    <a name="//apple_ref/swift/Property/videoCodecList" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14videoCodecListSaySSGSgvp">videoCodecList</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoCodecList</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18videoCodecIndexKeySSvp"></a>
+                    <a name="//apple_ref/swift/Property/videoCodecIndexKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18videoCodecIndexKeySSvp">videoCodecIndexKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">videoCodecIndexKey</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC22videoCodecIndexDefaultSivp"></a>
+                    <a name="//apple_ref/swift/Property/videoCodecIndexDefault" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC22videoCodecIndexDefaultSivp">videoCodecIndexDefault</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoCodecIndexDefault</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC15videoCodecIndexSivp"></a>
+                    <a name="//apple_ref/swift/Property/videoCodecIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC15videoCodecIndexSivp">videoCodecIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">videoCodecIndex</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10videoCodecSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/videoCodec" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10videoCodecSSSgvp">videoCodec</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoCodec</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC17audioPlaybackListSaySo07MCAudioH0CGSgvp"></a>
+                    <a name="//apple_ref/swift/Property/audioPlaybackList" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC17audioPlaybackListSaySo07MCAudioH0CGSgvp">audioPlaybackList</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The list of AudioPlayback devices available for us to play subscribed audio.
+The desired device must be selected and initiated (initPlayback)
+before the AudioTrack is subscribed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioPlaybackList</span><span class="p">:</span> <span class="p">[</span><span class="kt">MCAudioPlayback</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC21audioPlaybackIndexKeySSvp"></a>
+                    <a name="//apple_ref/swift/Property/audioPlaybackIndexKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC21audioPlaybackIndexKeySSvp">audioPlaybackIndexKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">audioPlaybackIndexKey</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC25audioPlaybackIndexDefaultSivp"></a>
+                    <a name="//apple_ref/swift/Property/audioPlaybackIndexDefault" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC25audioPlaybackIndexDefaultSivp">audioPlaybackIndexDefault</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioPlaybackIndexDefault</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18audioPlaybackIndexSivp"></a>
+                    <a name="//apple_ref/swift/Property/audioPlaybackIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18audioPlaybackIndexSivp">audioPlaybackIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">audioPlaybackIndex</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13audioPlaybackSo07MCAudioH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/audioPlayback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13audioPlaybackSo07MCAudioH0CSgvp">audioPlayback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioPlayback</span><span class="p">:</span> <span class="kt">MCAudioPlayback</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13audioTrackPubSo07MCAudioH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/audioTrackPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13audioTrackPubSo07MCAudioH0CSgvp">audioTrackPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioTrackPub</span><span class="p">:</span> <span class="kt">MCAudioTrack</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13audioTrackSubSo07MCAudioH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/audioTrackSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13audioTrackSubSo07MCAudioH0CSgvp">audioTrackSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">audioTrackSub</span><span class="p">:</span> <span class="kt">MCAudioTrack</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13videoTrackPubSo07MCVideoH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/videoTrackPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13videoTrackPubSo07MCVideoH0CSgvp">videoTrackPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoTrackPub</span><span class="p">:</span> <span class="kt">MCVideoTrack</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13videoTrackSubSo07MCVideoH0CSgvp"></a>
+                    <a name="//apple_ref/swift/Property/videoTrackSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13videoTrackSubSo07MCVideoH0CSgvp">videoTrackSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoTrackSub</span><span class="p">:</span> <span class="kt">MCVideoTrack</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11rendererPubAA20MCSwiftVideoRendererVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/rendererPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11rendererPubAA20MCSwiftVideoRendererVSgvp">rendererPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">rendererPub</span><span class="p">:</span> <span class="kt"><a href="../Structs/MCSwiftVideoRenderer.html">MCSwiftVideoRenderer</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11rendererSubAA20MCSwiftVideoRendererVSgvp"></a>
+                    <a name="//apple_ref/swift/Property/rendererSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11rendererSubAA20MCSwiftVideoRendererVSgvp">rendererSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">rendererSub</span><span class="p">:</span> <span class="kt"><a href="../Structs/MCSwiftVideoRenderer.html">MCSwiftVideoRenderer</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11mirroredPubSbvp"></a>
+                    <a name="//apple_ref/swift/Property/mirroredPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11mirroredPubSbvp">mirroredPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@Published</span>
+<span class="k">var</span> <span class="nv">mirroredPub</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC9publisherSo11MCPublisherCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/publisher" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC9publisherSo11MCPublisherCSgvp">publisher</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">publisher</span><span class="p">:</span> <span class="kt">MCPublisher</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10subscriberSo12MCSubscriberCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/subscriber" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10subscriberSo12MCSubscriberCSgvp">subscriber</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">subscriber</span><span class="p">:</span> <span class="kt">MCSubscriber</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10optionsPubSo15MCClientOptionsCvp"></a>
+                    <a name="//apple_ref/swift/Property/optionsPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10optionsPubSo15MCClientOptionsCvp">optionsPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">optionsPub</span><span class="p">:</span> <span class="kt">MCClientOptions</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10optionsSubSo15MCClientOptionsCvp"></a>
+                    <a name="//apple_ref/swift/Property/optionsSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10optionsSubSo15MCClientOptionsCvp">optionsSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">optionsSub</span><span class="p">:</span> <span class="kt">MCClientOptions</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11listenerPubAA0H8ListenerCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/listenerPub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11listenerPubAA0H8ListenerCSgvp">listenerPub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">listenerPub</span><span class="p">:</span> <span class="kt"><a href="../Classes/PubListener.html">PubListener</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11listenerSubAA0H8ListenerCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/listenerSub" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11listenerSubAA0H8ListenerCSgvp">listenerSub</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">listenerSub</span><span class="p">:</span> <span class="kt"><a href="../Classes/SubListener.html">SubListener</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11getInstanceACyFZ"></a>
+                    <a name="//apple_ref/swift/Method/getInstance()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11getInstanceACyFZ">getInstance()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Method to get the MillicastManager Singleton instance.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">getInstance</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">MillicastManager</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8setCreds5using4saveyAA16CredentialSource_p_SbtF"></a>
+                    <a name="//apple_ref/swift/Method/setCreds(using:save:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8setCreds5using4saveyAA16CredentialSource_p_SbtF">setCreds(using:<wbr>save:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Read Millicast credentials and set into MillicastManager using CredentialSource.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setCreds</span><span class="p">(</span><span class="n">using</span> <span class="nv">creds</span><span class="p">:</span> <span class="kt"><a href="../Protocols/CredentialSource.html">CredentialSource</a></span><span class="p">,</span> <span class="nv">save</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18getAudioSourceList7refreshSaySo07MCAudioI0CGSgSb_tF"></a>
+                    <a name="//apple_ref/swift/Method/getAudioSourceList(refresh:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18getAudioSourceList7refreshSaySo07MCAudioI0CGSgSb_tF">getAudioSourceList(refresh:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get or generate (if nil) the current list of AudioSources available.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getAudioSourceList</span><span class="p">(</span><span class="nv">refresh</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">MCAudioSource</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC19getAudioSourceIndexSiyF"></a>
+                    <a name="//apple_ref/swift/Method/getAudioSourceIndex()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC19getAudioSourceIndexSiyF">getAudioSourceIndex()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getAudioSourceIndex</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC19setAudioSourceIndexySbSiF"></a>
+                    <a name="//apple_ref/swift/Method/setAudioSourceIndex(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC19setAudioSourceIndexySbSiF">setAudioSourceIndex(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the selected audioSource index to the specified value and save to device memory,
+ unless currently capturing, in which case no change will be made.
+ If set, a new audioSource will be set using this value.</p>
+
+<p>@param newValue The new value to be set.
+ @return true if new index set, false otherwise.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setAudioSourceIndex</span><span class="p">(</span><span class="n">_</span> <span class="nv">newValue</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18getVideoSourceList7refreshSaySo07MCVideoI0CGSgSb_tF"></a>
+                    <a name="//apple_ref/swift/Method/getVideoSourceList(refresh:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18getVideoSourceList7refreshSaySo07MCVideoI0CGSgSb_tF">getVideoSourceList(refresh:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get or generate (if nil) the current list of VideoSources available.</p>
+
+<p>@param refresh</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getVideoSourceList</span><span class="p">(</span><span class="nv">refresh</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">MCVideoSource</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC19getVideoSourceIndexSiyF"></a>
+                    <a name="//apple_ref/swift/Method/getVideoSourceIndex()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC19getVideoSourceIndexSiyF">getVideoSourceIndex()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getVideoSourceIndex</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC19setVideoSourceIndex_0g3CapJ0SSSgSi_SbtF"></a>
+                    <a name="//apple_ref/swift/Method/setVideoSourceIndex(_:setCapIndex:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC19setVideoSourceIndex_0g3CapJ0SSSgSi_SbtF">setVideoSourceIndex(_:<wbr>setCapIndex:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the selected videoSource index to the specified value and save to device memory,
+ unless currently capturing, in which case no change will be made.
+ If set, a new videoSource will be set using this value.
+ New capabilityList and capability will also be set using the new videoSource.
+ This on its own will not start capturing on a new videoSource.</p>
+
+<p>@param newValue    The new value to be set.
+ @param setCapIndex If true, will setCapabilityIndex with current value to update capability.
+ @return nil if videoSourceIndex could be set, else an error message might be returned.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setVideoSourceIndex</span><span class="p">(</span><span class="n">_</span> <span class="nv">newValue</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">setCapIndex</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC17getCapabilityListSaySo19MCVideoCapabilitiesCGSgyF"></a>
+                    <a name="//apple_ref/swift/Method/getCapabilityList()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC17getCapabilityListSaySo19MCVideoCapabilitiesCGSgyF">getCapabilityList()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getCapabilityList</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">MCVideoCapabilities</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18getCapabilityIndexSiyF"></a>
+                    <a name="//apple_ref/swift/Method/getCapabilityIndex()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18getCapabilityIndexSiyF">getCapabilityIndex()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getCapabilityIndex</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18setCapabilityIndexyySiF"></a>
+                    <a name="//apple_ref/swift/Method/setCapabilityIndex(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18setCapabilityIndexyySiF">setCapabilityIndex(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the selected capability index to the specified value and save to device memory.
+ A new capability will be set using this value.
+ This capability will be set into the videoSource, if available.</p>
+
+<p>@param newValue The new value to be set.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setCapabilityIndex</span><span class="p">(</span><span class="n">_</span> <span class="nv">newValue</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC17switchAudioSource9ascendingSSSgSb_tF"></a>
+                    <a name="//apple_ref/swift/Method/switchAudioSource(ascending:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC17switchAudioSource9ascendingSSSgSb_tF">switchAudioSource(ascending:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Select the next available audioSource on device.
+ This will set the audioSource to be used when capturing starts.
+ If at end of range of audioSources, cycle to start of the other end.
+ If capturing, switching audioSource will not be allowed.</p>
+
+<p>@param ascending If true, cycle in the direction of increasing index,
+ otherwise cycle in opposite direction.
+ @return nil if audioSource could be set, else an error message might be returned.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">switchAudioSource</span><span class="p">(</span><span class="nv">ascending</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC17switchVideoSource9ascendingySb_tF"></a>
+                    <a name="//apple_ref/swift/Method/switchVideoSource(ascending:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC17switchVideoSource9ascendingySb_tF">switchVideoSource(ascending:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stop capturing on current videoSource and switch to the next available videoSource on device and starts capturing.
+If currently publishing, this would first stop publishing and disconnect from Millicast. After the next available videoSource is capturing, reconnect to Millicast and start publishing. Audio capture will not be affected and will be published as it was before the switch.
+This can only be done when currently capturing.
+@param ascending If true, cycle in the direction of increasing index,
+otherwise cycle in opposite direction.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">switchVideoSource</span><span class="p">(</span><span class="nv">ascending</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC17toggleVideoSource9ascendingySb_tF"></a>
+                    <a name="//apple_ref/swift/Method/toggleVideoSource(ascending:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC17toggleVideoSource9ascendingySb_tF">toggleVideoSource(ascending:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Select the next available camera.
+If at end of camera range, cycle back to start of range.
+This set the selection for the next capture, and can only be done when not actively capturing.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">toggleVideoSource</span><span class="p">(</span><span class="nv">ascending</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC16toggleCapability9ascendingySb_tF"></a>
+                    <a name="//apple_ref/swift/Method/toggleCapability(ascending:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC16toggleCapability9ascendingySb_tF">toggleCapability(ascending:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Select the next available resolution.
+If at end of resolution range, cycle back to start of range.
+This set the selection for the next capture, and can only be done when not actively capturing.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">toggleCapability</span><span class="p">(</span><span class="nv">ascending</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC22startAudioVideoCaptureyyF"></a>
+                    <a name="//apple_ref/swift/Method/startAudioVideoCapture()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC22startAudioVideoCaptureyyF">startAudioVideoCapture()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Start capturing both audio and video (based on selected videoSource).</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startAudioVideoCapture</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC21stopAudioVideoCaptureyyF"></a>
+                    <a name="//apple_ref/swift/Method/stopAudioVideoCapture()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC21stopAudioVideoCaptureyyF">stopAudioVideoCapture()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stop capturing both audio and video.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopAudioVideoCapture</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC16setVideoTrackSub5trackySo07MCVideoI0C_tF"></a>
+                    <a name="//apple_ref/swift/Method/setVideoTrackSub(track:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC16setVideoTrackSub5trackySo07MCVideoI0C_tF">setVideoTrackSub(track:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the received videoTrack into MillicastManager.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setVideoTrackSub</span><span class="p">(</span><span class="nv">track</span><span class="p">:</span> <span class="kt">MCVideoTrack</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC16enableMediaState12forPublisher0J5Audio0G0ySb_S2btF"></a>
+                    <a name="//apple_ref/swift/Method/enableMediaState(forPublisher:forAudio:enable:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC16enableMediaState12forPublisher0J5Audio0G0ySb_S2btF">enableMediaState(forPublisher:<wbr>forAudio:<wbr>enable:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the published/subscribed audio/video to the specified state, either enabled or disabled (i.e. muted).
+To do so for the publisher, set forPublisher to true, else it would be for the subscriber.
+To do so for audio, set isAudio to true, else it would be for video.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">enableMediaState</span><span class="p">(</span><span class="n">forPublisher</span> <span class="nv">isPub</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="n">forAudio</span> <span class="nv">isAudio</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">enable</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC16toggleMediaState12forPublisher0J5AudioySb_SbtF"></a>
+                    <a name="//apple_ref/swift/Method/toggleMediaState(forPublisher:forAudio:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC16toggleMediaState12forPublisher0J5AudioySb_SbtF">toggleMediaState(forPublisher:<wbr>forAudio:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Toggle published/subscribed audio/video between enabled and disabled (i.e. muted) state.
+To do so for the publisher, set forPublisher to true, else it would be for the subscriber.
+To do so for audio, set isAudio to true, else it would be for video.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">toggleMediaState</span><span class="p">(</span><span class="n">forPublisher</span> <span class="nv">isPub</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="n">forAudio</span> <span class="nv">isAudio</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC20getAudioPlaybackListSaySo07MCAudioI0CGSgyF"></a>
+                    <a name="//apple_ref/swift/Method/getAudioPlaybackList()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC20getAudioPlaybackListSaySo07MCAudioI0CGSgyF">getAudioPlaybackList()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getAudioPlaybackList</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">MCAudioPlayback</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC21getAudioPlaybackIndexSiyF"></a>
+                    <a name="//apple_ref/swift/Method/getAudioPlaybackIndex()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC21getAudioPlaybackIndexSiyF">getAudioPlaybackIndex()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getAudioPlaybackIndex</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC21setAudioPlaybackIndex8newValueSbSi_tF"></a>
+                    <a name="//apple_ref/swift/Method/setAudioPlaybackIndex(newValue:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC21setAudioPlaybackIndex8newValueSbSi_tF">setAudioPlaybackIndex(newValue:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>If not currently subscribed, this will set the selected audioPlaybackIndex
+to the specified value and save to device memory.
+A new audioPlayback will be set using this value.
+If currently subscribed, no changes to the current audioPlayback will be made
+as changes can only be made when there is no subscription on going.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setAudioPlaybackIndex</span><span class="p">(</span><span class="nv">newValue</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14subRenderAudio5trackySo12MCAudioTrackCSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/subRenderAudio(track:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14subRenderAudio5trackySo12MCAudioTrackCSg_tF">subRenderAudio(track:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Processes the subscribed audio.
+Configures the AVAudioSession with SA settings.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">subRenderAudio</span><span class="p">(</span><span class="nv">track</span><span class="p">:</span> <span class="kt">MCAudioTrack</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC25setRemoteAudioTrackVolume6volumeySd_tF"></a>
+                    <a name="//apple_ref/swift/Method/setRemoteAudioTrackVolume(volume:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC25setRemoteAudioTrackVolume6volumeySd_tF">setRemoteAudioTrackVolume(volume:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setRemoteAudioTrackVolume</span><span class="p">(</span><span class="nv">volume</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14getRendererPubAA012MCSwiftVideoH0VyF"></a>
+                    <a name="//apple_ref/swift/Method/getRendererPub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14getRendererPubAA012MCSwiftVideoH0VyF">getRendererPub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets the VideoRenderer for the Publisher.
+Creates one if none currently exists.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getRendererPub</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/MCSwiftVideoRenderer.html">MCSwiftVideoRenderer</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14getRendererSubAA012MCSwiftVideoH0VyF"></a>
+                    <a name="//apple_ref/swift/Method/getRendererSub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14getRendererSubAA012MCSwiftVideoH0VyF">getRendererSub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets the VideoRenderer for the Subscriber.
+Create one if none currently exists.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getRendererSub</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/MCSwiftVideoRenderer.html">MCSwiftVideoRenderer</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC14renderVideoSub5trackySo12MCVideoTrackCSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/renderVideoSub(track:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC14renderVideoSub5trackySo12MCVideoTrackCSg_tF">renderVideoSub(track:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Renders the subscribed video.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">renderVideoSub</span><span class="p">(</span><span class="nv">track</span><span class="p">:</span> <span class="kt">MCVideoTrack</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13isMirroredPubSbyF"></a>
+                    <a name="//apple_ref/swift/Method/isMirroredPub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13isMirroredPubSbyF">isMirroredPub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Checks if the Publisher&rsquo;s local video view is mirrored.</p>
+
+<p>@return True if mirrored, false otherwise.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">isMirroredPub</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC9setMirroryySbF"></a>
+                    <a name="//apple_ref/swift/Method/setMirror(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC9setMirroryySbF">setMirror(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the mirroring of the Publisher&rsquo;s local video view to the specified value.
+ The mirroring effect is local only and is not transmitted to the Subscriber(s).</p>
+
+<p>@param toMirror If true, view is mirrored, else not.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setMirror</span><span class="p">(</span><span class="n">_</span> <span class="nv">toMirror</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC12switchMirroryyF"></a>
+                    <a name="//apple_ref/swift/Method/switchMirror()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC12switchMirroryyF">switchMirror()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Switches the mirroring of the Publisher&rsquo;s local video view from mirrored to not mirrored,
+ and vice-versa.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">switchMirror</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10setBitrateyySi_AA0H0OtF"></a>
+                    <a name="//apple_ref/swift/Method/setBitrate(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10setBitrateyySi_AA0H0OtF">setBitrate(_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the specified BitrateSettings to use for publishing.
+ Setting this will only affect the next publish,
+ and not the current publish if one is ongoing.
+ Values set are only guidelines and will be affected by other factors such as the bandwidth available.</p>
+
+<p>@param bitrate
+ @param type</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setBitrate</span><span class="p">(</span><span class="n">_</span> <span class="nv">bitrate</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Enums/Bitrate.html">Bitrate</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC12getCodecList8forAudioSaySSGSgSb_tF"></a>
+                    <a name="//apple_ref/swift/Method/getCodecList(forAudio:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC12getCodecList8forAudioSaySSGSgSb_tF">getCodecList(forAudio:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get or generate (if nil) the current list of Audio or Video Codec supported.</p>
+
+<p>@param forAudio
+ @return</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getCodecList</span><span class="p">(</span><span class="nv">forAudio</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span><span class="p">]?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18getAudioCodecIndexSiSgyF"></a>
+                    <a name="//apple_ref/swift/Method/getAudioCodecIndex()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18getAudioCodecIndexSiSgyF">getAudioCodecIndex()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getAudioCodecIndex</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18getVideoCodecIndexSiSgyF"></a>
+                    <a name="//apple_ref/swift/Method/getVideoCodecIndex()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18getVideoCodecIndexSiSgyF">getVideoCodecIndex()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getVideoCodecIndex</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13setCodecIndex8newValue8forAudioSbSi_SbtF"></a>
+                    <a name="//apple_ref/swift/Method/setCodecIndex(newValue:forAudio:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13setCodecIndex8newValue8forAudioSbSi_SbtF">setCodecIndex(newValue:<wbr>forAudio:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the selected codec index to the specified value and save to device memory.
+ A new videoCodec will be set using this value, unless the Publisher is publishing.
+ This videoCodec will be set into the Publisher, if it is available and not publishing.</p>
+
+<p>@param newValue The new value to be set.
+ @param forAudio
+ @return true if new index set, false otherwise.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setCodecIndex</span><span class="p">(</span><span class="nv">newValue</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">forAudio</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11switchCodec9ascending8forAudioySb_SbtF"></a>
+                    <a name="//apple_ref/swift/Method/switchCodec(ascending:forAudio:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11switchCodec9ascending8forAudioySb_SbtF">switchCodec(ascending:<wbr>forAudio:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the codec for publishing / subscribing to the next available codec.
+ This can only be done when not publishing / subscribing.
+ If at end of range of codec, cycle to start of the other end.</p>
+
+<p>@param ascending If true, &ldquo;next&rdquo; codec is defined in the direction of increasing index,
+                  otherwise it is in the opposite direction.
+ @param forAudio</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">switchCodec</span><span class="p">(</span><span class="nv">ascending</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">forAudio</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10connectPubyyF"></a>
+                    <a name="//apple_ref/swift/Method/connectPub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10connectPubyyF">connectPub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Connect to Millicast for publishing.
+Publishing credentials required.
+Credentials are specified in Constants file, but can also be modified on Settings UI.
+This uses the publishing dispatchQueue.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">connectPub</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10connectSubyyF"></a>
+                    <a name="//apple_ref/swift/Method/connectSub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10connectSubyyF">connectSub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Connect to Millicast for subscribing.
+Subscribing credentials required.
+Credentials are specified in Constants file, but can also be modified on Settings UI.
+This uses the subscribing dispatchQueue.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">connectSub</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8startPubyyF"></a>
+                    <a name="//apple_ref/swift/Method/startPub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8startPubyyF">startPub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Publish audio and video tracks that are already captured.
+Must first be connected to Millicast.
+This uses the publishing dispatchQueue.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startPub</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC7stopPubyyF"></a>
+                    <a name="//apple_ref/swift/Method/stopPub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC7stopPubyyF">stopPub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stop publishing and disconnect from Millicast.
+Does not affect capturing.
+This uses the publishing dispatchQueue.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopPub</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC8startSubyyF"></a>
+                    <a name="//apple_ref/swift/Method/startSub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC8startSubyyF">startSub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Subscribe to stream on Millicast.
+Must first be connected to Millicast.
+This uses the subscribing dispatchQueue.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startSub</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC7stopSubyyF"></a>
+                    <a name="//apple_ref/swift/Method/stopSub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC7stopSubyyF">stopSub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stop subscribing and disconnect from Millicast.
+Does not affect capturing.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopSub</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC9showAlertyySSF"></a>
+                    <a name="//apple_ref/swift/Method/showAlert(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC9showAlertyySSF">showAlert(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Show message as an alert on screen and print it on console as well.
+This will be run sync on the main thread.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">showAlert</span><span class="p">(</span><span class="n">_</span> <span class="nv">msg</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18getAudioSourceNameSSyF"></a>
+                    <a name="//apple_ref/swift/Method/getAudioSourceName()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18getAudioSourceNameSSyF">getAudioSourceName()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the name of the currently selected audioSource, if any.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getAudioSourceName</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC18getVideoSourceNameSSyF"></a>
+                    <a name="//apple_ref/swift/Method/getVideoSourceName()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC18getVideoSourceNameSSyF">getVideoSourceName()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the name of the currently selected videoSource (camera name), if any.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getVideoSourceName</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC17getCapabilityNameSSyF"></a>
+                    <a name="//apple_ref/swift/Method/getCapabilityName()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC17getCapabilityNameSSyF">getCapabilityName()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the currently selected capability (camera resolution) as a string, if any.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getCapabilityName</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC12getCodecName8forAudioSSSb_tF"></a>
+                    <a name="//apple_ref/swift/Method/getCodecName(forAudio:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC12getCodecName8forAudioSSSb_tF">getCodecName(forAudio:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the name of the currently selected audio or video Codec.</p>
+
+<p>@param forAudio</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getCodecName</span><span class="p">(</span><span class="nv">forAudio</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC9runOnMain6logTag0J0_ySS_SSyyXEtF"></a>
+                    <a name="//apple_ref/swift/Method/runOnMain(logTag:log:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC9runOnMain6logTag0J0_ySS_SSyyXEtF">runOnMain(logTag:<wbr>log:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Run the given task sync on main thread.
+If currently on main thread, task will run immediately on current thread.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">runOnMain</span><span class="p">(</span><span class="nv">logTag</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">log</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="p">,</span> <span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="p">())</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC10printStats7forType6report6logTagySo07MCStatsJ0V_So0N6ReportCSgSStF"></a>
+                    <a name="//apple_ref/swift/Method/printStats(forType:report:logTag:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC10printStats7forType6report6logTagySo07MCStatsJ0V_So0N6ReportCSgSStF">printStats(forType:<wbr>report:<wbr>logTag:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Log stats of the given MCStatsType from the input MCStatsReport.
+If the given MCStatsType does not exist, a nil statement is logged.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">printStats</span><span class="p">(</span><span class="n">forType</span> <span class="nv">statsType</span><span class="p">:</span> <span class="kt">MCStatsType</span><span class="p">,</span> <span class="nv">report</span><span class="p">:</span> <span class="kt">MCStatsReport</span><span class="p">?,</span> <span class="nv">logTag</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC21getStatsStrInboundRtp6reportSSSo13MCStatsReportCSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/getStatsStrInboundRtp(report:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC21getStatsStrInboundRtp6reportSSSo13MCStatsReportCSg_tF">getStatsStrInboundRtp(report:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a string representation of INBOUND_RTP stats from the input MCStatsReport.
+If the given MCStatsType does not exist, a nil representation is returned.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getStatsStrInboundRtp</span><span class="p">(</span><span class="nv">report</span><span class="p">:</span> <span class="kt">MCStatsReport</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC22getStatsStrOutboundRtp6reportSSSo13MCStatsReportCSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/getStatsStrOutboundRtp(report:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC22getStatsStrOutboundRtp6reportSSSo13MCStatsReportCSg_tF">getStatsStrOutboundRtp(report:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a string representation of OUTBOUND_RTP stats from the input MCStatsReport.
+If the given MCStatsType does not exist, a nil representation is returned.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getStatsStrOutboundRtp</span><span class="p">(</span><span class="nv">report</span><span class="p">:</span> <span class="kt">MCStatsReport</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11setCapState2to3tagyAA07CaptureI0O_SStF"></a>
+                    <a name="//apple_ref/swift/Method/setCapState(to:tag:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11setCapState2to3tagyAA07CaptureI0O_SStF">setCapState(to:<wbr>tag:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setCapState</span><span class="p">(</span><span class="n">to</span> <span class="nv">newState</span><span class="p">:</span> <span class="kt"><a href="../Enums/CaptureState.html">CaptureState</a></span><span class="p">,</span> <span class="nv">tag</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11setPubState2to3tagyAA09PublisherI0O_SStF"></a>
+                    <a name="//apple_ref/swift/Method/setPubState(to:tag:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11setPubState2to3tagyAA09PublisherI0O_SStF">setPubState(to:<wbr>tag:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setPubState</span><span class="p">(</span><span class="n">to</span> <span class="nv">newState</span><span class="p">:</span> <span class="kt"><a href="../Enums/PublisherState.html">PublisherState</a></span><span class="p">,</span> <span class="nv">tag</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC11setSubState2to3tagyAA010SubscriberI0O_SStF"></a>
+                    <a name="//apple_ref/swift/Method/setSubState(to:tag:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC11setSubState2to3tagyAA010SubscriberI0O_SStF">setSubState(to:<wbr>tag:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setSubState</span><span class="p">(</span><span class="n">to</span> <span class="nv">newState</span><span class="p">:</span> <span class="kt"><a href="../Enums/SubscriberState.html">SubscriberState</a></span><span class="p">,</span> <span class="nv">tag</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12SwiftSa_tvOS16MillicastManagerC13setMediaState2to12forPublisher0K5AudioySb_S2btF"></a>
+                    <a name="//apple_ref/swift/Method/setMediaState(to:forPublisher:forAudio:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12SwiftSa_tvOS16MillicastManagerC13setMediaState2to12forPublisher0K5AudioySb_S2btF">setMediaState(to:<wbr>forPublisher:<wbr>forAudio:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setMediaState</span><span class="p">(</span><span class="n">to</span> <span class="nv">newState</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">forPublisher</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">forAudio</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-12-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>
