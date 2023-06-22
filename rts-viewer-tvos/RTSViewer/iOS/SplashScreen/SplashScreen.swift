@@ -9,6 +9,8 @@ struct SplashScreen: View {
 
     @State private var isActive = false
 
+    private let theme: Theme = ThemeManager.shared.theme
+
     var body: some View {
         ZStack {
             if isActive {
@@ -19,7 +21,7 @@ struct SplashScreen: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: UIColor.Background.black))
+        .background(Color(uiColor: theme.background))
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 withAnimation { isActive = true }

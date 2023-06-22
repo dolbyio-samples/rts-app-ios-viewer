@@ -27,45 +27,30 @@ struct RecentStreamCell: View {
             VStack(alignment: .leading) {
                 DolbyIOUIKit.Text(
                     text: "recent-streams.stream-name.format.label \(streamName)",
-                    font: theme[
-                        .avenirNextRegular(
-                            size: FontSize.callout,
-                            style: .callout
-                        )
-                    ]
+                    font: .custom("AvenirNext-Regular", size: FontSize.callout, relativeTo: .callout)
                 )
 
                 HStack {
                     DolbyIOUIKit.Text(
                         text: "recent-streams.account-id.title.label",
-                        font: theme[
-                            .avenirNextRegular(
-                                size: FontSize.subhead,
-                                style: .subheadline
-                            )
-                        ]
+                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
 
                     DolbyIOUIKit.Text(
                         text: "recent-streams.account-id.format.label \(accountID)",
                         mode: .secondary,
-                        font: theme[
-                            .avenirNextRegular(
-                                size: FontSize.subhead,
-                                style: .subheadline
-                            )
-                        ]
+                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
 
                 }
             }
             Spacer()
-            IconButton(name: .playOutlined, tintColor: .white, action: action)
+            IconButton(iconAsset: .playOutlined, tintColor: .white, action: action)
         }
         .padding(.leading, Layout.spacing3x)
         .padding(.trailing, Layout.spacing1x)
         .padding([.top, .bottom], Layout.spacing2x)
-        .background(Color(uiColor: UIColor.Neutral.neutral700))
+        .background(Color(uiColor: theme.neutral700))
         .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
     }
 }
