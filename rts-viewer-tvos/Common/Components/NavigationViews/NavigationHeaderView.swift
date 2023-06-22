@@ -18,7 +18,7 @@ extension View {
 
 struct NavigationHeaderView: View, ShapeStyle {
 
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
         ZStack {

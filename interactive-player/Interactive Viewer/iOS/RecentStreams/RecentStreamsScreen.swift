@@ -10,7 +10,7 @@ import SwiftUI
 struct RecentStreamsScreen: View {
     @StateObject private var viewModel: RecentStreamsViewModel = .init()
 
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false

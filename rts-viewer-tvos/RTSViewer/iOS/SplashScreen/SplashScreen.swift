@@ -8,7 +8,7 @@ import SwiftUI
 struct SplashScreen: View {
 
     @State private var isActive = false
-    @ObservedObject private var themeManager = ThemeManager.instance
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
         ZStack {
