@@ -22,14 +22,6 @@ struct ContentView: View {
 
     @StateObject private var themeManager = ThemeManager(theme: DefaultTheme())
 
-    init() {
-        let appearance = UINavigationBarAppearance()
-        appearance.shadowColor = themeManager.theme.neutral700
-        appearance.backgroundColor = themeManager.theme.neutral900
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-    }
-
     var body: some View {
         NavigationView {
             LandingView()
@@ -37,5 +29,12 @@ struct ContentView: View {
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(AppState())
         .environmentObject(themeManager)
+        .onAppear {
+            let appearance = UINavigationBarAppearance()
+            appearance.shadowColor = themeManager.theme.neutral700
+            appearance.backgroundColor = themeManager.theme.neutral900
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        }
     }
 }
