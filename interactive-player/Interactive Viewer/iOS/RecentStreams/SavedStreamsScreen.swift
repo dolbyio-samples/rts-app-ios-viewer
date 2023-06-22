@@ -9,7 +9,7 @@ import SwiftUI
 struct SavedStreamsScreen: View {
     @ObservedObject var viewModel: RecentStreamsViewModel
 
-    private let theme = ThemeManager.shared.theme
+    @EnvironmentObject private var themeManager: ThemeManager
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingStreamingView: Bool = false
@@ -45,7 +45,7 @@ struct SavedStreamsScreen: View {
 
                     Text(
                         text: "saved-streams.empty-streams.subtitle.label",
-                        mode: .secondary,
+                        style: .secondary,
                         font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
                     .multilineTextAlignment(.center)
@@ -152,7 +152,7 @@ struct SavedStreamsScreen: View {
         .navigationTitle("saved-streams.title.label")
         .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: theme.neutral900))
+        .background(Color(uiColor: themeManager.theme.neutral900))
         .alert("saved-streams.clear-streams.label", isPresented: $isShowingClearStreamsAlert, actions: {
             Button(
                 "saved-streams.clear-streams.alert.clear.button",

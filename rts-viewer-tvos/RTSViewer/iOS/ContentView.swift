@@ -20,12 +20,12 @@ class AppState: ObservableObject {
 
 struct ContentView: View {
 
-    private let theme: Theme = ThemeManager.shared.theme
+    @StateObject private var themeManager = ThemeManager(theme: DefaultTheme())
 
     init() {
         let appearance = UINavigationBarAppearance()
-        appearance.shadowColor = theme.neutral700
-        appearance.backgroundColor = theme.neutral900
+        appearance.shadowColor = themeManager.theme.neutral700
+        appearance.backgroundColor = themeManager.theme.neutral900
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
@@ -36,5 +36,6 @@ struct ContentView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(AppState())
+        .environmentObject(themeManager)
     }
 }

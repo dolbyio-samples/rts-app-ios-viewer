@@ -9,7 +9,7 @@ struct RecentStreamCell: View {
     private let streamName: String
     private let accountID: String
 
-    private let theme = ThemeManager.shared.theme
+    @EnvironmentObject private var themeManager: ThemeManager
     private let action: () -> Void
 
     init(
@@ -50,7 +50,7 @@ struct RecentStreamCell: View {
         .padding(.leading, Layout.spacing3x)
         .padding(.trailing, Layout.spacing1x)
         .padding([.top, .bottom], Layout.spacing2x)
-        .background(Color(uiColor: theme.neutral700))
+        .background(Color(uiColor: themeManager.theme.neutral700))
         .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
     }
 }

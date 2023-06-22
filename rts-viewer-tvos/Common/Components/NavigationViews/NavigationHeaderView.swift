@@ -18,7 +18,7 @@ extension View {
 
 struct NavigationHeaderView: View, ShapeStyle {
 
-    private let theme: Theme = ThemeManager.shared.theme
+    @EnvironmentObject private var themeManager: ThemeManager
 
     var body: some View {
         ZStack {
@@ -26,7 +26,7 @@ struct NavigationHeaderView: View, ShapeStyle {
         }
         .frame(maxWidth: .infinity, maxHeight: Layout.spacing9x)
         .background(
-            Color(uiColor: theme.background)
+            Color(uiColor: themeManager.theme.background)
         )
     }
 }
