@@ -20,7 +20,7 @@ class AppState: ObservableObject {
 
 struct ContentView: View {
 
-    @StateObject private var themeManager = ThemeManager(theme: DefaultTheme())
+    @ObservedObject private var themeManager = ThemeManager.instance
 
     var body: some View {
         NavigationView {

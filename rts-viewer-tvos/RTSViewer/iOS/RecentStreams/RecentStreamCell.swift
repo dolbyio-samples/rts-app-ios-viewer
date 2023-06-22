@@ -9,7 +9,7 @@ struct RecentStreamCell: View {
     private let streamName: String
     private let accountID: String
 
-    @EnvironmentObject private var themeManager: ThemeManager
+    @ObservedObject private var themeManager = ThemeManager.instance
     private let action: () -> Void
 
     init(

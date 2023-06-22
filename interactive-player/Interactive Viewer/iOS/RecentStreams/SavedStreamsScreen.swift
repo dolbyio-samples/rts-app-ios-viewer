@@ -9,7 +9,7 @@ import SwiftUI
 struct SavedStreamsScreen: View {
     @ObservedObject var viewModel: RecentStreamsViewModel
 
-    @EnvironmentObject private var themeManager: ThemeManager
+    @ObservedObject private var themeManager = ThemeManager.instance
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingStreamingView: Bool = false
