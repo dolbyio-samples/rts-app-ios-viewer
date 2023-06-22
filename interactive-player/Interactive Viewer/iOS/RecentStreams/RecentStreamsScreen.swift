@@ -10,7 +10,7 @@ import SwiftUI
 struct RecentStreamsScreen: View {
     @StateObject private var viewModel: RecentStreamsViewModel = .init()
 
-    private let theme = ThemeManager.shared.theme
+    @ObservedObject private var themeManager = ThemeManager.instance
 
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
@@ -59,19 +59,13 @@ struct RecentStreamsScreen: View {
                     VStack(spacing: Layout.spacing1x) {
                         Text(
                             text: "recent-streams.title.label",
-                            fontAsset: .avenirNextDemiBold(
-                                size: FontSize.largeTitle,
-                                style: .largeTitle
-                            )
+                            font: .custom("AvenirNext-DemiBold", size: FontSize.largeTitle, relativeTo: .title)
                         )
 
                         Text(
                             text: "recent-streams.subtitle.label",
-                            mode: .secondary,
-                            fontAsset: .avenirNextRegular(
-                                size: FontSize.subhead,
-                                style: .subheadline
-                            )
+                            style: .bodyMedium,
+                            font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                         )
                         .multilineTextAlignment(.center)
                     }
@@ -80,12 +74,7 @@ struct RecentStreamsScreen: View {
                         HStack {
                             DolbyIOUIKit.Text(
                                 text: "recent-streams.table-header-label",
-                                font: theme[
-                                    .avenirNextMedium(
-                                        size: FontSize.footnote,
-                                        style: .footnote
-                                    )
-                                ]
+                                font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote)
                             )
 
                             Spacer()
@@ -95,12 +84,7 @@ struct RecentStreamsScreen: View {
                                     isShowingFullStreamHistoryView = true
                                 },
                                 text: "recent-streams.table-header-button",
-                                font: theme[
-                                    .avenirNextMedium(
-                                        size: FontSize.footnote,
-                                        style: .footnote
-                                    )
-                                ],
+                                font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote),
                                 padding: Layout.spacing0x
                             )
                         }
@@ -125,11 +109,8 @@ struct RecentStreamsScreen: View {
 
                     Text(
                         text: "recent-streams.option-separator.label",
-                        mode: .secondary,
-                        fontAsset: .avenirNextDemiBold(
-                            size: FontSize.caption2,
-                            style: .caption2
-                        )
+                        style: .bodyMedium,
+                        font: .custom("AvenirNext-DemiBold", size: FontSize.caption2, relativeTo: .caption2)
                     )
 
                     Button(
@@ -145,14 +126,14 @@ struct RecentStreamsScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(uiColor: UIColor.Neutral.neutral900))
+            .background(Color(uiColor: themeManager.theme.neutral900))
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    IconView(name: .dolby_logo_dd, tintColor: .white)
+                    IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    IconButton(name: .settings, action: {
+                    IconButton(iconAsset: .settings, action: {
                         isShowingSettingScreenView = true
                     }).scaleEffect(0.5, anchor: .trailing)
                 }

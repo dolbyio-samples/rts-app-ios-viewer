@@ -150,11 +150,11 @@ struct StreamDetailInputScreen: View {
             }
 
             ToolbarItem(placement: .principal) {
-                IconView(name: .dolby_logo_dd, tintColor: .white)
+                IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                IconButton(name: .settings, action: {
+                IconButton(iconAsset: .settings, action: {
                     isShowingSettingScreenView = true
                 }).scaleEffect(0.5, anchor: .trailing)
             }
