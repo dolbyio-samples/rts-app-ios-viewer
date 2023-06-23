@@ -3,7 +3,9 @@ name: RTS Viewer Build and Distribution
 on:
   push:
     branches:
-      - main
+      - 'main'
+    paths:
+      - 'rts-viewer-ios/**'
     tags:
       - '*'
 

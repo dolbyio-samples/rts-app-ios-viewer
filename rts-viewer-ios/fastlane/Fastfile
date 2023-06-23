@@ -36,7 +36,7 @@ lane :build_and_deploy_to_firebase do |options|
     build_path: ENV['GYM_BUILD_PATH'],
     destination: ENV['GYM_DESTINATION'],
     export_method: ENV['GYM_EXPORT_METHOD'],
-    xcargs: "MARKETING_VERSION='1.1.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'", # TODO: App versions are picked up from these hardcoded values in the script. Refactor app versioning logic.
+    xcargs: "MARKETING_VERSION='1.2.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'", # TODO: App versions are picked up from these hardcoded values in the script. Refactor app versioning logic.
     export_options: ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH'],
   )
   upload_to_firebase
@@ -72,7 +72,7 @@ lane :build_and_deploy_to_appstore do |options|
     build_path: ENV['GYM_BUILD_PATH'],
     destination: ENV['GYM_DESTINATION'],
     export_method: ENV['GYM_EXPORT_METHOD'],
-    xcargs: "MARKETING_VERSION='1.1.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'",
+    xcargs: "MARKETING_VERSION='1.2.#{build_number}' CURRENT_PROJECT_VERSION='#{build_number}'",
     xcconfig: ENV['GYM_XCCONFIG'],
     skip_codesigning: true,
     export_options: ENV['TMP_PROVISIONING_EXPORT_OPTIONS_PATH']

@@ -3,7 +3,9 @@ name: Tests
 on:
   pull_request:
     branches:
-      - main
+      - 'main'
+    paths:
+      - 'rts-viewer-tvos/**'
 
 jobs:
   Run-UnitTests:
