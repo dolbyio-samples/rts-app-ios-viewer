@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - '*'
 
 jobs:
   Run-UnitTests:
@@ -21,4 +24,4 @@ jobs:
         run: |
           gem install bundler
           bundle install
-          bundle exec fastlane run_all_unit_tests --env tvos-tests
+          bundle exec ./rts-viewer-tvos/fastlane run_all_unit_tests --env tvos-tests

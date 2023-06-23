@@ -32,7 +32,7 @@ jobs:
         run: |
           gem install bundler
           bundle install
-          bundle exec fastlane build_and_deploy_to_firebase --env interactive-player-ios-enterprise build_number:$GITHUB_RUN_NUMBER
+          bundle exec ./interactive-player/fastlane build_and_deploy_to_firebase --env interactive-player-ios-enterprise build_number:$GITHUB_RUN_NUMBER
 
   Build-And-Deploy-iOS-App-To-Appstore:
     runs-on: macos-12
@@ -59,4 +59,4 @@ jobs:
         run: |
           gem install bundler
           bundle install
-          bundle exec fastlane build_and_deploy_to_appstore --env interactive-player-ios-appstore build_number:$GITHUB_RUN_NUMBER
+          bundle exec ./interactive-player/fastlane build_and_deploy_to_appstore --env interactive-player-ios-appstore build_number:$GITHUB_RUN_NUMBER
