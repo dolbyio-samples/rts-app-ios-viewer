@@ -1,8 +1,0 @@
-PRODUCT_BUNDLE_IDENTIFIER = io.dolby.ios-interactive-player.staging
-
-DEVELOPMENT_TEAM = E4A6TDH44W
-CODE_SIGN_STYLE = Manual
-CODE_SIGN_IDENTITY = iPhone Distribution
-CODE_SIGN_IDENTITY[sdk=iphoneos*] = iPhone Distribution
-
-PROVISIONING_PROFILE_SPECIFIER = Dolby IO iOS Interactive Player App Staging

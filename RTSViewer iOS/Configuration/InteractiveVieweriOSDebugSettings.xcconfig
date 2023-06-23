@@ -1,7 +1,0 @@
-PRODUCT_BUNDLE_IDENTIFIER = io.dolby.ios-interactive-player.development
-
-DEVELOPMENT_TEAM = E4A6TDH44W
-CODE_SIGN_STYLE = Manual
-CODE_SIGN_IDENTITY = iPhone Developer
-
-PROVISIONING_PROFILE_SPECIFIER = Dolby IO iOS Interactive Player Development
