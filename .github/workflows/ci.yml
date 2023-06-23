@@ -19,6 +19,7 @@ jobs:
 
       - name: Run Unit tests
         run: |
+          cd rts-viewer-tvos
           gem install bundler
           bundle install
           bundle exec fastlane run_all_unit_tests --env tvos-tests

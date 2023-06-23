@@ -31,6 +31,7 @@ jobs:
           APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
           APPSTORE_CONNECT_KEY_CONTENT: ${{ secrets.APPSTORE_CONNECT_KEY_CONTENT }}
         run: |
+          cd rts-viewer-tvos
           gem install bundler
           bundle install
           bundle exec fastlane build_and_deploy_to_appstore --env tvos-appstore build_number:$GITHUB_RUN_NUMBER
@@ -58,6 +59,7 @@ jobs:
           APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
           APPSTORE_CONNECT_KEY_CONTENT: ${{ secrets.APPSTORE_CONNECT_KEY_CONTENT }}
         run: |
+          cd rts-viewer-ios
           gem install bundler
           bundle install
           bundle exec fastlane build_and_deploy_to_appstore --env ios-appstore build_number:$GITHUB_RUN_NUMBER
