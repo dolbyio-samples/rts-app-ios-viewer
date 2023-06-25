@@ -28,7 +28,6 @@ struct ContentView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(AppState())
-        .environmentObject(themeManager)
         .onAppear {
             let appearance = UINavigationBarAppearance()
             appearance.shadowColor = themeManager.theme.neutral700
