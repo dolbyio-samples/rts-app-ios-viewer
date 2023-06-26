@@ -26,18 +26,18 @@ struct RecentStreamCell: View {
         HStack {
             VStack(alignment: .leading) {
                 DolbyIOUIKit.Text(
-                    text: "recent-streams.stream-name.format.label \(streamName)",
+                    "recent-streams.stream-name.format.label \(streamName)",
                     font: .custom("AvenirNext-Regular", size: FontSize.callout, relativeTo: .callout)
                 )
 
                 HStack {
                     DolbyIOUIKit.Text(
-                        text: "recent-streams.account-id.title.label",
+                        "recent-streams.account-id.title.label",
                         font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
 
                     DolbyIOUIKit.Text(
-                        text: "recent-streams.account-id.format.label \(accountID)",
+                        "recent-streams.account-id.format.label \(accountID)",
                         style: .labelMedium,
                         font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )

@@ -58,7 +58,7 @@ struct StreamDetailInputScreen: View {
                     }
 
                     Text(
-                        text: "stream-detail-input.title.label",
+                        "stream-detail-input.title.label",
                         style: .labelMedium,
                         font: .custom("AvenirNext-DemiBold", size: FontSize.title1, relativeTo: .title)
                     )
@@ -67,7 +67,7 @@ struct StreamDetailInputScreen: View {
                         .frame(height: Layout.spacing3x)
 
                     Text(
-                        text: "stream-detail-input.start-a-stream.label",
+                        "stream-detail-input.start-a-stream.label",
                         style: .labelMedium,
                         font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title)
                     )
@@ -76,7 +76,7 @@ struct StreamDetailInputScreen: View {
                         .frame(height: Layout.spacing1x)
 
                     Text(
-                        text: "stream-detail-input.subtitle.label",
+                        "stream-detail-input.subtitle.label",
                         font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
                     .multilineTextAlignment(.center)
@@ -183,7 +183,7 @@ struct StreamDetailInputScreen: View {
     var demoAStream: some View {
         VStack {
             Text(
-                text: "stream-detail-input.demo-stream.label",
+                "stream-detail-input.demo-stream.label",
                 style: .labelMedium,
                 font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title)
             )
@@ -192,7 +192,7 @@ struct StreamDetailInputScreen: View {
                 .frame(height: Layout.spacing1x)
 
             Text(
-                text: "stream-detail-input.try-a-demo.label",
+                "stream-detail-input.try-a-demo.label",
                 font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
             )
 

@@ -58,12 +58,12 @@ struct RecentStreamsScreen: View {
 
                     VStack(spacing: Layout.spacing1x) {
                         Text(
-                            text: "recent-streams.title.label",
+                            "recent-streams.title.label",
                             font: .custom("AvenirNext-DemiBold", size: FontSize.largeTitle, relativeTo: .title)
                         )
 
                         Text(
-                            text: "recent-streams.subtitle.label",
+                            "recent-streams.subtitle.label",
                             style: .bodyMedium,
                             font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                         )
@@ -73,7 +73,7 @@ struct RecentStreamsScreen: View {
                     VStack(spacing: Layout.spacing2x) {
                         HStack {
                             DolbyIOUIKit.Text(
-                                text: "recent-streams.table-header-label",
+                                "recent-streams.table-header-label",
                                 font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote)
                             )
 
@@ -108,7 +108,7 @@ struct RecentStreamsScreen: View {
                     .frame(maxWidth: 600)
 
                     Text(
-                        text: "recent-streams.option-separator.label",
+                        "recent-streams.option-separator.label",
                         style: .bodyMedium,
                         font: .custom("AvenirNext-DemiBold", size: FontSize.caption2, relativeTo: .caption2)
                     )
