@@ -18,13 +18,15 @@ extension View {
 
 struct NavigationHeaderView: View, ShapeStyle {
 
+    @ObservedObject private var themeManager = ThemeManager.shared
+
     var body: some View {
         ZStack {
-            IconView(name: .dolby_logo_dd, tintColor: .white)
+            IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
         }
         .frame(maxWidth: .infinity, maxHeight: Layout.spacing9x)
         .background(
-            Color(uiColor: UIColor.Background.black)
+            Color(uiColor: themeManager.theme.background)
         )
     }
 }

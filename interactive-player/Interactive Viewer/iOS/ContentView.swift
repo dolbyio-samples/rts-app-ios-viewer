@@ -20,10 +20,12 @@ class AppState: ObservableObject {
 
 struct ContentView: View {
 
+    @ObservedObject private var themeManager = ThemeManager.shared
+
     init() {
         let appearance = UINavigationBarAppearance()
-        appearance.shadowColor = UIColor.Neutral.neutral700
-        appearance.backgroundColor = UIColor.Neutral.neutral900
+        appearance.shadowColor = themeManager.theme.neutral700
+        appearance.backgroundColor = themeManager.theme.neutral900
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }

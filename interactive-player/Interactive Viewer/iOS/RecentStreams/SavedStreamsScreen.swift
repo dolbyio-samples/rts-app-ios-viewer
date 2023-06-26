@@ -9,7 +9,7 @@ import SwiftUI
 struct SavedStreamsScreen: View {
     @ObservedObject var viewModel: RecentStreamsViewModel
 
-    private let theme = ThemeManager.shared.theme
+    @ObservedObject private var themeManager = ThemeManager.shared
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingStreamingView: Bool = false
@@ -39,26 +39,20 @@ struct SavedStreamsScreen: View {
                 VStack(spacing: Layout.spacing1x) {
                     Text(
                         text: "saved-streams.empty-streams.title.label",
-                        fontAsset: .avenirNextDemiBold(
-                            size: FontSize.title2,
-                            style: .title2
-                        )
+                        font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title2)
                     )
                     .multilineTextAlignment(.center)
 
                     Text(
                         text: "saved-streams.empty-streams.subtitle.label",
-                        mode: .secondary,
-                        fontAsset: .avenirNextRegular(
-                            size: FontSize.subhead,
-                            style: .subheadline
-                        )
+                        style: .labelMedium,
+                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
                     .multilineTextAlignment(.center)
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        IconButton(name: .chevronLeft, tintColor: .white, action: {
+                        IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                             presentation.wrappedValue.dismiss()
                         })
                     }
@@ -73,12 +67,7 @@ struct SavedStreamsScreen: View {
                     if let lastPlayedStream = viewModel.lastPlayedStream {
                         DolbyIOUIKit.Text(
                             text: "saved-streams.section.last-played.label",
-                            font: theme[
-                                .avenirNextMedium(
-                                    size: FontSize.footnote,
-                                    style: .footnote
-                                )
-                            ]
+                            font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote)
                         )
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
@@ -111,12 +100,7 @@ struct SavedStreamsScreen: View {
 
                     DolbyIOUIKit.Text(
                         text: "saved-streams.section.all-streams.label",
-                        font: theme[
-                            .avenirNextMedium(
-                                size: FontSize.footnote,
-                                style: .footnote
-                            )
-                        ]
+                        font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote)
                     )
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
@@ -148,13 +132,13 @@ struct SavedStreamsScreen: View {
                 .listStyle(.plain)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        IconButton(name: .chevronLeft, tintColor: .white, action: {
+                        IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                             presentation.wrappedValue.dismiss()
                         })
                     }
 
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        IconButton(name: .delete, tintColor: .white, action: {
+                        IconButton(iconAsset: .delete, tintColor: .white, action: {
                             isShowingClearStreamsAlert = true
                         })
                     }
@@ -168,7 +152,7 @@ struct SavedStreamsScreen: View {
         .navigationTitle("saved-streams.title.label")
         .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: UIColor.Neutral.neutral900))
+        .background(Color(uiColor: themeManager.theme.neutral900))
         .alert("saved-streams.clear-streams.label", isPresented: $isShowingClearStreamsAlert, actions: {
             Button(
                 "saved-streams.clear-streams.alert.clear.button",

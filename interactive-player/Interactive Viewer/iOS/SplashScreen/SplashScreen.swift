@@ -8,6 +8,7 @@ import SwiftUI
 struct SplashScreen: View {
 
     @State private var isActive = false
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
         ZStack {
@@ -19,7 +20,7 @@ struct SplashScreen: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: UIColor.Background.black))
+        .background(Color(uiColor: themeManager.theme.background))
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 withAnimation { isActive = true }
