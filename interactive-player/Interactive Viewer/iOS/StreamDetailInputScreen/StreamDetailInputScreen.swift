@@ -28,6 +28,7 @@ struct StreamDetailInputScreen: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
         ZStack {
@@ -58,11 +59,8 @@ struct StreamDetailInputScreen: View {
 
                     Text(
                         text: "stream-detail-input.title.label",
-                        mode: .primary,
-                        fontAsset: .avenirNextDemiBold(
-                            size: FontSize.title1,
-                            style: .title
-                        )
+                        style: .labelMedium,
+                        font: .custom("AvenirNext-DemiBold", size: FontSize.title1, relativeTo: .title)
                     )
 
                     Spacer()
@@ -70,11 +68,8 @@ struct StreamDetailInputScreen: View {
 
                     Text(
                         text: "stream-detail-input.start-a-stream.label",
-                        mode: .primary,
-                        fontAsset: .avenirNextDemiBold(
-                            size: FontSize.title2,
-                            style: .title
-                        )
+                        style: .labelMedium,
+                        font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title)
                     )
 
                     Spacer()
@@ -82,10 +77,7 @@ struct StreamDetailInputScreen: View {
 
                     Text(
                         text: "stream-detail-input.subtitle.label",
-                        fontAsset: .avenirNextRegular(
-                            size: FontSize.subhead,
-                            style: .subheadline
-                        )
+                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
                     .multilineTextAlignment(.center)
 
@@ -151,18 +143,18 @@ struct StreamDetailInputScreen: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if presentationMode.wrappedValue.isPresented {
-                    IconButton(name: .chevronLeft, tintColor: .white, action: {
+                    IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                         presentationMode.wrappedValue.dismiss()
                     })
                 }
             }
 
             ToolbarItem(placement: .principal) {
-                IconView(name: .dolby_logo_dd, tintColor: .white)
+                IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                IconButton(name: .settings, action: {
+                IconButton(iconAsset: .settings, action: {
                     isShowingSettingScreenView = true
                 }).scaleEffect(0.5, anchor: .trailing)
             }
@@ -174,7 +166,7 @@ struct StreamDetailInputScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: UIColor.Background.black))
+        .background(Color(uiColor: themeManager.theme.background))
         .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
         .onSubmit {
             if inputFocus == .streamName {
@@ -192,11 +184,8 @@ struct StreamDetailInputScreen: View {
         VStack {
             Text(
                 text: "stream-detail-input.demo-stream.label",
-                mode: .primary,
-                fontAsset: .avenirNextDemiBold(
-                    size: FontSize.title2,
-                    style: .title
-                )
+                style: .labelMedium,
+                font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title)
             )
 
             Spacer()
@@ -204,10 +193,7 @@ struct StreamDetailInputScreen: View {
 
             Text(
                 text: "stream-detail-input.try-a-demo.label",
-                fontAsset: .avenirNextRegular(
-                    size: FontSize.subhead,
-                    style: .subheadline
-                )
+                font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
             )
 
             Spacer()
