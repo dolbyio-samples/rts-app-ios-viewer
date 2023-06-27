@@ -109,7 +109,7 @@ struct StreamDetailInputScreen: View {
                         Button(
                             action: {
                                 Task {
-                                    let success = await StreamCoordinator.shared.connect(streamName: streamName, accountID: accountID)
+                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
                                     await MainActor.run {
                                         showingAlert = !success
                                         isShowingStreamingView = success

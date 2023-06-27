@@ -7,19 +7,19 @@ import Foundation
 import DolbyIORTSCore
 
 final class StreamDetailInputViewModel: ObservableObject {
-    let streamCoordinator: StreamCoordinator
+    let streamOrchestrator: StreamOrchestrator
     private let streamDataManager: StreamDataManagerProtocol
 
     init(
-        streamCoordinator: StreamCoordinator = .shared,
+        streamOrchestrator: StreamOrchestrator = .shared,
         streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared
     ) {
-        self.streamCoordinator = streamCoordinator
+        self.streamOrchestrator = streamOrchestrator
         self.streamDataManager = streamDataManager
     }
 
     func connect(streamName: String, accountID: String) async -> Bool {
-        return await streamCoordinator.connect(streamName: streamName, accountID: accountID)
+        return await streamOrchestrator.connect(streamName: streamName, accountID: accountID)
     }
 
     func saveStream(streamName: String, accountID: String) {
