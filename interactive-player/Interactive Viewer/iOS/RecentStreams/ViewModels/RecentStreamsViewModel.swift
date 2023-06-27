@@ -51,7 +51,7 @@ final class RecentStreamsViewModel: ObservableObject {
     }
 
     func connect(streamName: String, accountID: String) async -> Bool {
-        await StreamCoordinator.shared.connect(streamName: streamName, accountID: accountID)
+        await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
     }
 
     func saveStream(streamName: String, accountID: String) {
