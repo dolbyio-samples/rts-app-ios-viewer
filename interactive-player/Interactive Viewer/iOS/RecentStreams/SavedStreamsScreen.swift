@@ -38,13 +38,13 @@ struct SavedStreamsScreen: View {
             if viewModel.streamDetails.isEmpty {
                 VStack(spacing: Layout.spacing1x) {
                     Text(
-                        text: "saved-streams.empty-streams.title.label",
+                        "saved-streams.empty-streams.title.label",
                         font: .custom("AvenirNext-DemiBold", size: FontSize.title2, relativeTo: .title2)
                     )
                     .multilineTextAlignment(.center)
 
                     Text(
-                        text: "saved-streams.empty-streams.subtitle.label",
+                        "saved-streams.empty-streams.subtitle.label",
                         style: .labelMedium,
                         font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
@@ -66,7 +66,7 @@ struct SavedStreamsScreen: View {
 
                     if let lastPlayedStream = viewModel.lastPlayedStream {
                         DolbyIOUIKit.Text(
-                            text: "saved-streams.section.last-played.label",
+                            "saved-streams.section.last-played.label",
                             font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote)
                         )
                         .listRowBackground(Color.clear)
@@ -99,7 +99,7 @@ struct SavedStreamsScreen: View {
                         .listRowBackground(Color.clear)
 
                     DolbyIOUIKit.Text(
-                        text: "saved-streams.section.all-streams.label",
+                        "saved-streams.section.all-streams.label",
                         font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote)
                     )
                     .listRowBackground(Color.clear)

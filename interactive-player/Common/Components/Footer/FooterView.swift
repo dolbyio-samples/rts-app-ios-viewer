@@ -14,7 +14,7 @@ struct FooterView: View {
 
     var body: some View {
         DolbyIOUIKit.Text(
-            text: text,
+            text,
             font: .avenirNextRegular(
                 withStyle: .caption,
                 size: FontSize.caption1
