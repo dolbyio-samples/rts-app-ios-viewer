@@ -1,0 +1,27 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - 'rts-viewer-tvos/**'
+
+jobs:
+  Run-UnitTests:
+    runs-on: macos-12
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1.126.0
+        with:
+          ruby-version: 3.1.2
+
+      - name: Run Unit tests
+        run: |
+          cd rts-viewer-tvos
+          gem install bundler
+          bundle install
+          bundle exec fastlane run_all_unit_tests --env tvos-tests
