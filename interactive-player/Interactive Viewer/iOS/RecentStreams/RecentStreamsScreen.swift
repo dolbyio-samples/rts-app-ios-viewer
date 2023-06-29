@@ -126,7 +126,7 @@ struct RecentStreamsScreen: View {
             .navigationBarTitleDisplayMode(.inline)
             .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(uiColor: themeManager.theme.neutral900))
+            .background(themeManager.theme.background)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     IconView(iconAsset: .dolby_logo_dd, tintColor: .white)

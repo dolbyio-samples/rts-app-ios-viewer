@@ -152,7 +152,7 @@ struct SavedStreamsScreen: View {
         .navigationTitle("saved-streams.title.label")
         .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: themeManager.theme.neutral900))
+        .background(themeManager.theme.background)
         .alert("saved-streams.clear-streams.label", isPresented: $isShowingClearStreamsAlert, actions: {
             Button(
                 "saved-streams.clear-streams.alert.clear.button",

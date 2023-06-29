@@ -166,7 +166,7 @@ struct StreamDetailInputScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: themeManager.theme.background))
+        .background(themeManager.theme.background)
         .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
         .onSubmit {
             if inputFocus == .streamName {

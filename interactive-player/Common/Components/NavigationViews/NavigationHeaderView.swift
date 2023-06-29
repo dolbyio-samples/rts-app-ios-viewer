@@ -25,9 +25,7 @@ struct NavigationHeaderView: View, ShapeStyle {
             IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
         }
         .frame(maxWidth: .infinity, maxHeight: Layout.spacing9x)
-        .background(
-            Color(uiColor: themeManager.theme.background)
-        )
+        .background(themeManager.theme.background)
     }
 }
 

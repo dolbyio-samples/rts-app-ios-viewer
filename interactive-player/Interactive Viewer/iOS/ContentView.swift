@@ -24,8 +24,8 @@ struct ContentView: View {
 
     init() {
         let appearance = UINavigationBarAppearance()
-        appearance.shadowColor = themeManager.theme.neutral700
-        appearance.backgroundColor = themeManager.theme.neutral900
+        appearance.shadowColor = UIColor(themeManager.theme.onSurfaceVariant)
+        appearance.backgroundColor = UIColor(themeManager.theme.background)
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }

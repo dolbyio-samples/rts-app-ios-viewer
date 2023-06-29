@@ -50,7 +50,7 @@ struct RecentStreamCell: View {
         .padding(.leading, Layout.spacing3x)
         .padding(.trailing, Layout.spacing1x)
         .padding([.top, .bottom], Layout.spacing2x)
-        .background(Color(uiColor: themeManager.theme.neutral700))
+        .background(themeManager.theme.surfaceDim)
         .mask(RoundedRectangle(cornerRadius: Layout.cornerRadius6x))
     }
 }

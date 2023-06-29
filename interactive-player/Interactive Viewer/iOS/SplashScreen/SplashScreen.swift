@@ -20,7 +20,7 @@ struct SplashScreen: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: themeManager.theme.background))
+        .background(themeManager.theme.background)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 withAnimation { isActive = true }
