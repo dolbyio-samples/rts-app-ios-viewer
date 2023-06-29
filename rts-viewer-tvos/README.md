@@ -1,12 +1,12 @@
-# Dolby.io Realtime Streaming Monitor - iOS/tvOS App
+# Dolby.io Realtime Streaming Monitor - tvOS App
 
 ## Readme
 
-This project demonstrates what a simple Realtime Streaming monitor experience is like when built for an iOS/tvOS device.
+This project demonstrates what a simple Realtime Streaming monitor experience is like when built for an tvOS device.
 
-| Use cases              | Features                                                         | Tech Stack       |
-| ---------------------- | ---------------------------------------------------------------- | ---------------- |
-| Monitor a video stream | Start a stream monitoring with a stream name and account ID pair | Swift, iOS, tvOS |
+| Use cases              | Features                                                         | Tech Stack  |
+| ---------------------- | ---------------------------------------------------------------- | ----------- |
+| Monitor a video stream | Start a stream monitoring with a stream name and account ID pair | Swift, tvOS |
 
 ## Pre-requisites
 
@@ -16,8 +16,6 @@ This setup guide is validated on both Intel/M1-based MacBook Pro running macOS 1
 
 * Xcode Version 14.2 (14C18)
 * Apple TV simulator running tvOS 15.0
-* iPhone simulator running iOS 15.0
-* iPad simulator running iPadOS 15.0
 
 ### Other
 
@@ -45,7 +43,7 @@ git clone git@github.com:dolbyio-samples/rts-app-ios-viewer.git
 
 Go to the project directory, and open the Xcode workspace - `RTSViewer.xcworkspace` by either double-clicking on it or from the Xcode directly.
 
-From the top of the Xcode, Select either the scheme `RTSViewer iOS` or `RTSViewer TVOS`.
+From the top of the Xcode, Select either the scheme `RTSViewer TVOS`.
 
 From the top of the Xcode, select the actual target to be run on.
 
