@@ -71,4 +71,14 @@
 "stream.stats.timestamp.label" = "Timestamp";
 "stream.stats.server.label" = "Server";
 "stream.stats.cluster.label" = "Cluster";
+"stream.stats.decoder-impl.label" = "Decoder Impl";
+"stream.stats.processing-delay.label" = "Processing delay";
+"stream.stats.decode-time.label" = "Decode time";
+"stream.stats.packets-received.label" = "Packets rec.";
+"stream.stats.frames-decoded.label" = "Frames dec.";
+"stream.stats.frames-dropped.label" = "Packets dropped";
+"stream.stats.jitter-buffer-est-count.label" = "Jitter buffer est count";
+"stream.stats.jitter-buffer-delay.label" = "Jitter buffer delay";
+"stream.stats.jitter-buffer-target-delay.label" = "Jitter buffer target delay";
+
 
