@@ -59,6 +59,7 @@
 		3FA8DBA82704AECD009713E8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTSViewer.swift; sourceTree = "<group>"; };
 		3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		950196C12A4D57BB006FE2CD /* rts-uikit-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "rts-uikit-ios"; path = "../../rts-uikit-ios"; sourceTree = "<group>"; };
 		B6376BC12A1C4120007AD9D9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E8067F482A329F680083E94B /* InteractiveVieweriOSFirebaseReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSFirebaseReleaseSettings.xcconfig; sourceTree = "<group>"; };
@@ -111,6 +112,7 @@
 		3FE90C0F26B2AF4200B206A3 = {
 			isa = PBXGroup;
 			children = (
+				950196BF2A4D575B006FE2CD /* Packages */,
 				E8575F752999A14B001E609C /* Common */,
 				E8649BED295284F400309BF7 /* Configuration */,
 				E8649BF2295299FB00309BF7 /* fastlane */,
@@ -144,6 +146,14 @@
 				3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		950196BF2A4D575B006FE2CD /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				950196C12A4D57BB006FE2CD /* rts-uikit-ios */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		E82FC5042977CF2A0050777F /* Utils */ = {
@@ -380,7 +390,6 @@
 			);
 			mainGroup = 3FE90C0F26B2AF4200B206A3;
 			packageReferences = (
-				E8575E9729527B420070F53E /* XCRemoteSwiftPackageReference "millicast-sdk-swift-package" */,
 				B63736D32A3958BD0004C4EF /* XCRemoteSwiftPackageReference "rts-uikit-ios" */,
 			);
 			productRefGroup = 3FE90C1926B2AF4200B206A3 /* Products */;
@@ -599,6 +608,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RTSViewer/Preview Content\"";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = E4A6TDH44W;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -609,6 +619,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Dolby IO iOS Interactive Player Development";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -774,14 +785,6 @@
 			requirement = {
 				branch = main;
 				kind = branch;
-			};
-		};
-		E8575E9729527B420070F53E /* XCRemoteSwiftPackageReference "millicast-sdk-swift-package" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/millicast/millicast-sdk-swift-package";
-			requirement = {
-				kind = exactVersion;
-				version = 1.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
