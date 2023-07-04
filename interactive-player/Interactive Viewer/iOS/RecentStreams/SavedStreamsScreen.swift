@@ -28,13 +28,6 @@ struct SavedStreamsScreen: View {
                 }
                 .hidden()
 
-            NavigationLink(
-                destination: LazyNavigationDestinationView(StreamingScreen(isShowingStreamView: $isShowingStreamingView)),
-                isActive: $isShowingStreamingView) {
-                    EmptyView()
-                }
-                .hidden()
-
             if viewModel.streamDetails.isEmpty {
                 VStack(spacing: Layout.spacing1x) {
                     Text(
@@ -167,6 +160,9 @@ struct SavedStreamsScreen: View {
                 action: {}
             )
         })
+        .fullScreenCover(isPresented: $isShowingStreamingView) {
+            StreamingScreen(isShowingStreamView: $isShowingStreamingView)
+        }
     }
 }
 

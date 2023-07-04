@@ -34,16 +34,6 @@ struct StreamDetailInputScreen: View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    StreamingScreen(isShowingStreamView: $isShowingStreamingView)
-                ),
-                isActive: $isShowingStreamingView
-            ) {
-                EmptyView()
-            }
-            .hidden()
-
-            NavigationLink(
-                destination: LazyNavigationDestinationView(
                     SettingsScreen(mode: .global)
                 ),
                 isActive: $isShowingSettingScreenView
@@ -182,6 +172,9 @@ struct StreamDetailInputScreen: View {
         }
         .onTapGesture {
             inputFocus = nil
+        }
+        .fullScreenCover(isPresented: $isShowingStreamingView) {
+            StreamingScreen(isShowingStreamView: $isShowingStreamingView)
         }
     }
 

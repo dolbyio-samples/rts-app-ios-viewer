@@ -38,13 +38,6 @@ struct RecentStreamsScreen: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(StreamingScreen(isShowingStreamView: $isShowingStreamingView)),
-                isActive: $isShowingStreamingView) {
-                    EmptyView()
-                }
-                .hidden()
-
-            NavigationLink(
                 destination: LazyNavigationDestinationView(SettingsScreen(mode: .global)),
                 isActive: $isShowingSettingScreenView) {
                     EmptyView()
@@ -145,6 +138,9 @@ struct RecentStreamsScreen: View {
             .onAppear {
                 viewModel.fetchAllStreams()
             }
+        }
+        .fullScreenCover(isPresented: $isShowingStreamingView) {
+            StreamingScreen(isShowingStreamView: $isShowingStreamingView)
         }
     }
 }
