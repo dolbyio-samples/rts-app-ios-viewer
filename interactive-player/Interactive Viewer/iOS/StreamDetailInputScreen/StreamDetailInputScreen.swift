@@ -42,7 +42,12 @@ struct StreamDetailInputScreen: View {
             }
             .hidden()
 
-            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen()), isActive: $isShowingSettingScreenView) {
+            NavigationLink(
+                destination: LazyNavigationDestinationView(
+                    SettingsScreen(mode: .global)
+                ),
+                isActive: $isShowingSettingScreenView
+            ) {
                 EmptyView()
             }
             .hidden()

@@ -4,6 +4,7 @@
 
 import Combine
 import Foundation
+import DolbyIORTSUIKit
 import DolbyIORTSCore
 
 final class RecentStreamsViewModel: ObservableObject {
@@ -21,8 +22,10 @@ final class RecentStreamsViewModel: ObservableObject {
     @Published private(set) var topStreamDetails: [StreamDetail] = []
     @Published private(set) var lastPlayedStream: StreamDetail?
 
-    init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
-         settingsManager: SettingsManager = .shared) {
+    init(
+        streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
+        settingsManager: SettingsManager = .shared
+    ) {
         self.streamDataManager = streamDataManager
         self.settingsManager = settingsManager
         streamDataManager.streamDetailsSubject
@@ -40,9 +43,8 @@ final class RecentStreamsViewModel: ObservableObject {
     func delete(at offsets: IndexSet) {
         offsets.forEach {
             let streamDetail = streamDetails[$0]
-            if settingsManager.removeSettings(for: streamDetail.streamName, with: streamDetail.accountID) {
-                streamDataManager.delete(streamDetail: streamDetail)
-            }
+            settingsManager.removeSettings(for: .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID))
+            streamDataManager.delete(streamDetail: streamDetail)
         }
     }
 
