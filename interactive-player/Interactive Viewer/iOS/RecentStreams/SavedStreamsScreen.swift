@@ -13,6 +13,7 @@ struct SavedStreamsScreen: View {
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingStreamingView: Bool = false
+    @State private var isShowingSettingScreenView: Bool = false
 
     @State private var isShowingClearStreamsAlert = false
 
@@ -22,7 +23,12 @@ struct SavedStreamsScreen: View {
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: LazyNavigationDestinationView(StreamDetailInputScreen()),
+                destination: LazyNavigationDestinationView(
+                    StreamDetailInputScreen(
+                        isShowingSettingScreenView: $isShowingSettingScreenView,
+                        isShowingStreamingView: $isShowingStreamingView
+                    )
+                ),
                 isActive: $isShowingStreamInputView) {
                     EmptyView()
                 }

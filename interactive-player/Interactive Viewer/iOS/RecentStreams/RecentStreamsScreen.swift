@@ -8,42 +8,32 @@ import DolbyIORTSUIKit
 import SwiftUI
 
 struct RecentStreamsScreen: View {
-    @StateObject private var viewModel: RecentStreamsViewModel = .init()
-
+    @ObservedObject private var viewModel: RecentStreamsViewModel
     @ObservedObject private var themeManager = ThemeManager.shared
 
-    @State private var isShowingStreamInputView: Bool = false
-    @State private var isShowingFullStreamHistoryView: Bool = false
-    @State private var isShowingStreamingView: Bool = false
-
-    @State private var isShowingSettingScreenView: Bool = false
-    @State var isShowLabelOn: Bool = false
+    @Binding private var isShowingStreamInputView: Bool
+    @Binding private var isShowingStreamingView: Bool
+    @Binding private var isShowingFullStreamHistoryView: Bool
+    @Binding private var isShowingSettingScreenView: Bool
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    init(
+        viewModel: RecentStreamsViewModel,
+        isShowingStreamInputView: Binding<Bool>,
+        isShowingStreamingView: Binding<Bool>,
+        isShowingFullStreamHistoryView: Binding<Bool>,
+        isShowingSettingScreenView: Binding<Bool>
+    ) {
+        self.viewModel = viewModel
+        _isShowingStreamInputView = isShowingStreamInputView
+        _isShowingStreamingView = isShowingStreamingView
+        _isShowingFullStreamHistoryView = isShowingFullStreamHistoryView
+        _isShowingSettingScreenView = isShowingSettingScreenView
+    }
+
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
-            NavigationLink(
-                destination: LazyNavigationDestinationView(StreamDetailInputScreen()),
-                isActive: $isShowingStreamInputView) {
-                    EmptyView()
-                }
-                .hidden()
-
-            NavigationLink(
-                destination: LazyNavigationDestinationView(SavedStreamsScreen(viewModel: viewModel)),
-                isActive: $isShowingFullStreamHistoryView) {
-                    EmptyView()
-                }
-                .hidden()
-
-            NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsScreen(mode: .global)),
-                isActive: $isShowingSettingScreenView) {
-                    EmptyView()
-                }
-                .hidden()
-
             ScrollView {
                 VStack(spacing: Layout.spacing3x) {
                     Spacer()
@@ -116,31 +106,12 @@ struct RecentStreamsScreen: View {
                 }
             }
             .layoutPriority(1)
-            .navigationBarTitleDisplayMode(.inline)
             .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(uiColor: themeManager.theme.neutral900))
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
-                }
-
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    IconButton(iconAsset: .settings, action: {
-                        isShowingSettingScreenView = true
-                    }).scaleEffect(0.5, anchor: .trailing)
-                }
-
-                ToolbarItem(placement: .bottomBar) {
-                    FooterView(text: "recent-streams.footnote.label")
-                }
-            }
-            .onAppear {
-                viewModel.fetchAllStreams()
-            }
         }
-        .fullScreenCover(isPresented: $isShowingStreamingView) {
-            StreamingScreen(isShowingStreamView: $isShowingStreamingView)
+        .onAppear {
+            viewModel.fetchAllStreams()
         }
     }
 }
@@ -148,7 +119,13 @@ struct RecentStreamsScreen: View {
 #if DEBUG
 struct RecentStreamsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamsScreen()
+        RecentStreamsScreen(
+            viewModel: .init(),
+            isShowingStreamInputView: .constant(false),
+            isShowingStreamingView: .constant(false),
+            isShowingFullStreamHistoryView: .constant(false),
+            isShowingSettingScreenView: .constant(false)
+        )
     }
 }
 #endif
