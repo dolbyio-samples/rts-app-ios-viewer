@@ -34,8 +34,4 @@ final class LandingViewModel: ObservableObject {
             }
         .store(in: &subscriptions)
     }
-
-    func stopStreamObservations() {
-        subscriptions.removeAll()
-    }
 }

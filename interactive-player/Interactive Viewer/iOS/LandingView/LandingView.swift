@@ -11,20 +11,16 @@ struct LandingView: View {
 
     var body: some View {
         ZStack {
-            if viewModel.hasSavedStreams {
-                RecentStreamsScreen()
-            } else {
-                StreamDetailInputScreen()
-            }
+            RecentStreamsScreen()
+                .opacity(viewModel.hasSavedStreams ? 1 : 0)
+            StreamDetailInputScreen()
+                .opacity(viewModel.hasSavedStreams ? 0 : 1)
         }
         .layoutPriority(1)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .id(appState.rootViewID)
         .onAppear {
             viewModel.startStreamObservations()
-        }
-        .onDisappear {
-            viewModel.stopStreamObservations()
         }
     }
 }
