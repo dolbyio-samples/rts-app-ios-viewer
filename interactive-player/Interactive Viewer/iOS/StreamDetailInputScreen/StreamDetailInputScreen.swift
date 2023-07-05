@@ -22,6 +22,10 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingSettingScreenView: Bool = false
     @State var isShowLabelOn: Bool = false
 
+    @State var isDev: Bool = true
+    @State var forcePlayoutDelay: Bool = true
+    @State var disableAudio: Bool = true
+
     @FocusState private var inputFocus: InputFocusable?
 
     @StateObject private var viewModel: StreamDetailInputViewModel = .init()
@@ -106,10 +110,22 @@ struct StreamDetailInputScreen: View {
                                 accountID = String(accountID.prefix(64))
                             }
 
+                        HStack {
+                            Toggle(isOn: $isDev) {
+                                Text("dev")
+                            }
+                            Toggle(isOn: $forcePlayoutDelay) {
+                                Text("forcePlayoutDelay")
+                            }
+                            Toggle(isOn: $disableAudio) {
+                                Text("disableAudio")
+                            }
+                        }
+
                         Button(
                             action: {
                                 Task {
-                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
+                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
                                     await MainActor.run {
                                         showingAlert = !success
                                         isShowingStreamingView = success
@@ -203,7 +219,7 @@ struct StreamDetailInputScreen: View {
             let accountID = Constants.accountID
             RecentStreamCell(streamName: streamName, accountID: accountID) {
                 Task {
-                    let success = await viewModel.connect(streamName: streamName, accountID: accountID)
+                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
                     await MainActor.run {
                         isShowingStreamingView = success
                     }

@@ -18,9 +18,9 @@ final class StreamDetailInputViewModel: ObservableObject {
         self.streamDataManager = streamDataManager
     }
 
-    func connect(streamName: String, accountID: String) async -> Bool {
-        return await streamOrchestrator.connect(streamName: streamName, accountID: accountID)
-    }
+//    func connect(streamName: String, accountID: String) async -> Bool {
+//        return await streamOrchestrator.connect(streamName: streamName, accountID: accountID)
+//    }
 
     func saveStream(streamName: String, accountID: String) {
         streamDataManager.saveStream(streamName, accountID: accountID)
