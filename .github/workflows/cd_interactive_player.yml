@@ -3,7 +3,7 @@ name: Interactive Player Build and Distribution
 on:
   push:
     branches:
-      - 'main'
+      - 'feature/stats'
     paths:
       - 'interactive-player/**'
     tags:
