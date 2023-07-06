@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "rts-uikit-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DolbyIO/rts-uikit-ios",
+      "state" : {
+        "branch" : "feature/stats",
+        "revision" : "abf45ed1567367e77a0c6fed7821ca23977fe452"
+      }
+    }
+  ],
+  "version" : 2
+}

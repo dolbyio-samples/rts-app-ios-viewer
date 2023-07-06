@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		954051722A56852D0093713C /* DolbyIORTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = 954051712A56852D0093713C /* DolbyIORTSCore */; };
+		954051742A56852D0093713C /* DolbyIORTSUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 954051732A56852D0093713C /* DolbyIORTSUIKit */; };
 		B63736D92A3958BD0004C4EF /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = B63736D82A3958BD0004C4EF /* DolbyIOUIKit */; };
 		B6376BC22A1C4120007AD9D9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6376BC12A1C4120007AD9D9 /* Constants.swift */; };
 		E8264D682A25B32D00660507 /* RTSViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */; };
@@ -34,10 +36,8 @@
 		E8816E1A2A1086E400064B1D /* StreamDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B4D298C75BD002D5C2B /* StreamDetail.swift */; };
 		E8816E202A1086E400064B1D /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6F29778BD00026E877 /* RTSViewer.xcdatamodeld */; };
 		E8816E222A1086E400064B1D /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
-		E8816E252A1086E400064B1D /* DolbyIORTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E8816E022A1086E400064B1D /* DolbyIORTSCore */; };
 		E8816E292A1086E400064B1D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */; };
 		E8816E2A2A1086E400064B1D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3FA8DBA82704AECD009713E8 /* README.md */; };
-		E8A0C5CC2A10B88000C1D99B /* DolbyIORTSUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8A0C5CB2A10B88000C1D99B /* DolbyIORTSUIKit */; };
 		E8E1855D2A10970600BF4726 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E1855A2A10970600BF4726 /* NetworkMonitor.swift */; };
 		E8E1855F2A1099F900BF4726 /* StreamDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E1855E2A1099F900BF4726 /* StreamDetailInputViewModel.swift */; };
 /* End PBXBuildFile section */
@@ -59,7 +59,6 @@
 		3FA8DBA82704AECD009713E8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTSViewer.swift; sourceTree = "<group>"; };
 		3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		950196C12A4D57BB006FE2CD /* rts-uikit-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "rts-uikit-ios"; path = "../../rts-uikit-ios"; sourceTree = "<group>"; };
 		B6376BC12A1C4120007AD9D9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E8067F482A329F680083E94B /* InteractiveVieweriOSFirebaseReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSFirebaseReleaseSettings.xcconfig; sourceTree = "<group>"; };
@@ -100,9 +99,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8A0C5CC2A10B88000C1D99B /* DolbyIORTSUIKit in Frameworks */,
+				954051722A56852D0093713C /* DolbyIORTSCore in Frameworks */,
+				954051742A56852D0093713C /* DolbyIORTSUIKit in Frameworks */,
 				B63736D92A3958BD0004C4EF /* DolbyIOUIKit in Frameworks */,
-				E8816E252A1086E400064B1D /* DolbyIORTSCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,7 +150,6 @@
 		950196BF2A4D575B006FE2CD /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				950196C12A4D57BB006FE2CD /* rts-uikit-ios */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -363,9 +361,9 @@
 			);
 			name = "Interactive Player";
 			packageProductDependencies = (
-				E8816E022A1086E400064B1D /* DolbyIORTSCore */,
-				E8A0C5CB2A10B88000C1D99B /* DolbyIORTSUIKit */,
 				B63736D82A3958BD0004C4EF /* DolbyIOUIKit */,
+				954051712A56852D0093713C /* DolbyIORTSCore */,
+				954051732A56852D0093713C /* DolbyIORTSUIKit */,
 			);
 			productName = "Millicast SDK Sample App in Swift";
 			productReference = E8816E312A1086E400064B1D /* Interactive Player.app */;
@@ -783,25 +781,27 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DolbyIO/rts-uikit-ios";
 			requirement = {
-				branch = main;
+				branch = feature/stats;
 				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		954051712A56852D0093713C /* DolbyIORTSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B63736D32A3958BD0004C4EF /* XCRemoteSwiftPackageReference "rts-uikit-ios" */;
+			productName = DolbyIORTSCore;
+		};
+		954051732A56852D0093713C /* DolbyIORTSUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B63736D32A3958BD0004C4EF /* XCRemoteSwiftPackageReference "rts-uikit-ios" */;
+			productName = DolbyIORTSUIKit;
+		};
 		B63736D82A3958BD0004C4EF /* DolbyIOUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B63736D32A3958BD0004C4EF /* XCRemoteSwiftPackageReference "rts-uikit-ios" */;
 			productName = DolbyIOUIKit;
-		};
-		E8816E022A1086E400064B1D /* DolbyIORTSCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DolbyIORTSCore;
-		};
-		E8A0C5CB2A10B88000C1D99B /* DolbyIORTSUIKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DolbyIORTSUIKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 
