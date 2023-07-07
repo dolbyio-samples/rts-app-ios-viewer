@@ -217,9 +217,10 @@ struct StreamDetailInputScreen: View {
 
             let streamName = Constants.streamName
             let accountID = Constants.accountID
+            // Dobly.io demo stream
             RecentStreamCell(streamName: streamName, accountID: accountID) {
                 Task {
-                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
+                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false)
                     await MainActor.run {
                         isShowingStreamingView = success
                     }
