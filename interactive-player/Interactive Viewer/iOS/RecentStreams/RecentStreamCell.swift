@@ -8,6 +8,9 @@ import SwiftUI
 struct RecentStreamCell: View {
     private let streamName: String
     private let accountID: String
+    private let isDev: Bool
+    private let forcePlayoutDelay: Bool
+    private let disableAudio: Bool
 
     @ObservedObject private var themeManager = ThemeManager.shared
     private let action: () -> Void
@@ -15,11 +18,17 @@ struct RecentStreamCell: View {
     init(
         streamName: String,
         accountID: String,
+        dev: Bool,
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
         action: @escaping () -> Void
     ) {
         self.streamName = streamName
         self.accountID = accountID
         self.action = action
+        self.isDev = dev
+        self.forcePlayoutDelay = forcePlayoutDelay
+        self.disableAudio = disableAudio
     }
 
     var body: some View {
@@ -41,8 +50,24 @@ struct RecentStreamCell: View {
                         style: .labelMedium,
                         font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                     )
-
                 }
+                DolbyIOUIKit.Text(
+                    "dev: \(String(isDev))",
+                    style: .labelMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+                )
+
+                DolbyIOUIKit.Text(
+                    "forcePlayoutDelay: \(String(forcePlayoutDelay))",
+                    style: .labelMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+                )
+
+                DolbyIOUIKit.Text(
+                    "disableAudio: \(String(disableAudio))",
+                    style: .labelMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+                )
             }
             Spacer()
             IconButton(iconAsset: .playOutlined, tintColor: .white, action: action)
@@ -57,6 +82,6 @@ struct RecentStreamCell: View {
 
 struct RecentStreamCell_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamCell(streamName: "ABCDE", accountID: "12345", action: {})
+        RecentStreamCell(streamName: "ABCDE", accountID: "12345", dev: false, forcePlayoutDelay: false, disableAudio: false, action: {})
     }
 }

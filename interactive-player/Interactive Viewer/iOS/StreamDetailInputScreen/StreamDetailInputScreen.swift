@@ -132,7 +132,7 @@ struct StreamDetailInputScreen: View {
                                         if success {
                                             // A delay is added before saving the stream.
                                             Task.delayed(byTimeInterval: 1.0) {
-                                                await viewModel.saveStream(streamName: streamName, accountID: accountID)
+                                                await viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
                                             }
                                         }
                                     }
@@ -218,7 +218,7 @@ struct StreamDetailInputScreen: View {
             let streamName = Constants.streamName
             let accountID = Constants.accountID
             // Dobly.io demo stream
-            RecentStreamCell(streamName: streamName, accountID: accountID) {
+            RecentStreamCell(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false) {
                 Task {
                     let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false)
                     await MainActor.run {

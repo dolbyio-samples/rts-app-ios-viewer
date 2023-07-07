@@ -22,8 +22,8 @@ final class StreamDetailInputViewModel: ObservableObject {
 //        return await streamOrchestrator.connect(streamName: streamName, accountID: accountID)
 //    }
 
-    func saveStream(streamName: String, accountID: String) {
-        streamDataManager.saveStream(streamName, accountID: accountID)
+    func saveStream(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool) {
+        streamDataManager.saveStream(streamName, accountID: accountID, dev: dev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
     }
 
     func clearAllStreams() {

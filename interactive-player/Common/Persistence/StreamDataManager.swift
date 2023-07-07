@@ -12,7 +12,7 @@ protocol StreamDataManagerProtocol: AnyObject {
     func fetchStreamDetails()
     func updateLastUsedDate(for streamDetail: StreamDetail)
     func delete(streamDetail: StreamDetail)
-    func saveStream(_ streamName: String, accountID: String)
+    func saveStream(_ streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool)
     func clearAllStreams()
 }
 
@@ -119,7 +119,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         }
     }
 
-    func saveStream(_ streamName: String, accountID: String) {
+    func saveStream(_ streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool) {
         let request: NSFetchRequest<StreamDetailManagedObject> = StreamDetailManagedObject.fetchRequest()
         request.predicate = NSPredicate(format: "streamName == %@ && accountID == %@", streamName, accountID)
 
@@ -134,6 +134,9 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
                 streamDetail.accountID = accountID
                 streamDetail.streamName = streamName
                 streamDetail.lastUsedDate = dateProvider.now
+                streamDetail.disableAudio = disableAudio ? "true" : "false"
+                streamDetail.isDev = dev ? "true" : "false"
+                streamDetail.forcePlayoutDelay = disableAudio ? "true" : "false"
 
                 // Delete streams that are older and exceeding the maximum allowed count
                 let request: NSFetchRequest<StreamDetailManagedObject> = Self.recentStreamsFetchRequest
