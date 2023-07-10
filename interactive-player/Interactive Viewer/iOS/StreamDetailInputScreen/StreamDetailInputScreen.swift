@@ -116,16 +116,16 @@ struct StreamDetailInputScreen: View {
                             }
                             Toggle(isOn: $forcePlayoutDelay) {
                                 Text("forcePlayoutDelay")
-                            }
+                            }.disabled(!isDev)
                             Toggle(isOn: $disableAudio) {
                                 Text("disableAudio")
-                            }
+                            }.disabled(!isDev)
                         }
 
                         Button(
                             action: {
                                 Task {
-                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
+                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: (isDev ? forcePlayoutDelay : false), disableAudio: (isDev ? disableAudio : false))
                                     await MainActor.run {
                                         showingAlert = !success
                                         isShowingStreamingView = success
