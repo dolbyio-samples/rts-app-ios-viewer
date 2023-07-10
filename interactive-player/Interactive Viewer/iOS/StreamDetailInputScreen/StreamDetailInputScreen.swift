@@ -13,36 +13,35 @@ struct StreamDetailInputScreen: View {
       case accountID
       case streamName
     }
+    @Binding private var isShowingSettingScreenView: Bool
+    @Binding private var isShowingStreamingView: Bool
 
     @State private var streamName: String = ""
     @State private var accountID: String = ""
-    @State private var isShowingStreamingView = false
     @State private var showingAlert = false
-
-    @State private var isShowingSettingScreenView: Bool = false
-    @State var isShowLabelOn: Bool = false
 
     @FocusState private var inputFocus: InputFocusable?
 
     @StateObject private var viewModel: StreamDetailInputViewModel = .init()
 
+    @ObservedObject private var themeManager = ThemeManager.shared
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
-    @ObservedObject private var themeManager = ThemeManager.shared
+
+    init(isShowingSettingScreenView: Binding<Bool>, isShowingStreamingView: Binding<Bool>) {
+        _isShowingSettingScreenView = isShowingSettingScreenView
+        _isShowingStreamingView = isShowingStreamingView
+    }
 
     var body: some View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    StreamingScreen(isShowingStreamView: $isShowingStreamingView)
+                    SettingsScreen(mode: .global)
                 ),
-                isActive: $isShowingStreamingView
+                isActive: $isShowingSettingScreenView
             ) {
-                EmptyView()
-            }
-            .hidden()
-
-            NavigationLink(destination: LazyNavigationDestinationView(SettingsScreen()), isActive: $isShowingSettingScreenView) {
                 EmptyView()
             }
             .hidden()
@@ -149,21 +148,20 @@ struct StreamDetailInputScreen: View {
                 }
             }
 
-            ToolbarItem(placement: .principal) {
-                IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
-            }
-
             ToolbarItem(placement: .navigationBarTrailing) {
-                IconButton(iconAsset: .settings, action: {
-                    isShowingSettingScreenView = true
-                }).scaleEffect(0.5, anchor: .trailing)
+                if presentationMode.wrappedValue.isPresented {
+                    IconButton(iconAsset: .settings, action: {
+                        isShowingSettingScreenView = true
+                    }).scaleEffect(0.5, anchor: .trailing)
+                }
             }
 
             ToolbarItem(placement: .bottomBar) {
-                FooterView(text: "stream-detail-input.footnote.label")
+                if presentationMode.wrappedValue.isPresented {
+                    FooterView(text: "stream-detail-input.footnote.label")
+                }
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: themeManager.theme.background))
@@ -215,6 +213,6 @@ struct StreamDetailInputScreen: View {
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputScreen()
+        StreamDetailInputScreen(isShowingSettingScreenView: .constant(false), isShowingStreamingView: .constant(false))
     }
 }
