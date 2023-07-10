@@ -23,7 +23,6 @@ struct StreamDetailInputScreen: View {
     @State var isShowLabelOn: Bool = false
 
     @State var isDev: Bool = false
-    @State var forcePlayoutDelay: Bool = false
     @State var disableAudio: Bool = false
 
     @FocusState private var inputFocus: InputFocusable?
@@ -114,9 +113,9 @@ struct StreamDetailInputScreen: View {
                             Toggle(isOn: $isDev) {
                                 Text("dev")
                             }
-                            Toggle(isOn: $forcePlayoutDelay) {
+                            Toggle(isOn: $isDev) {
                                 Text("forcePlayoutDelay")
-                            }.disabled(!isDev)
+                            }.disabled(true)
                             Toggle(isOn: $disableAudio) {
                                 Text("disableAudio")
                             }.disabled(!isDev)
@@ -125,14 +124,14 @@ struct StreamDetailInputScreen: View {
                         Button(
                             action: {
                                 Task {
-                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: (isDev ? forcePlayoutDelay : false), disableAudio: (isDev ? disableAudio : false))
+                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: isDev, disableAudio: (isDev ? disableAudio : false))
                                     await MainActor.run {
                                         showingAlert = !success
                                         isShowingStreamingView = success
                                         if success {
                                             // A delay is added before saving the stream.
                                             Task.delayed(byTimeInterval: 1.0) {
-                                                await viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
+                                                await viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: isDev, disableAudio: disableAudio)
                                             }
                                         }
                                     }
