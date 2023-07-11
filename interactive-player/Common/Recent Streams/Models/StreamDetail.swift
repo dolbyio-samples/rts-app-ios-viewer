@@ -11,6 +11,7 @@ struct StreamDetail: Identifiable, Equatable {
     let isDev: String
     let forcePlayoutDelay: String
     let disableAudio: String
+    let saveLogs: String
     let lastUsedDate: Date
 }
 
@@ -23,6 +24,7 @@ struct StreamDetail: Identifiable, Equatable {
             let isDev = managedObject.isDev,
             let forcePlayoutDelay = managedObject.forcePlayoutDelay,
             let disableAudio = managedObject.disableAudio,
+            let saveLogs = managedObject.saveLogs,
             let lastUsedDate = managedObject.lastUsedDate
         else {
             return nil
@@ -33,6 +35,7 @@ struct StreamDetail: Identifiable, Equatable {
         self.lastUsedDate = lastUsedDate
         self.isDev = isDev
         self.forcePlayoutDelay = forcePlayoutDelay
+        self.saveLogs = saveLogs
         self.disableAudio = disableAudio
     }
      // swiftlint:enable force_cast

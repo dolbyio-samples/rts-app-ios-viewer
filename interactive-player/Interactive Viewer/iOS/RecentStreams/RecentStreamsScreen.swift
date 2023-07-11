@@ -96,12 +96,13 @@ struct RecentStreamsScreen: View {
                                 let isDev = streamDetail.isDev == "true" ? true : false
                                 let forcePlayoutDelay = streamDetail.forcePlayoutDelay == "true" ? true : false
                                 let disableAudio = streamDetail.disableAudio == "true" ? true : false
+                                let saveLogs = streamDetail.saveLogs == "true" ? true : false
                                 RecentStreamCell(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio) {
                                     Task {
-                                        let success = await viewModel.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
+                                        let success = await viewModel.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, saveLogs: saveLogs)
                                         await MainActor.run {
                                             isShowingStreamingView = success
-                                            viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
+                                            viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, saveLogs: saveLogs)
                                         }
                                     }
                                 }

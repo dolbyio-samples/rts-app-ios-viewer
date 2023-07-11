@@ -7,11 +7,16 @@ import DolbyIORTSCore
 import DolbyIORTSUIKit
 import SwiftUI
 
+func documentsURL() -> String {
+    let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    return urls[0].relativePath
+}
+
 struct StreamDetailInputScreen: View {
 
     enum InputFocusable: Hashable {
-      case accountID
-      case streamName
+        case accountID
+        case streamName
     }
 
     @State private var streamName: String = ""
@@ -24,6 +29,7 @@ struct StreamDetailInputScreen: View {
 
     @State var isDev: Bool = false
     @State var disableAudio: Bool = false
+    @State var debugLogs: Bool = false
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -119,19 +125,22 @@ struct StreamDetailInputScreen: View {
                             Toggle(isOn: $disableAudio) {
                                 Text("disableAudio")
                             }.disabled(!isDev)
+                            Toggle(isOn: $debugLogs) {
+                                Text("debugLogs")
+                            }.disabled(!isDev)
                         }
 
                         Button(
                             action: {
                                 Task {
-                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: isDev, disableAudio: (isDev ? disableAudio : false))
+                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: isDev, disableAudio: (isDev ? disableAudio : false), documentDirectoryPath: (debugLogs ? documentsURL() : nil))
                                     await MainActor.run {
                                         showingAlert = !success
                                         isShowingStreamingView = success
                                         if success {
                                             // A delay is added before saving the stream.
                                             Task.delayed(byTimeInterval: 1.0) {
-                                                await viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: isDev, disableAudio: disableAudio)
+                                                await viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: isDev, disableAudio: disableAudio, saveLogs: debugLogs)
                                             }
                                         }
                                     }
@@ -219,7 +228,7 @@ struct StreamDetailInputScreen: View {
             // Dobly.io demo stream
             RecentStreamCell(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false) {
                 Task {
-                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false)
+                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false, documentDirectoryPath: nil)
                     await MainActor.run {
                         isShowingStreamingView = success
                     }

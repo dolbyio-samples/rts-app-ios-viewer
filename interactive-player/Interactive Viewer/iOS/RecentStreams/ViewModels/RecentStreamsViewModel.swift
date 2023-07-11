@@ -50,11 +50,11 @@ final class RecentStreamsViewModel: ObservableObject {
         streamDataManager.clearAllStreams()
     }
 
-    func connect(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool) async -> Bool {
-        await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: dev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
+    func connect(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool, saveLogs: Bool) async -> Bool {
+        await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: dev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, documentDirectoryPath: saveLogs ? documentsURL() : nil)
     }
 
-    func saveStream(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool) {
-        streamDataManager.saveStream(streamName, accountID: accountID, dev: dev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio)
+    func saveStream(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool, saveLogs: Bool) {
+        streamDataManager.saveStream(streamName, accountID: accountID, dev: dev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, saveLogs: saveLogs)
     }
 }
