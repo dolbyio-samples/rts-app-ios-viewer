@@ -129,7 +129,7 @@ struct StreamDetailInputScreen: View {
                                 Toggle("", isOn: $disableAudio).disabled(!isDev).labelsHidden()
                             }
                             VStack {
-                                Text("debugLogs")
+                                Text("RTCLogs")
                                 Toggle("", isOn: $debugLogs).disabled(!isDev).labelsHidden()
                             }
                         }
