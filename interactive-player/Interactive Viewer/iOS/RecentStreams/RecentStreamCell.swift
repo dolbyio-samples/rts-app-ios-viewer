@@ -11,6 +11,7 @@ struct RecentStreamCell: View {
     private let isDev: Bool
     private let forcePlayoutDelay: Bool
     private let disableAudio: Bool
+    private let saveLogs: Bool
 
     @ObservedObject private var themeManager = ThemeManager.shared
     private let action: () -> Void
@@ -21,6 +22,7 @@ struct RecentStreamCell: View {
         dev: Bool,
         forcePlayoutDelay: Bool,
         disableAudio: Bool,
+        saveLogs: Bool,
         action: @escaping () -> Void
     ) {
         self.streamName = streamName
@@ -29,6 +31,7 @@ struct RecentStreamCell: View {
         self.isDev = dev
         self.forcePlayoutDelay = forcePlayoutDelay
         self.disableAudio = disableAudio
+        self.saveLogs = saveLogs
     }
 
     var body: some View {
@@ -68,6 +71,12 @@ struct RecentStreamCell: View {
                     style: .labelMedium,
                     font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                 )
+
+                DolbyIOUIKit.Text(
+                    "saveLogs: \(String(disableAudio))",
+                    style: .labelMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+                )
             }
             Spacer()
             IconButton(iconAsset: .playOutlined, tintColor: .white, action: action)
@@ -82,6 +91,6 @@ struct RecentStreamCell: View {
 
 struct RecentStreamCell_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamCell(streamName: "ABCDE", accountID: "12345", dev: false, forcePlayoutDelay: false, disableAudio: false, action: {})
+        RecentStreamCell(streamName: "ABCDE", accountID: "12345", dev: false, forcePlayoutDelay: false, disableAudio: false, saveLogs: false, action: {})
     }
 }

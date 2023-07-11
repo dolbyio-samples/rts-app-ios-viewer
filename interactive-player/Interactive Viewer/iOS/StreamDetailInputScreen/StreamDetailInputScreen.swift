@@ -116,18 +116,22 @@ struct StreamDetailInputScreen: View {
                             }
 
                         HStack {
-                            Toggle(isOn: $isDev) {
+                            VStack {
                                 Text("dev")
+                                Toggle("", isOn: $isDev).labelsHidden()
                             }
-                            Toggle(isOn: $isDev) {
-                                Text("forcePlayoutDelay")
-                            }.disabled(true)
-                            Toggle(isOn: $disableAudio) {
+                            VStack {
+                                Text("playoutDelay")
+                                Toggle("", isOn: $isDev).disabled(true).labelsHidden()
+                            }
+                            VStack {
                                 Text("disableAudio")
-                            }.disabled(!isDev)
-                            Toggle(isOn: $debugLogs) {
+                                Toggle("", isOn: $disableAudio).disabled(!isDev).labelsHidden()
+                            }
+                            VStack {
                                 Text("debugLogs")
-                            }.disabled(!isDev)
+                                Toggle("", isOn: $debugLogs).disabled(!isDev).labelsHidden()
+                            }
                         }
 
                         Button(
@@ -226,7 +230,7 @@ struct StreamDetailInputScreen: View {
             let streamName = Constants.streamName
             let accountID = Constants.accountID
             // Dobly.io demo stream
-            RecentStreamCell(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false) {
+            RecentStreamCell(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false, saveLogs: false) {
                 Task {
                     let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false, documentDirectoryPath: nil)
                     await MainActor.run {
