@@ -27,7 +27,7 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingSettingScreenView: Bool = false
     @State var isShowLabelOn: Bool = false
 
-    @State var isDev: Bool = false
+    @State var isDev: Bool = true
     @State var disableAudio: Bool = false
     @State var debugLogs: Bool = false
 
