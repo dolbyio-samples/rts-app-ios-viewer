@@ -61,7 +61,7 @@ struct RecentStreamCell: View {
                 )
 
                 DolbyIOUIKit.Text(
-                    "forcePlayoutDelay: \(String(forcePlayoutDelay))",
+                    "noPlayoutDelay: \(String(forcePlayoutDelay))",
                     style: .labelMedium,
                     font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                 )
@@ -73,7 +73,7 @@ struct RecentStreamCell: View {
                 )
 
                 DolbyIOUIKit.Text(
-                    "saveLogs: \(String(disableAudio))",
+                    "saveLogs: \(String(saveLogs))",
                     style: .labelMedium,
                     font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                 )

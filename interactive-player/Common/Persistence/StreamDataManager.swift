@@ -136,7 +136,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
                 streamDetail.lastUsedDate = dateProvider.now
                 streamDetail.disableAudio = disableAudio ? "true" : "false"
                 streamDetail.isDev = dev ? "true" : "false"
-                streamDetail.forcePlayoutDelay = disableAudio ? "true" : "false"
+                streamDetail.forcePlayoutDelay = forcePlayoutDelay ? "true" : "false"
                 streamDetail.saveLogs = saveLogs ? "true" : "false"
 
                 // Delete streams that are older and exceeding the maximum allowed count

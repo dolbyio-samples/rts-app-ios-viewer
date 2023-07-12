@@ -121,7 +121,7 @@ struct StreamDetailInputScreen: View {
                                 Toggle("", isOn: $isDev).labelsHidden()
                             }
                             VStack {
-                                Text("playoutDelay")
+                                Text("noPlayoutDelay")
                                 Toggle("", isOn: $isDev).disabled(true).labelsHidden()
                             }
                             VStack {
