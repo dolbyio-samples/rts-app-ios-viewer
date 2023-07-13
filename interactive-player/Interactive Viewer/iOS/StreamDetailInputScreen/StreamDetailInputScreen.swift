@@ -184,7 +184,7 @@ struct StreamDetailInputScreen: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 IconButton(iconAsset: .settings, action: {
                     isShowingSettingScreenView = true
-                }).scaleEffect(0.5, anchor: .trailing)
+                })
             }
 
             ToolbarItem(placement: .bottomBar) {
