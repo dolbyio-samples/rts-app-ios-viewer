@@ -37,6 +37,14 @@ jobs:
           bundle install
           bundle exec fastlane build_and_deploy_to_firebase --env interactive-player-ios-enterprise build_number:$GITHUB_RUN_NUMBER
 
+      - name: 'Upload Artifacts'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build_artifacts_firebase
+          path: |
+            interactive-player/artifacts
+          retention-days: 30
+
   Build-And-Deploy-iOS-App-To-Appstore:
     runs-on: macos-12
     steps:
@@ -64,3 +72,11 @@ jobs:
           gem install bundler
           bundle install
           bundle exec fastlane build_and_deploy_to_appstore --env interactive-player-ios-appstore build_number:$GITHUB_RUN_NUMBER
+
+      - name: 'Upload Artifacts'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build_artifacts_appstore
+          path: |
+            interactive-player/artifacts
+          retention-days: 30
