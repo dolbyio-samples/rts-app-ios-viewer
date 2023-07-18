@@ -41,6 +41,8 @@ lane :build_and_deploy_to_firebase do |options|
   )
   upload_to_firebase
 
+  copy_build_artifacts
+
   FileUtils.rm_rf('../Tmp') if File.directory?('../Tmp')
   next if !is_ci
   delete_temp_keychain_if_exists
@@ -79,6 +81,8 @@ lane :build_and_deploy_to_appstore do |options|
   )
 
   deliver_to_testflight
+
+  copy_build_artifacts
 
   FileUtils.rm_rf('../Tmp') if File.directory?('../Tmp')
   next if !is_ci
@@ -193,6 +197,16 @@ private_lane :upload_to_firebase do
     service_credentials_file: ENV['TMP_GOOGLE_APP_CREDENTIALS_PATH'],
     ipa_path: lane_context[SharedValues::IPA_OUTPUT_PATH],
     groups: ENV['FIREBASE_TESTER_GROUPS']
+  )
+end
+
+private_lane :copy_build_artifacts do
+  # Copy the dsym's created by _gym_ if it was successfully created
+  artifacts = []
+  artifacts << lane_context[SharedValues::DSYM_OUTPUT_PATH] if lane_context[SharedValues::DSYM_OUTPUT_PATH]
+  copy_artifacts(
+    target_path: "artifacts",
+    artifacts: artifacts
   )
 end
 
