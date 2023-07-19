@@ -2,6 +2,7 @@
 //  LandingView.swift
 //
 
+import DolbyIORTSCore
 import DolbyIOUIKit
 import DolbyIORTSUIKit
 import SwiftUI
@@ -11,9 +12,9 @@ struct LandingView: View {
     @StateObject private var recentStreamsViewModel: RecentStreamsViewModel = .init()
 
     @State private var isShowingStreamInputView = false
-    @State private var isShowingStreamingView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingSettingScreenView: Bool = false
+    @State private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @EnvironmentObject private var appState: AppState
 
@@ -23,7 +24,7 @@ struct LandingView: View {
                 destination: LazyNavigationDestinationView(
                     StreamDetailInputScreen(
                         isShowingSettingScreenView: $isShowingSettingScreenView,
-                        isShowingStreamingView: $isShowingStreamingView
+                        playedStreamDetail: $playedStreamDetail
                     )
                 ),
                 isActive: $isShowingStreamInputView) {
@@ -48,15 +49,15 @@ struct LandingView: View {
             RecentStreamsScreen(
                 viewModel: recentStreamsViewModel,
                 isShowingStreamInputView: $isShowingStreamInputView,
-                isShowingStreamingView: $isShowingStreamingView,
                 isShowingFullStreamHistoryView: $isShowingFullStreamHistoryView,
-                isShowingSettingScreenView: $isShowingSettingScreenView
+                isShowingSettingScreenView: $isShowingSettingScreenView,
+                playedStreamDetail: $playedStreamDetail
             )
             .opacity(viewModel.hasSavedStreams ? 1 : 0)
 
             StreamDetailInputScreen(
                 isShowingSettingScreenView: $isShowingSettingScreenView,
-                isShowingStreamingView: $isShowingStreamingView
+                playedStreamDetail: $playedStreamDetail
             )
             .opacity(viewModel.hasSavedStreams ? 0 : 1)
         }
@@ -82,8 +83,10 @@ struct LandingView: View {
         .onAppear {
             viewModel.startStreamObservations()
         }
-        .fullScreenCover(isPresented: $isShowingStreamingView) {
-            StreamingScreen(isShowingStreamView: $isShowingStreamingView)
+        .fullScreenCover(item: $playedStreamDetail) { streamDetail in
+            StreamingScreen(streamDetail: streamDetail) {
+                playedStreamDetail = nil
+            }
         }
     }
 }
