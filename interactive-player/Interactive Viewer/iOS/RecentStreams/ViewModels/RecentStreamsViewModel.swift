@@ -49,7 +49,10 @@ final class RecentStreamsViewModel: ObservableObject {
     }
 
     func clearAllStreams() {
-        streamDataManager.clearAllStreams()
+        streamDetails.forEach { streamDetail in
+            settingsManager.removeSettings(for: .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID))
+            streamDataManager.delete(streamDetail: streamDetail)
+        }
     }
 
     func connect(streamName: String, accountID: String) async -> Bool {
