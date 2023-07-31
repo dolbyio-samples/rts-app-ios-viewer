@@ -14,7 +14,7 @@ struct StreamDetailInputScreen: View {
       case streamName
     }
     @Binding private var isShowingSettingScreenView: Bool
-    @Binding private var isShowingStreamingView: Bool
+    @Binding private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @State private var streamName: String = ""
     @State private var accountID: String = ""
@@ -29,9 +29,9 @@ struct StreamDetailInputScreen: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
 
-    init(isShowingSettingScreenView: Binding<Bool>, isShowingStreamingView: Binding<Bool>) {
+    init(isShowingSettingScreenView: Binding<Bool>, playedStreamDetail: Binding<DolbyIORTSCore.StreamDetail?>) {
         _isShowingSettingScreenView = isShowingSettingScreenView
-        _isShowingStreamingView = isShowingStreamingView
+        _playedStreamDetail = playedStreamDetail
     }
 
     var body: some View {
@@ -111,7 +111,10 @@ struct StreamDetailInputScreen: View {
                                     let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
                                     await MainActor.run {
                                         showingAlert = !success
-                                        isShowingStreamingView = success
+                                        playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                                            streamName: streamName,
+                                            accountID: accountID
+                                        )
                                         if success {
                                             // A delay is added before saving the stream.
                                             Task.delayed(byTimeInterval: 1.0) {
@@ -203,7 +206,10 @@ struct StreamDetailInputScreen: View {
                 Task {
                     let success = await viewModel.connect(streamName: streamName, accountID: accountID)
                     await MainActor.run {
-                        isShowingStreamingView = success
+                        playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                            streamName: streamName,
+                            accountID: accountID
+                        )
                     }
                 }
             }
@@ -213,6 +219,6 @@ struct StreamDetailInputScreen: View {
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputScreen(isShowingSettingScreenView: .constant(false), isShowingStreamingView: .constant(false))
+        StreamDetailInputScreen(isShowingSettingScreenView: .constant(false), playedStreamDetail: .constant(nil))
     }
 }

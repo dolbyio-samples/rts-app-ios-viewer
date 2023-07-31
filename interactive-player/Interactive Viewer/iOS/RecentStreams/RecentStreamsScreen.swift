@@ -12,22 +12,22 @@ struct RecentStreamsScreen: View {
     @ObservedObject private var themeManager = ThemeManager.shared
 
     @Binding private var isShowingStreamInputView: Bool
-    @Binding private var isShowingStreamingView: Bool
     @Binding private var isShowingFullStreamHistoryView: Bool
     @Binding private var isShowingSettingScreenView: Bool
+    @Binding private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     init(
         viewModel: RecentStreamsViewModel,
         isShowingStreamInputView: Binding<Bool>,
-        isShowingStreamingView: Binding<Bool>,
         isShowingFullStreamHistoryView: Binding<Bool>,
-        isShowingSettingScreenView: Binding<Bool>
+        isShowingSettingScreenView: Binding<Bool>,
+        playedStreamDetail: Binding<DolbyIORTSCore.StreamDetail?>
     ) {
         self.viewModel = viewModel
         _isShowingStreamInputView = isShowingStreamInputView
-        _isShowingStreamingView = isShowingStreamingView
+        _playedStreamDetail = playedStreamDetail
         _isShowingFullStreamHistoryView = isShowingFullStreamHistoryView
         _isShowingSettingScreenView = isShowingSettingScreenView
     }
@@ -80,7 +80,10 @@ struct RecentStreamsScreen: View {
                                     Task {
                                         let success = await viewModel.connect(streamName: streamName, accountID: accountID)
                                         await MainActor.run {
-                                            isShowingStreamingView = success
+                                            playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                                                streamName: streamName,
+                                                accountID: accountID
+                                            )
                                             viewModel.saveStream(streamName: streamName, accountID: accountID)
                                         }
                                     }
@@ -122,9 +125,9 @@ struct RecentStreamsScreen_Previews: PreviewProvider {
         RecentStreamsScreen(
             viewModel: .init(),
             isShowingStreamInputView: .constant(false),
-            isShowingStreamingView: .constant(false),
             isShowingFullStreamHistoryView: .constant(false),
-            isShowingSettingScreenView: .constant(false)
+            isShowingSettingScreenView: .constant(false),
+            playedStreamDetail: .constant(nil)
         )
     }
 }

@@ -2,6 +2,7 @@
 //  SavedStreamsScreen.swift
 //
 
+import DolbyIORTSCore
 import DolbyIOUIKit
 import DolbyIORTSUIKit
 import SwiftUI
@@ -12,10 +13,10 @@ struct SavedStreamsScreen: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
-    @State private var isShowingStreamingView: Bool = false
     @State private var isShowingSettingScreenView: Bool = false
 
     @State private var isShowingClearStreamsAlert = false
+    @State private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @Environment(\.presentationMode) private var presentation
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -26,7 +27,7 @@ struct SavedStreamsScreen: View {
                 destination: LazyNavigationDestinationView(
                     StreamDetailInputScreen(
                         isShowingSettingScreenView: $isShowingSettingScreenView,
-                        isShowingStreamingView: $isShowingStreamingView
+                        playedStreamDetail: $playedStreamDetail
                     )
                 ),
                 isActive: $isShowingStreamInputView) {
@@ -78,10 +79,13 @@ struct SavedStreamsScreen: View {
                             let accountID = streamDetail.accountID
                             RecentStreamCell(streamName: streamName, accountID: accountID) {
                                 Task {
-                                    let success = await viewModel.connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
+                                    let success = await viewModel.connect(streamName: streamName, accountID: accountID)
                                     await MainActor.run {
-                                        isShowingStreamingView = success
-                                        viewModel.saveStream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
+                                        playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                                            streamName: streamName,
+                                            accountID: accountID
+                                        )
+                                        viewModel.saveStream(streamName: streamName, accountID: accountID)
                                     }
                                 }
                             }
@@ -113,7 +117,10 @@ struct SavedStreamsScreen: View {
                             Task {
                                 let success = await viewModel.connect(streamName: streamName, accountID: accountID)
                                 await MainActor.run {
-                                    isShowingStreamingView = success
+                                    playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                                        streamName: streamName,
+                                        accountID: accountID
+                                    )
                                     viewModel.saveStream(streamName: streamName, accountID: accountID)
                                 }
                             }
@@ -166,8 +173,10 @@ struct SavedStreamsScreen: View {
                 action: {}
             )
         })
-        .fullScreenCover(isPresented: $isShowingStreamingView) {
-            StreamingScreen(isShowingStreamView: $isShowingStreamingView)
+        .fullScreenCover(item: $playedStreamDetail) { streamDetail in
+            StreamingScreen(streamDetail: streamDetail) {
+                playedStreamDetail = nil
+            }
         }
     }
 }
