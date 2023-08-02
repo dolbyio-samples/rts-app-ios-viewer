@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F82" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="StreamDetailManagedObject" representedClassName="StreamDetailManagedObject" syncable="YES" codeGenerationType="class">
         <attribute name="accountID" attributeType="String"/>
-        <attribute name="disableAudio" attributeType="String"/>
-        <attribute name="forcePlayoutDelay" attributeType="String"/>
-        <attribute name="isDev" attributeType="String"/>
+        <attribute name="disableAudio" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="forcePlayoutDelay" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isDev" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="jitterBufferDelay" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lastUsedDate" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="saveLogs" optional="YES" attributeType="String"/>
+        <attribute name="saveLogs" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="streamName" attributeType="String"/>
     </entity>
 </model>

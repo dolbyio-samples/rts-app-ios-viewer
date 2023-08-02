@@ -50,11 +50,45 @@ final class RecentStreamsViewModel: ObservableObject {
         streamDataManager.clearAllStreams()
     }
 
-    func connect(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool, saveLogs: Bool) async -> Bool {
-        await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: dev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, documentDirectoryPath: saveLogs ? documentsURL() : nil)
+    // swiftlint:disable function_parameter_count
+    func connect(
+        streamName: String,
+        accountID: String,
+        dev: Bool,
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
+        jitterBufferDelay: Int,
+        saveLogs: Bool
+    ) async -> Bool {
+        await StreamOrchestrator.shared.connect(
+            streamName: streamName,
+            accountID: accountID,
+            dev: dev,
+            forcePlayoutDelay: forcePlayoutDelay,
+            disableAudio: disableAudio,
+            jitterBufferDelay: jitterBufferDelay,
+            documentDirectoryPath: saveLogs ? documentsURL() : nil
+        )
     }
 
-    func saveStream(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool, saveLogs: Bool) {
-        streamDataManager.saveStream(streamName, accountID: accountID, dev: dev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, saveLogs: saveLogs)
+    func saveStream(
+        streamName: String,
+        accountID: String,
+        dev: Bool,
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
+        jitterBufferDelay: Int,
+        saveLogs: Bool
+    ) {
+        streamDataManager.saveStream(
+            streamName,
+            accountID: accountID,
+            dev: dev,
+            forcePlayoutDelay: forcePlayoutDelay,
+            disableAudio: disableAudio,
+            jitterBufferDelay: jitterBufferDelay,
+            saveLogs: saveLogs
+        )
     }
+    // swiftlint:enable function_parameter_count
 }

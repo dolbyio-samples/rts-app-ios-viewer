@@ -22,9 +22,27 @@ final class StreamDetailInputViewModel: ObservableObject {
 //        return await streamOrchestrator.connect(streamName: streamName, accountID: accountID)
 //    }
 
-    func saveStream(streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool, saveLogs: Bool) {
-        streamDataManager.saveStream(streamName, accountID: accountID, dev: dev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, saveLogs: saveLogs)
+    // swiftlint:disable function_parameter_count
+    func saveStream(
+        streamName: String,
+        accountID: String,
+        dev: Bool,
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
+        jitterBufferDelay: Int,
+        saveLogs: Bool
+    ) {
+        streamDataManager.saveStream(
+            streamName,
+            accountID: accountID,
+            dev: dev,
+            forcePlayoutDelay: forcePlayoutDelay,
+            disableAudio: disableAudio,
+            jitterBufferDelay: jitterBufferDelay,
+            saveLogs: saveLogs
+        )
     }
+    // swiftlint:enable function_parameter_count
 
     func clearAllStreams() {
         streamDataManager.clearAllStreams()

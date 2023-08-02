@@ -17,10 +17,12 @@ struct StreamDetailInputScreen: View {
     enum InputFocusable: Hashable {
         case accountID
         case streamName
+        case jitterBufferDelay
     }
 
     @State private var streamName: String = ""
     @State private var accountID: String = ""
+    @State private var jitterBufferDelay: String = ""
     @State private var isShowingStreamingView = false
     @State private var showingAlert = false
 
@@ -38,6 +40,10 @@ struct StreamDetailInputScreen: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
     @ObservedObject private var themeManager = ThemeManager.shared
+
+    private var jitterBufferDelayInMs: Int {
+        Int(jitterBufferDelay) ?? 0
+    }
 
     var body: some View {
         ZStack {
@@ -115,6 +121,15 @@ struct StreamDetailInputScreen: View {
                                 accountID = String(accountID.prefix(64))
                             }
 
+                        DolbyIOUIKit.TextField(text: $jitterBufferDelay, placeholderText: "stream-detail-jitter-buffer-delay-placeholder-label")
+                            .focused($inputFocus, equals: .jitterBufferDelay)
+                            .keyboardType(.numberPad)
+                            .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                            .submitLabel(.done)
+                            .onReceive(jitterBufferDelay.publisher) { _ in
+                                jitterBufferDelay = String(Int(jitterBufferDelay) ?? 0)
+                            }
+
                         HStack {
                             VStack {
                                 Text("dev")
@@ -137,14 +152,29 @@ struct StreamDetailInputScreen: View {
                         Button(
                             action: {
                                 Task {
-                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: isDev, disableAudio: (isDev ? disableAudio : false), documentDirectoryPath: (debugLogs ? documentsURL() : nil))
+                                    let success = await StreamOrchestrator.shared.connect(
+                                        streamName: streamName,
+                                        accountID: accountID,
+                                        dev: isDev,
+                                        forcePlayoutDelay: isDev,
+                                        disableAudio: (isDev ? disableAudio : false),
+                                        jitterBufferDelay: jitterBufferDelayInMs,
+                                        documentDirectoryPath: (debugLogs ? documentsURL() : nil)
+                                    )
                                     await MainActor.run {
                                         showingAlert = !success
                                         isShowingStreamingView = success
                                         if success {
                                             // A delay is added before saving the stream.
                                             Task.delayed(byTimeInterval: 1.0) {
-                                                await viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: isDev, disableAudio: disableAudio, saveLogs: debugLogs)
+                                                await viewModel.saveStream(
+                                                    streamName: streamName,
+                                                    accountID: accountID,
+                                                    dev: isDev,
+                                                    forcePlayoutDelay: isDev,
+                                                    disableAudio: disableAudio,
+                                                    jitterBufferDelay: jitterBufferDelayInMs,
+                                                    saveLogs: debugLogs)
                                             }
                                         }
                                     }
@@ -230,9 +260,25 @@ struct StreamDetailInputScreen: View {
             let streamName = Constants.streamName
             let accountID = Constants.accountID
             // Dobly.io demo stream
-            RecentStreamCell(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false, saveLogs: false) {
+            RecentStreamCell(
+                streamName: streamName,
+                accountID: accountID,
+                dev: false,
+                forcePlayoutDelay: false,
+                disableAudio: false,
+                saveLogs: false,
+                jitterBufferDelay: 0
+            ) {
                 Task {
-                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID, dev: false, forcePlayoutDelay: false, disableAudio: false, documentDirectoryPath: nil)
+                    let success = await StreamOrchestrator.shared.connect(
+                        streamName: streamName,
+                        accountID: accountID,
+                        dev: false,
+                        forcePlayoutDelay: false,
+                        disableAudio: false,
+                        jitterBufferDelay: 0,
+                        documentDirectoryPath: nil
+                    )
                     await MainActor.run {
                         isShowingStreamingView = success
                     }

@@ -93,16 +93,41 @@ struct RecentStreamsScreen: View {
                             ForEach(viewModel.topStreamDetails) { streamDetail in
                                 let streamName = streamDetail.streamName
                                 let accountID = streamDetail.accountID
-                                let isDev = streamDetail.isDev == "true" ? true : false
-                                let forcePlayoutDelay = streamDetail.forcePlayoutDelay == "true" ? true : false
-                                let disableAudio = streamDetail.disableAudio == "true" ? true : false
-                                let saveLogs = streamDetail.saveLogs == "true" ? true : false
-                                RecentStreamCell(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, saveLogs: saveLogs) {
+                                let isDev = streamDetail.isDev
+                                let forcePlayoutDelay = streamDetail.forcePlayoutDelay
+                                let jitterBufferDelay = streamDetail.jitterBufferDelay
+                                let disableAudio = streamDetail.disableAudio
+                                let saveLogs = streamDetail.saveLogs
+                                RecentStreamCell(
+                                    streamName: streamName,
+                                    accountID: accountID,
+                                    dev: isDev,
+                                    forcePlayoutDelay: forcePlayoutDelay,
+                                    disableAudio: disableAudio,
+                                    saveLogs: saveLogs,
+                                    jitterBufferDelay: jitterBufferDelay
+                                ) {
                                     Task {
-                                        let success = await viewModel.connect(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, saveLogs: saveLogs)
+                                        let success = await viewModel.connect(
+                                            streamName: streamName,
+                                            accountID: accountID,
+                                            dev: isDev,
+                                            forcePlayoutDelay: forcePlayoutDelay,
+                                            disableAudio: disableAudio,
+                                            jitterBufferDelay: jitterBufferDelay,
+                                            saveLogs: saveLogs
+                                        )
                                         await MainActor.run {
                                             isShowingStreamingView = success
-                                            viewModel.saveStream(streamName: streamName, accountID: accountID, dev: isDev, forcePlayoutDelay: forcePlayoutDelay, disableAudio: disableAudio, saveLogs: saveLogs)
+                                            viewModel.saveStream(
+                                                streamName: streamName,
+                                                accountID: accountID,
+                                                dev: isDev,
+                                                forcePlayoutDelay: forcePlayoutDelay,
+                                                disableAudio: disableAudio,
+                                                jitterBufferDelay: jitterBufferDelay,
+                                                saveLogs: saveLogs
+                                            )
                                         }
                                     }
                                 }

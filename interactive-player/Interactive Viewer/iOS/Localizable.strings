@@ -7,6 +7,7 @@
 
 "stream-detail-streamname-placeholder-label" = "Stream name";
 "stream-detail-accountid-placeholder-label" = "Account ID";
+"stream-detail-jitter-buffer-delay-placeholder-label" = "Jitter Buffer Delay (in ms)";
 "stream-detail-input.title.label" = "Interactive player";
 "stream-detail-input.start-a-stream.label" = "Start a stream";
 "stream-detail-input.subtitle.label" = "Enter the stream name and publisher account ID to view a stream.";

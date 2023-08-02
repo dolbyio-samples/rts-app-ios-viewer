@@ -6,13 +6,22 @@ import Combine
 import CoreData
 import Foundation
 
+// swiftlint:disable function_parameter_count
 protocol StreamDataManagerProtocol: AnyObject {
     var streamDetailsSubject: CurrentValueSubject<[StreamDetail], Never> { get }
 
     func fetchStreamDetails()
     func updateLastUsedDate(for streamDetail: StreamDetail)
     func delete(streamDetail: StreamDetail)
-    func saveStream(_ streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool, saveLogs: Bool)
+    func saveStream(
+        _ streamName: String,
+        accountID: String,
+        dev: Bool,
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
+        jitterBufferDelay: Int,
+        saveLogs: Bool
+    )
     func clearAllStreams()
 }
 
@@ -119,7 +128,15 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         }
     }
 
-    func saveStream(_ streamName: String, accountID: String, dev: Bool, forcePlayoutDelay: Bool, disableAudio: Bool, saveLogs: Bool) {
+    func saveStream(
+        _ streamName: String,
+        accountID: String,
+        dev: Bool,
+        forcePlayoutDelay: Bool,
+        disableAudio: Bool,
+        jitterBufferDelay: Int,
+        saveLogs: Bool
+    ) {
         let request: NSFetchRequest<StreamDetailManagedObject> = StreamDetailManagedObject.fetchRequest()
         request.predicate = NSPredicate(format: "streamName == %@ && accountID == %@", streamName, accountID)
 
@@ -134,10 +151,11 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
                 streamDetail.accountID = accountID
                 streamDetail.streamName = streamName
                 streamDetail.lastUsedDate = dateProvider.now
-                streamDetail.disableAudio = disableAudio ? "true" : "false"
-                streamDetail.isDev = dev ? "true" : "false"
-                streamDetail.forcePlayoutDelay = forcePlayoutDelay ? "true" : "false"
-                streamDetail.saveLogs = saveLogs ? "true" : "false"
+                streamDetail.disableAudio = disableAudio
+                streamDetail.isDev = dev
+                streamDetail.forcePlayoutDelay = forcePlayoutDelay
+                streamDetail.jitterBufferDelay = Int32(jitterBufferDelay)
+                streamDetail.saveLogs = saveLogs
 
                 // Delete streams that are older and exceeding the maximum allowed count
                 let request: NSFetchRequest<StreamDetailManagedObject> = Self.recentStreamsFetchRequest
@@ -174,3 +192,4 @@ extension StreamDataManager: NSFetchedResultsControllerDelegate {
         }
     }
 }
+// swiftlint:enable function_parameter_count

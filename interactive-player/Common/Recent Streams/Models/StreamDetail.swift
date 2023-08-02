@@ -8,27 +8,29 @@ struct StreamDetail: Identifiable, Equatable {
     let id: UUID
     let accountID: String
     let streamName: String
-    let isDev: String
-    let forcePlayoutDelay: String
-    let disableAudio: String
-    let saveLogs: String
+    let isDev: Bool
+    let forcePlayoutDelay: Bool
+    let disableAudio: Bool
+    let saveLogs: Bool
+    let jitterBufferDelay: Int
     let lastUsedDate: Date
 }
 
-// swiftlint:disable force_cast
  extension StreamDetail {
     init?(managedObject: StreamDetailManagedObject) {
         guard
             let accountID = managedObject.accountID,
             let streamName = managedObject.streamName,
-            let isDev = managedObject.isDev,
-            let forcePlayoutDelay = managedObject.forcePlayoutDelay,
-            let disableAudio = managedObject.disableAudio,
-            let saveLogs = managedObject.saveLogs,
             let lastUsedDate = managedObject.lastUsedDate
         else {
             return nil
         }
+        let isDev = managedObject.isDev
+        let forcePlayoutDelay = managedObject.forcePlayoutDelay
+        let disableAudio = managedObject.disableAudio
+        let saveLogs = managedObject.saveLogs
+        let jitterBufferDelay = managedObject.jitterBufferDelay
+
         self.id = UUID()
         self.accountID = accountID
         self.streamName = streamName
@@ -36,7 +38,7 @@ struct StreamDetail: Identifiable, Equatable {
         self.isDev = isDev
         self.forcePlayoutDelay = forcePlayoutDelay
         self.saveLogs = saveLogs
+        self.jitterBufferDelay = Int(jitterBufferDelay)
         self.disableAudio = disableAudio
     }
-     // swiftlint:enable force_cast
  }
