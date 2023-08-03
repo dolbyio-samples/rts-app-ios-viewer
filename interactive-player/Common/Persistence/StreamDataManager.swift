@@ -146,6 +146,11 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
             if let stream = fetchedResults.first {
                 streamDetail = stream
                 streamDetail.lastUsedDate = dateProvider.now
+                streamDetail.disableAudio = disableAudio
+                streamDetail.isDev = dev
+                streamDetail.forcePlayoutDelay = forcePlayoutDelay
+                streamDetail.jitterBufferDelay = Int32(jitterBufferDelay)
+                streamDetail.saveLogs = saveLogs
             } else {
                 streamDetail = StreamDetailManagedObject(context: coreDataManager.context)
                 streamDetail.accountID = accountID
