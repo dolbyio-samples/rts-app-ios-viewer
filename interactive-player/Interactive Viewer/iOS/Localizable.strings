@@ -78,7 +78,7 @@
 "stream.stats.decode-time.label" = "Decode time";
 "stream.stats.packets-received.label" = "Packets rec.";
 "stream.stats.frames-decoded.label" = "Frames dec.";
-"stream.stats.frames-dropped.label" = "Packets dropped";
+"stream.stats.frames-dropped.label" = "Frames dropped";
 "stream.stats.jitter-buffer-est-count.label" = "Jitter buffer est count";
 "stream.stats.jitter-buffer-delay.label" = "Jitter buffer delay";
 "stream.stats.jitter-buffer-target-delay.label" = "Jitter buffer target delay";
