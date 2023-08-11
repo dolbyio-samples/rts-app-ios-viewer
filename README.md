@@ -27,7 +27,7 @@ git clone git@github.com:dolbyio-samples/rts-app-ios-viewer.git
 
 ## License
 
-The Dolby.io Realtime Streaming Monitor sample and its repository are licensed under the MIT License.
+The Dolby.io Realtime Streaming Monitor sample and its repository are licensed under the [MIT License](https://github.com/dolbyio-samples/rts-app-ios-viewer/blob/main/LICENSE).
 
 ## More resources
 
