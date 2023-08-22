@@ -22,9 +22,9 @@ struct StreamDetailInputScreen: View {
 
     @State private var streamName: String = ""
     @State private var accountID: String = ""
-    @State private var jitterBufferDelay: String = ""
     @State private var isShowingStreamingView = false
     @State private var showingAlert = false
+    @State private var jitterBufferDelayInMs: Float = 0
 
     @State private var isShowingSettingScreenView: Bool = false
     @State var isShowLabelOn: Bool = false
@@ -40,10 +40,6 @@ struct StreamDetailInputScreen: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
     @ObservedObject private var themeManager = ThemeManager.shared
-
-    private var jitterBufferDelayInMs: Int {
-        Int(jitterBufferDelay) ?? 0
-    }
 
     var body: some View {
         ZStack {
@@ -121,14 +117,23 @@ struct StreamDetailInputScreen: View {
                                 accountID = String(accountID.prefix(64))
                             }
 
-                        DolbyIOUIKit.TextField(text: $jitterBufferDelay, placeholderText: "stream-detail-jitter-buffer-delay-placeholder-label")
-                            .focused($inputFocus, equals: .jitterBufferDelay)
-                            .keyboardType(.numberPad)
-                            .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
-                            .submitLabel(.done)
-                            .onReceive(jitterBufferDelay.publisher) { _ in
-                                jitterBufferDelay = String(Int(jitterBufferDelay) ?? 0)
+                        Text(
+                            "\(String(localized: "stream-detail-jitter-buffer-delay-placeholder-label")) - \(Int(jitterBufferDelayInMs))ms",
+                            style: .labelMedium,
+                            font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
+                        )
+                        Slider(
+                            value: $jitterBufferDelayInMs,
+                            in: (0...2000),
+                            step: 50,
+                            label: {},
+                            minimumValueLabel: {
+                                Text("0")
+                            },
+                            maximumValueLabel: {
+                                Text("2sec")
                             }
+                        )
 
                         HStack {
                             VStack {
@@ -158,7 +163,7 @@ struct StreamDetailInputScreen: View {
                                         dev: isDev,
                                         forcePlayoutDelay: isDev,
                                         disableAudio: (isDev ? disableAudio : false),
-                                        jitterBufferDelay: jitterBufferDelayInMs,
+                                        jitterBufferDelay: Int(jitterBufferDelayInMs),
                                         documentDirectoryPath: (debugLogs ? documentsURL() : nil)
                                     )
                                     await MainActor.run {
@@ -173,7 +178,7 @@ struct StreamDetailInputScreen: View {
                                                     dev: isDev,
                                                     forcePlayoutDelay: isDev,
                                                     disableAudio: disableAudio,
-                                                    jitterBufferDelay: jitterBufferDelayInMs,
+                                                    jitterBufferDelay: Int(jitterBufferDelayInMs),
                                                     saveLogs: debugLogs)
                                             }
                                         }
