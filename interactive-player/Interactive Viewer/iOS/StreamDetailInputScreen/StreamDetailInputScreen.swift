@@ -140,25 +140,14 @@ struct StreamDetailInputScreen: View {
                              font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
                         Slider(
                             value: Binding(
-                                get: {
-                                    switch primaryVideoQuality {
-                                    case .auto: return 0
-                                    case .high: return 1
-                                    case .medium: return 2
-                                    case .low: return 3
-                                    }
-                                },
-                                set: {
-                                    switch Int($0) {
-                                    case 0: primaryVideoQuality = .auto
-                                    case 1: primaryVideoQuality = .high
-                                    case 2: primaryVideoQuality = .medium
-                                    case 3: primaryVideoQuality = .low
-                                    default: primaryVideoQuality = .auto
-                                    }
-                                }),
+                                get: { Double(primaryVideoQuality.value) },
+                                set: { primaryVideoQuality = VideoQuality.create(from: Int($0)) }
+                            ),
                             in: 0...3,
-                            step: 1)
+                            step: 1,
+                            label: {},
+                            minimumValueLabel: { Text(VideoQuality.auto.description) },
+                            maximumValueLabel: { Text(VideoQuality.low.description) })
 
                         HStack {
                             VStack {
@@ -314,6 +303,27 @@ struct StreamDetailInputScreen: View {
                     }
                 }
             }
+        }
+    }
+}
+
+extension VideoQuality {
+    var value: Int {
+        switch self {
+        case .auto: return 0
+        case .high: return 1
+        case .medium: return 2
+        case .low: return 3
+        }
+    }
+
+    static func create(from value: Int) -> VideoQuality {
+        switch value {
+        case 0: return .auto
+        case 1: return.high
+        case 2: return .medium
+        case 3: return .low
+        default: return.auto
         }
     }
 }
