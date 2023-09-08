@@ -17,7 +17,6 @@ struct StreamDetailInputScreen: View {
     enum InputFocusable: Hashable {
         case accountID
         case streamName
-        case jitterBufferDelay
     }
 
     @State private var streamName: String = ""
@@ -25,6 +24,7 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingStreamingView = false
     @State private var showingAlert = false
     @State private var jitterBufferDelayInMs: Float = 0
+    @State private var primaryVideoQuality: VideoQuality = .auto
 
     @State private var isShowingSettingScreenView: Bool = false
     @State var isShowLabelOn: Bool = false
@@ -45,7 +45,7 @@ struct StreamDetailInputScreen: View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    StreamingScreen(isShowingStreamView: $isShowingStreamingView)
+                    StreamingScreen(isShowingStreamView: $isShowingStreamingView, primaryVideoQuality: primaryVideoQuality)
                 ),
                 isActive: $isShowingStreamingView
             ) {
@@ -134,6 +134,31 @@ struct StreamDetailInputScreen: View {
                                 Text("2sec")
                             }
                         )
+
+                        Text("Primary video quality: \(primaryVideoQuality.description)",
+                             style: .labelMedium,
+                             font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
+                        Slider(
+                            value: Binding(
+                                get: {
+                                    switch primaryVideoQuality {
+                                    case .auto: return 0
+                                    case .high: return 1
+                                    case .medium: return 2
+                                    case .low: return 3
+                                    }
+                                },
+                                set: {
+                                    switch Int($0) {
+                                    case 0: primaryVideoQuality = .auto
+                                    case 1: primaryVideoQuality = .high
+                                    case 2: primaryVideoQuality = .medium
+                                    case 3: primaryVideoQuality = .low
+                                    default: primaryVideoQuality = .auto
+                                    }
+                                }),
+                            in: 0...3,
+                            step: 1)
 
                         HStack {
                             VStack {
