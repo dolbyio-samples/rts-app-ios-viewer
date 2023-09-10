@@ -17,7 +17,6 @@ struct StreamDetailInputScreen: View {
     enum InputFocusable: Hashable {
         case accountID
         case streamName
-        case jitterBufferDelay
     }
 
     @State private var streamName: String = ""
@@ -25,6 +24,7 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingStreamingView = false
     @State private var showingAlert = false
     @State private var jitterBufferDelayInMs: Float = 0
+    @State private var primaryVideoQuality: VideoQuality = .auto
 
     @State private var isShowingSettingScreenView: Bool = false
     @State var isShowLabelOn: Bool = false
@@ -45,7 +45,7 @@ struct StreamDetailInputScreen: View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    StreamingScreen(isShowingStreamView: $isShowingStreamingView)
+                    StreamingScreen(isShowingStreamView: $isShowingStreamingView, primaryVideoQuality: primaryVideoQuality)
                 ),
                 isActive: $isShowingStreamingView
             ) {
@@ -134,6 +134,20 @@ struct StreamDetailInputScreen: View {
                                 Text("2sec")
                             }
                         )
+
+                        Text("Primary video quality: \(primaryVideoQuality.description)",
+                             style: .labelMedium,
+                             font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
+                        Slider(
+                            value: Binding(
+                                get: { Double(primaryVideoQuality.value) },
+                                set: { primaryVideoQuality = VideoQuality.create(from: Int($0)) }
+                            ),
+                            in: 0...3,
+                            step: 1,
+                            label: {},
+                            minimumValueLabel: { Text(VideoQuality.auto.description) },
+                            maximumValueLabel: { Text(VideoQuality.low.description) })
 
                         HStack {
                             VStack {
@@ -289,6 +303,27 @@ struct StreamDetailInputScreen: View {
                     }
                 }
             }
+        }
+    }
+}
+
+extension VideoQuality {
+    var value: Int {
+        switch self {
+        case .auto: return 0
+        case .high: return 1
+        case .medium: return 2
+        case .low: return 3
+        }
+    }
+
+    static func create(from value: Int) -> VideoQuality {
+        switch value {
+        case 0: return .auto
+        case 1: return.high
+        case 2: return .medium
+        case 3: return .low
+        default: return.auto
         }
     }
 }
