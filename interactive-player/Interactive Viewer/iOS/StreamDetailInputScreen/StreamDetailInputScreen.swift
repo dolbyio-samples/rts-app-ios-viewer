@@ -29,7 +29,8 @@ struct StreamDetailInputScreen: View {
     @State private var isShowingSettingScreenView: Bool = false
     @State var isShowLabelOn: Bool = false
 
-    @State var isDev: Bool = true
+    @State var isDev: Bool = false
+    @State var noPlayoutDelay: Bool = false
     @State var disableAudio: Bool = false
     @State var debugLogs: Bool = false
 
@@ -156,15 +157,15 @@ struct StreamDetailInputScreen: View {
                             }
                             VStack {
                                 Text("noPlayoutDelay")
-                                Toggle("", isOn: $isDev).disabled(true).labelsHidden()
+                                Toggle("", isOn: $noPlayoutDelay).labelsHidden()
                             }
                             VStack {
                                 Text("disableAudio")
-                                Toggle("", isOn: $disableAudio).disabled(!isDev).labelsHidden()
+                                Toggle("", isOn: $disableAudio).labelsHidden()
                             }
                             VStack {
                                 Text("RTCLogs")
-                                Toggle("", isOn: $debugLogs).disabled(!isDev).labelsHidden()
+                                Toggle("", isOn: $debugLogs).labelsHidden()
                             }
                         }
 
@@ -175,8 +176,8 @@ struct StreamDetailInputScreen: View {
                                         streamName: streamName,
                                         accountID: accountID,
                                         dev: isDev,
-                                        forcePlayoutDelay: isDev,
-                                        disableAudio: (isDev ? disableAudio : false),
+                                        forcePlayoutDelay: noPlayoutDelay,
+                                        disableAudio: disableAudio,
                                         jitterBufferDelay: Int(jitterBufferDelayInMs),
                                         documentDirectoryPath: (debugLogs ? documentsURL() : nil)
                                     )
@@ -190,7 +191,7 @@ struct StreamDetailInputScreen: View {
                                                     streamName: streamName,
                                                     accountID: accountID,
                                                     dev: isDev,
-                                                    forcePlayoutDelay: isDev,
+                                                    forcePlayoutDelay: noPlayoutDelay,
                                                     disableAudio: disableAudio,
                                                     jitterBufferDelay: Int(jitterBufferDelayInMs),
                                                     saveLogs: debugLogs)
