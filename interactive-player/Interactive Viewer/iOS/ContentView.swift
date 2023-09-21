@@ -36,5 +36,8 @@ struct ContentView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(AppState())
+        .onAppear() {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
     }
 }
