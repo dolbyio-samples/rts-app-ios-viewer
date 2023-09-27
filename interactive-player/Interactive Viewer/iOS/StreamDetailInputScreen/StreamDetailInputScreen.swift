@@ -116,7 +116,10 @@ struct StreamDetailInputScreen: View {
                                 Task {
                                     let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
                                     await MainActor.run {
-                                        showingAlert = !success
+                                        guard success else {
+                                            showingAlert = true
+                                            return
+                                        }
                                         playedStreamDetail = DolbyIORTSCore.StreamDetail(
                                             streamName: streamName,
                                             accountID: accountID
@@ -211,6 +214,10 @@ struct StreamDetailInputScreen: View {
             RecentStreamCell(streamName: streamName, accountID: accountID) {
                 Task {
                     let success = await viewModel.connect(streamName: streamName, accountID: accountID)
+                    guard success else {
+                        showingAlert = true
+                        return
+                    }
                     await MainActor.run {
                         playedStreamDetail = DolbyIORTSCore.StreamDetail(
                             streamName: streamName,
