@@ -139,8 +139,8 @@ struct StreamDetailInputScreen: View {
                         Spacer()
                     }
                 }
+                .padding([.leading, .trailing], Layout.spacing3x)
             }
-            .padding([.leading, .trailing], Layout.spacing3x)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
