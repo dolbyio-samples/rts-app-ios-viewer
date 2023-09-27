@@ -16,7 +16,7 @@ extension View {
     }
 }
 
-struct NavigationHeaderView: View, ShapeStyle {
+struct NavigationHeaderView: View {
 
     var body: some View {
         ZStack {
