@@ -12,6 +12,7 @@ func documentsURL() -> String {
     return urls[0].relativePath
 }
 
+// swiftlint:disable type_body_length
 struct StreamDetailInputScreen: View {
 
     enum InputFocusable: Hashable {
@@ -334,6 +335,7 @@ extension VideoQuality {
         }
     }
 }
+// swiftlint:enable type_body_length
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
