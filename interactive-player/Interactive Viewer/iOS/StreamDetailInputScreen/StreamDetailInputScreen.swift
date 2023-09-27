@@ -103,6 +103,7 @@ struct StreamDetailInputScreen: View {
                             .submitLabel(.next)
                             .onReceive(streamName.publisher) { _ in
                                 streamName = String(streamName.prefix(64))
+                                    .trimmingCharacters(in: .whitespacesAndNewlines)
                             }
                             .onAppear {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
@@ -116,6 +117,7 @@ struct StreamDetailInputScreen: View {
                             .submitLabel(.done)
                             .onReceive(accountID.publisher) { _ in
                                 accountID = String(accountID.prefix(64))
+                                    .trimmingCharacters(in: .whitespacesAndNewlines)
                             }
 
                         Text(
@@ -171,6 +173,10 @@ struct StreamDetailInputScreen: View {
 
                         Button(
                             action: {
+                                guard streamName.count > 0, accountID.count > 0 else {
+                                    showingAlert = true
+                                    return
+                                }
                                 Task {
                                     let success = await StreamOrchestrator.shared.connect(
                                         streamName: streamName,
