@@ -90,6 +90,7 @@ struct StreamDetailInputScreen: View {
                             .submitLabel(.next)
                             .onReceive(streamName.publisher) { _ in
                                 streamName = String(streamName.prefix(64))
+                                    .trimmingCharacters(in: .whitespacesAndNewlines)
                             }
                             .onAppear {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
@@ -103,14 +104,22 @@ struct StreamDetailInputScreen: View {
                             .submitLabel(.done)
                             .onReceive(accountID.publisher) { _ in
                                 accountID = String(accountID.prefix(64))
+                                    .trimmingCharacters(in: .whitespacesAndNewlines)
                             }
 
                         Button(
                             action: {
+                                guard streamName.count > 0, accountID.count > 0 else {
+                                    showingAlert = true
+                                    return
+                                }
                                 Task {
                                     let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
                                     await MainActor.run {
-                                        showingAlert = !success
+                                        guard success else {
+                                            showingAlert = true
+                                            return
+                                        }
                                         playedStreamDetail = DolbyIORTSCore.StreamDetail(
                                             streamName: streamName,
                                             accountID: accountID
@@ -205,6 +214,10 @@ struct StreamDetailInputScreen: View {
             RecentStreamCell(streamName: streamName, accountID: accountID) {
                 Task {
                     let success = await viewModel.connect(streamName: streamName, accountID: accountID)
+                    guard success else {
+                        showingAlert = true
+                        return
+                    }
                     await MainActor.run {
                         playedStreamDetail = DolbyIORTSCore.StreamDetail(
                             streamName: streamName,
