@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/millicast/millicast-sdk-swift-package",
       "state" : {
-        "revision" : "e0bff5416020e523689e3a0297b82537036a3b74",
-        "version" : "1.5.1"
+        "revision" : "670aa8de308dfa52145d59e14647390ca600cbd6",
+        "version" : "1.5.2"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/DolbyIO/rts-uikit-ios",
       "state" : {
         "branch" : "main",
-        "revision" : "833391f9bb9f3ebf4b57681e317102fabe3f33b3"
+        "revision" : "36b3e97c17cb7ce755fe9da6a765179403c0e6aa"
       }
     }
   ],
