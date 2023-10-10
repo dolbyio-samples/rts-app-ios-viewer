@@ -91,11 +91,6 @@ struct StreamDetailInputScreen: View {
                             .onReceive(streamName.publisher) { _ in
                                 streamName = String(streamName.prefix(64))
                             }
-                            .onAppear {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                                    self.inputFocus = .streamName
-                                }
-                            }
 
                         DolbyIOUIKit.TextField(text: $accountID, placeholderText: "stream-detail-accountid-placeholder-label")
                             .focused($inputFocus, equals: .accountID)
@@ -184,6 +179,12 @@ struct StreamDetailInputScreen: View {
             }
         }
         .onTapGesture {
+            inputFocus = nil
+        }
+        .onAppear {
+            inputFocus = .streamName
+        }
+        .onDisappear {
             inputFocus = nil
         }
     }
