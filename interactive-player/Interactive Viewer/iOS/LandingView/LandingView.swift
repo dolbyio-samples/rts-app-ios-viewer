@@ -46,20 +46,20 @@ struct LandingView: View {
                 }
                 .hidden()
 
-            RecentStreamsScreen(
-                viewModel: recentStreamsViewModel,
-                isShowingStreamInputView: $isShowingStreamInputView,
-                isShowingFullStreamHistoryView: $isShowingFullStreamHistoryView,
-                isShowingSettingScreenView: $isShowingSettingScreenView,
-                playedStreamDetail: $playedStreamDetail
-            )
-            .opacity(viewModel.hasSavedStreams ? 1 : 0)
-
-            StreamDetailInputScreen(
-                isShowingSettingScreenView: $isShowingSettingScreenView,
-                playedStreamDetail: $playedStreamDetail
-            )
-            .opacity(viewModel.hasSavedStreams ? 0 : 1)
+            if viewModel.hasSavedStreams {
+                RecentStreamsScreen(
+                    viewModel: recentStreamsViewModel,
+                    isShowingStreamInputView: $isShowingStreamInputView,
+                    isShowingFullStreamHistoryView: $isShowingFullStreamHistoryView,
+                    isShowingSettingScreenView: $isShowingSettingScreenView,
+                    playedStreamDetail: $playedStreamDetail
+                )
+            } else {
+                StreamDetailInputScreen(
+                    isShowingSettingScreenView: $isShowingSettingScreenView,
+                    playedStreamDetail: $playedStreamDetail
+                )
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
