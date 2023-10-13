@@ -13,7 +13,7 @@ struct RecentStreamsScreen: View {
 
     @Binding private var isShowingStreamInputView: Bool
     @Binding private var isShowingFullStreamHistoryView: Bool
-    @Binding private var isShowingSettingScreenView: Bool
+    @Binding private var isShowingSettingsView: Bool
     @Binding private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -22,14 +22,14 @@ struct RecentStreamsScreen: View {
         viewModel: RecentStreamsViewModel,
         isShowingStreamInputView: Binding<Bool>,
         isShowingFullStreamHistoryView: Binding<Bool>,
-        isShowingSettingScreenView: Binding<Bool>,
+        isShowingSettingsView: Binding<Bool>,
         playedStreamDetail: Binding<DolbyIORTSCore.StreamDetail?>
     ) {
         self.viewModel = viewModel
         _isShowingStreamInputView = isShowingStreamInputView
         _playedStreamDetail = playedStreamDetail
         _isShowingFullStreamHistoryView = isShowingFullStreamHistoryView
-        _isShowingSettingScreenView = isShowingSettingScreenView
+        _isShowingSettingsView = isShowingSettingsView
     }
 
     var body: some View {
@@ -74,17 +74,16 @@ struct RecentStreamsScreen: View {
 
                         VStack(spacing: Layout.spacing1x) {
                             ForEach(viewModel.topStreamDetails) { streamDetail in
-                                let streamName = streamDetail.streamName
-                                let accountID = streamDetail.accountID
-                                RecentStreamCell(streamName: streamName, accountID: accountID) {
+                                RecentStreamCell(streamDetail: streamDetail) {
                                     Task {
-                                        let success = await viewModel.connect(streamName: streamName, accountID: accountID)
-                                        await MainActor.run {
-                                            playedStreamDetail = DolbyIORTSCore.StreamDetail(
-                                                streamName: streamName,
-                                                accountID: accountID
-                                            )
-                                            viewModel.saveStream(streamName: streamName, accountID: accountID)
+                                        let success = await viewModel.connect(streamDetail: streamDetail)
+                                        if success {
+                                            await MainActor.run {
+                                                playedStreamDetail = StreamDetail(
+                                                    streamName: streamDetail.streamName,
+                                                    accountID: streamDetail.accountID
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -126,7 +125,7 @@ struct RecentStreamsScreen_Previews: PreviewProvider {
             viewModel: .init(),
             isShowingStreamInputView: .constant(false),
             isShowingFullStreamHistoryView: .constant(false),
-            isShowingSettingScreenView: .constant(false),
+            isShowingSettingsView: .constant(false),
             playedStreamDetail: .constant(nil)
         )
     }

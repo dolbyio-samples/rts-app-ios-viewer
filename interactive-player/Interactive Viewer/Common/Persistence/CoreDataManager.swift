@@ -5,13 +5,13 @@
 import CoreData
 import Foundation
 
-struct CoreDataManager {
+final class CoreDataManager {
 
     let container: NSPersistentContainer
     var context: NSManagedObjectContext { container.viewContext }
 
     private static var managedObjectModel: NSManagedObjectModel = {
-        guard let url = Bundle.main.url(forResource: "RTSViewer", withExtension: "momd") else {
+        guard let url = Bundle(for: CoreDataManager.self).url(forResource: "RTSViewer", withExtension: "momd") else {
             fatalError("Failed to locate momd file")
         }
         guard let model = NSManagedObjectModel(contentsOf: url) else {

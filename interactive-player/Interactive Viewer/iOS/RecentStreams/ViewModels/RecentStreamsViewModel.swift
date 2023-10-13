@@ -12,26 +12,33 @@ final class RecentStreamsViewModel: ObservableObject {
     private let streamDataManager: StreamDataManagerProtocol
     private var subscriptions: [AnyCancellable] = []
     private let settingsManager: SettingsManager
+    private let dateProvider: DateProvider
 
-    @Published private(set) var streamDetails: [StreamDetail] = [] {
+    @MainActor @Published private(set) var streamDetails: [SavedStreamDetail] = [] {
         didSet {
             lastPlayedStream = streamDetails.first
             topStreamDetails = Array(streamDetails.prefix(3))
         }
     }
-    @Published private(set) var topStreamDetails: [StreamDetail] = []
-    @Published private(set) var lastPlayedStream: StreamDetail?
+    @MainActor @Published private(set) var topStreamDetails: [SavedStreamDetail] = []
+    @MainActor @Published private(set) var lastPlayedStream: SavedStreamDetail?
 
     init(
         streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
-        settingsManager: SettingsManager = .shared
+        settingsManager: SettingsManager = .shared,
+        dateProvider: DateProvider = DefaultDateProvider()
     ) {
         self.streamDataManager = streamDataManager
         self.settingsManager = settingsManager
+        self.dateProvider = dateProvider
         streamDataManager.streamDetailsSubject
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] streamDetails in
-                self?.streamDetails = streamDetails
+                guard let self = self else { return }
+                Task {
+                    await MainActor.run {
+                        self.streamDetails = streamDetails
+                    }
+                }
             }
         .store(in: &subscriptions)
     }
@@ -41,25 +48,64 @@ final class RecentStreamsViewModel: ObservableObject {
     }
 
     func delete(at offsets: IndexSet) {
-        offsets.forEach {
-            let streamDetail = streamDetails[$0]
-            settingsManager.removeSettings(for: .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID))
-            streamDataManager.delete(streamDetail: streamDetail)
+        Task { [weak self] in
+            guard let self = self else { return }
+            let currentStreamDetails = await self.streamDetails
+
+            offsets.forEach {
+                let streamDetail = currentStreamDetails[$0]
+                self.settingsManager.removeSettings(
+                    for: .stream(
+                        streamName: streamDetail.streamName,
+                        accountID: streamDetail.accountID
+                    )
+                )
+                self.streamDataManager.delete(streamDetail: streamDetail)
+            }
         }
     }
 
     func clearAllStreams() {
-        streamDetails.forEach { streamDetail in
-            settingsManager.removeSettings(for: .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID))
-            streamDataManager.delete(streamDetail: streamDetail)
+        Task { [weak self] in
+            guard let self = self else { return }
+            let streamDetailsToDelete = await self.streamDetails
+            streamDetailsToDelete.forEach { streamDetail in
+                self.settingsManager.removeSettings(
+                    for: .stream(
+                        streamName: streamDetail.streamName,
+                        accountID: streamDetail.accountID
+                    )
+                )
+                self.streamDataManager.delete(streamDetail: streamDetail)
+            }
         }
     }
 
-    func connect(streamName: String, accountID: String) async -> Bool {
-        await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
-    }
+    func connect(streamDetail: SavedStreamDetail) async -> Bool {
+        let currentDate = dateProvider.now
+        let rtcLogPath = URL.rtcLogPath(for: currentDate)
+        let sdkLogPath = URL.sdkLogPath(for: currentDate)
 
-    func saveStream(streamName: String, accountID: String) {
-        streamDataManager.saveStream(streamName, accountID: accountID)
+        let configuration = SubscriptionConfiguration(
+            useDevelopmentServer: streamDetail.useDevelopmentServer,
+            videoJitterMinimumDelayInMs: streamDetail.videoJitterMinimumDelayInMs,
+            noPlayoutDelay: streamDetail.noPlayoutDelay,
+            disableAudio: streamDetail.disableAudio,
+            rtcEventLogPath: rtcLogPath?.absoluteString,
+            sdkLogPath: sdkLogPath?.absoluteString
+        )
+
+        let success = await StreamOrchestrator.shared.connect(
+            streamName: streamDetail.streamName,
+            accountID: streamDetail.accountID,
+            configuration: configuration
+        )
+
+        if success {
+            streamDataManager.updateLastUsedDate(for: streamDetail)
+        } else {
+            // No-op
+        }
+        return success
     }
 }

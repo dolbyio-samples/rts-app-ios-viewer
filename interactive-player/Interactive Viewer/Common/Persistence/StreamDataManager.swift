@@ -7,12 +7,12 @@ import CoreData
 import Foundation
 
 protocol StreamDataManagerProtocol: AnyObject {
-    var streamDetailsSubject: CurrentValueSubject<[StreamDetail], Never> { get }
+    var streamDetailsSubject: CurrentValueSubject<[SavedStreamDetail], Never> { get }
 
     func fetchStreamDetails()
-    func updateLastUsedDate(for streamDetail: StreamDetail)
-    func delete(streamDetail: StreamDetail)
-    func saveStream(_ streamName: String, accountID: String)
+    func updateLastUsedDate(for streamDetail: SavedStreamDetail)
+    func delete(streamDetail: SavedStreamDetail)
+    func saveStream(_ streamDetail: SavedStreamDetail)
     func clearAllStreams()
 }
 
@@ -28,7 +28,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
 
     static let shared = StreamDataManager(type: .default)
 
-    private(set) var streamDetailsSubject: CurrentValueSubject<[StreamDetail], Never> = .init([])
+    private(set) var streamDetailsSubject: CurrentValueSubject<[SavedStreamDetail], Never> = .init([])
 
     private let dateProvider: DateProvider
     private let coreDataManager: CoreDataManager
@@ -69,13 +69,13 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
 
     func fetchStreamDetails() {
         try? streamDetailFetchResultsController.performFetch()
-        if let newStreamDetails = streamDetailFetchResultsController.fetchedObjects {
-            let streamDetails = newStreamDetails.compactMap { StreamDetail(managedObject: $0) }
+        if let newStreamDetails = streamDetailFetchResultsController.fetchedObjects, !newStreamDetails.isEmpty {
+            let streamDetails = newStreamDetails.compactMap { SavedStreamDetail(managedObject: $0) }
             streamDetailsSubject.send(streamDetails)
         }
     }
 
-    func delete(streamDetail: StreamDetail) {
+    func delete(streamDetail: SavedStreamDetail) {
         let request: NSFetchRequest<StreamDetailManagedObject> = StreamDetailManagedObject.fetchRequest()
         request.predicate = NSPredicate(
             format: "streamName == %@ && accountID == %@",
@@ -96,7 +96,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         }
     }
 
-    func updateLastUsedDate(for streamDetail: StreamDetail) {
+    func updateLastUsedDate(for streamDetail: SavedStreamDetail) {
         let request: NSFetchRequest<StreamDetailManagedObject> = StreamDetailManagedObject.fetchRequest()
         request.predicate = NSPredicate(
             format: "streamName == %@ && accountID == %@",
@@ -119,33 +119,36 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         }
     }
 
-    func saveStream(_ streamName: String, accountID: String) {
+    func saveStream(_ streamDetail: SavedStreamDetail) {
         let request: NSFetchRequest<StreamDetailManagedObject> = StreamDetailManagedObject.fetchRequest()
-        request.predicate = NSPredicate(format: "streamName == %@ && accountID == %@", streamName, accountID)
+        request.predicate = NSPredicate(format: "streamName == %@ && accountID == %@", streamDetail.streamName, streamDetail.accountID)
 
         do {
             let fetchedResults = try coreDataManager.context.fetch(request)
-            let streamDetail: StreamDetailManagedObject
             if let stream = fetchedResults.first {
-                streamDetail = stream
-                streamDetail.lastUsedDate = dateProvider.now
-            } else {
-                streamDetail = StreamDetailManagedObject(context: coreDataManager.context)
-                streamDetail.accountID = accountID
-                streamDetail.streamName = streamName
-                streamDetail.lastUsedDate = dateProvider.now
+                coreDataManager.context.delete(stream)
+            }
 
-                // Delete streams that are older and exceeding the maximum allowed count
-                let request: NSFetchRequest<StreamDetailManagedObject> = Self.recentStreamsFetchRequest
-                let updatedResults = try coreDataManager.context.fetch(request)
-                if updatedResults.count > Constants.maximumAllowedStreams {
-                    let streamsToDelete = updatedResults[(Constants.maximumAllowedStreams)..<updatedResults.count]
-                    streamsToDelete.forEach(coreDataManager.context.delete)
-                }
+            let streamDetailToSave = StreamDetailManagedObject(context: coreDataManager.context)
+            streamDetailToSave.streamName = streamDetail.streamName
+            streamDetailToSave.accountID = streamDetail.accountID
+            streamDetailToSave.lastUsedDate = dateProvider.now
+            streamDetailToSave.useDevelopmentServer = streamDetail.useDevelopmentServer
+            streamDetailToSave.videoJitterMinimumDelayInMs = Int32(streamDetail.videoJitterMinimumDelayInMs)
+            streamDetailToSave.noPlayoutDelay = streamDetail.useDevelopmentServer
+            streamDetailToSave.disableAudio = streamDetail.disableAudio
+            streamDetailToSave.primaryVideoQuality = streamDetail.primaryVideoQuality.rawValue
+
+            // Delete streams that are older and exceeding the maximum allowed count
+            let request: NSFetchRequest<StreamDetailManagedObject> = Self.recentStreamsFetchRequest
+            let updatedResults = try coreDataManager.context.fetch(request)
+            if updatedResults.count > Constants.maximumAllowedStreams {
+                let streamsToDelete = updatedResults[(Constants.maximumAllowedStreams)..<updatedResults.count]
+                streamsToDelete.forEach(coreDataManager.context.delete)
             }
             coreDataManager.saveContext()
         } catch {
-            print("Failed to fetch existing data - \(error.localizedDescription)")
+            print("Failed to save stream - \(error.localizedDescription)")
         }
     }
 
@@ -165,7 +168,7 @@ extension StreamDataManager: NSFetchedResultsControllerDelegate {
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if let newStreamDetails = controller.fetchedObjects as? [StreamDetailManagedObject] {
-            let streamDetails = newStreamDetails.compactMap { StreamDetail(managedObject: $0) }
+            let streamDetails = newStreamDetails.compactMap { SavedStreamDetail(managedObject: $0) }
             streamDetailsSubject.send(streamDetails)
         }
     }

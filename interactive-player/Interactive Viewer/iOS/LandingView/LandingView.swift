@@ -13,7 +13,8 @@ struct LandingView: View {
 
     @State private var isShowingStreamInputView = false
     @State private var isShowingFullStreamHistoryView: Bool = false
-    @State private var isShowingSettingScreenView: Bool = false
+    @State private var isShowingSettingsView: Bool = false
+    @State private var isShowingAppConfigurationScreen: Bool = false
     @State private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @EnvironmentObject private var appState: AppState
@@ -23,7 +24,7 @@ struct LandingView: View {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
                     StreamDetailInputScreen(
-                        isShowingSettingScreenView: $isShowingSettingScreenView,
+                        isShowingSettingsView: $isShowingSettingsView,
                         playedStreamDetail: $playedStreamDetail
                     )
                 ),
@@ -41,7 +42,7 @@ struct LandingView: View {
 
             NavigationLink(
                 destination: LazyNavigationDestinationView(SettingsScreen(mode: .global)),
-                isActive: $isShowingSettingScreenView) {
+                isActive: $isShowingSettingsView) {
                     EmptyView()
                 }
                 .hidden()
@@ -51,12 +52,12 @@ struct LandingView: View {
                     viewModel: recentStreamsViewModel,
                     isShowingStreamInputView: $isShowingStreamInputView,
                     isShowingFullStreamHistoryView: $isShowingFullStreamHistoryView,
-                    isShowingSettingScreenView: $isShowingSettingScreenView,
+                    isShowingSettingsView: $isShowingSettingsView,
                     playedStreamDetail: $playedStreamDetail
                 )
             } else {
                 StreamDetailInputScreen(
-                    isShowingSettingScreenView: $isShowingSettingScreenView,
+                    isShowingSettingsView: $isShowingSettingsView,
                     playedStreamDetail: $playedStreamDetail
                 )
             }
@@ -67,10 +68,12 @@ struct LandingView: View {
                 IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
             }
 
-            ToolbarItem(placement: .navigationBarTrailing) {
-                IconButton(iconAsset: .settings, action: {
-                    isShowingSettingScreenView = true
-                }).scaleEffect(0.5, anchor: .trailing)
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                IconButton(iconAsset: .more) {
+                    isShowingAppConfigurationScreen = true
+                }
+
+                SettingsButton { isShowingSettingsView = true }
             }
 
             ToolbarItem(placement: .bottomBar) {
@@ -87,6 +90,9 @@ struct LandingView: View {
             StreamingScreen(streamDetail: streamDetail) {
                 playedStreamDetail = nil
             }
+        }
+        .sheet(isPresented: $isShowingAppConfigurationScreen) {
+            AppConfigurationScreen()
         }
     }
 }

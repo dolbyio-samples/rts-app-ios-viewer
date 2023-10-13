@@ -8,15 +8,6 @@
         "revision" : "670aa8de308dfa52145d59e14647390ca600cbd6",
         "version" : "1.5.2"
       }
-    },
-    {
-      "identity" : "rts-uikit-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DolbyIO/rts-uikit-ios",
-      "state" : {
-        "branch" : "main",
-        "revision" : "36b3e97c17cb7ce755fe9da6a765179403c0e6aa"
-      }
     }
   ],
   "version" : 2

@@ -9,7 +9,7 @@ final class LandingViewModel: ObservableObject {
     private let streamDataManager: StreamDataManagerProtocol
     private var subscriptions: [AnyCancellable] = []
 
-    private var streamDetails: [StreamDetail] = [] {
+    private var streamDetails: [SavedStreamDetail] = [] {
         didSet {
             let hasSavedStreamsOnLastUpdate = !streamDetails.isEmpty
             if hasSavedStreams != hasSavedStreamsOnLastUpdate {

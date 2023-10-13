@@ -13,10 +13,10 @@ struct SavedStreamsScreen: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
-    @State private var isShowingSettingScreenView: Bool = false
+    @State private var isShowingSettingsView: Bool = false
 
     @State private var isShowingClearStreamsAlert = false
-    @State private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
+    @State private var playedStreamDetail: StreamDetail?
 
     @Environment(\.presentationMode) private var presentation
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -26,7 +26,7 @@ struct SavedStreamsScreen: View {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
                     StreamDetailInputScreen(
-                        isShowingSettingScreenView: $isShowingSettingScreenView,
+                        isShowingSettingsView: $isShowingSettingsView,
                         playedStreamDetail: $playedStreamDetail
                     )
                 ),
@@ -75,22 +75,11 @@ struct SavedStreamsScreen: View {
                         .frame(height: Layout.spacing4x)
 
                         ForEach([lastPlayedStream]) { streamDetail in
-                            let streamName = streamDetail.streamName
-                            let accountID = streamDetail.accountID
-                            RecentStreamCell(streamName: streamName, accountID: accountID) {
-                                Task {
-                                    let success = await viewModel.connect(streamName: streamName, accountID: accountID)
-                                    await MainActor.run {
-                                        playedStreamDetail = DolbyIORTSCore.StreamDetail(
-                                            streamName: streamName,
-                                            accountID: accountID
-                                        )
-                                        viewModel.saveStream(streamName: streamName, accountID: accountID)
-                                    }
-                                }
+                            RecentStreamCell(streamDetail: streamDetail) {
+                                playStream(streamDetail: streamDetail)
                             }
                         }
-                        .onDelete(perform: viewModel.delete(at:))
+                        .onDelete(perform: viewModel.delete)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
                         .listRowSeparator(.hidden)
@@ -111,19 +100,8 @@ struct SavedStreamsScreen: View {
                     .frame(height: Layout.spacing4x)
 
                     ForEach(viewModel.streamDetails) { streamDetail in
-                        let streamName = streamDetail.streamName
-                        let accountID = streamDetail.accountID
-                        RecentStreamCell(streamName: streamName, accountID: accountID) {
-                            Task {
-                                let success = await viewModel.connect(streamName: streamName, accountID: accountID)
-                                await MainActor.run {
-                                    playedStreamDetail = DolbyIORTSCore.StreamDetail(
-                                        streamName: streamName,
-                                        accountID: accountID
-                                    )
-                                    viewModel.saveStream(streamName: streamName, accountID: accountID)
-                                }
-                            }
+                        RecentStreamCell(streamDetail: streamDetail) {
+                            playStream(streamDetail: streamDetail)
                         }
 
                         Spacer()
@@ -176,6 +154,20 @@ struct SavedStreamsScreen: View {
         .fullScreenCover(item: $playedStreamDetail) { streamDetail in
             StreamingScreen(streamDetail: streamDetail) {
                 playedStreamDetail = nil
+            }
+        }
+    }
+
+    private func playStream(streamDetail: SavedStreamDetail) {
+        Task {
+            let success = await viewModel.connect(streamDetail: streamDetail)
+            if success {
+                await MainActor.run {
+                    playedStreamDetail = StreamDetail(
+                        streamName: streamDetail.streamName,
+                        accountID: streamDetail.accountID
+                    )
+                }
             }
         }
     }

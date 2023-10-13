@@ -6,7 +6,7 @@ import SwiftUI
 import DolbyIOUIKit
 
 struct FooterView: View {
-    var text: LocalizedStringKey
+    private let text: LocalizedStringKey
 
     init(text: LocalizedStringKey) {
         self.text = text
