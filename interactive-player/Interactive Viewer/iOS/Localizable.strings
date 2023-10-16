@@ -28,18 +28,6 @@
 "app-configuration-title" = "App configurations";
 "app-configuration-show-debug-features-label" = "Show debug features";
 
-/** Stream Screen */
-
-"stream.network.disconnected.label" = "Disconnected from the network";
-"stream.offline.title.label" = "Stream is offline";
-"stream.settings.button" = "Settings";
-"stream.offline.subtitle.label" = "Please wait for livestream to begin.";
-"stream.live.label" = "LIVE";
-"stream.offline.label" = "OFFLINE";
-"stream.simulcast.label" = "Simulcast";
-"stream.media-stats.label" = "Streaming statistics";
-"stream.live-indicator.label" = "Live indicator";
-
 /** Recent Streams Screen */
 
 "recent-streams.title.label" = "Interactive Player";
@@ -66,24 +54,3 @@
 "saved-streams.clear-streams.label" = "Are you sure you want to clear the saved streams?";
 "saved-streams.clear-streams.alert.cancel.button" = "Cancel";
 "saved-streams.clear-streams.alert.clear.button" = "Clear";
-
-/** Streaming Settings */
-"stream.settings.label" = "Settings";
-"stream.stats.name.label" = "Name";
-"stream.stats.value.label" = "Value";
-"stream.stats.rtt.label" = "RTT";
-"stream.stats.video-resolution.label" = "Video Resolution";
-"stream.stats.fps.label" = "FPS";
-"stream.stats.video-bitrate.label" = "Video Bitrate";
-"stream.stats.audio-bitrate.label" = "Audio Bitrate";
-"stream.stats.video-total-received.label" = "Video Total Received";
-"stream.stats.audio-total-received.label" = "Audio Total Received";
-"stream.stats.video-packet-loss.label" = "Video Packet Loss";
-"stream.stats.audio-packet-loss.label" = "Audio Packet Loss";
-"stream.stats.video-jitter.label" = "Video Jitter";
-"stream.stats.audio-jitter.label" = "Audio Jitter";
-"stream.stats.codecs.label" = "Codecs";
-"stream.stats.timestamp.label" = "Timestamp";
-"stream.stats.server.label" = "Server";
-"stream.stats.cluster.label" = "Cluster";
-
