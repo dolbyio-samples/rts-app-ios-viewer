@@ -16,7 +16,7 @@
 "stream-detail-input.connection-failure.label" = "Failed to connect. Please try again later";
 "stream-detail-input.demo-stream.label" = "Demo a stream";
 "stream-detail-input.try-a-demo.label" = "Try a Dolby.io demo stream.";
-"stream-detail-input.configure-stream-label" = "Configure stream viewing";
+"stream-detail-input.configure-stream-label" = "More Stream configurations";
 "stream-detail-input.development-placeholder-label" = "Use development server";
 "stream-detail-input.disable-audio-placeholder-label" = "Disable audio";
 "stream-detail-input.no-playout-delay-label" = "Disable playout delay";

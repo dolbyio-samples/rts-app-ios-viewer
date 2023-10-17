@@ -192,14 +192,15 @@ struct StreamDetailInputScreen: View {
                                         .pickerStyle(.automatic)
                                     }
                                 }
-                                .padding([.top, .bottom, .trailing, .leading])
+                                .padding()
+                                .background(Color(uiColor: themeManager.theme.neutral700))
                                 .cornerRadius(Layout.cornerRadius6x)
-                                .background(Color(uiColor: .systemGray6))
                             } label: {
                                 Text(
                                     "stream-detail-input.configure-stream-label",
                                     font: .streamConfigurationItemsFont
                                 )
+                                .frame(minHeight: Layout.spacing5x)
                             }
                             .accentColor(Color(uiColor: themeManager.theme.onBackground))
                         }

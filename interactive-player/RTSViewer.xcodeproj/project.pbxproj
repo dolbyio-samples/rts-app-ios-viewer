@@ -23,7 +23,6 @@
 		E83CDA0C2A10878C008690FD /* SavedStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CD9F82A10878C008690FD /* SavedStreamsScreen.swift */; };
 		E87FD0C72AD8DE4600E9164A /* ImageAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD0C62AD8DE4600E9164A /* ImageAsset.swift */; };
 		E87FD19E2AD8E77B00E9164A /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1872AD8E1EF00E9164A /* FooterView.swift */; };
-		E87FD1BF2AD90F6C00E9164A /* AppConfigurationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1BE2AD90F6C00E9164A /* AppConfigurationScreen.swift */; };
 		E87FD1C52ADCFEB700E9164A /* SavedStreamDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1892AD8E1EF00E9164A /* SavedStreamDetail.swift */; };
 		E87FD1C62ADCFEC400E9164A /* StreamDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1802AD8E1EF00E9164A /* StreamDataManager.swift */; };
 		E87FD1C72ADCFEC700E9164A /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD17D2AD8E1EF00E9164A /* CoreDataManager.swift */; };
@@ -74,7 +73,6 @@
 		E87FD1842AD8E1EF00E9164A /* Task+Delayed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Task+Delayed.swift"; sourceTree = "<group>"; };
 		E87FD1872AD8E1EF00E9164A /* FooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		E87FD1892AD8E1EF00E9164A /* SavedStreamDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedStreamDetail.swift; sourceTree = "<group>"; };
-		E87FD1BE2AD90F6C00E9164A /* AppConfigurationScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurationScreen.swift; sourceTree = "<group>"; };
 		E8816E312A1086E400064B1D /* Interactive Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Interactive Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8B4B1472ADD007F003DDA44 /* rts-uikit-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "rts-uikit-ios"; path = "../../rts-uikit-ios"; sourceTree = "<group>"; };
 		E8B4B14B2ADD03DF003DDA44 /* URL+LogPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+LogPath.swift"; sourceTree = "<group>"; };
@@ -118,7 +116,6 @@
 		E83CD9DD2A10878C008690FD /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				E87FD1BD2AD90F3000E9164A /* AppConfiguration */,
 				E83CD9E02A10878C008690FD /* Assets.xcassets */,
 				B6376BC12A1C4120007AD9D9 /* Constants.swift */,
 				E83CD9F12A10878C008690FD /* ContentView.swift */,
@@ -258,14 +255,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		E87FD1BD2AD90F3000E9164A /* AppConfiguration */ = {
-			isa = PBXGroup;
-			children = (
-				E87FD1BE2AD90F6C00E9164A /* AppConfigurationScreen.swift */,
-			);
-			path = AppConfiguration;
-			sourceTree = "<group>";
-		};
 		E87FD1C42ADCFEA800E9164A /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -389,7 +378,6 @@
 				E83CDA092A10878C008690FD /* RecentStreamsViewModel.swift in Sources */,
 				E87FD1C92ADCFED400E9164A /* DateProvider.swift in Sources */,
 				E87FD1C72ADCFEC700E9164A /* CoreDataManager.swift in Sources */,
-				E87FD1BF2AD90F6C00E9164A /* AppConfigurationScreen.swift in Sources */,
 				E87FD0C72AD8DE4600E9164A /* ImageAsset.swift in Sources */,
 				E83CD9F92A10878C008690FD /* StreamDetailInputScreen.swift in Sources */,
 				E87FD1C82ADCFECC00E9164A /* RTSViewer.xcdatamodeld in Sources */,

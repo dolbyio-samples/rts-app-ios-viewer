@@ -14,10 +14,10 @@ struct LandingView: View {
     @State private var isShowingStreamInputView = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingSettingsView: Bool = false
-    @State private var isShowingAppConfigurationScreen: Bool = false
     @State private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @EnvironmentObject private var appState: AppState
+    @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
 
     var body: some View {
         ZStack {
@@ -41,7 +41,18 @@ struct LandingView: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsScreen(mode: .global)),
+                destination: LazyNavigationDestinationView(
+                    SettingsScreen(mode: .global, moreSettings: {
+                        // Custom App Configurations
+                        Toggle(isOn: $showDebugFeatures) {
+                            Text(
+                                "app-configuration-show-debug-features-label",
+                                style: .titleMedium,
+                                font: .custom("AvenirNext-Regular", size: FontSize.body)
+                            )
+                        }
+                    })
+                ),
                 isActive: $isShowingSettingsView) {
                     EmptyView()
                 }
@@ -68,11 +79,7 @@ struct LandingView: View {
                 IconView(iconAsset: .dolby_logo_dd, tintColor: .white)
             }
 
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                IconButton(iconAsset: .more) {
-                    isShowingAppConfigurationScreen = true
-                }
-
+            ToolbarItem(placement: .navigationBarTrailing) {
                 SettingsButton { isShowingSettingsView = true }
             }
 
@@ -90,9 +97,6 @@ struct LandingView: View {
             StreamingScreen(streamDetail: streamDetail) {
                 playedStreamDetail = nil
             }
-        }
-        .sheet(isPresented: $isShowingAppConfigurationScreen) {
-            AppConfigurationScreen()
         }
     }
 }
