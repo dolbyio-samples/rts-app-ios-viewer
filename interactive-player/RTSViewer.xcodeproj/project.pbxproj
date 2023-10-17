@@ -74,7 +74,6 @@
 		E87FD1872AD8E1EF00E9164A /* FooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		E87FD1892AD8E1EF00E9164A /* SavedStreamDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedStreamDetail.swift; sourceTree = "<group>"; };
 		E8816E312A1086E400064B1D /* Interactive Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Interactive Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E8B4B1472ADD007F003DDA44 /* rts-uikit-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "rts-uikit-ios"; path = "../../rts-uikit-ios"; sourceTree = "<group>"; };
 		E8B4B14B2ADD03DF003DDA44 /* URL+LogPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+LogPath.swift"; sourceTree = "<group>"; };
 		E8E1855E2A1099F900BF4726 /* StreamDetailInputViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModel.swift; sourceTree = "<group>"; };
 		E8E185632A10A47000BF4726 /* InteractiveVieweriOSDebugSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSDebugSettings.xcconfig; sourceTree = "<group>"; };
@@ -199,7 +198,6 @@
 		E87FD02C2AD8B48800E9164A /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				E8B4B1472ADD007F003DDA44 /* rts-uikit-ios */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -700,8 +698,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:DolbyIO/rts-uikit-ios.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.0.5;
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
