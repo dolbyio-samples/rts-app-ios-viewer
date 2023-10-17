@@ -15,7 +15,7 @@ struct StreamDetailInputScreen: View {
       case streamName
     }
     @Binding private var isShowingSettingsView: Bool
-    @Binding private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
+    @Binding private var streamingScreenContext: StreamingScreen.Context?
 
     @State private var streamName: String = ""
     @State private var accountID: String = ""
@@ -37,9 +37,9 @@ struct StreamDetailInputScreen: View {
 
     @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
 
-    init(isShowingSettingsView: Binding<Bool>, playedStreamDetail: Binding<DolbyIORTSCore.StreamDetail?>) {
+    init(isShowingSettingsView: Binding<Bool>, streamingScreenContext: Binding<StreamingScreen.Context?>) {
         _isShowingSettingsView = isShowingSettingsView
-        _playedStreamDetail = playedStreamDetail
+        _streamingScreenContext = streamingScreenContext
     }
 
     var body: some View {
@@ -124,9 +124,10 @@ struct StreamDetailInputScreen: View {
                                     showAlert = !success
                                     if success {
                                         await MainActor.run {
-                                            playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                                            streamingScreenContext = .init(
                                                 streamName: streamName,
-                                                accountID: accountID
+                                                accountID: accountID,
+                                                listViewPrimaryVideoQuality: primaryVideoQuality
                                             )
                                         }
                                     }
@@ -315,9 +316,10 @@ struct StreamDetailInputScreen: View {
                     showAlert = !success
                     if success {
                         await MainActor.run {
-                            playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                            streamingScreenContext = .init(
                                 streamName: streamName,
-                                accountID: accountID
+                                accountID: accountID,
+                                listViewPrimaryVideoQuality: .auto
                             )
                         }
                     }
@@ -342,6 +344,6 @@ extension Font {
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputScreen(isShowingSettingsView: .constant(false), playedStreamDetail: .constant(nil))
+        StreamDetailInputScreen(isShowingSettingsView: .constant(false), streamingScreenContext: .constant(nil))
     }
 }
