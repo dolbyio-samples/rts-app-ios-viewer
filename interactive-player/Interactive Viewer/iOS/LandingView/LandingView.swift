@@ -13,17 +13,18 @@ struct LandingView: View {
 
     @State private var isShowingStreamInputView = false
     @State private var isShowingFullStreamHistoryView: Bool = false
-    @State private var isShowingSettingScreenView: Bool = false
+    @State private var isShowingSettingsView: Bool = false
     @State private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @EnvironmentObject private var appState: AppState
+    @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
 
     var body: some View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
                     StreamDetailInputScreen(
-                        isShowingSettingScreenView: $isShowingSettingScreenView,
+                        isShowingSettingsView: $isShowingSettingsView,
                         playedStreamDetail: $playedStreamDetail
                     )
                 ),
@@ -40,8 +41,19 @@ struct LandingView: View {
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsScreen(mode: .global)),
-                isActive: $isShowingSettingScreenView) {
+                destination: LazyNavigationDestinationView(
+                    SettingsScreen(mode: .global, moreSettings: {
+                        // Custom App Configurations
+                        Toggle(isOn: $showDebugFeatures) {
+                            Text(
+                                "app-configuration-show-debug-features-label",
+                                style: .titleMedium,
+                                font: .custom("AvenirNext-Regular", size: FontSize.body)
+                            )
+                        }
+                    })
+                ),
+                isActive: $isShowingSettingsView) {
                     EmptyView()
                 }
                 .hidden()
@@ -51,12 +63,12 @@ struct LandingView: View {
                     viewModel: recentStreamsViewModel,
                     isShowingStreamInputView: $isShowingStreamInputView,
                     isShowingFullStreamHistoryView: $isShowingFullStreamHistoryView,
-                    isShowingSettingScreenView: $isShowingSettingScreenView,
+                    isShowingSettingsView: $isShowingSettingsView,
                     playedStreamDetail: $playedStreamDetail
                 )
             } else {
                 StreamDetailInputScreen(
-                    isShowingSettingScreenView: $isShowingSettingScreenView,
+                    isShowingSettingsView: $isShowingSettingsView,
                     playedStreamDetail: $playedStreamDetail
                 )
             }
@@ -68,9 +80,7 @@ struct LandingView: View {
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                IconButton(iconAsset: .settings, action: {
-                    isShowingSettingScreenView = true
-                }).scaleEffect(0.5, anchor: .trailing)
+                SettingsButton { isShowingSettingsView = true }
             }
 
             ToolbarItem(placement: .bottomBar) {

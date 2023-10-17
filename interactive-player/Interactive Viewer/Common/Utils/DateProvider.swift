@@ -9,6 +9,9 @@ protocol DateProvider {
 }
 
 struct DefaultDateProvider: DateProvider {
+
+    init() { }
+
     var now: Date {
         Date()
     }

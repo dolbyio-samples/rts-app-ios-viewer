@@ -12,10 +12,10 @@
     {
       "identity" : "rts-uikit-ios",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DolbyIO/rts-uikit-ios",
+      "location" : "git@github.com:DolbyIO/rts-uikit-ios.git",
       "state" : {
         "branch" : "main",
-        "revision" : "36b3e97c17cb7ce755fe9da6a765179403c0e6aa"
+        "revision" : "376ab335fd4d277bc15da93def6a9bcbcce7f441"
       }
     }
   ],

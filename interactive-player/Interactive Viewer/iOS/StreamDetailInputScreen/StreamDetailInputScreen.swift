@@ -7,18 +7,24 @@ import DolbyIORTSCore
 import DolbyIORTSUIKit
 import SwiftUI
 
+// swiftlint:disable type_body_length
 struct StreamDetailInputScreen: View {
 
     enum InputFocusable: Hashable {
       case accountID
       case streamName
     }
-    @Binding private var isShowingSettingScreenView: Bool
+    @Binding private var isShowingSettingsView: Bool
     @Binding private var playedStreamDetail: DolbyIORTSCore.StreamDetail?
 
     @State private var streamName: String = ""
     @State private var accountID: String = ""
-    @State private var showingAlert = false
+    @State private var showAlert = false
+    @State private var isDev: Bool = false
+    @State private var noPlayoutDelay: Bool = false
+    @State private var disableAudio: Bool = false
+    @State private var jitterBufferDelayInMs: Float = Float(SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs)
+    @State private var primaryVideoQuality: VideoQuality = .auto
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -29,8 +35,10 @@ struct StreamDetailInputScreen: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.presentationMode) private var presentationMode
 
-    init(isShowingSettingScreenView: Binding<Bool>, playedStreamDetail: Binding<DolbyIORTSCore.StreamDetail?>) {
-        _isShowingSettingScreenView = isShowingSettingScreenView
+    @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
+
+    init(isShowingSettingsView: Binding<Bool>, playedStreamDetail: Binding<DolbyIORTSCore.StreamDetail?>) {
+        _isShowingSettingsView = isShowingSettingsView
         _playedStreamDetail = playedStreamDetail
     }
 
@@ -40,7 +48,7 @@ struct StreamDetailInputScreen: View {
                 destination: LazyNavigationDestinationView(
                     SettingsScreen(mode: .global)
                 ),
-                isActive: $isShowingSettingScreenView
+                isActive: $isShowingSettingsView
             ) {
                 EmptyView()
             }
@@ -102,32 +110,100 @@ struct StreamDetailInputScreen: View {
 
                         Button(
                             action: {
-                                guard streamName.count > 0, accountID.count > 0 else {
-                                    showingAlert = true
-                                    return
-                                }
                                 Task {
-                                    let success = await StreamOrchestrator.shared.connect(streamName: streamName, accountID: accountID)
-                                    await MainActor.run {
-                                        guard success else {
-                                            showingAlert = true
-                                            return
-                                        }
-                                        playedStreamDetail = DolbyIORTSCore.StreamDetail(
-                                            streamName: streamName,
-                                            accountID: accountID
-                                        )
-                                        if success {
-                                            // A delay is added before saving the stream.
-                                            Task.delayed(byTimeInterval: 1.0) {
-                                                await viewModel.saveStream(streamName: streamName, accountID: accountID)
-                                            }
+                                    let success = await viewModel.connect(
+                                        streamName: streamName,
+                                        accountID: accountID,
+                                        useDevelopmentServer: isDev,
+                                        videoJitterMinimumDelayInMs: UInt(jitterBufferDelayInMs),
+                                        noPlayoutDelay: noPlayoutDelay,
+                                        disableAudio: disableAudio,
+                                        primaryVideoQuality: primaryVideoQuality,
+                                        shouldSave: true
+                                    )
+                                    showAlert = !success
+                                    if success {
+                                        await MainActor.run {
+                                            playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                                                streamName: streamName,
+                                                accountID: accountID
+                                            )
                                         }
                                     }
                                 }
                             },
                             text: "stream-detail-input.play.button"
                         )
+
+                        if showDebugFeatures {
+                            DisclosureGroup {
+                                VStack(alignment: .leading, spacing: Layout.spacing2x) {
+                                    Toggle(isOn: $isDev) {
+                                        Text(
+                                            "stream-detail-input.development-placeholder-label",
+                                            font: .streamConfigurationItemsFont
+                                        )
+                                    }
+                                    Toggle(isOn: $noPlayoutDelay) {
+                                        Text(
+                                            "stream-detail-input.no-playout-delay-label",
+                                            font: .streamConfigurationItemsFont
+                                        )
+                                    }
+                                    Toggle(isOn: $disableAudio) {
+                                        Text(
+                                            "stream-detail-input.disable-audio-placeholder-label",
+                                            font: .streamConfigurationItemsFont
+                                        )
+                                    }
+
+                                    Text(
+                                        "\(String(localized: "stream-detail-input.jitter-buffer-delay-placeholder-label")) - \(Int(jitterBufferDelayInMs))ms",
+                                        style: .labelMedium,
+                                        font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
+                                    )
+                                    Slider(
+                                        value: $jitterBufferDelayInMs,
+                                        in: (0...2000),
+                                        step: 50,
+                                        label: {},
+                                        minimumValueLabel: {
+                                            Text("0")
+                                        },
+                                        maximumValueLabel: {
+                                            Text("2sec")
+                                        }
+                                    )
+
+                                    HStack {
+                                        Text("stream-detail-input.primary-video-quality-label",
+                                             style: .labelMedium,
+                                             font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
+
+                                        Picker(
+                                            "Primary video quality: \(primaryVideoQuality.description)",
+                                            selection: $primaryVideoQuality
+                                        ) {
+                                            ForEach(VideoQuality.allCases) {
+                                                Text($0.description)
+                                                    .tag($0)
+                                            }
+                                        }
+                                        .pickerStyle(.automatic)
+                                    }
+                                }
+                                .padding()
+                                .background(Color(uiColor: themeManager.theme.neutral700))
+                                .cornerRadius(Layout.cornerRadius6x)
+                            } label: {
+                                Text(
+                                    "stream-detail-input.configure-stream-label",
+                                    font: .streamConfigurationItemsFont
+                                )
+                                .frame(minHeight: Layout.spacing5x)
+                            }
+                            .accentColor(Color(uiColor: themeManager.theme.onBackground))
+                        }
                     }
                     .frame(maxWidth: 400)
 
@@ -156,8 +232,8 @@ struct StreamDetailInputScreen: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 if presentationMode.wrappedValue.isPresented {
                     IconButton(iconAsset: .settings, action: {
-                        isShowingSettingScreenView = true
-                    }).scaleEffect(0.5, anchor: .trailing)
+                        isShowingSettingsView = true
+                    })
                 }
             }
 
@@ -170,7 +246,9 @@ struct StreamDetailInputScreen: View {
         .navigationBarBackButtonHidden()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: themeManager.theme.background))
-        .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
+        .alert(isPresented: $showAlert, error: viewModel.validationError) {
+            // No-actions
+        }
         .onSubmit {
             if inputFocus == .streamName {
                 inputFocus = .accountID
@@ -186,6 +264,9 @@ struct StreamDetailInputScreen: View {
         }
         .onDisappear {
             inputFocus = nil
+        }
+        .onChange(of: showDebugFeatures) { _ in
+            resetStreamConfigurationState()
         }
     }
 
@@ -210,27 +291,57 @@ struct StreamDetailInputScreen: View {
 
             let streamName = Constants.streamName
             let accountID = Constants.accountID
-            RecentStreamCell(streamName: streamName, accountID: accountID) {
+            let streamDetail = SavedStreamDetail(
+                accountID: accountID,
+                streamName: streamName,
+                useDevelopmentServer: false,
+                videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs,
+                noPlayoutDelay: false,
+                disableAudio: false,
+                primaryVideoQuality: .auto
+            )
+            RecentStreamCell(streamDetail: streamDetail) {
                 Task {
-                    let success = await viewModel.connect(streamName: streamName, accountID: accountID)
-                    guard success else {
-                        showingAlert = true
-                        return
-                    }
-                    await MainActor.run {
-                        playedStreamDetail = DolbyIORTSCore.StreamDetail(
-                            streamName: streamName,
-                            accountID: accountID
-                        )
+                    let success = await viewModel.connect(
+                        streamName: streamName,
+                        accountID: accountID,
+                        useDevelopmentServer: false,
+                        videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs,
+                        noPlayoutDelay: false,
+                        disableAudio: false,
+                        primaryVideoQuality: .auto,
+                        shouldSave: false
+                    )
+                    showAlert = !success
+                    if success {
+                        await MainActor.run {
+                            playedStreamDetail = DolbyIORTSCore.StreamDetail(
+                                streamName: streamName,
+                                accountID: accountID
+                            )
+                        }
                     }
                 }
             }
         }
     }
+
+    func resetStreamConfigurationState() {
+        self.isDev = false
+        self.noPlayoutDelay = false
+        self.disableAudio = false
+        self.jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs)
+        self.primaryVideoQuality = .auto
+    }
+}
+// swiftlint:enable type_body_length
+
+extension Font {
+    static let streamConfigurationItemsFont = Font.custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
 }
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputScreen(isShowingSettingScreenView: .constant(false), playedStreamDetail: .constant(nil))
+        StreamDetailInputScreen(isShowingSettingsView: .constant(false), playedStreamDetail: .constant(nil))
     }
 }

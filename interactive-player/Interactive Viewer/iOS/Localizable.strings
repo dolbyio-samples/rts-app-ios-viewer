@@ -12,21 +12,21 @@
 "stream-detail-input.subtitle.label" = "Enter the stream name and publisher account ID to view a stream.";
 "stream-detail-input.play.button" = "Play";
 "stream-detail-input.footnote.label" = "Copyright © 2023 Dolby.io — All Rights Reserved";
-"stream-detail-input.credentials-error.label" = "Invalid Stream name or Account ID";
+"stream-detail-input.empty-credentials-error.label" = "Invalid Stream name or Account ID";
+"stream-detail-input.connection-failure.label" = "Failed to connect. Please try again later";
 "stream-detail-input.demo-stream.label" = "Demo a stream";
 "stream-detail-input.try-a-demo.label" = "Try a Dolby.io demo stream.";
+"stream-detail-input.configure-stream-label" = "More Stream configurations";
+"stream-detail-input.development-placeholder-label" = "Use development server";
+"stream-detail-input.disable-audio-placeholder-label" = "Disable audio";
+"stream-detail-input.no-playout-delay-label" = "Disable playout delay";
+"stream-detail-input.jitter-buffer-delay-placeholder-label" = "Jitter Buffer Delay";
+"stream-detail-input.primary-video-quality-label" = "Primary video quality:";
 
-/** Stream Screen */
+/** App configuration Screen */
 
-"stream.network.disconnected.label" = "Disconnected from the network";
-"stream.offline.title.label" = "Stream is offline";
-"stream.settings.button" = "Settings";
-"stream.offline.subtitle.label" = "Please wait for livestream to begin.";
-"stream.live.label" = "LIVE";
-"stream.offline.label" = "OFFLINE";
-"stream.simulcast.label" = "Simulcast";
-"stream.media-stats.label" = "Streaming statistics";
-"stream.live-indicator.label" = "Live indicator";
+"app-configuration-title" = "App configurations";
+"app-configuration-show-debug-features-label" = "Show debug features";
 
 /** Recent Streams Screen */
 
@@ -35,8 +35,11 @@
 "recent-streams.table-header-label" = "Recently viewed";
 "recent-streams.table-header-button" = "View all";
 "recent-streams.account-id.title.label" = "ID:";
-"recent-streams.account-id.format.label %@" = "%@";
-"recent-streams.stream-name.format.label %@" = "%@";
+"recent-streams.use-dev-server.label" = "Development server:";
+"recent-streams.video-jitter-buffer.label" = "Video Jitter buffer in ms:";
+"recent-streams.no-playout-delay.label" = "Disable playout delay:";
+"recent-streams.disable-audio.label" = "Disable Audio:";
+"recent-streams.primary-video-quality.label" = "Primary video quality:";
 "recent-streams.option-separator.label" = "or";
 "recent-streams.play-new.button" = "PLAY NEW";
 "recent-streams.footnote.label" = "Copyright © 2023 Dolby.io — All Rights Reserved";
@@ -51,24 +54,3 @@
 "saved-streams.clear-streams.label" = "Are you sure you want to clear the saved streams?";
 "saved-streams.clear-streams.alert.cancel.button" = "Cancel";
 "saved-streams.clear-streams.alert.clear.button" = "Clear";
-
-/** Streaming Settings */
-"stream.settings.label" = "Settings";
-"stream.stats.name.label" = "Name";
-"stream.stats.value.label" = "Value";
-"stream.stats.rtt.label" = "RTT";
-"stream.stats.video-resolution.label" = "Video Resolution";
-"stream.stats.fps.label" = "FPS";
-"stream.stats.video-bitrate.label" = "Video Bitrate";
-"stream.stats.audio-bitrate.label" = "Audio Bitrate";
-"stream.stats.video-total-received.label" = "Video Total Received";
-"stream.stats.audio-total-received.label" = "Audio Total Received";
-"stream.stats.video-packet-loss.label" = "Video Packet Loss";
-"stream.stats.audio-packet-loss.label" = "Audio Packet Loss";
-"stream.stats.video-jitter.label" = "Video Jitter";
-"stream.stats.audio-jitter.label" = "Audio Jitter";
-"stream.stats.codecs.label" = "Codecs";
-"stream.stats.timestamp.label" = "Timestamp";
-"stream.stats.server.label" = "Server";
-"stream.stats.cluster.label" = "Cluster";
-

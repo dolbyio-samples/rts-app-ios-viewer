@@ -3,22 +3,41 @@
 //
 
 import DolbyIOUIKit
+import DolbyIORTSCore
+import DolbyIORTSUIKit
 import SwiftUI
 
 struct RecentStreamCell: View {
-    private let streamName: String
-    private let accountID: String
+    private typealias StreamDetailKeyValuePair = (key: String, value: String)
 
+    private let streamDetail: SavedStreamDetail
+
+    @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
     @ObservedObject private var themeManager = ThemeManager.shared
+
+    private var detailFields: [StreamDetailKeyValuePair] {
+        var fields: [StreamDetailKeyValuePair] = [(String(localized: "recent-streams.account-id.title.label"), streamDetail.accountID)]
+        if showDebugFeatures {
+            fields.append(
+                contentsOf: [
+                    (String(localized: "recent-streams.use-dev-server.label"), String(streamDetail.useDevelopmentServer)),
+                    (String(localized: "recent-streams.video-jitter-buffer.label"), String(streamDetail.videoJitterMinimumDelayInMs)),
+                    (String(localized: "recent-streams.no-playout-delay.label"), String(streamDetail.noPlayoutDelay)),
+                    (String(localized: "recent-streams.disable-audio.label"), String(streamDetail.disableAudio)),
+                    (String(localized: "recent-streams.primary-video-quality.label"), streamDetail.primaryVideoQuality.description)
+                ]
+            )
+        }
+        return fields
+    }
+
     private let action: () -> Void
 
     init(
-        streamName: String,
-        accountID: String,
+        streamDetail: SavedStreamDetail,
         action: @escaping () -> Void
     ) {
-        self.streamName = streamName
-        self.accountID = accountID
+        self.streamDetail = streamDetail
         self.action = action
     }
 
@@ -26,22 +45,22 @@ struct RecentStreamCell: View {
         HStack {
             VStack(alignment: .leading) {
                 DolbyIOUIKit.Text(
-                    "recent-streams.stream-name.format.label \(streamName)",
+                    verbatim: streamDetail.streamName,
                     font: .custom("AvenirNext-Regular", size: FontSize.callout, relativeTo: .callout)
                 )
 
-                HStack {
-                    DolbyIOUIKit.Text(
-                        "recent-streams.account-id.title.label",
-                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
-                    )
+                ForEach(detailFields, id: \.key) { field in
+                    HStack {
+                        DolbyIOUIKit.Text(
+                            verbatim: field.key,
+                            font: .streamDetailFont
+                        )
 
-                    DolbyIOUIKit.Text(
-                        "recent-streams.account-id.format.label \(accountID)",
-                        style: .labelMedium,
-                        font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
-                    )
-
+                        DolbyIOUIKit.Text(
+                            verbatim: field.value,
+                            font: .streamDetailFont
+                        )
+                    }
                 }
             }
             Spacer()
@@ -55,8 +74,24 @@ struct RecentStreamCell: View {
     }
 }
 
+private extension Font {
+    static let streamDetailFont: Font = .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
+
+}
+
 struct RecentStreamCell_Previews: PreviewProvider {
     static var previews: some View {
-        RecentStreamCell(streamName: "ABCDE", accountID: "12345", action: {})
+        RecentStreamCell(
+            streamDetail: SavedStreamDetail(
+                accountID: "12345",
+                streamName: "ABCDE",
+                useDevelopmentServer: true,
+                videoJitterMinimumDelayInMs: 20,
+                noPlayoutDelay: true,
+                disableAudio: true,
+                primaryVideoQuality: .auto
+            ),
+            action: {}
+        )
     }
 }
