@@ -29,7 +29,6 @@
 		E87FD1C72ADCFEC700E9164A /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD17D2AD8E1EF00E9164A /* CoreDataManager.swift */; };
 		E87FD1C82ADCFECC00E9164A /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E87FD17E2AD8E1EF00E9164A /* RTSViewer.xcdatamodeld */; };
 		E87FD1C92ADCFED400E9164A /* DateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1822AD8E1EF00E9164A /* DateProvider.swift */; };
-		E87FD1CA2ADCFED700E9164A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1832AD8E1EF00E9164A /* NetworkMonitor.swift */; };
 		E87FD1CB2ADCFEDA00E9164A /* Task+Delayed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1842AD8E1EF00E9164A /* Task+Delayed.swift */; };
 		E8B4B14A2ADD0117003DDA44 /* DolbyIORTSUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8B4B1492ADD0117003DDA44 /* DolbyIORTSUIKit */; };
 		E8B4B14C2ADD03DF003DDA44 /* URL+LogPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B4B14B2ADD03DF003DDA44 /* URL+LogPath.swift */; };
@@ -72,7 +71,6 @@
 		E87FD17F2AD8E1EF00E9164A /* RTSViewer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RTSViewer.xcdatamodel; sourceTree = "<group>"; };
 		E87FD1802AD8E1EF00E9164A /* StreamDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDataManager.swift; sourceTree = "<group>"; };
 		E87FD1822AD8E1EF00E9164A /* DateProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateProvider.swift; sourceTree = "<group>"; };
-		E87FD1832AD8E1EF00E9164A /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		E87FD1842AD8E1EF00E9164A /* Task+Delayed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Task+Delayed.swift"; sourceTree = "<group>"; };
 		E87FD1872AD8E1EF00E9164A /* FooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		E87FD1892AD8E1EF00E9164A /* SavedStreamDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedStreamDetail.swift; sourceTree = "<group>"; };
@@ -223,7 +221,6 @@
 			isa = PBXGroup;
 			children = (
 				E87FD1822AD8E1EF00E9164A /* DateProvider.swift */,
-				E87FD1832AD8E1EF00E9164A /* NetworkMonitor.swift */,
 				E87FD1842AD8E1EF00E9164A /* Task+Delayed.swift */,
 				E8B4B14B2ADD03DF003DDA44 /* URL+LogPath.swift */,
 			);
@@ -397,7 +394,6 @@
 				E83CD9F92A10878C008690FD /* StreamDetailInputScreen.swift in Sources */,
 				E87FD1C82ADCFECC00E9164A /* RTSViewer.xcdatamodeld in Sources */,
 				B6376BC22A1C4120007AD9D9 /* Constants.swift in Sources */,
-				E87FD1CA2ADCFED700E9164A /* NetworkMonitor.swift in Sources */,
 				E83CDA0C2A10878C008690FD /* SavedStreamsScreen.swift in Sources */,
 				E83CD9FC2A10878C008690FD /* LandingView.swift in Sources */,
 				E83CDA0A2A10878C008690FD /* RecentStreamCell.swift in Sources */,
