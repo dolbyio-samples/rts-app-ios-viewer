@@ -14,7 +14,6 @@ struct StreamDetailInputScreen: View {
       case accountID
       case streamName
     }
-    @Binding private var isShowingSettingsView: Bool
     @Binding private var streamingScreenContext: StreamingScreen.Context?
 
     @State private var streamName: String = ""
@@ -26,6 +25,7 @@ struct StreamDetailInputScreen: View {
     @State private var saveLogs: Bool = false
     @State private var jitterBufferDelayInMs: Float = Float(SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs)
     @State private var primaryVideoQuality: VideoQuality = .auto
+    @State private var isShowingSettingsView: Bool = false
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -38,8 +38,7 @@ struct StreamDetailInputScreen: View {
 
     @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
 
-    init(isShowingSettingsView: Binding<Bool>, streamingScreenContext: Binding<StreamingScreen.Context?>) {
-        _isShowingSettingsView = isShowingSettingsView
+    init(streamingScreenContext: Binding<StreamingScreen.Context?>) {
         _streamingScreenContext = streamingScreenContext
     }
 
@@ -359,6 +358,6 @@ extension Font {
 
 struct StreamDetailInputScreen_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputScreen(isShowingSettingsView: .constant(false), streamingScreenContext: .constant(nil))
+        StreamDetailInputScreen(streamingScreenContext: .constant(nil))
     }
 }

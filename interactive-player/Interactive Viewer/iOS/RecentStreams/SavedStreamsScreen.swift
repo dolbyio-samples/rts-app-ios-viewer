@@ -13,8 +13,6 @@ struct SavedStreamsScreen: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
-    @State private var isShowingSettingsView: Bool = false
-
     @State private var isShowingClearStreamsAlert = false
     @State private var streamingScreenContext: StreamingScreen.Context?
 
@@ -25,10 +23,7 @@ struct SavedStreamsScreen: View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    StreamDetailInputScreen(
-                        isShowingSettingsView: $isShowingSettingsView,
-                        streamingScreenContext: $streamingScreenContext
-                    )
+                    StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext)
                 ),
                 isActive: $isShowingStreamInputView) {
                     EmptyView()

@@ -28,10 +28,7 @@ struct LandingView: View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    StreamDetailInputScreen(
-                        isShowingSettingsView: $isShowingSettingsView,
-                        streamingScreenContext: $streamingScreenContext
-                    )
+                    StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext)
                 ),
                 isActive: $isShowingStreamInputView) {
                     EmptyView()
@@ -72,10 +69,7 @@ struct LandingView: View {
                     streamingScreenContext: $streamingScreenContext
                 )
             } else {
-                StreamDetailInputScreen(
-                    isShowingSettingsView: $isShowingSettingsView,
-                    streamingScreenContext: $streamingScreenContext
-                )
+                StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
