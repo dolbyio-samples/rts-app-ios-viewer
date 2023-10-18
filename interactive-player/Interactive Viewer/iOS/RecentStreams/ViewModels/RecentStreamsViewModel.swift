@@ -81,10 +81,10 @@ final class RecentStreamsViewModel: ObservableObject {
         }
     }
 
-    func connect(streamDetail: SavedStreamDetail) async -> Bool {
+    func connect(streamDetail: SavedStreamDetail, saveLogs: Bool) async -> Bool {
         let currentDate = dateProvider.now
-        let rtcLogPath = URL.rtcLogPath(for: currentDate)
-        let sdkLogPath = URL.sdkLogPath(for: currentDate)
+        let rtcLogPath = saveLogs ? URL.rtcLogPath(for: currentDate) : nil
+        let sdkLogPath = saveLogs ? URL.sdkLogPath(for: currentDate) : nil
 
         let configuration = SubscriptionConfiguration(
             useDevelopmentServer: streamDetail.useDevelopmentServer,

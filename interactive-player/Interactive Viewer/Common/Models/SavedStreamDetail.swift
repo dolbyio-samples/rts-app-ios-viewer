@@ -15,6 +15,7 @@ struct SavedStreamDetail: Identifiable, Equatable {
     let noPlayoutDelay: Bool
     let disableAudio: Bool
     let primaryVideoQuality: VideoQuality
+    let saveLogs: Bool
 
     init(
         accountID: String,
@@ -24,6 +25,7 @@ struct SavedStreamDetail: Identifiable, Equatable {
         noPlayoutDelay: Bool,
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
+        saveLogs: Bool,
         dateProvider: DateProvider = DefaultDateProvider()
     ) {
         self.id = UUID()
@@ -35,6 +37,7 @@ struct SavedStreamDetail: Identifiable, Equatable {
         self.noPlayoutDelay = noPlayoutDelay
         self.disableAudio = disableAudio
         self.primaryVideoQuality = primaryVideoQuality
+        self.saveLogs = saveLogs
     }
 }
 
@@ -52,6 +55,7 @@ extension SavedStreamDetail {
         let useDevelopmentServer = managedObject.useDevelopmentServer
         let noPlayoutDelay = managedObject.noPlayoutDelay
         let disableAudio = managedObject.disableAudio
+        let saveLogs = managedObject.saveLogs
 
         self.id = UUID()
         self.accountID = accountID
@@ -62,5 +66,6 @@ extension SavedStreamDetail {
         self.noPlayoutDelay = noPlayoutDelay
         self.disableAudio = disableAudio
         self.primaryVideoQuality = primaryVideoQuality
+        self.saveLogs = saveLogs
     }
  }

@@ -138,6 +138,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
             streamDetailToSave.noPlayoutDelay = streamDetail.useDevelopmentServer
             streamDetailToSave.disableAudio = streamDetail.disableAudio
             streamDetailToSave.primaryVideoQuality = streamDetail.primaryVideoQuality.rawValue
+            streamDetailToSave.saveLogs = streamDetail.saveLogs
 
             // Delete streams that are older and exceeding the maximum allowed count
             let request: NSFetchRequest<StreamDetailManagedObject> = Self.recentStreamsFetchRequest

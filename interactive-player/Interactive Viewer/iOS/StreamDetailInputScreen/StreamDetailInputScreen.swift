@@ -23,6 +23,7 @@ struct StreamDetailInputScreen: View {
     @State private var isDev: Bool = false
     @State private var noPlayoutDelay: Bool = false
     @State private var disableAudio: Bool = false
+    @State private var saveLogs: Bool = false
     @State private var jitterBufferDelayInMs: Float = Float(SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs)
     @State private var primaryVideoQuality: VideoQuality = .auto
 
@@ -119,7 +120,8 @@ struct StreamDetailInputScreen: View {
                                         noPlayoutDelay: noPlayoutDelay,
                                         disableAudio: disableAudio,
                                         primaryVideoQuality: primaryVideoQuality,
-                                        shouldSave: true
+                                        saveLogs: saveLogs,
+                                        saveStream: true
                                     )
                                     showAlert = !success
                                     if success {
@@ -137,73 +139,7 @@ struct StreamDetailInputScreen: View {
                         )
 
                         if showDebugFeatures {
-                            DisclosureGroup {
-                                VStack(alignment: .leading, spacing: Layout.spacing2x) {
-                                    Toggle(isOn: $isDev) {
-                                        Text(
-                                            "stream-detail-input.development-placeholder-label",
-                                            font: .streamConfigurationItemsFont
-                                        )
-                                    }
-                                    Toggle(isOn: $noPlayoutDelay) {
-                                        Text(
-                                            "stream-detail-input.no-playout-delay-label",
-                                            font: .streamConfigurationItemsFont
-                                        )
-                                    }
-                                    Toggle(isOn: $disableAudio) {
-                                        Text(
-                                            "stream-detail-input.disable-audio-placeholder-label",
-                                            font: .streamConfigurationItemsFont
-                                        )
-                                    }
-
-                                    Text(
-                                        "\(String(localized: "stream-detail-input.jitter-buffer-delay-placeholder-label")) - \(Int(jitterBufferDelayInMs))ms",
-                                        style: .labelMedium,
-                                        font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
-                                    )
-                                    Slider(
-                                        value: $jitterBufferDelayInMs,
-                                        in: (0...2000),
-                                        step: 50,
-                                        label: {},
-                                        minimumValueLabel: {
-                                            Text("0")
-                                        },
-                                        maximumValueLabel: {
-                                            Text("2sec")
-                                        }
-                                    )
-
-                                    HStack {
-                                        Text("stream-detail-input.primary-video-quality-label",
-                                             style: .labelMedium,
-                                             font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
-
-                                        Picker(
-                                            "Primary video quality: \(primaryVideoQuality.description)",
-                                            selection: $primaryVideoQuality
-                                        ) {
-                                            ForEach(VideoQuality.allCases) {
-                                                Text($0.description)
-                                                    .tag($0)
-                                            }
-                                        }
-                                        .pickerStyle(.automatic)
-                                    }
-                                }
-                                .padding()
-                                .background(Color(uiColor: themeManager.theme.neutral700))
-                                .cornerRadius(Layout.cornerRadius6x)
-                            } label: {
-                                Text(
-                                    "stream-detail-input.configure-stream-label",
-                                    font: .streamConfigurationItemsFont
-                                )
-                                .frame(minHeight: Layout.spacing5x)
-                            }
-                            .accentColor(Color(uiColor: themeManager.theme.onBackground))
+                            additionalConfigurationView
                         }
                     }
                     .frame(maxWidth: 400)
@@ -271,6 +207,83 @@ struct StreamDetailInputScreen: View {
         }
     }
 
+    var additionalConfigurationView: some View {
+        DisclosureGroup {
+            VStack(alignment: .leading, spacing: Layout.spacing2x) {
+                Toggle(isOn: $isDev) {
+                    Text(
+                        "stream-detail-input.development-placeholder-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+                Toggle(isOn: $noPlayoutDelay) {
+                    Text(
+                        "stream-detail-input.no-playout-delay-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+                Toggle(isOn: $disableAudio) {
+                    Text(
+                        "stream-detail-input.disable-audio-placeholder-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+
+                Toggle(isOn: $saveLogs) {
+                    Text(
+                        "stream-detail-input.save-logs-placeholder-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+
+                Text(
+                    "\(String(localized: "stream-detail-input.jitter-buffer-delay-placeholder-label")) - \(Int(jitterBufferDelayInMs))ms",
+                    style: .labelMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
+                )
+                Slider(
+                    value: $jitterBufferDelayInMs,
+                    in: (0...2000),
+                    step: 50,
+                    label: {},
+                    minimumValueLabel: {
+                        Text("0")
+                    },
+                    maximumValueLabel: {
+                        Text("2sec")
+                    }
+                )
+
+                HStack {
+                    Text("stream-detail-input.primary-video-quality-label",
+                         style: .labelMedium,
+                         font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
+
+                    Picker(
+                        "Primary video quality: \(primaryVideoQuality.description)",
+                        selection: $primaryVideoQuality
+                    ) {
+                        ForEach(VideoQuality.allCases) {
+                            Text($0.description)
+                                .tag($0)
+                        }
+                    }
+                    .pickerStyle(.automatic)
+                }
+            }
+            .padding()
+            .background(Color(uiColor: themeManager.theme.neutral700))
+            .cornerRadius(Layout.cornerRadius6x)
+        } label: {
+            Text(
+                "stream-detail-input.configure-stream-label",
+                font: .streamConfigurationItemsFont
+            )
+            .frame(minHeight: Layout.spacing5x)
+        }
+        .accentColor(Color(uiColor: themeManager.theme.onBackground))
+    }
+
     var demoAStream: some View {
         VStack {
             Text(
@@ -299,7 +312,8 @@ struct StreamDetailInputScreen: View {
                 videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs,
                 noPlayoutDelay: false,
                 disableAudio: false,
-                primaryVideoQuality: .auto
+                primaryVideoQuality: .auto,
+                saveLogs: false
             )
             RecentStreamCell(streamDetail: streamDetail) {
                 Task {
@@ -311,7 +325,8 @@ struct StreamDetailInputScreen: View {
                         noPlayoutDelay: false,
                         disableAudio: false,
                         primaryVideoQuality: .auto,
-                        shouldSave: false
+                        saveLogs: false,
+                        saveStream: false
                     )
                     showAlert = !success
                     if success {
