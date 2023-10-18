@@ -47,15 +47,16 @@ final class StreamDetailInputViewModel: ObservableObject {
         noPlayoutDelay: Bool,
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
-        shouldSave: Bool
+        saveLogs: Bool,
+        saveStream: Bool
     ) async -> Bool {
         guard !streamName.isEmpty, !accountID.isEmpty else {
             validationError = .emptyStreamNameOrAccountID
             return false
         }
         let currentDate = dateProvider.now
-        let rtcLogPath = URL.rtcLogPath(for: currentDate)
-        let sdkLogPath = URL.sdkLogPath(for: currentDate)
+        let rtcLogPath = saveLogs ? URL.rtcLogPath(for: currentDate) : nil
+        let sdkLogPath = saveLogs ? URL.sdkLogPath(for: currentDate) : nil
 
         let configuration = SubscriptionConfiguration(
             useDevelopmentServer: useDevelopmentServer,
@@ -72,7 +73,7 @@ final class StreamDetailInputViewModel: ObservableObject {
             configuration: configuration
         )
 
-        switch (success, shouldSave) {
+        switch (success, saveStream) {
         case (true, true):
             streamDataManager.saveStream(
                 .init(
@@ -82,7 +83,8 @@ final class StreamDetailInputViewModel: ObservableObject {
                     videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
                     noPlayoutDelay: noPlayoutDelay,
                     disableAudio: disableAudio,
-                    primaryVideoQuality: primaryVideoQuality
+                    primaryVideoQuality: primaryVideoQuality,
+                    saveLogs: saveLogs
                 )
             )
         case (false, _):

@@ -6,6 +6,7 @@
         <attribute name="lastUsedDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="noPlayoutDelay" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="primaryVideoQuality" attributeType="String"/>
+        <attribute name="saveLogs" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="streamName" attributeType="String"/>
         <attribute name="useDevelopmentServer" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="videoJitterMinimumDelayInMs" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>

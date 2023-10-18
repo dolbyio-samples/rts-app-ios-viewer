@@ -76,7 +76,7 @@ struct RecentStreamsScreen: View {
                             ForEach(viewModel.topStreamDetails) { streamDetail in
                                 RecentStreamCell(streamDetail: streamDetail) {
                                     Task {
-                                        let success = await viewModel.connect(streamDetail: streamDetail)
+                                        let success = await viewModel.connect(streamDetail: streamDetail, saveLogs: streamDetail.saveLogs)
                                         if success {
                                             await MainActor.run {
                                                 streamingScreenContext = .init(

@@ -19,6 +19,7 @@
 "stream-detail-input.configure-stream-label" = "More Stream configurations";
 "stream-detail-input.development-placeholder-label" = "Use development server";
 "stream-detail-input.disable-audio-placeholder-label" = "Disable audio";
+"stream-detail-input.save-logs-placeholder-label" = "Save logs";
 "stream-detail-input.no-playout-delay-label" = "Disable playout delay";
 "stream-detail-input.jitter-buffer-delay-placeholder-label" = "Jitter Buffer Delay";
 "stream-detail-input.primary-video-quality-label" = "Primary video quality:";
@@ -40,6 +41,7 @@
 "recent-streams.no-playout-delay.label" = "Disable playout delay:";
 "recent-streams.disable-audio.label" = "Disable Audio:";
 "recent-streams.primary-video-quality.label" = "Primary video quality:";
+"recent-streams.save-logs.label" = "Save Logs:";
 "recent-streams.option-separator.label" = "or";
 "recent-streams.play-new.button" = "PLAY NEW";
 "recent-streams.footnote.label" = "Copyright © 2023 Dolby.io — All Rights Reserved";
