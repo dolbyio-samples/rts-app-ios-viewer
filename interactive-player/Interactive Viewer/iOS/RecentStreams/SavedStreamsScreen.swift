@@ -16,7 +16,7 @@ struct SavedStreamsScreen: View {
     @State private var isShowingSettingsView: Bool = false
 
     @State private var isShowingClearStreamsAlert = false
-    @State private var playedStreamDetail: StreamDetail?
+    @State private var streamingScreenContext: StreamingScreen.Context?
 
     @Environment(\.presentationMode) private var presentation
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -27,7 +27,7 @@ struct SavedStreamsScreen: View {
                 destination: LazyNavigationDestinationView(
                     StreamDetailInputScreen(
                         isShowingSettingsView: $isShowingSettingsView,
-                        playedStreamDetail: $playedStreamDetail
+                        streamingScreenContext: $streamingScreenContext
                     )
                 ),
                 isActive: $isShowingStreamInputView) {
@@ -151,9 +151,12 @@ struct SavedStreamsScreen: View {
                 action: {}
             )
         })
-        .fullScreenCover(item: $playedStreamDetail) { streamDetail in
-            StreamingScreen(streamDetail: streamDetail) {
-                playedStreamDetail = nil
+        .fullScreenCover(item: $streamingScreenContext) { context in
+            StreamingScreen(
+                context: context,
+                listViewPrimaryVideoQuality: .high
+            ) {
+                streamingScreenContext = nil
             }
         }
     }
@@ -163,9 +166,10 @@ struct SavedStreamsScreen: View {
             let success = await viewModel.connect(streamDetail: streamDetail)
             if success {
                 await MainActor.run {
-                    playedStreamDetail = StreamDetail(
-                        streamName: streamDetail.streamName,
-                        accountID: streamDetail.accountID
+                    streamingScreenContext = .init(
+                        streamName: streamDetail.accountID,
+                        accountID: streamDetail.accountID,
+                        listViewPrimaryVideoQuality: streamDetail.primaryVideoQuality
                     )
                 }
             }
