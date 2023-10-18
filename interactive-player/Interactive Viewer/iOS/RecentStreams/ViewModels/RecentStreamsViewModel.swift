@@ -91,8 +91,8 @@ final class RecentStreamsViewModel: ObservableObject {
             videoJitterMinimumDelayInMs: streamDetail.videoJitterMinimumDelayInMs,
             noPlayoutDelay: streamDetail.noPlayoutDelay,
             disableAudio: streamDetail.disableAudio,
-            rtcEventLogPath: rtcLogPath?.absoluteString,
-            sdkLogPath: sdkLogPath?.absoluteString
+            rtcEventLogPath: rtcLogPath?.path,
+            sdkLogPath: sdkLogPath?.path
         )
 
         let success = await StreamOrchestrator.shared.connect(

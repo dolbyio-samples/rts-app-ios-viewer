@@ -18,7 +18,7 @@ extension URL {
         }
 
         let timestamp = date.getISO8601TimestampForCurrentDate()
-        return url.appendingPathComponent("\(timestamp)_sdkLogs.txt")
+        return url.appendingPathComponent("\(timestamp)_rtcLogs.proto")
     }
 
     static func sdkLogPath(for date: Date) -> URL? {
@@ -26,7 +26,7 @@ extension URL {
             return nil
         }
         let timestamp = date.getISO8601TimestampForCurrentDate()
-        return url.appendingPathComponent("\(timestamp)_rtcLogs.proto")
+        return url.appendingPathComponent("\(timestamp)_sdkLogs.txt")
     }
 }
 

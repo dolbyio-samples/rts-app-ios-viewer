@@ -348,6 +348,7 @@ struct StreamDetailInputScreen: View {
         self.disableAudio = false
         self.jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs)
         self.primaryVideoQuality = .auto
+        self.saveLogs = false
     }
 }
 // swiftlint:enable type_body_length
