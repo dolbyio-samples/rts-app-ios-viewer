@@ -46,7 +46,9 @@ struct StreamDetailInputScreen: View {
         ZStack {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
-                    SettingsScreen(mode: .global)
+                    SettingsScreen(mode: .global, moreSettings: {
+                        AppSettingsView()
+                    })
                 ),
                 isActive: $isShowingSettingsView
             ) {

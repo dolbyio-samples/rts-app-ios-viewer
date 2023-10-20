@@ -22,7 +22,6 @@ struct LandingView: View {
     @State private var streamingScreenContext: StreamingScreen.Context?
 
     @EnvironmentObject private var appState: AppState
-    @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
 
     var body: some View {
         ZStack {
@@ -45,14 +44,7 @@ struct LandingView: View {
             NavigationLink(
                 destination: LazyNavigationDestinationView(
                     SettingsScreen(mode: .global, moreSettings: {
-                        // Custom App Configurations
-                        Toggle(isOn: $showDebugFeatures) {
-                            Text(
-                                "app-configuration-show-debug-features-label",
-                                style: .titleMedium,
-                                font: .custom("AvenirNext-Regular", size: FontSize.body)
-                            )
-                        }
+                        AppSettingsView()
                     })
                 ),
                 isActive: $isShowingSettingsView) {
