@@ -107,9 +107,9 @@ struct RecentStreamsScreen: View {
                     )
                     .frame(maxWidth: 400)
                 }
+                .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
             }
             .layoutPriority(1)
-            .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(uiColor: themeManager.theme.neutral900))
         }
