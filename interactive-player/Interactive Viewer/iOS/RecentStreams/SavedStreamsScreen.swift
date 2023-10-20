@@ -65,7 +65,7 @@ struct SavedStreamsScreen: View {
                             font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote)
                         )
                         .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
+                        .listRowInsets(listRowEdgeInsets)
                         .listRowSeparator(.hidden)
                         .frame(height: Layout.spacing4x)
 
@@ -76,7 +76,7 @@ struct SavedStreamsScreen: View {
                         }
                         .onDelete(perform: viewModel.delete)
                         .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
+                        .listRowInsets(listRowEdgeInsets)
                         .listRowSeparator(.hidden)
 
                     }
@@ -90,7 +90,7 @@ struct SavedStreamsScreen: View {
                         font: .custom("AvenirNext-Medium", size: FontSize.footnote, relativeTo: .footnote)
                     )
                     .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
+                    .listRowInsets(listRowEdgeInsets)
                     .listRowSeparator(.hidden)
                     .frame(height: Layout.spacing4x)
 
@@ -104,7 +104,7 @@ struct SavedStreamsScreen: View {
                     }
                     .onDelete(perform: viewModel.delete(at:))
                     .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
+                    .listRowInsets(listRowEdgeInsets)
                     .listRowSeparator(.hidden)
                 }
                 .environment(\.defaultMinListRowHeight, 0)
@@ -129,7 +129,6 @@ struct SavedStreamsScreen: View {
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("saved-streams.title.label")
-        .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: themeManager.theme.neutral900))
         .alert("saved-streams.clear-streams.label", isPresented: $isShowingClearStreamsAlert, actions: {
@@ -169,6 +168,11 @@ struct SavedStreamsScreen: View {
                 }
             }
         }
+    }
+
+    private var listRowEdgeInsets: EdgeInsets {
+        let horizontalInset = horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x
+        return EdgeInsets(top: 0, leading: horizontalInset, bottom: 0, trailing: horizontalInset)
     }
 }
 
