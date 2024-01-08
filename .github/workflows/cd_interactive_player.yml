@@ -3,7 +3,7 @@ name: Interactive Player Build and Distribution
 on:
   push:
     branches:
-      - 'main'
+      - 'feature/DIOS-3417-pip'
     paths:
       - 'interactive-player/**'
     tags:

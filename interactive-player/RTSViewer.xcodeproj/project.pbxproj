@@ -713,7 +713,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/DolbyIO/rts-uikit-ios.git";
 			requirement = {
-				branch = main;
+				branch = "feature/add-pip-support";
 				kind = branch;
 			};
 		};
