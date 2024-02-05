@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/millicast/millicast-sdk-swift-package",
       "state" : {
-        "revision" : "f5e0abd63564f591d4fef0ab82d9e0cdee858579",
-        "version" : "1.5.0"
+        "revision" : "001f8654ba31461ecf805ae8a15e4d92efa8064e",
+        "version" : "1.7.0"
       }
     },
     {

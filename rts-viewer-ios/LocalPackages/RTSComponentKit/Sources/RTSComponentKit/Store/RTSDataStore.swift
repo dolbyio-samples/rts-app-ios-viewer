@@ -243,14 +243,35 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         updateState(to: .error(.connectError(reason: reason)))
     }
 
-    public func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?) {
+    public func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [String]?) {
         Task {
             await MainActor.run {
-                layerActiveMap = activeLayers?.filter { layer in
-                    // For H.264 there are no temporal layers and the id is set to 255. For VP8 use the first temporal layer.
-                    return layer.temporalLayerId == 0 || layer.temporalLayerId == 255
+                var layersForSelection: [MCLayerData] = []
+
+                // Simulcast active layers
+                if let simulcastLayers = activeLayers?.filter({ !$0.encodingId.isEmpty }), !simulcastLayers.isEmpty {
+                    // Select the max (best) temporal layer Id from a specific encodingId
+                    let dictionaryOfLayersMatchingEncodingId = Dictionary(grouping: simulcastLayers, by: { $0.encodingId })
+                    dictionaryOfLayersMatchingEncodingId.forEach { (_: String, layers: [MCLayerData]) in
+                        // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
+                        if let layerWithBestFrameRate = layers.first(where: { $0.temporalLayerId == $0.maxTemporalLayerId }) ?? layers.last {
+                            layersForSelection.append(layerWithBestFrameRate)
+                        }
+                    }
+                    layersForSelection.sort(by: >)
+                }
+                // Using SVC layer selection logic
+                else if let simulcastLayers = activeLayers?.filter({ $0.spatialLayerId != nil }) {
+                    let dictionaryOfLayersMatchingSpatialLayerId = Dictionary(grouping: simulcastLayers, by: { $0.spatialLayerId! })
+                    dictionaryOfLayersMatchingSpatialLayerId.forEach { (_: NSNumber, layers: [MCLayerData]) in
+                        // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
+                        if let layerWithBestFrameRate = layers.first(where: { $0.spatialLayerId == $0.maxSpatialLayerId }) ?? layers.last {
+                            layersForSelection.append(layerWithBestFrameRate)
+                        }
+                    }
                 }
 
+                layerActiveMap = layersForSelection
                 activeStreamType.removeAll()
 
                 switch layerActiveMap?.count {
@@ -339,5 +360,16 @@ extension RTSDataStore: SubscriptionManagerDelegate {
         }
 
         return codecStats.mime_type as String
+    }
+}
+
+extension MCLayerData: Comparable {
+    public static func < (lhs: MCLayerData, rhs: MCLayerData) -> Bool {
+        switch (lhs.encodingId.lowercased(), rhs.encodingId.lowercased()) {
+        case ("h", "m"), ("l", "m"), ("h", "s"), ("l", "s"), ("m", "s"):
+            return false
+        default:
+            return true
+        }
     }
 }

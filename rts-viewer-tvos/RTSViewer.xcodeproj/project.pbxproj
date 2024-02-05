@@ -679,7 +679,6 @@
 			);
 			mainGroup = 3FE90C0F26B2AF4200B206A3;
 			packageReferences = (
-				E8575E9729527B420070F53E /* XCRemoteSwiftPackageReference "millicast-sdk-swift-package" */,
 				B63736D32A3958BD0004C4EF /* XCRemoteSwiftPackageReference "rts-uikit-ios" */,
 			);
 			productRefGroup = 3FE90C1926B2AF4200B206A3 /* Products */;
@@ -1214,14 +1213,6 @@
 			requirement = {
 				kind = exactVersion;
 				version = 0.0.4;
-			};
-		};
-		E8575E9729527B420070F53E /* XCRemoteSwiftPackageReference "millicast-sdk-swift-package" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/millicast/millicast-sdk-swift-package";
-			requirement = {
-				kind = exactVersion;
-				version = 1.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

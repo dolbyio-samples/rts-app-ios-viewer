@@ -18,7 +18,7 @@ public protocol SubscriptionManagerDelegate: AnyObject {
     func onStreamInactive()
     func onStreamStopped()
     func onConnectionError(reason: String)
-    func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?)
+    func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [String]?)
 }
 
 public protocol SubscriptionManagerProtocol: AnyObject {
@@ -176,32 +176,36 @@ private extension SubscriptionManager {
 
 extension SubscriptionManager: MCSubscriberListener {
 
+    public func onDisconnected() {
+        Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onDisconnected()")
+    }
+
     public func onSubscribed() {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSubscribed()")
         delegate?.onSubscribed()
     }
 
-    public func onSubscribedError(_ reason: String!) {
+    public func onSubscribedError(_ reason: String) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSubscribedError(_ reason:)")
         delegate?.onSubscribedError(reason)
     }
 
-    public func onVideoTrack(_ track: MCVideoTrack!, withMid mid: String!) {
+    public func onVideoTrack(_ track: MCVideoTrack, withMid mid: String) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onVideoTrack(_ mid:)")
         delegate?.onVideoTrack(track, withMid: mid)
     }
 
-    public func onAudioTrack(_ track: MCAudioTrack!, withMid mid: String!) {
+    public func onAudioTrack(_ track: MCAudioTrack, withMid mid: String) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onAudioTrack(_ mid:)")
         delegate?.onAudioTrack(track, withMid: mid)
     }
 
-    public func onActive(_ streamId: String!, tracks: [String]!, sourceId: String!) {
+    public func onActive(_ streamId: String, tracks: [String], sourceId: String) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onActive(_ streamId:tracks:sourceId:)")
         delegate?.onStreamActive()
     }
 
-    public func onInactive(_ streamId: String!, sourceId: String!) {
+    public func onInactive(_ streamId: String, sourceId: String) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onInactive(_ streamId:sourceId:)")
         delegate?.onStreamInactive()
     }
@@ -211,11 +215,11 @@ extension SubscriptionManager: MCSubscriberListener {
         delegate?.onStreamStopped()
     }
 
-    public func onVad(_ mid: String!, sourceId: String!) {
+    public func onVad(_ mid: String, sourceId: String) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onVad(_ mid:sourceId:)")
     }
 
-    public func onLayers(_ mid: String!, activeLayers: [MCLayerData]!, inactiveLayers: [MCLayerData]!) {
+    public func onLayers(_ mid: String, activeLayers: [MCLayerData], inactiveLayers: [String]) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onLayers(_ mid:activeLayers:inactiveLayers:)")
         delegate?.onStreamLayers(mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers)
     }
@@ -225,16 +229,16 @@ extension SubscriptionManager: MCSubscriberListener {
         delegate?.onConnected()
     }
 
-    public func onConnectionError(_ status: Int32, withReason reason: String!) {
+    public func onConnectionError(_ status: Int32, withReason reason: String) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onConnectionError(_ status:withReason:)")
         delegate?.onConnectionError(reason: reason)
     }
 
-    public func onSignalingError(_ message: String!) {
+    public func onSignalingError(_ message: String) {
         Self.logger.debug("Delegate - \(MCSubscriberListener.self) - onSignalingError(_ message:)")
     }
 
-    public func onStatsReport(_ report: MCStatsReport!) {
+    public func onStatsReport(_ report: MCStatsReport) {
         delegate?.onStatsReport(report: report)
     }
 
