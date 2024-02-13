@@ -8,6 +8,7 @@ import Foundation
 import MillicastSDK
 
 final class MockSubscriptionManagerDelegate: SubscriptionManagerDelegate {
+    
     enum Event {
         case onSubscribed
         case onSubscribedError(reason: String)
@@ -19,7 +20,7 @@ final class MockSubscriptionManagerDelegate: SubscriptionManagerDelegate {
         case onStreamInactive
         case onStreamStopped
         case onConnectionError(reason: String)
-        case onStreamLayers(mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?)
+        case onStreamLayers(mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [String]?)
     }
 
     private(set) var events: [Event] = []
@@ -64,7 +65,7 @@ final class MockSubscriptionManagerDelegate: SubscriptionManagerDelegate {
         events.append(.onConnectionError(reason: reason))
     }
 
-    func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [MCLayerData]?) {
+    func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [String]?) {
         events.append(.onStreamLayers(mid: mid, activeLayers: activeLayers, inactiveLayers: inactiveLayers))
     }
 }
