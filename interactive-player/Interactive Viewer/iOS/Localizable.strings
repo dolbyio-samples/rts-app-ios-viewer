@@ -28,6 +28,7 @@
 
 "app-configuration-title" = "App configurations";
 "app-configuration-show-debug-features-label" = "Show debug features";
+"app-configuration-enable-pip-features-label" = "Enable Picture In Picture";
 
 /** Recent Streams Screen */
 

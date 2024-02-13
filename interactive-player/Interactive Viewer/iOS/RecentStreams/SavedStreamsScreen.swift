@@ -161,7 +161,7 @@ struct SavedStreamsScreen: View {
             if success {
                 await MainActor.run {
                     streamingScreenContext = .init(
-                        streamName: streamDetail.accountID,
+                        streamName: streamDetail.streamName,
                         accountID: streamDetail.accountID,
                         listViewPrimaryVideoQuality: streamDetail.primaryVideoQuality
                     )
