@@ -57,7 +57,7 @@ open class RTSDataStore: ObservableObject {
 
     public init(
         subscriptionManager: SubscriptionManagerProtocol = SubscriptionManager(),
-        videoRenderer: MCIosVideoRenderer = MCIosVideoRenderer()
+        videoRenderer: MCIosVideoRenderer = MCIosVideoRenderer(openGLRenderer: true)
     ) {
         self.subscriptionManager = subscriptionManager
         self.videoRenderer = videoRenderer
