@@ -49,7 +49,7 @@ final class StreamDetailInputViewModel: ObservableObject {
         primaryVideoQuality: VideoQuality,
         saveLogs: Bool,
         saveStream: Bool
-    ) async -> Bool {
+    ) -> Bool {
         guard !streamName.isEmpty, !accountID.isEmpty else {
             validationError = .emptyStreamNameOrAccountID
             return false
@@ -67,32 +67,31 @@ final class StreamDetailInputViewModel: ObservableObject {
             sdkLogPath: sdkLogPath?.path
         )
 
-        let success = await streamOrchestrator.connect(
-            streamName: streamName,
-            accountID: accountID,
-            configuration: configuration
-        )
-
-        switch (success, saveStream) {
-        case (true, true):
-            streamDataManager.saveStream(
-                .init(
-                    accountID: accountID,
-                    streamName: streamName,
-                    useDevelopmentServer: useDevelopmentServer,
-                    videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
-                    noPlayoutDelay: noPlayoutDelay,
-                    disableAudio: disableAudio,
-                    primaryVideoQuality: primaryVideoQuality,
-                    saveLogs: saveLogs
-                )
+        Task { @StreamOrchestrator [weak self] in
+            guard let self = self else { return }
+            _ = try await streamOrchestrator.connect(
+                streamName: streamName,
+                accountID: accountID,
+                configuration: configuration
             )
-        case (false, _):
-            validationError = .failedToConnect
-        default:
-            break
+
+            if saveStream {
+                self.streamDataManager.saveStream(
+                    .init(
+                        accountID: accountID,
+                        streamName: streamName,
+                        useDevelopmentServer: useDevelopmentServer,
+                        videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
+                        noPlayoutDelay: noPlayoutDelay,
+                        disableAudio: disableAudio,
+                        primaryVideoQuality: primaryVideoQuality,
+                        saveLogs: saveLogs
+                    )
+                )
+            }
         }
-        return success
+
+        return true
     }
     // swiftlint:enable function_parameter_count
 

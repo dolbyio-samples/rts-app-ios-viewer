@@ -75,17 +75,13 @@ struct RecentStreamsScreen: View {
                         VStack(spacing: Layout.spacing1x) {
                             ForEach(viewModel.topStreamDetails) { streamDetail in
                                 RecentStreamCell(streamDetail: streamDetail) {
-                                    Task {
-                                        let success = await viewModel.connect(streamDetail: streamDetail, saveLogs: streamDetail.saveLogs)
-                                        if success {
-                                            await MainActor.run {
-                                                streamingScreenContext = .init(
-                                                    streamName: streamDetail.streamName,
-                                                    accountID: streamDetail.accountID,
-                                                    listViewPrimaryVideoQuality: streamDetail.primaryVideoQuality
-                                                )
-                                            }
-                                        }
+                                    let success = viewModel.connect(streamDetail: streamDetail, saveLogs: streamDetail.saveLogs)
+                                    if success {
+                                        streamingScreenContext = .init(
+                                            streamName: streamDetail.streamName,
+                                            accountID: streamDetail.accountID,
+                                            listViewPrimaryVideoQuality: streamDetail.primaryVideoQuality
+                                        )
                                     }
                                 }
                             }

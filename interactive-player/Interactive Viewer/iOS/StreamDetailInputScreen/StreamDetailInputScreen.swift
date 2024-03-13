@@ -112,28 +112,24 @@ struct StreamDetailInputScreen: View {
 
                         Button(
                             action: {
-                                Task {
-                                    let success = await viewModel.connect(
+                                let success = viewModel.connect(
+                                    streamName: streamName,
+                                    accountID: accountID,
+                                    useDevelopmentServer: isDev,
+                                    videoJitterMinimumDelayInMs: UInt(jitterBufferDelayInMs),
+                                    noPlayoutDelay: noPlayoutDelay,
+                                    disableAudio: disableAudio,
+                                    primaryVideoQuality: primaryVideoQuality,
+                                    saveLogs: saveLogs,
+                                    saveStream: true
+                                )
+                                showAlert = !success
+                                if success {
+                                    streamingScreenContext = .init(
                                         streamName: streamName,
                                         accountID: accountID,
-                                        useDevelopmentServer: isDev,
-                                        videoJitterMinimumDelayInMs: UInt(jitterBufferDelayInMs),
-                                        noPlayoutDelay: noPlayoutDelay,
-                                        disableAudio: disableAudio,
-                                        primaryVideoQuality: primaryVideoQuality,
-                                        saveLogs: saveLogs,
-                                        saveStream: true
+                                        listViewPrimaryVideoQuality: primaryVideoQuality
                                     )
-                                    showAlert = !success
-                                    if success {
-                                        await MainActor.run {
-                                            streamingScreenContext = .init(
-                                                streamName: streamName,
-                                                accountID: accountID,
-                                                listViewPrimaryVideoQuality: primaryVideoQuality
-                                            )
-                                        }
-                                    }
                                 }
                             },
                             text: "stream-detail-input.play.button"
@@ -317,28 +313,24 @@ struct StreamDetailInputScreen: View {
                 saveLogs: false
             )
             RecentStreamCell(streamDetail: streamDetail) {
-                Task {
-                    let success = await viewModel.connect(
+                let success = viewModel.connect(
+                    streamName: streamName,
+                    accountID: accountID,
+                    useDevelopmentServer: false,
+                    videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs,
+                    noPlayoutDelay: false,
+                    disableAudio: false,
+                    primaryVideoQuality: .auto,
+                    saveLogs: false,
+                    saveStream: false
+                )
+                showAlert = !success
+                if success {
+                    streamingScreenContext = .init(
                         streamName: streamName,
                         accountID: accountID,
-                        useDevelopmentServer: false,
-                        videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs,
-                        noPlayoutDelay: false,
-                        disableAudio: false,
-                        primaryVideoQuality: .auto,
-                        saveLogs: false,
-                        saveStream: false
+                        listViewPrimaryVideoQuality: .auto
                     )
-                    showAlert = !success
-                    if success {
-                        await MainActor.run {
-                            streamingScreenContext = .init(
-                                streamName: streamName,
-                                accountID: accountID,
-                                listViewPrimaryVideoQuality: .auto
-                            )
-                        }
-                    }
                 }
             }
         }
