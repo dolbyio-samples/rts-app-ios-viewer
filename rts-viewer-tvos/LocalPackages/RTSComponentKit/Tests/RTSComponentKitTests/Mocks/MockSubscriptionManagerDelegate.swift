@@ -8,7 +8,7 @@ import Foundation
 import MillicastSDK
 
 final class MockSubscriptionManagerDelegate: SubscriptionManagerDelegate {
-    
+
     enum Event {
         case onSubscribed
         case onSubscribedError(reason: String)

@@ -81,7 +81,7 @@ final class RecentStreamsViewModel: ObservableObject {
         }
     }
 
-    func connect(streamDetail: SavedStreamDetail, saveLogs: Bool) async -> Bool {
+    func connect(streamDetail: SavedStreamDetail, saveLogs: Bool) -> Bool {
         let currentDate = dateProvider.now
         let rtcLogPath = saveLogs ? URL.rtcLogPath(for: currentDate) : nil
         let sdkLogPath = saveLogs ? URL.sdkLogPath(for: currentDate) : nil
@@ -95,17 +95,17 @@ final class RecentStreamsViewModel: ObservableObject {
             sdkLogPath: sdkLogPath?.path
         )
 
-        let success = await StreamOrchestrator.shared.connect(
-            streamName: streamDetail.streamName,
-            accountID: streamDetail.accountID,
-            configuration: configuration
-        )
+        Task { @StreamOrchestrator [weak self] in
+            guard let self else { return }
+            _ = try await StreamOrchestrator.shared.connect(
+                streamName: streamDetail.streamName,
+                accountID: streamDetail.accountID,
+                configuration: configuration
+            )
 
-        if success {
-            streamDataManager.updateLastUsedDate(for: streamDetail)
-        } else {
-            // No-op
+            self.streamDataManager.updateLastUsedDate(for: streamDetail)
         }
-        return success
+
+        return true
     }
 }

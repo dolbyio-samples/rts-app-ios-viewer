@@ -3,7 +3,7 @@ name: Interactive Player Build and Distribution
 on:
   push:
     branches:
-      - 'main'
+      - 'feature/sdk-bump-1.8.0'
     paths:
       - 'interactive-player/**'
     tags:
