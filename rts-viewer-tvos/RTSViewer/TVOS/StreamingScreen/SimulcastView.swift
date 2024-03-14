@@ -33,7 +33,9 @@ struct SimulcastView: View {
 
                         ForEach(activeStreamTypes, id: \.self) { item in
                             Button(action: {
-                                viewModel.setLayer(streamType: item)
+                                Task {
+                                    await viewModel.setLayer(streamType: item)
+                                }
                             }, label: {
                                 HStack {
                                     Text(item.rawValue.capitalized)

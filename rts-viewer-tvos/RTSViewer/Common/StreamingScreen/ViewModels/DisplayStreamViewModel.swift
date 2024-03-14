@@ -61,9 +61,9 @@ final class DisplayStreamViewModel: ObservableObject {
                 Task {
                     switch state {
                     case .connected:
-                        _ = await self.dataStore.startSubscribe()
+                        _ = try await self.dataStore.startSubscribe()
                     case .streamInactive:
-                        _ = await self.dataStore.stopSubscribe()
+                        _ = try await self.dataStore.stopSubscribe()
                         await MainActor.run {
                             self.selectedLayer = StreamType.auto
                         }
@@ -84,13 +84,14 @@ final class DisplayStreamViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] layers in
                 guard let self = self else { return }
-
                 self.activeStreamTypes = self.dataStore.activeStreamType
                 self.layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
 
                 if !self.layersDisabled && self.selectedLayer != self.dataStore.activeLayer {
                     self.selectedLayer = self.dataStore.activeLayer
-                    self.setLayer(streamType: self.selectedLayer)
+                    Task {
+                        try await self.setLayer(streamType: self.selectedLayer)
+                    }
                 }
             }
             .store(in: &subscriptions)
@@ -120,7 +121,7 @@ final class DisplayStreamViewModel: ObservableObject {
                 Task {
                     switch self.dataStore.subscribeState {
                     case .error, .disconnected:
-                        _ = await self.dataStore.connect()
+                        _ = try await self.dataStore.connect()
                     default:
                         // No-op
                         break
@@ -145,14 +146,14 @@ final class DisplayStreamViewModel: ObservableObject {
         dataStore.subscriptionView()
     }
 
-    func setLayer(streamType: StreamType) {
-        dataStore.selectLayer(streamType: streamType)
+    func setLayer(streamType: StreamType) async throws {
+        try await dataStore.selectLayer(streamType: streamType)
     }
 
-    func stopSubscribe() async {
+    func stopSubscribe() async throws {
         subscriptions.removeAll()
         timer.upstream.connect().cancel()
-        _ = await dataStore.stopSubscribe()
+        _ = try await dataStore.stopSubscribe()
     }
 
     func updateScreenSize(width: Float, height: Float) {

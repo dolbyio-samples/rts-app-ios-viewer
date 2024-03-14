@@ -27,10 +27,8 @@ struct SubscribeButton: View {
         Button(
             action: {
                 Task {
-                    let success = await dataStore.connect(streamName: streamName, accountID: accountID)
-                    await MainActor.run {
-                        completion(success)
-                    }
+                    completion(true)
+                    _ = try await dataStore.connect(streamName: streamName, accountID: accountID)
                 }
             },
             text: text,

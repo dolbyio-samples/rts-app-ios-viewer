@@ -20,21 +20,21 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .binaryTarget(
-            name: "MillicastSDK_1.8.0",
+            name: "MillicastSDK",
             path: "../MillicastSDK.xcframework"
         ),
         .target(
             name: "RTSComponentKit",
             dependencies: [
                 .product(name: "DolbyIOUIKit", package: "rts-uikit-ios"),
-                .byName(name: "MillicastSDK_1.8.0")
+                .byName(name: "MillicastSDK")
             ]
         ),
         .testTarget(
             name: "RTSComponentKitTests",
             dependencies: [
                 "RTSComponentKit",
-                .byName(name: "MillicastSDK_1.8.0")
+                .byName(name: "MillicastSDK")
             ]
         )
     ]

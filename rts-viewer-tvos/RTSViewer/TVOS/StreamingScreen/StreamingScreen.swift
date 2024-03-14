@@ -70,7 +70,7 @@ struct StreamingScreen: View {
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
             Task {
-                await viewModel.stopSubscribe()
+                try await viewModel.stopSubscribe()
             }
         }
         .navigationBarHidden(true)

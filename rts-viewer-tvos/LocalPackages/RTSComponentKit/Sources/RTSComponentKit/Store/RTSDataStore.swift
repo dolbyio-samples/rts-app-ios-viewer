@@ -47,7 +47,12 @@ open class RTSDataStore: ObservableObject {
     @Published public var activeLayer = StreamType.auto
 
     private let videoRenderer: MCIosVideoRenderer
-    private let subscriptionManager: SubscriptionManagerProtocol
+    private var subscriptionManager: SubscriptionManagerProtocol?
+    private var taskStateObservation: Task<Void, Never>?
+    private var activityObservation: Task<Void, Never>?
+    private var tracksObservation: Task<Void, Never>?
+    private var statsObservation: Task<Void, Never>?
+    private var layersObservation: Task<Void, Never>?
 
     private typealias StreamDetail = (streamName: String, accountID: String)
     private var streamDetail: StreamDetail?
@@ -55,13 +60,8 @@ open class RTSDataStore: ObservableObject {
     private var videoTrack: MCVideoTrack?
     private var statsReport: MCStatsReport?
 
-    public init(
-        subscriptionManager: SubscriptionManagerProtocol = SubscriptionManager(),
-        videoRenderer: MCIosVideoRenderer = MCIosVideoRenderer(openGLRenderer: true)
-    ) {
-        self.subscriptionManager = subscriptionManager
+    public init(videoRenderer: MCIosVideoRenderer = MCIosVideoRenderer(openGLRenderer: true)) {
         self.videoRenderer = videoRenderer
-        self.subscriptionManager.delegate = self
     }
 
     // MARK: Subscribe API methods
@@ -96,26 +96,35 @@ open class RTSDataStore: ObservableObject {
         audioTrack?.setVolume(volume)
     }
 
-    open func connect() async -> Bool {
+    open func connect() async throws -> Bool {
         guard let streamDetail = streamDetail else {
             return false
         }
 
-        return await connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
+        return try await connect(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
     }
 
-    open func connect(streamName: String, accountID: String) async -> Bool {
+    open func connect(
+        streamName: String,
+        accountID: String,
+        subscriptionManager: SubscriptionManagerProtocol = SubscriptionManager()
+    ) async throws -> Bool {
+        registerToSubscriberStreams()
+        self.subscriptionManager = subscriptionManager
         self.streamDetail = (streamName: streamName, accountID: accountID)
         self.streamName = streamName
-        return await subscriptionManager.connect(streamName: streamName, accountID: accountID)
+        return try await subscriptionManager.connect(streamName: streamName, accountID: accountID)
     }
 
-    open func startSubscribe() async -> Bool {
-        await subscriptionManager.startSubscribe()
+    open func startSubscribe() async throws -> Bool {
+        guard let subscriptionManager else { return false }
+        return try await subscriptionManager.startSubscribe()
     }
 
-    open func stopSubscribe() async -> Bool {
-        let success = await subscriptionManager.stopSubscribe()
+    open func stopSubscribe() async throws -> Bool {
+        defer { deregisterToSubscriberStreams() }
+        guard let subscriptionManager else { return false }
+        let success = try await subscriptionManager.stopSubscribe()
 
         setAudio(false)
         setVideo(false)
@@ -126,6 +135,7 @@ open class RTSDataStore: ObservableObject {
         videoTrack = nil
 
         updateState(to: .disconnected)
+        self.subscriptionManager = nil
 
         return success
     }
@@ -135,13 +145,15 @@ open class RTSDataStore: ObservableObject {
     }
 
     @discardableResult
-    open func selectLayer(streamType: StreamType) -> Bool {
+    open func selectLayer(streamType: StreamType) async throws -> Bool {
+        guard let subscriptionManager else { return false }
+
         guard layerActiveMap != nil else {
             return false
         }
 
         activeLayer = streamType
-        return subscriptionManager.selectLayer(layer: layer(for: streamType))
+        return try await subscriptionManager.selectLayer(layer: layer(for: streamType))
     }
 
 }
@@ -180,112 +192,148 @@ private extension RTSDataStore {
     }
 }
 
-// MARK: SubscriptionManagerDelegate implementation
+// MARK: Observations
 
-extension RTSDataStore: SubscriptionManagerDelegate {
+extension RTSDataStore {
 
-    public func onStreamActive() {
-        updateState(to: .streamActive)
-    }
-
-    public func onStreamInactive() {
-        updateState(to: .streamInactive)
-    }
-
-    public func onStreamStopped() {
-        layerActiveMap = nil
-        updateState(to: .streamInactive)
-    }
-
-    public func onSubscribed() {
-        updateState(to: .subscribed)
-    }
-
-    public func onSubscribedError(_ reason: String) {
-        updateState(to: .error(.subscribeError(reason: reason)))
-    }
-
-    public func onVideoTrack(_ track: MCVideoTrack, withMid mid: String) {
-        videoTrack = track
-        setVideo(true)
-        track.add(videoRenderer)
-    }
-
-    public func onAudioTrack(_ track: MCAudioTrack, withMid mid: String) {
-        audioTrack = track
-        setAudio(true)
-        // Configure the AVAudioSession with our settings.
-        Utils.configureAudioSession(isSubscriber: true)
-    }
-
-    public func onStatsReport(report: MCStatsReport) {
-        self.statsReport = report
-        let value = getStatisticsData(report: report)
+    // swiftlint:disable cyclomatic_complexity function_body_length
+    func registerToSubscriberStreams() {
         Task {
-            await MainActor.run {
-                self.statisticsData = value
-            }
-        }
+            guard let subscriptionManager else { return }
 
-        let videoWidth = videoRenderer.getWidth()
-        let videoHeight = videoRenderer.getHeight()
+            self.taskStateObservation = Task {
+                for await state in subscriptionManager.state {
+                    switch state {
+                    case .connected:
+                        updateState(to: .connected)
 
-        if frameWidth != videoWidth || frameHeight != videoHeight {
-            dimensions = Dimensions(width: videoWidth, height: videoHeight)
-        }
-    }
+                    case .disconnected:
+                        updateState(to: .disconnected)
 
-    public func onConnected() {
-        updateState(to: .connected)
-    }
+                    case .subscribed:
+                        updateState(to: .subscribed)
 
-    public func onConnectionError(reason: String) {
-        updateState(to: .error(.connectError(reason: reason)))
-    }
+                    case .connectionError(status: _, reason: let reason):
+                        updateState(to: .error(.connectError(reason: reason)))
 
-    public func onStreamLayers(_ mid: String?, activeLayers: [MCLayerData]?, inactiveLayers: [String]?) {
-        Task {
-            await MainActor.run {
-                var layersForSelection: [MCLayerData] = []
-
-                // Simulcast active layers
-                if let simulcastLayers = activeLayers?.filter({ !$0.encodingId.isEmpty }), !simulcastLayers.isEmpty {
-                    // Select the max (best) temporal layer Id from a specific encodingId
-                    let dictionaryOfLayersMatchingEncodingId = Dictionary(grouping: simulcastLayers, by: { $0.encodingId })
-                    dictionaryOfLayersMatchingEncodingId.forEach { (_: String, layers: [MCLayerData]) in
-                        // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
-                        if let layerWithBestFrameRate = layers.first(where: { $0.temporalLayerId == $0.maxTemporalLayerId }) ?? layers.last {
-                            layersForSelection.append(layerWithBestFrameRate)
-                        }
-                    }
-                    layersForSelection.sort(by: >)
-                }
-                // Using SVC layer selection logic
-                else if let simulcastLayers = activeLayers?.filter({ $0.spatialLayerId != nil }) {
-                    let dictionaryOfLayersMatchingSpatialLayerId = Dictionary(grouping: simulcastLayers, by: { $0.spatialLayerId! })
-                    dictionaryOfLayersMatchingSpatialLayerId.forEach { (_: NSNumber, layers: [MCLayerData]) in
-                        // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
-                        if let layerWithBestFrameRate = layers.first(where: { $0.spatialLayerId == $0.maxSpatialLayerId }) ?? layers.last {
-                            layersForSelection.append(layerWithBestFrameRate)
-                        }
+                    case .signalingError:
+                        break
                     }
                 }
+            }
 
-                layerActiveMap = layersForSelection
+            self.tracksObservation = Task {
+                for await trackEvent in subscriptionManager.tracks {
+                    switch trackEvent {
+                    case let .audio(track: track, mid: _):
+                        audioTrack = track
+                        setAudio(true)
+                        // Configure the AVAudioSession with our settings.
+                        Utils.configureAudioSession(isSubscriber: true)
 
-                activeStreamType.removeAll()
-
-                switch layerActiveMap?.count {
-                case 2: activeStreamType += [StreamType.auto, StreamType.high, StreamType.low]
-                case 3: activeStreamType += [StreamType.auto, StreamType.high, StreamType.medium, StreamType.low]
-                default: break
+                    case let .video(track: track, mid: _):
+                        videoTrack = track
+                        setVideo(true)
+                        track.add(videoRenderer)
+                    }
                 }
             }
+
+            self.activityObservation = Task {
+                for await acitivityEvent in subscriptionManager.activity {
+                    switch acitivityEvent {
+                    case .active:
+                        updateState(to: .streamActive)
+
+                    case .inactive:
+                        layerActiveMap = nil
+                        updateState(to: .streamInactive)
+                    }
+                }
+            }
+
+            self.layersObservation = Task {
+                for await layerEvent in subscriptionManager.layers {
+                    await MainActor.run {
+                        var layersForSelection: [MCLayerData] = []
+
+                        // Simulcast active layers
+                        let simulcastLayers = layerEvent.activeLayers.filter({ !$0.encodingId.isEmpty })
+                        let svcLayers = layerEvent.activeLayers.filter({ $0.spatialLayerId != nil })
+                        if !simulcastLayers.isEmpty {
+                            // Select the max (best) temporal layer Id from a specific encodingId
+                            let dictionaryOfLayersMatchingEncodingId = Dictionary(grouping: simulcastLayers, by: { $0.encodingId })
+                            dictionaryOfLayersMatchingEncodingId.forEach { (_: String, layers: [MCLayerData]) in
+                                // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
+                                if let layerWithBestFrameRate = layers.first(where: { $0.temporalLayerId == $0.maxTemporalLayerId }) ?? layers.last {
+                                    layersForSelection.append(layerWithBestFrameRate)
+                                }
+                            }
+                            layersForSelection.sort(by: >)
+                        }
+                        // Using SVC layer selection logic
+                        else {
+                            let dictionaryOfLayersMatchingSpatialLayerId = Dictionary(grouping: svcLayers, by: { $0.spatialLayerId! })
+                            dictionaryOfLayersMatchingSpatialLayerId.forEach { (_: NSNumber, layers: [MCLayerData]) in
+                                // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
+                                if let layerWithBestFrameRate = layers.first(where: { $0.spatialLayerId == $0.maxSpatialLayerId }) ?? layers.last {
+                                    layersForSelection.append(layerWithBestFrameRate)
+                                }
+                            }
+                        }
+
+                        layerActiveMap = layersForSelection
+
+                        activeStreamType.removeAll()
+
+                        switch layerActiveMap?.count {
+                        case 2: activeStreamType += [StreamType.auto, StreamType.high, StreamType.low]
+                        case 3: activeStreamType += [StreamType.auto, StreamType.high, StreamType.medium, StreamType.low]
+                        default: break
+                        }
+                    }
+                }
+            }
+
+            self.statsObservation = Task {
+                for await statsEvent in subscriptionManager.statsReport {
+                    let value = getStatisticsData(report: statsEvent)
+                    await MainActor.run {
+                        self.statisticsData = value
+                    }
+
+                    let videoWidth = videoRenderer.getWidth()
+                    let videoHeight = videoRenderer.getHeight()
+
+                    if frameWidth != videoWidth || frameHeight != videoHeight {
+                        dimensions = Dimensions(width: videoWidth, height: videoHeight)
+                    }
+                }
+            }
+
+            _ = await [
+                self.taskStateObservation?.value,
+                self.tracksObservation?.value,
+                self.activityObservation?.value,
+                self.layersObservation?.value,
+                self.statsObservation?.value
+            ]
         }
     }
+    // swiftlint:enable cyclomatic_complexity function_body_length
 
-    // MARK: Private Helpers
+    func deregisterToSubscriberStreams() {
+        self.taskStateObservation = nil
+        self.tracksObservation = nil
+        self.activityObservation = nil
+        self.layersObservation = nil
+        self.statsObservation = nil
+    }
+}
 
+// MARK: Private Helpers
+
+extension RTSDataStore {
     private func updateState(to state: State) {
         Task {
             await MainActor.run {

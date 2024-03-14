@@ -48,13 +48,9 @@ struct StreamDetailInputScreen: View {
                         streamName: $streamName,
                         accountID: $accountID,
                         isShowingRecentStreams: $isShowingRecentStreams) {
-                            Task.delayed(byTimeInterval: 0.60) {
-                                let success = await viewModel.connect(streamName: streamName, accountID: accountID)
-                                await MainActor.run {
-                                    isShowingStreamingView = success
-                                    viewModel.saveStream(streamName: streamName, accountID: accountID)
-                                }
-                            }
+                            viewModel.connect(streamName: streamName, accountID: accountID)
+                            isShowingStreamingView = true
+                            viewModel.saveStream(streamName: streamName, accountID: accountID)
                         }
                 }
             }
