@@ -17,12 +17,17 @@ final class StatisticsViewModel: ObservableObject {
 
     init(dataStore: RTSDataStore) {
         self.dataStore = dataStore
-        self.statisticsData = dataStore.statisticsData
 
-        dataStore.$statisticsData
+        dataStore.$state
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] stats in
-                self?.statisticsData = stats
+            .sink { [weak self] state in
+                guard let self else { return }
+                switch state {
+                case let .subscribed(state: subscribedState):
+                    self.statisticsData = subscribedState.statisticsData
+                default:
+                    self.statisticsData = nil
+                }
             }
             .store(in: &subscriptions)
     }

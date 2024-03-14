@@ -7,32 +7,28 @@ import RTSComponentKit
 import SwiftUI
 
 struct SettingsView: View {
-    let disableLayers: Bool
-    let activeStreamTypes: [StreamType]
-    let selectedLayer: StreamType
+    let videoQualityList: [VideoQuality]
+    let selectedVideoQuality: VideoQuality
+    let dataStore: RTSDataStore
 
     @Binding var showSimulcastView: Bool
-    @Binding var statsView: Bool
+    @Binding var showStatsView: Bool
     @Binding var showLiveIndicator: Bool
 
-    private let dataStore: RTSDataStore
-
     init(
-        disableLayers: Bool,
-        activeStreamTypes: [StreamType],
-        selectedLayer: StreamType,
+        videoQualityList: [VideoQuality],
+        selectedVideoQuality: VideoQuality,
+        dataStore: RTSDataStore,
         showSimulcastView: Binding<Bool>,
-        statsView: Binding<Bool>,
-        showLiveIndicator: Binding<Bool>,
-        showSettings: Binding<Bool>,
-        dataStore: RTSDataStore
+        showStatsView: Binding<Bool>,
+        showLiveIndicator: Binding<Bool>
     ) {
-        self.disableLayers = disableLayers
-        self.activeStreamTypes = activeStreamTypes
-        self.selectedLayer = selectedLayer
+        self.videoQualityList = videoQualityList
+        self.selectedVideoQuality = selectedVideoQuality
         self.dataStore = dataStore
+
         _showSimulcastView = showSimulcastView
-        _statsView = statsView
+        _showStatsView = showStatsView
         _showLiveIndicator = showLiveIndicator
     }
 
@@ -57,7 +53,7 @@ struct SettingsView: View {
                                     IconView(name: .simulcast, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
                                     Text("stream.simulcast.label")
                                     Spacer()
-                                    Text(selectedLayer.rawValue.capitalized)
+                                    Text(selectedVideoQuality.rawValue.capitalized)
                                     IconView(name: .textLink, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
                                 }
                             })
@@ -71,7 +67,7 @@ struct SettingsView: View {
                             )
                             .disabled(disableLayers)
 
-                            Toggle(isOn: $statsView, label: {
+                            Toggle(isOn: $showStatsView, label: {
                                 HStack {
                                     IconView(name: .info, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
                                     Text("stream.media-stats.label")
@@ -108,13 +104,17 @@ struct SettingsView: View {
 
             if showSimulcastView {
                 SimulcastView(
-                    activeStreamTypes: activeStreamTypes,
-                    selectedLayer: selectedLayer,
+                    videoQualityList: videoQualityList,
+                    selectedVideoQuality: selectedVideoQuality,
                     dataStore: dataStore
                 )
                 .transition(.move(edge: .trailing))
             }
         }
         .transition(.move(edge: .trailing))
+    }
+
+    var disableLayers: Bool {
+        videoQualityList.isEmpty
     }
 }

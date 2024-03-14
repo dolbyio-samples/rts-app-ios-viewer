@@ -8,10 +8,8 @@ import Combine
 import MillicastSDK
 import XCTest
 
-// swiftlint:disable type_body_length
 final class RTSDataStoreTests: XCTestCase {
 
-    private var mockVideoRenderer: MCIosVideoRenderer!
     private var mockSubscriptionManager: MockSubscriptionManager!
 
     private var dataStore: RTSDataStore!
@@ -20,271 +18,81 @@ final class RTSDataStoreTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        mockVideoRenderer = MCIosVideoRenderer()
         mockSubscriptionManager = MockSubscriptionManager()
-
-        dataStore = RTSDataStore(subscriptionManager: mockSubscriptionManager, videoRenderer: mockVideoRenderer)
+        dataStore = RTSDataStore()
     }
 
     override func tearDownWithError() throws {
         try super.tearDownWithError()
 
-        mockVideoRenderer = nil
         mockSubscriptionManager = nil
         dataStore = nil
     }
 
-    func testToggleAudioState() {
-        // Given
-        let expectation = expectation(description: "Expected to update Audio Enabled State")
-        var audioEnabledStateReturned: Bool?
-        dataStore.$isAudioEnabled
-            .dropFirst()
-            .sink { audioEnabled in
-                audioEnabledStateReturned = audioEnabled
-                expectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        dataStore.toggleAudioState()
-
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(audioEnabledStateReturned, false)
-    }
-
-    func testSetAudioEnabledToTrue() {
-        // Given
-        let expectation = expectation(description: "Expected to update Audio Enabled State")
-        var audioEnabledStateReturned: Bool?
-        dataStore.$isAudioEnabled
-            .dropFirst()
-            .sink { audioEnabled in
-                audioEnabledStateReturned = audioEnabled
-                expectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        dataStore.setAudio(true)
-
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(audioEnabledStateReturned, true)
-    }
-
-    func testSetAudioEnabledToFalse() {
-        // Given
-        let expectation = expectation(description: "Expected to update Audio Enabled State")
-        var audioEnabledStateReturned: Bool?
-        dataStore.$isAudioEnabled
-            .dropFirst()
-            .sink { audioEnabled in
-                audioEnabledStateReturned = audioEnabled
-                expectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        dataStore.setAudio(false)
-
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(audioEnabledStateReturned, false)
-    }
-
-    func testToggleVideoState() {
-        // Given
-        let expectation = expectation(description: "Expected to update Video Enabled State")
-        var videoEnabledStateReturned: Bool?
-        dataStore.$isVideoEnabled
-            .dropFirst()
-            .sink { videoEnabled in
-                videoEnabledStateReturned = videoEnabled
-                expectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        dataStore.toggleVideoState()
-
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(videoEnabledStateReturned, false)
-    }
-
-    func testSetVideoEnabledToTrue() {
-        // Given
-        let expectation = expectation(description: "Expected to update Video Enabled State")
-        var videoEnabledStateReturned: Bool?
-        dataStore.$isVideoEnabled
-            .dropFirst()
-            .sink { videoEnabled in
-                videoEnabledStateReturned = videoEnabled
-                expectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        dataStore.setVideo(true)
-
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(videoEnabledStateReturned, true)
-    }
-
-    func testSetVideoEnabledToFalse() {
-        // Given
-        let expectation = expectation(description: "Expected to update Video Enabled State")
-        var videoEnabledStateReturned: Bool?
-        dataStore.$isVideoEnabled
-            .dropFirst()
-            .sink { videoEnabled in
-                videoEnabledStateReturned = videoEnabled
-                expectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        dataStore.setVideo(false)
-
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(videoEnabledStateReturned, false)
-    }
-
-    func testConnectWithStreamNameAndAccountIDForSuccess() async {
+    func testConnectWithStreamNameAndAccountIDForSuccess() async throws {
         // Given
         mockSubscriptionManager.connectionSuccessStateToReturn = true
 
         // When
-        let success = await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID")
+        let success = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
 
         // Then
         XCTAssertTrue(success)
     }
 
-    func testConnectWithStreamNameAndAccountIDForFailure() async {
+    func testConnectWithStreamNameAndAccountIDForFailure() async throws {
         // Given
         mockSubscriptionManager.connectionSuccessStateToReturn = false
 
         // When
-        let success = await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID")
+        let success = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
 
         // Then
         XCTAssertFalse(success)
     }
 
-    func testConnectWhenThereIsNoCachedCredentials() async {
-        // Given
-        mockSubscriptionManager.connectionSuccessStateToReturn = true
-
-        // When
-        let success = await dataStore.connect()
-
-        // Then
-        XCTAssertFalse(success)
-    }
-
-    func testConnectWhenThereIsCachedCredentials() async {
-        // Given
-        mockSubscriptionManager.connectionSuccessStateToReturn = true
-        _ = await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID")
-
-        // When
-        let success = await dataStore.connect()
-
-        // Then
-        XCTAssertTrue(success)
-    }
-
-    func testStartSubscribeForSuccess() async {
+    func testStartSubscribeForSuccess() async throws {
         // Given
         mockSubscriptionManager.startSubscriptionStateToReturn = true
 
         // When
-        let success = await dataStore.startSubscribe()
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
+        let success = try await dataStore.startSubscribe()
 
         // Then
         XCTAssertTrue(success)
     }
 
-    func testStartSubscribeForFailure() async {
+    func testStartSubscribeForFailure() async throws {
         // Given
         mockSubscriptionManager.startSubscriptionStateToReturn = false
 
         // When
-        let success = await dataStore.startSubscribe()
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
+        let success = try await dataStore.startSubscribe()
 
         // Then
         XCTAssertFalse(success)
     }
 
-    func testStopSubscribeForSuccess() async {
+    func testStopSubscribeForSuccess() async throws {
         // Given
         mockSubscriptionManager.stopSubscriptionStateToReturn = true
 
-        let videoStateUpdateExpectation = expectation(description: "Expected to update Video Enabled State")
-        var videoEnabledStateReturned: Bool?
-        dataStore.$isVideoEnabled
-            .dropFirst()
-            .sink { videoEnabled in
-                videoEnabledStateReturned = videoEnabled
-                videoStateUpdateExpectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        let audioStateUpdateExpectation = expectation(description: "Expected to update Audio Enabled State")
-        var audioEnabledStateReturned: Bool?
-        dataStore.$isAudioEnabled
-            .dropFirst()
-            .sink { audioEnabled in
-                audioEnabledStateReturned = audioEnabled
-                audioStateUpdateExpectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
-        var subscriptionState: RTSDataStore.State?
-        dataStore.$subscribeState
-            .dropFirst()
-            .sink { state in
-                subscriptionState = state
-                subscriptionStateUpdateExpectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
         // When
-        let success = await dataStore.stopSubscribe()
-
-        wait(for: [videoStateUpdateExpectation, audioStateUpdateExpectation, subscriptionStateUpdateExpectation], timeout: 2.0)
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
+        let success = try await dataStore.stopSubscribe()
 
         // Then
         XCTAssertTrue(success)
-        XCTAssertEqual(subscriptionState, .disconnected)
-        XCTAssertEqual(audioEnabledStateReturned, false)
-        XCTAssertEqual(videoEnabledStateReturned, false)
     }
 
-    func testSubscriptionView() {
-        XCTAssertEqual(dataStore.subscriptionView(), mockVideoRenderer.getView())
-    }
-
-    // MARK: SubscriptionManagerDelegate implementation tests
-
-    func testOnStreamActive() {
+    func testOnStreamActive() async throws {
         // Given
         let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
         var subscriptionState: RTSDataStore.State?
-        dataStore.$subscribeState
-            .dropFirst()
+        dataStore.$state
+            .dropFirst(2)
             .sink { state in
                 subscriptionState = state
                 subscriptionStateUpdateExpectation.fulfill()
@@ -292,19 +100,22 @@ final class RTSDataStoreTests: XCTestCase {
             .store(in: &subscriptions)
 
         // When
-        dataStore.onStreamActive()
-        waitForExpectations(timeout: 2.0)
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
+        let track = MCVideoTrack()
+        mockSubscriptionManager.tracksContinuation.yield(.video(track: track, mid: "1"))
+        mockSubscriptionManager.activityContinuation.yield(.active(streamId: "streamName/accountId", tracks: ["video", "audio"], sourceId: ""))
+        await fulfillment(of: [subscriptionStateUpdateExpectation], timeout: 2.0)
 
         // Then
-        XCTAssertEqual(subscriptionState, .streamActive)
+        XCTAssertEqual(subscriptionState, .subscribed(state: .init(mainVideoTrack: track)))
     }
 
-    func testOnStreamInactive() {
+    func testOnStreamStopped() async throws {
         // Given
         let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
         var subscriptionState: RTSDataStore.State?
-        dataStore.$subscribeState
-            .dropFirst()
+        dataStore.$state
+            .dropFirst(3)
             .sink { state in
                 subscriptionState = state
                 subscriptionStateUpdateExpectation.fulfill()
@@ -312,50 +123,24 @@ final class RTSDataStoreTests: XCTestCase {
             .store(in: &subscriptions)
 
         // When
-        dataStore.onStreamInactive()
-        waitForExpectations(timeout: 2.0)
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
+
+        let track = MCVideoTrack()
+        mockSubscriptionManager.tracksContinuation.yield(.video(track: track, mid: "1"))
+        mockSubscriptionManager.activityContinuation.yield(.active(streamId: "streamName/accountId", tracks: ["video", "audio"], sourceId: ""))
+        mockSubscriptionManager.activityContinuation.yield(.inactive(streamId: "streamName/accountId", sourceId: ""))
+        await fulfillment(of: [subscriptionStateUpdateExpectation], timeout: 2.0)
 
         // Then
-        XCTAssertEqual(subscriptionState, .streamInactive)
+        XCTAssertEqual(subscriptionState, .stopped)
     }
 
-    func testOnStreamStopped() {
+    func testOnSubscribedAfterStopped() async throws {
         // Given
         let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
         var subscriptionState: RTSDataStore.State?
-        dataStore.$subscribeState
-            .dropFirst()
-            .sink { state in
-                subscriptionState = state
-                subscriptionStateUpdateExpectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        let layerActiveMapUpdateExpectation = expectation(description: "Expected to update Layer active map state")
-        var activeLayers: [MCLayerData]?
-        dataStore.$layerActiveMap
-            .dropFirst()
-            .sink { layers in
-                activeLayers = layers
-                layerActiveMapUpdateExpectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        dataStore.onStreamStopped()
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(subscriptionState, .streamInactive)
-        XCTAssertNil(activeLayers)
-    }
-
-    func testOnSubscribed() {
-        // Given
-        let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
-        var subscriptionState: RTSDataStore.State?
-        dataStore.$subscribeState
-            .dropFirst()
+        dataStore.$state
+            .dropFirst(4)
             .sink { state in
                 subscriptionState = state
                 subscriptionStateUpdateExpectation.fulfill()
@@ -363,19 +148,25 @@ final class RTSDataStoreTests: XCTestCase {
             .store(in: &subscriptions)
 
         // When
-        dataStore.onSubscribed()
-        waitForExpectations(timeout: 2.0)
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
+
+        let track = MCVideoTrack()
+        mockSubscriptionManager.tracksContinuation.yield(.video(track: track, mid: "1"))
+        mockSubscriptionManager.activityContinuation.yield(.active(streamId: "streamName/accountId", tracks: ["video", "audio"], sourceId: ""))
+        mockSubscriptionManager.activityContinuation.yield(.inactive(streamId: "streamName/accountId", sourceId: ""))
+        mockSubscriptionManager.activityContinuation.yield(.active(streamId: "streamName/accountId", tracks: ["video", "audio"], sourceId: ""))
+        await fulfillment(of: [subscriptionStateUpdateExpectation], timeout: 2.0)
 
         // Then
-        XCTAssertEqual(subscriptionState, .subscribed)
+        XCTAssertEqual(subscriptionState, .subscribed(state: .init(mainVideoTrack: track)))
     }
 
-    func testOnSubscribedError() {
+    func testConnectionError() async throws {
         // Given
         let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
         var subscriptionState: RTSDataStore.State?
-        dataStore.$subscribeState
-            .dropFirst()
+        dataStore.$state
+            .dropFirst(1)
             .sink { state in
                 subscriptionState = state
                 subscriptionStateUpdateExpectation.fulfill()
@@ -383,89 +174,74 @@ final class RTSDataStoreTests: XCTestCase {
             .store(in: &subscriptions)
 
         // When
-        let errorMessage = "Invalid Stream Information"
-        dataStore.onSubscribedError(errorMessage)
-        waitForExpectations(timeout: 2.0)
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
+
+        mockSubscriptionManager.stateContinuation.yield(.connectionError(status: 0, reason: "some error"))
+        await fulfillment(of: [subscriptionStateUpdateExpectation], timeout: 2.0)
 
         // Then
-        XCTAssertEqual(subscriptionState, .error(.subscribeError(reason: errorMessage)))
+        XCTAssertEqual(subscriptionState, .error(.connectError(status: 0, reason: "some error")))
     }
-
-    func testOnVideoTrack() {
+                       
+    func testSignalingError() async throws {
         // Given
-        let expectation = expectation(description: "Expected to update Video Enabled State")
-        var videoEnabledStateReturned: Bool?
-        dataStore.$isVideoEnabled
-            .dropFirst()
-            .sink { videoEnabled in
-                videoEnabledStateReturned = videoEnabled
-                expectation.fulfill()
+        let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
+        var subscriptionState: RTSDataStore.State?
+        dataStore.$state
+            .dropFirst(1)
+            .sink { state in
+                subscriptionState = state
+                subscriptionStateUpdateExpectation.fulfill()
             }
             .store(in: &subscriptions)
-
+        
         // When
-        let mockVideoTrack = MockMCVideoTrack()
-        let mockMid = "MockMid"
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
 
-        dataStore.onVideoTrack(mockVideoTrack, withMid: mockMid)
-        waitForExpectations(timeout: 2.0)
+        mockSubscriptionManager.stateContinuation.yield(.signalingError(reason: "signal error"))
+        await fulfillment(of: [subscriptionStateUpdateExpectation], timeout: 2.0)
 
         // Then
-        XCTAssertEqual(videoEnabledStateReturned, true)
-        XCTAssertNotNil(mockVideoTrack.addedVideoRenderer)
+        XCTAssertEqual(subscriptionState, .error(.signalingError(reason: "signal error")))
     }
 
-    func testOnAudioTrack() {
-        // Given
-        let expectation = expectation(description: "Expected to update Audio Enabled State")
-        var audioEnabledStateReturned: Bool?
-        dataStore.$isAudioEnabled
-            .dropFirst()
-            .sink { audioEnabled in
-                audioEnabledStateReturned = audioEnabled
-                expectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        let mockAudioTrack = MockMCAudioTrack()
-        let mockMid = "MockMid"
-
-        dataStore.onAudioTrack(mockAudioTrack, withMid: mockMid)
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(audioEnabledStateReturned, true)
-    }
-
-    func testOnStatsReport() {
+    func testOnStatsReport() async throws {
         // Given
         let expectation = expectation(description: "Expected to update Stats Data State")
-        var statisticsDataReturned: StatisticsData?
-        dataStore.$statisticsData
-            .dropFirst()
-            .sink { statsData in
-                statisticsDataReturned = statsData
+        var subscriptionState: RTSDataStore.State?
+        dataStore.$state
+            .dropFirst(2)
+            .sink { state in
+                subscriptionState = state
                 expectation.fulfill()
             }
             .store(in: &subscriptions)
 
         // When
-        let mockStatsReport = MCStatsReport.mock
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
 
-        dataStore.onStatsReport(report: mockStatsReport)
-        waitForExpectations(timeout: 2.0)
+        let track = MCVideoTrack()
+        mockSubscriptionManager.tracksContinuation.yield(.video(track: track, mid: "1"))
+        
+        let mockStatsReport = MCStatsReport.mock
+        mockSubscriptionManager.statsReportContinuation.yield(mockStatsReport)
+        await fulfillment(of: [expectation], timeout: 2.0)
 
         // Then
-        XCTAssertNotNil(statisticsDataReturned)
+        switch subscriptionState {
+        case let .subscribed(state: subscribedState):
+            XCTAssertEqual(subscribedState.statisticsData, dataStore.getStatisticsData(report: mockStatsReport))
+        default:
+            XCTFail("Invalid state returned")
+        }
     }
 
-    func testOnConnected() {
+    func testOnConnected() async throws {
         // Given
         let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
         var subscriptionState: RTSDataStore.State?
-        dataStore.$subscribeState
-            .dropFirst()
+        dataStore.$state
+            .dropFirst(1)
             .sink { state in
                 subscriptionState = state
                 subscriptionStateUpdateExpectation.fulfill()
@@ -473,32 +249,12 @@ final class RTSDataStoreTests: XCTestCase {
             .store(in: &subscriptions)
 
         // When
-        dataStore.onConnected()
-        waitForExpectations(timeout: 2.0)
+        _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
+
+        mockSubscriptionManager.stateContinuation.yield(.connected)
+        await fulfillment(of: [subscriptionStateUpdateExpectation], timeout: 2.0)
 
         // Then
         XCTAssertEqual(subscriptionState, .connected)
     }
-
-    func testOnConnectionError() {
-        // Given
-        let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
-        var subscriptionState: RTSDataStore.State?
-        dataStore.$subscribeState
-            .dropFirst()
-            .sink { state in
-                subscriptionState = state
-                subscriptionStateUpdateExpectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
-        // When
-        let message = "Failed to connect"
-        dataStore.onConnectionError(reason: message)
-        waitForExpectations(timeout: 2.0)
-
-        // Then
-        XCTAssertEqual(subscriptionState, .error(.connectError(reason: message)))
-    }
 }
-// swiftlint:enable type_body_length

@@ -4,6 +4,7 @@
 
 import Combine
 import Foundation
+import OSLog
 import RTSComponentKit
 import UIKit
 
@@ -15,7 +16,11 @@ final class SimulcastViewModel: ObservableObject {
         self.dataStore = dataStore
     }
 
-    func setLayer(streamType: StreamType) {
-        dataStore.selectLayer(streamType: streamType)
+    func setLayer(quality: VideoQuality) async {
+        do {
+            try await dataStore.selectLayer(videoQuality: quality)
+        } catch {
+            // No-op
+        }
     }
 }

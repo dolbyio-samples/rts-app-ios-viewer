@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct StatsInboundRtp {
+public struct StatsInboundRtp: Equatable {
     public let sid: String
     public let kind: String
     public let decoder: String?

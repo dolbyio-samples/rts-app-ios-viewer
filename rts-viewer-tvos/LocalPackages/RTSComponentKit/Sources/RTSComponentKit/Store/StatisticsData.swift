@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct StatisticsData {
+public struct StatisticsData: Equatable {
     public let roundTripTime: Double?
     public let audio: StatsInboundRtp?
     public let video: StatsInboundRtp?

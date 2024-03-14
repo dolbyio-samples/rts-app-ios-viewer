@@ -10,8 +10,11 @@ struct StreamDetailInputScreen: View {
 
     @State private var streamName: String = ""
     @State private var accountID: String = ""
+
     @State private var isShowingStreamingView: Bool = false
     @State private var isShowingRecentStreams: Bool = false
+    @State private var isShowingErrorAlert = false
+    @State private var isShowingClearStreamsAlert = false
 
     @StateObject private var viewModel: StreamDetailInputViewModel = .init()
 
@@ -25,18 +28,22 @@ struct StreamDetailInputScreen: View {
                  - in this case - controlled by the Binded `Bool` value.
                  */
 
-                NavigationLink(destination: LazyNavigationDestinationView(StreamingScreen(dataStore: viewModel.dataStore)), isActive: $isShowingStreamingView) {
+                NavigationLink(destination: StreamingScreen(dataStore: viewModel.dataStore), isActive: $isShowingStreamingView) {
                     EmptyView()
                 }
                 .hidden()
 
                 VStack {
                     StreamDetailInputBox(
-                        viewModel: viewModel,
                         streamName: $streamName,
                         accountID: $accountID,
                         isShowingStreamingView: $isShowingStreamingView,
-                        isShowingRecentStreams: $isShowingRecentStreams
+                        isShowingRecentStreams: $isShowingRecentStreams,
+                        isShowingClearStreamsAlert: $isShowingClearStreamsAlert,
+                        hasSavedStreams: viewModel.hasSavedStreams,
+                        onPlayTapped: {
+                            playStream()
+                        }
                     )
 
                     Spacer()
@@ -47,20 +54,43 @@ struct StreamDetailInputScreen: View {
                     RecentStreamsScreen(
                         streamName: $streamName,
                         accountID: $accountID,
-                        isShowingRecentStreams: $isShowingRecentStreams) {
-                            Task.delayed(byTimeInterval: 0.60) {
-                                let success = await viewModel.connect(streamName: streamName, accountID: accountID)
-                                await MainActor.run {
-                                    isShowingStreamingView = success
-                                    viewModel.saveStream(streamName: streamName, accountID: accountID)
-                                }
-                            }
-                        }
+                        isShowingRecentStreams: $isShowingRecentStreams
+                    ) {
+                        playStream()
+                    }
                 }
             }
         }
         .navigationHeaderView()
         .navigationBarHidden(true)
+        .alert("stream-detail-input.credentials-error.label", isPresented: $isShowingErrorAlert) { }
+        .alert("stream-detail-input.clear-streams.label", isPresented: $isShowingClearStreamsAlert, actions: {
+            Button(
+                "stream-detail-input.clear-streams.alert.clear.button",
+                role: .destructive,
+                action: {
+                    viewModel.clearAllStreams()
+                }
+            )
+            Button(
+                "stream-detail-input.clear-streams.alert.cancel.button",
+                role: .cancel,
+                action: {}
+            )
+        })
+    }
+
+    private func playStream() {
+        Task {
+            guard viewModel.checkIfCredentialsAreValid(streamName: streamName, accountID: accountID) else {
+                isShowingErrorAlert = true
+                return
+            }
+
+            isShowingStreamingView = true
+            viewModel.saveStream(streamName: streamName, accountID: accountID)
+            _ = try await viewModel.connect(streamName: streamName, accountID: accountID)
+        }
     }
 }
 
@@ -69,24 +99,26 @@ private struct StreamDetailInputBox: View {
     @Binding private var accountID: String
     @Binding private var isShowingStreamingView: Bool
     @Binding private var isShowingRecentStreams: Bool
-
-    @State private var showingAlert = false
-    @State private var showingClearStreamsAlert = false
-
-    @ObservedObject private var viewModel: StreamDetailInputViewModel
+    @Binding private var isShowingClearStreamsAlert: Bool
+    private let hasSavedStreams: Bool
+    private let onPlayTapped: () -> Void
 
     init(
-        viewModel: StreamDetailInputViewModel,
         streamName: Binding<String>,
         accountID: Binding<String>,
         isShowingStreamingView: Binding<Bool>,
-        isShowingRecentStreams: Binding<Bool>
+        isShowingRecentStreams: Binding<Bool>,
+        isShowingClearStreamsAlert: Binding<Bool>,
+        hasSavedStreams: Bool,
+        onPlayTapped: @escaping () -> Void
     ) {
-        self.viewModel = viewModel
-        self._streamName = streamName
-        self._accountID = accountID
-        self._isShowingStreamingView = isShowingStreamingView
-        self._isShowingRecentStreams = isShowingRecentStreams
+        _streamName = streamName
+        _accountID = accountID
+        _isShowingStreamingView = isShowingStreamingView
+        _isShowingRecentStreams = isShowingRecentStreams
+        _isShowingClearStreamsAlert = isShowingClearStreamsAlert
+        self.hasSavedStreams = hasSavedStreams
+        self.onPlayTapped = onPlayTapped
     }
 
     var body: some View {
@@ -133,7 +165,7 @@ private struct StreamDetailInputBox: View {
                         }
                         .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
-                    if viewModel.hasSavedStreams {
+                    if hasSavedStreams {
                         DolbyIOUIKit.Button(
                             action: {
                                 isShowingRecentStreams = true
@@ -143,27 +175,18 @@ private struct StreamDetailInputBox: View {
                         )
                     }
 
-                    SubscribeButton(
-                        text: "stream-detail-input.play.button",
-                        streamName: streamName,
-                        accountID: accountID,
-                        dataStore: viewModel.dataStore) { success in
-                            showingAlert = !success
-                            isShowingStreamingView = success
-                            if success {
-                                // A delay is added before saving the stream.
-                                // Workaround - the `clear stream` and `saved streams` buttons appear before the screen transition animation completes.
-                                Task.delayed(byTimeInterval: 0.50) {
-                                    await viewModel.saveStream(streamName: streamName, accountID: accountID)
-                                }
-                            }
-                        }
+                    Button(
+                        action: {
+                            onPlayTapped()
+                        },
+                        text: "stream-detail-input.play.button"
+                    )
 
-                    if viewModel.hasSavedStreams {
+                    if hasSavedStreams {
                         HStack {
                             LinkButton(
                                 action: {
-                                    showingClearStreamsAlert = true
+                                    isShowingClearStreamsAlert = true
                                 },
                                 text: "stream-detail-input.clear-stream-history.button",
                                 fontAsset: .avenirNextBold(size: FontSize.caption2, style: .caption2)
@@ -173,31 +196,13 @@ private struct StreamDetailInputBox: View {
                         }
                     }
                 }
-                .alert("stream-detail-input.credentials-error.label", isPresented: $showingAlert) { }
-                .alert("stream-detail-input.clear-streams.label", isPresented: $showingClearStreamsAlert, actions: {
-                    Button(
-                        "stream-detail-input.clear-streams.alert.clear.button",
-                        role: .destructive,
-                        action: {
-                            viewModel.clearAllStreams()
-                        }
-                    )
-                    Button(
-                        "stream-detail-input.clear-streams.alert.cancel.button",
-                        role: .cancel,
-                        action: {}
-                    )
-                })
-
                 Spacer()
                     .frame(height: Layout.spacing8x)
             }
             .padding(.all, Layout.spacing5x)
-#if os(tvOS)
             .background(Color(uiColor: UIColor.Background.black))
             .cornerRadius(Layout.cornerRadius6x)
             .frame(width: proxy.size.width / 3)
-#endif
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
