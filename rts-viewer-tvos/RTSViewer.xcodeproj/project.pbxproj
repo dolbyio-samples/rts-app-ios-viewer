@@ -1212,7 +1212,7 @@
 			repositoryURL = "https://github.com/DolbyIO/rts-uikit-ios";
 			requirement = {
 				kind = exactVersion;
-				version = 0.0.4;
+				version = 0.0.6;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
