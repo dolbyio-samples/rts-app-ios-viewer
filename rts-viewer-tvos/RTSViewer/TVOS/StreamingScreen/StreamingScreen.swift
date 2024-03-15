@@ -6,6 +6,7 @@ import DolbyIOUIKit
 import SwiftUI
 import RTSComponentKit
 import Network
+import MillicastSDK
 
 struct StreamingScreen: View {
 
@@ -39,8 +40,8 @@ struct StreamingScreen: View {
                 if showSettings {
                     SettingsView(
                         disableLayers: viewModel.layersDisabled,
-                        activeStreamTypes: viewModel.activeStreamTypes,
-                        selectedLayer: viewModel.selectedLayer,
+                        videoQualityList: viewModel.videoQualityList,
+                        selectedVideoQuality: viewModel.selectedVideoQuality,
                         showSimulcastView: $showSimulcastView,
                         statsView: $showStats,
                         showLiveIndicator: $toolbarViewModel.isLiveIndicatorEnabled,

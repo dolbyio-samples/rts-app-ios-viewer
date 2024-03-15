@@ -8,8 +8,8 @@ import SwiftUI
 
 struct SettingsView: View {
     let disableLayers: Bool
-    let activeStreamTypes: [StreamType]
-    let selectedLayer: StreamType
+    let videoQualityList: [VideoQuality]
+    let selectedVideoQuality: VideoQuality
 
     @Binding var showSimulcastView: Bool
     @Binding var statsView: Bool
@@ -19,8 +19,8 @@ struct SettingsView: View {
 
     init(
         disableLayers: Bool,
-        activeStreamTypes: [StreamType],
-        selectedLayer: StreamType,
+        videoQualityList: [VideoQuality],
+        selectedVideoQuality: VideoQuality,
         showSimulcastView: Binding<Bool>,
         statsView: Binding<Bool>,
         showLiveIndicator: Binding<Bool>,
@@ -28,8 +28,8 @@ struct SettingsView: View {
         dataStore: RTSDataStore
     ) {
         self.disableLayers = disableLayers
-        self.activeStreamTypes = activeStreamTypes
-        self.selectedLayer = selectedLayer
+        self.videoQualityList = videoQualityList
+        self.selectedVideoQuality = selectedVideoQuality
         self.dataStore = dataStore
         _showSimulcastView = showSimulcastView
         _statsView = statsView
@@ -57,7 +57,7 @@ struct SettingsView: View {
                                     IconView(name: .simulcast, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
                                     Text("stream.simulcast.label")
                                     Spacer()
-                                    Text(selectedLayer.rawValue.capitalized)
+                                    Text(selectedVideoQuality.rawValue.capitalized)
                                     IconView(name: .textLink, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
                                 }
                             })
@@ -108,8 +108,8 @@ struct SettingsView: View {
 
             if showSimulcastView {
                 SimulcastView(
-                    activeStreamTypes: activeStreamTypes,
-                    selectedLayer: selectedLayer,
+                    videoQualityList: videoQualityList,
+                    selectedVideoQuality: selectedVideoQuality,
                     dataStore: dataStore
                 )
                 .transition(.move(edge: .trailing))

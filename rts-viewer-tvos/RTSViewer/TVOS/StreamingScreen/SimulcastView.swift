@@ -7,14 +7,14 @@ import RTSComponentKit
 import SwiftUI
 
 struct SimulcastView: View {
-    let activeStreamTypes: [StreamType]
-    let selectedLayer: StreamType
+    let videoQualityList: [VideoQuality]
+    let selectedVideoQuality: VideoQuality
 
     @StateObject private var viewModel: SimulcastViewModel
 
-    init(activeStreamTypes: [StreamType], selectedLayer: StreamType, dataStore: RTSDataStore) {
-        self.activeStreamTypes = activeStreamTypes
-        self.selectedLayer = selectedLayer
+    init(videoQualityList: [VideoQuality], selectedVideoQuality: VideoQuality, dataStore: RTSDataStore) {
+        self.videoQualityList = videoQualityList
+        self.selectedVideoQuality = selectedVideoQuality
         _viewModel = StateObject(wrappedValue: SimulcastViewModel(dataStore: dataStore))
     }
 
@@ -31,16 +31,16 @@ struct SimulcastView: View {
                              )
                         ).foregroundColor(.white)
 
-                        ForEach(activeStreamTypes, id: \.self) { item in
+                        ForEach(videoQualityList, id: \.self) { item in
                             Button(action: {
                                 Task {
-                                    await viewModel.setLayer(streamType: item)
+                                    await viewModel.setLayer(quality: item)
                                 }
                             }, label: {
                                 HStack {
                                     Text(item.rawValue.capitalized)
                                     Spacer()
-                                    if item == selectedLayer {
+                                    if item == selectedVideoQuality {
                                         IconView(
                                             name: .checkmark,
                                             tintColor: Color(uiColor: UIColor.Neutral.neutral300)

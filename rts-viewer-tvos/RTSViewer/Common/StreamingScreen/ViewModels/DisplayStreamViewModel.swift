@@ -15,10 +15,11 @@ final class DisplayStreamViewModel: ObservableObject {
 
     let dataStore: RTSDataStore
 
-    @Published private(set) var selectedLayer: StreamType = .auto
+    @Published private(set) var selectedVideoQuality: VideoQuality = .auto
+    @Published private(set) var videoQualityList: [VideoQuality] = []
     @Published private(set) var layersDisabled = true
+
     @Published private(set) var isStreamActive = false
-    @Published private(set) var activeStreamTypes: [StreamType] = []
     @Published private(set) var isNetworkConnected = false
     @Published private(set) var statisticsData: StatisticsData?
     @Published private(set) var width: CGFloat = 0.0
@@ -46,7 +47,6 @@ final class DisplayStreamViewModel: ObservableObject {
         self.dataStore = dataStore
         self.persistentSettings = persistentSettings
         self.networkMonitor = networkMonitor
-        self.dataStore.activeLayer = .auto
 
         setupStateObservers()
     }
@@ -64,9 +64,6 @@ final class DisplayStreamViewModel: ObservableObject {
                         _ = try await self.dataStore.startSubscribe()
                     case .streamInactive:
                         _ = try await self.dataStore.stopSubscribe()
-                        await MainActor.run {
-                            self.selectedLayer = StreamType.auto
-                        }
                     case .disconnected:
                         await MainActor.run {
                             self.layersDisabled = true
@@ -80,26 +77,26 @@ final class DisplayStreamViewModel: ObservableObject {
             }
             .store(in: &subscriptions)
 
-        dataStore.$layerActiveMap
+        dataStore.$videoQualityList
             .receive(on: DispatchQueue.main)
             .sink { [weak self] layers in
                 guard let self = self else { return }
-                self.activeStreamTypes = self.dataStore.activeStreamType
-                self.layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
+                self.videoQualityList = layers
+                self.layersDisabled = layers.count < 2
 
-                if !self.layersDisabled && self.selectedLayer != self.dataStore.activeLayer {
-                    self.selectedLayer = self.dataStore.activeLayer
+                if !self.layersDisabled && self.selectedVideoQuality != self.dataStore.selectedVideoQuality {
+                    self.selectedVideoQuality = self.dataStore.selectedVideoQuality
                     Task {
-                        try await self.setLayer(streamType: self.selectedLayer)
+                        try await self.setLayer(quality: self.selectedVideoQuality)
                     }
                 }
             }
             .store(in: &subscriptions)
 
-        dataStore.$activeLayer
+        dataStore.$selectedVideoQuality
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] activeLayer in
-                self?.selectedLayer = activeLayer
+            .sink { [weak self] videoQuality in
+                self?.selectedVideoQuality = videoQuality
             }
             .store(in: &subscriptions)
 
@@ -142,12 +139,8 @@ final class DisplayStreamViewModel: ObservableObject {
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
 
-    var streamingView: UIView {
-        dataStore.subscriptionView()
-    }
-
-    func setLayer(streamType: StreamType) async throws {
-        try await dataStore.selectLayer(streamType: streamType)
+    func setLayer(quality: VideoQuality) async throws {
+        try await dataStore.selectLayer(videoQuality: quality)
     }
 
     func stopSubscribe() async throws {

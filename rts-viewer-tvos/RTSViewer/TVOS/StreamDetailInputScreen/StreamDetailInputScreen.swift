@@ -8,8 +8,11 @@ import RTSComponentKit
 
 struct StreamDetailInputScreen: View {
 
-    @State private var streamName: String = ""
-    @State private var accountID: String = ""
+//    @State private var streamName: String = "simulcastmultiview"
+//    @State private var accountID: String = "k9Mwad"
+    @State private var streamName: String = "prod"
+    @State private var accountID: String = "sjf6bf"
+
     @State private var isShowingStreamingView: Bool = false
     @State private var isShowingRecentStreams: Bool = false
 

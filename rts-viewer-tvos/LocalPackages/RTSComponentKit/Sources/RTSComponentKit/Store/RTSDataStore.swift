@@ -22,31 +22,33 @@ open class RTSDataStore: ObservableObject {
         case error(SubscriptionError)
     }
 
-    // Note - Publishers are exposed as settable interfaces for Debug builds
-    // So as to easy alter them from unit tests
-    // Only applies to DEBUG builds
-    #if DEBUG
-    @Published public var subscribeState: State = .disconnected
-    @Published public var isAudioEnabled: Bool = true
-    @Published public var isVideoEnabled: Bool = true
-    @Published public var statisticsData: StatisticsData?
-    @Published public var activeStreamType = [StreamType]()
-    @Published public var layerActiveMap: [MCLayerData]?
-    @Published public var dimensions: Dimensions = .init(width: 0, height: 0)
-    @Published public var streamName: String?
-    #else
-    @Published public private(set) var subscribeState: State = .disconnected
-    @Published public private(set) var isAudioEnabled: Bool = true
-    @Published public private(set) var isVideoEnabled: Bool = true
-    @Published public private(set) var statisticsData: StatisticsData?
-    @Published public private(set) var activeStreamType = [StreamType]()
-    @Published public private(set) var layerActiveMap: [MCLayerData]?
     @Published public private(set) var dimensions: Dimensions = .init(width: 0, height: 0)
-    @Published public private(set) var streamName: String?
-    #endif
-    @Published public var activeLayer = StreamType.auto
+    @Published public var subscribeState: State = .disconnected
+    @Published public var statisticsData: StatisticsData?
 
-    private let videoRenderer: MCIosVideoRenderer
+    @Published public var detailedVideoQualityList = [DetailedVideoQuality]() {
+        didSet {
+            videoQualityList = detailedVideoQualityList.map { $0.quality }
+        }
+    }
+    @Published public var videoQualityList: [VideoQuality] = []
+
+    @Published public var selectedDetailedVideoQuality = DetailedVideoQuality.auto {
+        didSet {
+            selectedVideoQuality = selectedDetailedVideoQuality.quality
+        }
+    }
+
+    public typealias StreamDetail = (streamName: String, accountID: String)
+
+    @Published public var selectedVideoQuality = VideoQuality.auto
+    @Published public var mainVideoTrack: MCVideoTrack?
+    @Published public var streamDetail: StreamDetail?
+
+    public var mainAudioTrack: MCAudioTrack?
+    private var statsReport: MCStatsReport?
+    private let videoRenderer: MCIosVideoRenderer = MCIosVideoRenderer(openGLRenderer: true)
+
     private var subscriptionManager: SubscriptionManagerProtocol?
     private var taskStateObservation: Task<Void, Never>?
     private var activityObservation: Task<Void, Never>?
@@ -54,46 +56,11 @@ open class RTSDataStore: ObservableObject {
     private var statsObservation: Task<Void, Never>?
     private var layersObservation: Task<Void, Never>?
 
-    private typealias StreamDetail = (streamName: String, accountID: String)
-    private var streamDetail: StreamDetail?
-    private var audioTrack: MCAudioTrack?
-    private var videoTrack: MCVideoTrack?
-    private var statsReport: MCStatsReport?
-
-    public init(videoRenderer: MCIosVideoRenderer = MCIosVideoRenderer(openGLRenderer: true)) {
-        self.videoRenderer = videoRenderer
-    }
-
     // MARK: Subscribe API methods
 
-    open func toggleAudioState() {
-        setAudio(!isAudioEnabled)
-    }
-
-    open func setAudio(_ enable: Bool) {
-        audioTrack?.enable(enable)
-        Task {
-            await MainActor.run {
-                isAudioEnabled = enable
-            }
-        }
-    }
-
-    open func toggleVideoState() {
-        setVideo(!isVideoEnabled)
-    }
-
-    open func setVideo(_ enable: Bool) {
-        videoTrack?.enable(enable)
-        Task {
-            await MainActor.run {
-                isVideoEnabled = enable
-            }
-        }
-    }
-
-    open func setVolume(_ volume: Double) {
-        audioTrack?.setVolume(volume)
+    public init() {
+        // Configure the AVAudioSession with our settings.
+        Utils.configureAudioSession(isSubscriber: true)
     }
 
     open func connect() async throws -> Bool {
@@ -112,7 +79,6 @@ open class RTSDataStore: ObservableObject {
         registerToSubscriberStreams()
         self.subscriptionManager = subscriptionManager
         self.streamDetail = (streamName: streamName, accountID: accountID)
-        self.streamName = streamName
         return try await subscriptionManager.connect(streamName: streamName, accountID: accountID)
     }
 
@@ -126,69 +92,22 @@ open class RTSDataStore: ObservableObject {
         guard let subscriptionManager else { return false }
         let success = try await subscriptionManager.stopSubscribe()
 
-        setAudio(false)
-        setVideo(false)
-
-        videoTrack?.remove(videoRenderer)
-
-        audioTrack = nil
-        videoTrack = nil
-
         updateState(to: .disconnected)
         self.subscriptionManager = nil
 
         return success
     }
 
-    open func subscriptionView() -> UIView {
-        videoRenderer.getView()
-    }
+    open func selectLayer(videoQuality: VideoQuality) async throws {
+        guard let subscriptionManager else { return }
 
-    @discardableResult
-    open func selectLayer(streamType: StreamType) async throws -> Bool {
-        guard let subscriptionManager else { return false }
-
-        guard layerActiveMap != nil else {
-            return false
+        guard !detailedVideoQualityList.isEmpty else {
+            return
         }
 
-        activeLayer = streamType
-        return try await subscriptionManager.selectLayer(layer: layer(for: streamType))
-    }
-
-}
-
-// MARK: Helper functions
-
-private extension RTSDataStore {
-    var frameWidth: Float {
-        dimensions.width
-    }
-
-    var frameHeight: Float {
-        dimensions.height
-    }
-
-    func layer(for streamType: StreamType) -> MCLayerData? {
-        guard let layerActiveMap = layerActiveMap else {
-            return nil
-        }
-        switch (streamType, layerActiveMap.count) {
-        case (.auto, _):
-            return nil
-        case (.high, _): // High resolution stream is always at index - 0
-            return layerActiveMap[0]
-        case (.medium, 2): // Medium resolution only exists when the active layer count is `3`
-            return nil
-        case (.medium, 3): // Medium resolution only exists when the active layer count is `3` and the index position will be 1
-            return layerActiveMap[1]
-        case (.low, 2): // Low resolution will be at Index 1 when there is a total `two` active layers
-            return layerActiveMap[1]
-        case (.low, 3): // Low resolution will be at Index 2 when there is a total `three` active layers
-            return layerActiveMap[2]
-        default:
-            return nil
-        }
+        selectedVideoQuality = videoQuality
+        selectedDetailedVideoQuality = detailedVideoQualityList.matching(videoQuality: videoQuality) ?? .auto
+        _ = try await subscriptionManager.selectLayer(layer: selectedDetailedVideoQuality.layer)
     }
 }
 
@@ -226,28 +145,29 @@ extension RTSDataStore {
                 for await trackEvent in subscriptionManager.tracks {
                     switch trackEvent {
                     case let .audio(track: track, mid: _):
-                        audioTrack = track
-                        setAudio(true)
-                        // Configure the AVAudioSession with our settings.
-                        Utils.configureAudioSession(isSubscriber: true)
+                        self.mainAudioTrack = track
 
                     case let .video(track: track, mid: _):
-                        videoTrack = track
-                        setVideo(true)
-                        track.add(videoRenderer)
+                        await MainActor.run {
+                            self.mainVideoTrack = track
+                            self.mainVideoTrack?.add(videoRenderer)
+                        }
                     }
                 }
             }
 
             self.activityObservation = Task {
-                for await acitivityEvent in subscriptionManager.activity {
-                    switch acitivityEvent {
+                for await activityEvent in subscriptionManager.activity {
+                    switch activityEvent {
                     case .active:
                         updateState(to: .streamActive)
 
                     case .inactive:
-                        layerActiveMap = nil
-                        updateState(to: .streamInactive)
+                        await MainActor.run {
+                            detailedVideoQualityList.removeAll()
+                            selectedDetailedVideoQuality = .auto
+                            self.subscribeState = .streamInactive
+                        }
                     }
                 }
             }
@@ -282,14 +202,32 @@ extension RTSDataStore {
                             }
                         }
 
-                        layerActiveMap = layersForSelection
+                        layersForSelection = layersForSelection
+                            .sorted { lhs, rhs in
+                                if let rhsLayerResolution = rhs.layerResolution, let lhsLayerResolution = lhs.layerResolution {
+                                    return rhsLayerResolution.width < lhsLayerResolution.width || rhsLayerResolution.height < rhsLayerResolution.height
+                                } else {
+                                    return rhs.bitrate < lhs.bitrate
+                                }
+                            }
 
-                        activeStreamType.removeAll()
-
-                        switch layerActiveMap?.count {
-                        case 2: activeStreamType += [StreamType.auto, StreamType.high, StreamType.low]
-                        case 3: activeStreamType += [StreamType.auto, StreamType.high, StreamType.medium, StreamType.low]
-                        default: break
+                        let totalLayers = layersForSelection.count
+                        switch totalLayers {
+                        case 2:
+                            detailedVideoQualityList = [
+                                .auto,
+                                .high(layersForSelection[0]),
+                                .low(layersForSelection[1])
+                            ]
+                        case 3...Int.max:
+                            detailedVideoQualityList = [
+                                .auto,
+                                .high(layersForSelection[0]),
+                                .medium(layersForSelection[1]),
+                                .low(layersForSelection[2])
+                            ]
+                        default:
+                            detailedVideoQualityList = [.auto]
                         }
                     }
                 }
@@ -300,13 +238,13 @@ extension RTSDataStore {
                     let value = getStatisticsData(report: statsEvent)
                     await MainActor.run {
                         self.statisticsData = value
-                    }
 
-                    let videoWidth = videoRenderer.getWidth()
-                    let videoHeight = videoRenderer.getHeight()
+                        let videoWidth = videoRenderer.getWidth()
+                        let videoHeight = videoRenderer.getHeight()
 
-                    if frameWidth != videoWidth || frameHeight != videoHeight {
-                        dimensions = Dimensions(width: videoWidth, height: videoHeight)
+                        if frameWidth != videoWidth || frameHeight != videoHeight {
+                            dimensions = Dimensions(width: videoWidth, height: videoHeight)
+                        }
                     }
                 }
             }
@@ -328,6 +266,14 @@ extension RTSDataStore {
         self.activityObservation = nil
         self.layersObservation = nil
         self.statsObservation = nil
+    }
+
+    var frameWidth: Float {
+        dimensions.width
+    }
+
+    var frameHeight: Float {
+        dimensions.height
     }
 }
 

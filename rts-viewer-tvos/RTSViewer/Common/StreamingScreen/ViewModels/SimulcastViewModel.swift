@@ -17,9 +17,9 @@ final class SimulcastViewModel: ObservableObject {
         self.dataStore = dataStore
     }
 
-    func setLayer(streamType: StreamType) async {
+    func setLayer(quality: VideoQuality) async {
         do {
-            try await dataStore.selectLayer(streamType: streamType)
+            try await dataStore.selectLayer(videoQuality: quality)
         } catch {
             Self.logger.error("💼 setLayer failed - \(error.localizedDescription)")
         }

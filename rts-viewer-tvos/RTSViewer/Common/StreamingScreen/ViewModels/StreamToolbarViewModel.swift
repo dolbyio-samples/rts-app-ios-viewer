@@ -41,10 +41,10 @@ final class StreamToolbarViewModel: ObservableObject {
             }
             .store(in: &subscriptions)
 
-        dataStore.$streamName
+        dataStore.$streamDetail
             .receive(on: DispatchQueue.main)
-            .sink {[weak self] streamName in
-                self?.streamName = streamName
+            .sink {[weak self] streamDetail in
+                self?.streamName = streamDetail?.streamName
             }
             .store(in: &subscriptions)
     }
