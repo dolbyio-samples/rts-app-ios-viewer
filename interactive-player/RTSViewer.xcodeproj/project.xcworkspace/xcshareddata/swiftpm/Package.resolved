@@ -1,5 +1,4 @@
 {
-  "originHash" : "4606023e9dcbd997d6df0d841a9f56f55990eba0aea7c1593e725929dd7279d3",
   "pins" : [
     {
       "identity" : "millicast-sdk-swift-package",
@@ -20,5 +19,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
