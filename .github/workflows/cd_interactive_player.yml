@@ -11,13 +11,13 @@ on:
 
 jobs:
   Build-And-Deploy-To-Firebase:
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1.126.0
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1.2
 

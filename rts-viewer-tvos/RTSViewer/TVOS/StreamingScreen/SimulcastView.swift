@@ -7,15 +7,15 @@ import RTSComponentKit
 import SwiftUI
 
 struct SimulcastView: View {
-    let activeStreamTypes: [StreamType]
-    let selectedLayer: StreamType
+    let videoQualityList: [VideoQuality]
+    let selectedVideoQuality: VideoQuality
 
-    @StateObject private var viewModel: SimulcastViewModel
+    private let viewModel: SimulcastViewModel
 
-    init(activeStreamTypes: [StreamType], selectedLayer: StreamType, dataStore: RTSDataStore) {
-        self.activeStreamTypes = activeStreamTypes
-        self.selectedLayer = selectedLayer
-        _viewModel = StateObject(wrappedValue: SimulcastViewModel(dataStore: dataStore))
+    init(videoQualityList: [VideoQuality], selectedVideoQuality: VideoQuality, dataStore: RTSDataStore) {
+        self.videoQualityList = videoQualityList
+        self.selectedVideoQuality = selectedVideoQuality
+        viewModel = SimulcastViewModel(dataStore: dataStore)
     }
 
     var body: some View {
@@ -31,14 +31,16 @@ struct SimulcastView: View {
                              )
                         ).foregroundColor(.white)
 
-                        ForEach(activeStreamTypes, id: \.self) { item in
+                        ForEach(videoQualityList, id: \.self) { item in
                             Button(action: {
-                                viewModel.setLayer(streamType: item)
+                                Task {
+                                    await viewModel.setLayer(quality: item)
+                                }
                             }, label: {
                                 HStack {
                                     Text(item.rawValue.capitalized)
                                     Spacer()
-                                    if item == selectedLayer {
+                                    if item == selectedVideoQuality {
                                         IconView(
                                             name: .checkmark,
                                             tintColor: Color(uiColor: UIColor.Neutral.neutral300)

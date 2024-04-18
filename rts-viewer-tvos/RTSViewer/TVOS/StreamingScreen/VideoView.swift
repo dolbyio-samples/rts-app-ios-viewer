@@ -6,21 +6,15 @@ import DolbyIOUIKit
 import Foundation
 import SwiftUI
 import RTSComponentKit
+import MillicastSDK
 
 struct VideoView: View {
-    @ObservedObject private var viewModel: DisplayStreamViewModel
 
-    init(viewModel: DisplayStreamViewModel) {
-        self.viewModel = viewModel
-    }
+    let videoTrack: MCVideoTrack
 
     var body: some View {
         GeometryReader { geometry in
-            VideoRendererView(uiView: viewModel.streamingView)
-                .onAppear {
-                    viewModel.updateScreenSize(width: Float(geometry.size.width), height: Float(geometry.size.height))
-                }
-                .frame(width: viewModel.width, height: viewModel.height)
+            MCVideoSwiftUIView(videoTrack: videoTrack, scalingMode: .aspectFit, rendererType: .sampleBuffer)
                 .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }

@@ -34,8 +34,12 @@ final class StreamDetailInputViewModel: ObservableObject {
         .store(in: &subscriptions)
     }
 
-    func connect(streamName: String, accountID: String) async -> Bool {
-        return await dataStore.connect(streamName: streamName, accountID: accountID)
+    func checkIfCredentialsAreValid(streamName: String, accountID: String) -> Bool {
+        return streamName.count > 0 && accountID.count > 0
+    }
+
+    func connect(streamName: String, accountID: String) async throws -> Bool {
+        try await dataStore.connect(streamName: streamName, accountID: accountID)
     }
 
     func saveStream(streamName: String, accountID: String) {

@@ -73,12 +73,12 @@ final class StreamDetailInputViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasSavedStreams)
     }
 
-    func testConnectWithStreamNameAndAccountID() async {
+    func testConnectWithStreamNameAndAccountID() async throws {
         // Given
         mockDataStore.connectWithCredentialsStateToReturn = true
 
         // When
-        let success = await viewModel.connect(streamName: "TestStreamName", accountID: "TestAccountID")
+        let success = try await viewModel.connect(streamName: "TestStreamName", accountID: "TestAccountID")
 
         // Then
         XCTAssertTrue(success)
@@ -87,12 +87,12 @@ final class StreamDetailInputViewModelTests: XCTestCase {
         ])
     }
 
-    func testConnectWithStreamNameAndAccountIDForFailure() async {
+    func testConnectWithStreamNameAndAccountIDForFailure() async throws {
         // Given
         mockDataStore.connectWithCredentialsStateToReturn = false
 
         // When
-        let success = await viewModel.connect(streamName: "TestStreamName", accountID: "TestAccountID")
+        let success = try await viewModel.connect(streamName: "TestStreamName", accountID: "TestAccountID")
 
         // Then
         XCTAssertFalse(success)

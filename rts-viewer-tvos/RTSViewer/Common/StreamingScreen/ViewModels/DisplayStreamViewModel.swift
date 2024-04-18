@@ -4,39 +4,35 @@
 
 import Combine
 import Foundation
+import MillicastSDK
+import os
 import RTSComponentKit
 import UIKit
 
 final class DisplayStreamViewModel: ObservableObject {
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: DisplayStreamViewModel.self)
+    )
 
-    private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
     private let persistentSettings: PersistentSettingsProtocol
     private let networkMonitor: NetworkMonitor
 
     let dataStore: RTSDataStore
 
-    @Published private(set) var selectedLayer: StreamType = .auto
-    @Published private(set) var layersDisabled = true
-    @Published private(set) var isStreamActive = false
-    @Published private(set) var activeStreamTypes: [StreamType] = []
-    @Published private(set) var isNetworkConnected = false
+    @Published private(set) var selectedVideoQuality: VideoQuality = .auto
+    @Published private(set) var videoQualityList: [VideoQuality] = []
+    @Published private(set) var videoTrack: MCVideoTrack? {
+        didSet {
+            isStreamActive = videoTrack != nil
+        }
+    }
+    @Published private(set) var isLiveIndicatorEnabled: Bool
+    @Published private(set) var isStreamActive: Bool = false
     @Published private(set) var statisticsData: StatisticsData?
-    @Published private(set) var width: CGFloat = 0.0
-    @Published private(set) var height: CGFloat = 0.0
+    @Published private(set) var isNetworkConnected: Bool = true
 
     private var subscriptions: [AnyCancellable] = []
-
-    private var screenDimension: Dimensions = .init(width: 0, height: 0) {
-        didSet {
-            recalculateVideoContentWidthAndHeight()
-        }
-    }
-
-    private var showVideoFullScreen: Bool = false {
-        didSet {
-            recalculateVideoContentWidthAndHeight()
-        }
-    }
 
     init(
         dataStore: RTSDataStore,
@@ -46,14 +42,19 @@ final class DisplayStreamViewModel: ObservableObject {
         self.dataStore = dataStore
         self.persistentSettings = persistentSettings
         self.networkMonitor = networkMonitor
-        self.dataStore.activeLayer = .auto
+        isLiveIndicatorEnabled = persistentSettings.liveIndicatorEnabled
 
         setupStateObservers()
     }
 
-    // swiftlint:disable cyclomatic_complexity function_body_length
+    func updateLiveIndicator(_ enabled: Bool) {
+        isLiveIndicatorEnabled = enabled
+    }
+
+    // swiftlint:disable function_body_length
     private func setupStateObservers() {
-        dataStore.$subscribeState
+        dataStore.$state
+            .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 guard let self = self else { return }
@@ -61,182 +62,85 @@ final class DisplayStreamViewModel: ObservableObject {
                 Task {
                     switch state {
                     case .connected:
-                        _ = await self.dataStore.startSubscribe()
-                    case .streamInactive:
-                        _ = await self.dataStore.stopSubscribe()
+                        Self.logger.debug("🎰 Connected")
+                        _ = try await self.dataStore.startSubscribe()
                         await MainActor.run {
-                            self.selectedLayer = StreamType.auto
+                            self.isNetworkConnected = true
                         }
+
+                    case let .subscribed(state: subscribedState):
+                        Self.logger.debug("🎰 Subscribed")
+                        await MainActor.run {
+                            self.videoTrack = subscribedState.mainVideoTrack
+                            self.statisticsData = subscribedState.statisticsData
+                        }
+                    case .stopped:
+                        Self.logger.debug("🎰 Stopped")
+                        await self.resetSubscribedState()
+
                     case .disconnected:
+                        Self.logger.debug("🎰 Disconnected")
+
+                    case .error(.connectError(status: 0, reason: _)):
+                        Self.logger.debug("🎰 No internet connection")
                         await MainActor.run {
-                            self.layersDisabled = true
+                            self.videoTrack = nil
+                            self.statisticsData = nil
+                            self.isNetworkConnected = false
                         }
-                    default:
-                        // No-op
-                        break
+
+                    case let .error(.connectError(status: status, reason: reason)):
+                        Self.logger.debug("🎰 Connection error - \(status), \(reason)")
+                        await self.resetSubscribedState()
+
+                    case let .error(.signalingError(reason: reason)):
+                        Self.logger.debug("🎰 Signaling error - \(reason)")
+                        await self.resetSubscribedState()
                     }
                 }
-                self.isStreamActive = (state == .streamActive)
             }
             .store(in: &subscriptions)
 
-        dataStore.$layerActiveMap
+        dataStore.$videoQualityList
             .receive(on: DispatchQueue.main)
             .sink { [weak self] layers in
                 guard let self = self else { return }
+                self.videoQualityList = layers
+                Self.logger.debug("🎥 Received layers - \(layers)")
 
-                self.activeStreamTypes = self.dataStore.activeStreamType
-                self.layersDisabled = layers.map { $0.count < 2 || $0.count > 3} ?? true
-
-                if !self.layersDisabled && self.selectedLayer != self.dataStore.activeLayer {
-                    self.selectedLayer = self.dataStore.activeLayer
-                    self.setLayer(streamType: self.selectedLayer)
-                }
-            }
-            .store(in: &subscriptions)
-
-        dataStore.$activeLayer
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] activeLayer in
-                self?.selectedLayer = activeLayer
-            }
-            .store(in: &subscriptions)
-
-        dataStore.$dimensions
-            .receive(on: DispatchQueue.main)
-            .sink {[weak self] _ in
-                guard let self = self else {
-                    return
-                }
-
-                self.recalculateVideoContentWidthAndHeight()
-            }
-            .store(in: &subscriptions)
-
-        timer
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-
-                Task {
-                    switch self.dataStore.subscribeState {
-                    case .error, .disconnected:
-                        _ = await self.dataStore.connect()
-                    default:
-                        // No-op
-                        break
+                if self.selectedVideoQuality != self.dataStore.selectedVideoQuality {
+                    self.selectedVideoQuality = self.dataStore.selectedVideoQuality
+                    Task {
+                        try await self.setLayer(quality: self.selectedVideoQuality)
                     }
                 }
             }
             .store(in: &subscriptions)
 
-        networkMonitor.startMonitoring { [weak self] success in
-            guard let self = self else { return }
+        dataStore.$selectedVideoQuality
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] videoQuality in
+                Self.logger.debug("🎥 Updated selected layer")
 
-            Task {
-                await MainActor.run {
-                    self.isNetworkConnected = success
-                }
+                self?.selectedVideoQuality = videoQuality
             }
+            .store(in: &subscriptions)
+    }
+    // swiftlint:enable function_body_length
+
+    func setLayer(quality: VideoQuality) async throws {
+        try await dataStore.selectLayer(videoQuality: quality)
+    }
+
+    func resetSubscribedState() async {
+        await MainActor.run {
+            self.videoTrack = nil
+            self.statisticsData = nil
         }
     }
-    // swiftlint:enable cyclomatic_complexity function_body_length
 
-    var streamingView: UIView {
-        dataStore.subscriptionView()
-    }
-
-    func setLayer(streamType: StreamType) {
-        dataStore.selectLayer(streamType: streamType)
-    }
-
-    func stopSubscribe() async {
+    func stopSubscribe() async throws {
         subscriptions.removeAll()
-        timer.upstream.connect().cancel()
-        _ = await dataStore.stopSubscribe()
-    }
-
-    func updateScreenSize(width: Float, height: Float) {
-        screenDimension = .init(width: width, height: height)
-    }
-
-    func showVideoInFullScreen(_ fullScreen: Bool) {
-        showVideoFullScreen = fullScreen
-    }
-
-    /** Method to propagate view width and height that will be cached and used
-        to calculate video frameWidth / frameHeight to display.
-        params: crop = true if the view should be cropped and take the whole screen
-        crop = false if the view should not be cropped.
-        width, height: current screen size
-     */
-    private func recalculateVideoContentWidthAndHeight() {
-        guard screenWidth > 0, screenHeight > 0, videoHeight > 0, videoWidth > 0 else {
-            return
-        }
-
-        let ratio = calculateAspectRatio(
-            crop: showVideoFullScreen,
-            screenWidth: screenWidth,
-            screenHeight: screenHeight,
-            frameWidth: videoWidth,
-            frameHeight: videoHeight
-        )
-
-        let scaledWidth = videoWidth * ratio
-        let scaledHeight = videoHeight * ratio
-        width = CGFloat(scaledWidth)
-        height = CGFloat(scaledHeight)
-    }
-}
-
-// MARK: Helper methods
-
-private extension DisplayStreamViewModel {
-    var videoWidth: Float {
-        dataStore.dimensions.width
-    }
-
-    var videoHeight: Float {
-        dataStore.dimensions.height
-    }
-
-    var screenWidth: Float {
-        screenDimension.width
-    }
-
-    var screenHeight: Float {
-        screenDimension.height
-    }
-
-    func calculateAspectRatio(crop: Bool, screenWidth: Float, screenHeight: Float, frameWidth: Float, frameHeight: Float) -> Float {
-        guard frameWidth > 0, frameHeight > 0 else {
-            return 0.0
-        }
-
-        var ratio: Float = 0
-        var widthHeading: Bool = true
-        if screenWidth >= frameWidth && screenHeight >= frameHeight {
-            if (screenWidth / frameWidth) < (screenHeight / frameHeight) {
-                widthHeading = !crop
-            } else {
-                widthHeading = crop
-            }
-        } else if screenWidth >= frameWidth {
-            widthHeading = crop
-        } else if screenHeight >= frameHeight {
-            widthHeading = !crop
-        } else {
-            if (screenWidth / frameWidth) > (screenHeight / frameHeight) {
-                widthHeading = crop
-            } else {
-                widthHeading = !crop
-            }
-        }
-        if widthHeading {
-            ratio = screenWidth / frameWidth
-        } else {
-            ratio = screenHeight / frameHeight
-        }
-        return ratio
+        _ = try await dataStore.stopSubscribe()
     }
 }

@@ -14,56 +14,26 @@ final class MockRTSDataStore: RTSDataStore {
         case toggleVideoState
         case setVideo(enable: Bool)
         case setVolume(volume: Double)
-        case connect
         case connectWith(streamName: String, accountID: String)
         case startSubscribe
         case stopSubscribe
         case subscriptionView
-        case selectLayer(streamType: StreamType)
+        case selectLayer(quality: VideoQuality)
     }
     private(set) var events: [Event] = []
 
-    override init(
-        subscriptionManager: SubscriptionManagerProtocol = MockSubscriptionManager(),
-        videoRenderer: MCIosVideoRenderer = MCIosVideoRenderer()
-    ) {
-        super.init(subscriptionManager: subscriptionManager, videoRenderer: videoRenderer)
-    }
-
-    override func toggleAudioState() {
-        events.append(.toggleAudioState)
-    }
-
-    override func setAudio(_ enable: Bool) {
-        events.append(.setAudio(enable: enable))
-    }
-
-    override func toggleVideoState() {
-        events.append(.toggleVideoState)
-    }
-
-    override func setVideo(_ enable: Bool) {
-        events.append(.setVideo(enable: enable))
-    }
-
-    override func setVolume(_ volume: Double) {
-        events.append(.setVolume(volume: volume))
-    }
-
-    var connectStateToReturn = true
-    override func connect() async -> Bool {
-        events.append(.connect)
-        return connectStateToReturn
-    }
-
     var connectWithCredentialsStateToReturn = true
-    override func connect(streamName: String, accountID: String) async -> Bool {
+    override func connect(
+        streamName: String,
+        accountID: String,
+        subscriptionManager: SubscriptionManagerProtocol = SubscriptionManager()
+    ) async throws -> Bool {
         events.append(.connectWith(streamName: streamName, accountID: accountID))
         return connectWithCredentialsStateToReturn
     }
 
     var startSubscribeStateToReturn = true
-    override func startSubscribe() async -> Bool {
+    override func startSubscribe() async throws -> Bool {
         events.append(.startSubscribe)
         return startSubscribeStateToReturn
     }
@@ -74,15 +44,7 @@ final class MockRTSDataStore: RTSDataStore {
         return stopSubscribeStateToReturn
     }
 
-    var subscriptionViewToReturn = UIView()
-    override func subscriptionView() -> UIView {
-        events.append(.subscriptionView)
-        return subscriptionViewToReturn
-    }
-
-    var selectLayerStateToReturn = true
-    override func selectLayer(streamType: StreamType) -> Bool {
-        events.append(.selectLayer(streamType: streamType))
-        return selectLayerStateToReturn
+    override func selectLayer(videoQuality: VideoQuality) async throws {
+        events.append(.selectLayer(quality: videoQuality))
     }
 }

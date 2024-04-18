@@ -14,7 +14,7 @@ final class SimulcastViewModelTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        mockDataStore = MockRTSDataStore(videoRenderer: MCIosVideoRenderer())
+        mockDataStore = MockRTSDataStore()
         viewModel = SimulcastViewModel(dataStore: mockDataStore)
     }
 
@@ -24,23 +24,23 @@ final class SimulcastViewModelTests: XCTestCase {
         viewModel = nil
     }
 
-    func testSetLayerWithValueHigh() {
+    func testSetLayerWithValueHigh() async {
         // When
-        viewModel.setLayer(streamType: .high)
+        await viewModel.setLayer(quality: .high)
 
         // Then
         XCTAssertEqual(mockDataStore.events, [
-            .selectLayer(streamType: .high)
+            .selectLayer(quality: .high)
         ])
     }
 
-    func testSetLayerWithValueAuto() {
+    func testSetLayerWithValueAuto() async {
         // When
-        viewModel.setLayer(streamType: .auto)
+        await viewModel.setLayer(quality: .auto)
 
         // Then
         XCTAssertEqual(mockDataStore.events, [
-            .selectLayer(streamType: .auto)
+            .selectLayer(quality: .auto)
         ])
     }
 
