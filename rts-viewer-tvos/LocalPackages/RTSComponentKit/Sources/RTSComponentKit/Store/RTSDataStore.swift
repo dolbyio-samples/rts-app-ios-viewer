@@ -160,12 +160,12 @@ extension RTSDataStore {
                     case let .active(streamId: _, tracks: _, sourceId: sourceId):
                         if self.mainSourceId == nil {
                             self.mainSourceId = sourceId
-                            
+
                             if let mainVideoTrack = self.mainVideoTrack {
                                 self.updateState(to: .subscribed(state: .init(mainVideoTrack: mainVideoTrack)))
                             }
                         }
-                        
+
                     case let .inactive(streamId: _, sourceId: sourceId):
                         if sourceId == self.mainSourceId {
                             self.detailedVideoQualityList.removeAll()
@@ -193,7 +193,6 @@ extension RTSDataStore {
                                 layersForSelection.append(layerWithBestFrameRate)
                             }
                         }
-                        layersForSelection.sort(by: >)
                     }
                     // Using SVC layer selection logic
                     else {

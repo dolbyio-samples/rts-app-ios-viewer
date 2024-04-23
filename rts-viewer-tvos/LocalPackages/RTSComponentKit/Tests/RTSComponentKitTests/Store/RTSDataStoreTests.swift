@@ -182,7 +182,7 @@ final class RTSDataStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(subscriptionState, .error(.connectError(status: 0, reason: "some error")))
     }
-                       
+
     func testSignalingError() async throws {
         // Given
         let subscriptionStateUpdateExpectation = expectation(description: "Expected to update Subscription State")
@@ -194,7 +194,7 @@ final class RTSDataStoreTests: XCTestCase {
                 subscriptionStateUpdateExpectation.fulfill()
             }
             .store(in: &subscriptions)
-        
+
         // When
         _ = try await dataStore.connect(streamName: "TestStreamName", accountID: "TestAccountID", subscriptionManager: mockSubscriptionManager)
 
@@ -222,7 +222,7 @@ final class RTSDataStoreTests: XCTestCase {
 
         let track = MCVideoTrack()
         mockSubscriptionManager.tracksContinuation.yield(.video(track: track, mid: "1"))
-        
+
         let mockStatsReport = MCStatsReport.mock
         mockSubscriptionManager.statsReportContinuation.yield(mockStatsReport)
         await fulfillment(of: [expectation], timeout: 2.0)
