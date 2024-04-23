@@ -1,0 +1,19 @@
+{
+  "images" : [
+    {
+      "filename" : "Dolby logo – DD.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "filename" : "Dolby_icon_DD.pdf",
+      "idiom" : "tv"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

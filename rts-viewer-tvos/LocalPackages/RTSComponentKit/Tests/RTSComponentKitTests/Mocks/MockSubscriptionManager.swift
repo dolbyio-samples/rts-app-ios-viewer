@@ -55,7 +55,7 @@ final class MockSubscriptionManager: SubscriptionManagerProtocol {
             layersContinuation = continuation
         }
     }
-    
+
     var connectionSuccessStateToReturn = true
     func connect(streamName: String, accountID: String) async -> Bool {
         events.append(.connect(streamName: streamName, accountID: accountID))
