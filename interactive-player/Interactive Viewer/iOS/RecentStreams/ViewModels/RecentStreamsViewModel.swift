@@ -82,6 +82,8 @@ final class RecentStreamsViewModel: ObservableObject {
     }
 
     func connect(streamDetail: SavedStreamDetail, saveLogs: Bool) -> Bool {
+        streamDataManager.updateLastUsedDate(for: streamDetail)
+
         let currentDate = dateProvider.now
         let rtcLogPath = saveLogs ? URL.rtcLogPath(for: currentDate) : nil
         let sdkLogPath = saveLogs ? URL.sdkLogPath(for: currentDate) : nil
@@ -102,8 +104,6 @@ final class RecentStreamsViewModel: ObservableObject {
                 accountID: streamDetail.accountID,
                 configuration: configuration
             )
-
-            self.streamDataManager.updateLastUsedDate(for: streamDetail)
         }
 
         return true
