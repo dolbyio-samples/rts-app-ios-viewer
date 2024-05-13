@@ -8,16 +8,16 @@ import SwiftUI
 public struct SettingsCell: View {
 
     public let action: (() -> Void)
-    public let text: LocalizedStringKey?
+    public let text: LocalizedStringKey
     public let textColor: Color
-    public var value: LocalizedStringKey?
+    public var value: LocalizedStringKey
     public let valueColor: Color
     public let bundle: Bundle?
     public let image: IconAsset?
 
-    public init(text: LocalizedStringKey? = nil,
+    public init(text: LocalizedStringKey,
                 textColor: Color = .black,
-                value: LocalizedStringKey? = nil,
+                value: LocalizedStringKey,
                 valueColor: Color = .gray,
                 image: IconAsset? = nil,
                 bundle: Bundle? = nil,
@@ -36,28 +36,25 @@ public struct SettingsCell: View {
         SwiftUI.Button(action: action) {
             HStack {
 
-                if let text = text {
-                    Text(
-                        text,
-                        bundle: bundle,
-                        font: .custom("AvenirNext-Regular", size: FontSize.body),
-                        textColor: textColor
-                    )
-                }
+                Text(
+                    text,
+                    bundle: bundle,
+                    font: .custom("AvenirNext-Regular", size: FontSize.body),
+                    textColor: textColor
+                )
 
                 Spacer()
 
-                if let value = value {
-                    Text(
-                        value,
-                        bundle: bundle,
-                        font: .custom("AvenirNext-Regular", size: FontSize.body),
-                        textColor: valueColor
-                    )
-                }
+                Text(
+                    value,
+                    bundle: bundle,
+                    font: .custom("AvenirNext-Regular", size: FontSize.body),
+                    textColor: valueColor
+                )
 
                 if let imageRight = image {
                     IconView(iconAsset: imageRight)
+                        .accessibilityLabel(text.toString())
                 }
             }
         }

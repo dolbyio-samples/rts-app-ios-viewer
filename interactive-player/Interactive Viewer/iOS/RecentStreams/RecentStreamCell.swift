@@ -66,6 +66,7 @@ struct RecentStreamCell: View {
             }
             Spacer()
             IconButton(iconAsset: .playOutlined, tintColor: .white, action: action)
+                .accessibilityLabel("\(streamDetail.streamName).PlayIconButton")
         }
         .padding(.leading, Layout.spacing3x)
         .padding(.trailing, Layout.spacing1x)

@@ -12,15 +12,17 @@ public struct SelectionsScreen: View {
     let footer: LocalizedStringKey?
     let footerBundle: Bundle?
     let onSelection: ((Int) -> Void)?
-
+    let screenName: String
     public init(settings: [SelectionsGroup.Item],
                 footer: LocalizedStringKey?,
                 footerBundle: Bundle? = nil,
-                onSelection: ((Int) -> Void)? = nil) {
+                onSelection: ((Int) -> Void)? = nil,
+                screenName: String) {
         self.settings = settings
         self.footer = footer
         self.footerBundle = footerBundle
         self.onSelection = onSelection
+        self.screenName = screenName
     }
 
     public var body: some View {
@@ -39,6 +41,7 @@ public struct SelectionsScreen: View {
                                     IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                                         presentationMode.wrappedValue.dismiss()
                                     })
+                                    .accessibilityLabel("\(screenName).BackIconButton")
                                 }
                             }
         }
@@ -55,7 +58,7 @@ struct SelectionsScreen_Previews: PreviewProvider {
                 .init(key: "Key 3", selected: false)
             ],
             footer: "testD.localized.key",
-            footerBundle: .module
+            footerBundle: .module, screenName: "PreviewScreen"
         )
     }
 }

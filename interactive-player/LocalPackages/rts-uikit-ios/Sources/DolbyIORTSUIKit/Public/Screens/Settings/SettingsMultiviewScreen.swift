@@ -13,7 +13,7 @@ struct SettingsMultiviewScreen: View {
         SelectionsScreen(settings: viewModel.multiviewSelectionItems,
                          footer: "default-multi-view-layout.footer.label",
                          footerBundle: .module,
-                         onSelection: { viewModel.selectMultiviewLayout(with: $0) })
+                         onSelection: { viewModel.selectMultiviewLayout(with: $0) }, screenName: "MultiViewScreen")
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text("default-multi-view-layout.title.label", bundle: .module)

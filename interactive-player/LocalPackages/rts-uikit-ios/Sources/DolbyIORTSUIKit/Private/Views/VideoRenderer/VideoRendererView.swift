@@ -101,6 +101,7 @@ struct VideoRendererView: View {
 
         VideoRendererViewInternal(viewModel: viewModel, viewRenderer: viewRenderer)
             .frame(width: videoSize.width, height: videoSize.height)
+            .accessibilityLabel("VideoTile")
             .overlay(alignment: .bottomLeading) {
                 sourceLabelView
             }

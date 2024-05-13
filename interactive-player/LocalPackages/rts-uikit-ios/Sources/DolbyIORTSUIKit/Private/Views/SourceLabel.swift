@@ -18,6 +18,7 @@ struct SourceLabel: View {
             .padding(.horizontal, Layout.spacing1x)
             .background(Color(uiColor: themeManager.theme.neutral400))
             .cornerRadius(Layout.cornerRadius4x)
+            .accessibilityLabel("SourceID.\(sourceId)")
     }
 }
 

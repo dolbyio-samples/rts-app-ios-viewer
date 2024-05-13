@@ -13,7 +13,7 @@ struct SettingsStreamSortOrderScreen: View {
         SelectionsScreen(settings: viewModel.streamSortOrderSelectionItems,
                          footer: "stream-sort-order.footer.label",
                          footerBundle: .module,
-                         onSelection: { viewModel.selectStreamSortOrder(with: $0) })
+                         onSelection: { viewModel.selectStreamSortOrder(with: $0) }, screenName: "StreamSortOrderScreen")
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text("stream-sort-order.title.label", bundle: .module)

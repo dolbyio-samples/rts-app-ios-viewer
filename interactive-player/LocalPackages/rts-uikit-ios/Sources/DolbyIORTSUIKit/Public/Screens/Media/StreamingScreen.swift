@@ -159,7 +159,7 @@ public struct StreamingScreen: View {
             Text(
                 verbatim: streamName,
                 font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
-            )
+            ).accessibilityLabel("StreamingScreenTitle.\(streamName)")
         }
     }
 
@@ -174,6 +174,7 @@ public struct StreamingScreen: View {
     private var settingsToolbarItem: ToolbarItem<(), some View> {
         ToolbarItem(placement: .navigationBarTrailing) {
             SettingsButton { isShowingSettingsScreen = true }
+                .accessibilityLabel("StreamingScreen.SettingButton")
         }
     }
 
