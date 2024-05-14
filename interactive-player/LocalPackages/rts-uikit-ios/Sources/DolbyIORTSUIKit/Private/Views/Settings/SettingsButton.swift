@@ -17,5 +17,6 @@ public struct SettingsButton: View {
         IconButton(iconAsset: .settings, action: {
             onAction()
         })
+        .accessibilityLabel("StreamingScreen.SettingButton")
     }
 }

@@ -13,7 +13,7 @@ struct SettingsAudioSelectionScreen: View {
         SelectionsScreen(settings: viewModel.audioSelectionsItems,
                          footer: "audio-selection.global.footer.label",
                          footerBundle: .module,
-                         onSelection: { viewModel.selectAudioSelection(with: $0) })
+                         onSelection: { viewModel.selectAudioSelection(with: $0) }, screenName: "AudioSelectionScreen")
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text("audio-selection.title.label", bundle: .module)
