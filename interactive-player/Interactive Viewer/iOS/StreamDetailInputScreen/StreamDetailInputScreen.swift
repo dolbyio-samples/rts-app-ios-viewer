@@ -261,11 +261,11 @@ struct StreamDetailInputScreen: View {
                          font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
 
                     Picker(
-                        "Primary video quality: \(primaryVideoQuality.description)",
+                        "Primary video quality: \(primaryVideoQuality.description.uppercased())",
                         selection: $primaryVideoQuality
                     ) {
                         ForEach(VideoQuality.allCases) {
-                            Text($0.description)
+                            Text($0.description.uppercased())
                                 .tag($0)
                         }
                     }
