@@ -66,7 +66,7 @@ private extension Button {
             )
         }
         .focused($isFocused)
-        .accessibilityLabel(accessibilityLabel)
+        .accessibilityIdentifier(accessibilityIdentifier)
 #if os(tvOS)
         .buttonStyle(
             ClearButtonStyle(
@@ -112,7 +112,7 @@ private extension Button {
         return attribute.backgroundColor
     }
 
-    var accessibilityLabel: String {
+    var accessibilityIdentifier: String {
         switch buttonState {
         case .default:
             return text.toString()

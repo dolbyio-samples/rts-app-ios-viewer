@@ -104,7 +104,8 @@ struct SingleStreamView: View {
                             viewRenderer: viewModel.viewRendererProvider.renderer(for: videoRendererViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                             maxWidth: maxAllowedVideoWidth,
                             maxHeight: maxAllowedVideoHeight,
-                            contentMode: .aspectFit
+                            contentMode: .aspectFit,
+                            identifier: "SingleStreamViewVideoTile.\(videoRendererViewModel.streamSource.sourceId.displayLabel)"
                         )
                         .sheet(isPresented: $isShowingStatsInfoScreen) {
                             statisticsView()

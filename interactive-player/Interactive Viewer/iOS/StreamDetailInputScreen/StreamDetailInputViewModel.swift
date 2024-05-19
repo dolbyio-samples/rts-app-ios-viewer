@@ -54,10 +54,13 @@ final class StreamDetailInputViewModel: ObservableObject {
             validationError = .emptyStreamNameOrAccountID
             return false
         }
+        let currentDate = dateProvider.now
+        let rtcLogPath = saveLogs ? URL.rtcLogPath(for: currentDate) : nil
+        let sdkLogPath = saveLogs ? URL.sdkLogPath(for: currentDate) : nil
 
         if saveStream {
-            streamDataManager.saveStream(
-                SavedStreamDetail(
+            self.streamDataManager.saveStream(
+                .init(
                     accountID: accountID,
                     streamName: streamName,
                     useDevelopmentServer: useDevelopmentServer,
@@ -69,11 +72,7 @@ final class StreamDetailInputViewModel: ObservableObject {
                 )
             )
         }
-
-        let currentDate = dateProvider.now
-        let rtcLogPath = saveLogs ? URL.rtcLogPath(for: currentDate) : nil
-        let sdkLogPath = saveLogs ? URL.sdkLogPath(for: currentDate) : nil
-
+        
         let configuration = SubscriptionConfiguration(
             useDevelopmentServer: useDevelopmentServer,
             videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,

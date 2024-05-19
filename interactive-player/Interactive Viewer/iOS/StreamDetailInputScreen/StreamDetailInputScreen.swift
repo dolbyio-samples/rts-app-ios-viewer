@@ -95,7 +95,7 @@ struct StreamDetailInputScreen: View {
 
                     VStack(spacing: Layout.spacing3x) {
                         DolbyIOUIKit.TextField(text: $streamName, placeholderText: "stream-detail-streamname-placeholder-label")
-                            .accessibilityLabel("InputScreen.StreamNameInput")
+                            .accessibilityIdentifier("InputScreen.StreamNameInput")
                             .focused($inputFocus, equals: .streamName)
                             .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
                             .submitLabel(.next)
@@ -104,7 +104,7 @@ struct StreamDetailInputScreen: View {
                             }
 
                         DolbyIOUIKit.TextField(text: $accountID, placeholderText: "stream-detail-accountid-placeholder-label")
-                            .accessibilityLabel("InputScreen.AccountIDInput")
+                            .accessibilityIdentifier("InputScreen.AccountIDInput")
                             .focused($inputFocus, equals: .accountID)
                             .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
                             .submitLabel(.done)
@@ -162,7 +162,7 @@ struct StreamDetailInputScreen: View {
                     IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                         presentationMode.wrappedValue.dismiss()
                     })
-                    .accessibilityLabel("InputScreen.BackIconButton")
+                    .accessibilityIdentifier("InputScreen.BackIconButton")
                 }
             }
 
@@ -171,7 +171,7 @@ struct StreamDetailInputScreen: View {
                     IconButton(iconAsset: .settings, action: {
                         isShowingSettingsView = true
                     })
-                    .accessibilityLabel("InputScreen.SettingButton")
+                    .accessibilityIdentifier("InputScreen.SettingButton")
                 }
             }
 

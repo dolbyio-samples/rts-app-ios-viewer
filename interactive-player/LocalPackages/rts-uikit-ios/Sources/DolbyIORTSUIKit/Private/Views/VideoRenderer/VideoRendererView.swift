@@ -13,6 +13,7 @@ struct VideoRendererView: View {
     private let maxWidth: CGFloat
     private let maxHeight: CGFloat
     private let contentMode: VideoRendererContentMode
+    private let identifier: String
     private let action: ((StreamSource) -> Void)?
     @State var isViewVisible = false
 
@@ -25,6 +26,7 @@ struct VideoRendererView: View {
         maxWidth: CGFloat,
         maxHeight: CGFloat,
         contentMode: VideoRendererContentMode,
+        identifier: String,
         action: ((StreamSource) -> Void)? = nil
     ) {
         self.viewModel = viewModel
@@ -32,6 +34,7 @@ struct VideoRendererView: View {
         self.maxWidth = maxWidth
         self.maxHeight = maxHeight
         self.contentMode = contentMode
+        self.identifier = identifier
         self.action = action
     }
 
@@ -56,6 +59,7 @@ struct VideoRendererView: View {
     private var sourceLabelView: some View {
         if viewModel.showSourceLabel {
             SourceLabel(sourceId: viewModel.streamSource.sourceId.displayLabel)
+                .accessibilityIdentifier("SourceID.\(viewModel.streamSource.sourceId.displayLabel)")
                 .padding(Layout.spacing0_5x)
         } else {
             EmptyView()
@@ -100,8 +104,8 @@ struct VideoRendererView: View {
         }()
 
         VideoRendererViewInternal(viewModel: viewModel, viewRenderer: viewRenderer)
+            .accessibilityIdentifier(identifier)
             .frame(width: videoSize.width, height: videoSize.height)
-            .accessibilityLabel("VideoTile")
             .overlay(alignment: .bottomLeading) {
                 sourceLabelView
             }

@@ -212,7 +212,8 @@ struct ListView: View {
             viewRenderer: viewModel.mainViewRendererProvider.renderer(for: primaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
             maxWidth: maxAllowedMainVideoSize.width,
             maxHeight: maxAllowedMainVideoSize.height,
-            contentMode: .aspectFit
+            contentMode: .aspectFit,
+            identifier: "PrimaryVideoTile.\(primaryVideoViewModel.streamSource.sourceId.displayLabel)"
         ) { source in
             onPrimaryVideoSelection(source)
         }
@@ -229,7 +230,8 @@ struct ListView: View {
                 viewRenderer: viewModel.thumbnailViewRendererProvider.renderer(for: secondaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                 maxWidth: maxAllowedSubVideoWidth,
                 maxHeight: maxAllowedSubVideoHeight,
-                contentMode: .aspectFit
+                contentMode: .aspectFit,
+                identifier: "SecondaryVideoTile.\(secondaryVideoViewModel.streamSource.sourceId.displayLabel)"
             ) { source in
                 onSecondaryVideoSelection(source)
             }
@@ -259,7 +261,8 @@ struct ListView: View {
                     viewRenderer: viewModel.thumbnailViewRendererProvider.renderer(for: secondaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                     maxWidth: .infinity,
                     maxHeight: availableHeight,
-                    contentMode: .aspectFit
+                    contentMode: .aspectFit,
+                    identifier: "SecondaryVideoTile.\(secondaryVideoViewModel.streamSource.sourceId.displayLabel)"
                 ) { source in
                     onSecondaryVideoSelection(source)
                 }
