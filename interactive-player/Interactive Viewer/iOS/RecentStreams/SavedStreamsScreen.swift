@@ -50,7 +50,7 @@ struct SavedStreamsScreen: View {
                         IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                             presentation.wrappedValue.dismiss()
                         })
-                        .accessibilityLabel("SavedStreamsScreen.BackIconButton")
+                        .accessibilityIdentifier("SavedStreamsScreen.BackIconButton")
                     }
                 }
                 .edgesIgnoringSafeArea(.all)
@@ -115,14 +115,14 @@ struct SavedStreamsScreen: View {
                         IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                             presentation.wrappedValue.dismiss()
                         })
-                        .accessibilityLabel("SavedStreamsScreen.BackIconButton")
+                        .accessibilityIdentifier("SavedStreamsScreen.BackIconButton")
                     }
 
                     ToolbarItem(placement: .navigationBarTrailing) {
                         IconButton(iconAsset: .delete, tintColor: .white, action: {
                             isShowingClearStreamsAlert = true
                         })
-                        .accessibilityLabel("SavedStreamsScreen.DeleteIconButton")
+                        .accessibilityIdentifier("SavedStreamsScreen.DeleteIconButton")
                     }
                 }
                 .frame(maxWidth: 600)
@@ -142,13 +142,13 @@ struct SavedStreamsScreen: View {
                     viewModel.clearAllStreams()
                 }
             )
-            .accessibilityLabel("SavedStreamsScreen.ClearButton")
+            .accessibilityIdentifier("SavedStreamsScreen.ClearButton")
             Button(
                 "saved-streams.clear-streams.alert.cancel.button",
                 role: .cancel,
                 action: {}
             )
-            .accessibilityLabel("SavedStreamsScreen.CancelButton")
+            .accessibilityIdentifier("SavedStreamsScreen.CancelButton")
         })
         .fullScreenCover(item: $streamingScreenContext) { context in
             StreamingScreen(

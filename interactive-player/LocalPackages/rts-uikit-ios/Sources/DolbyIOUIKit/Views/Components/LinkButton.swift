@@ -49,7 +49,7 @@ public struct LinkButton: View {
                 )
         }
         .focused($isFocused)
-        .accessibilityLabel(text)
+        .accessibilityIdentifier(text.toString())
 #if os(tvOS)
         .buttonStyle(
             ClearButtonStyle(

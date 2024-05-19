@@ -14,7 +14,7 @@ final class StatsInfoViewModel: ObservableObject {
     }
 
     struct StatData: Identifiable {
-        var id = UUID()
+        var id: String { key }
         var key: String
         var value: String
     }

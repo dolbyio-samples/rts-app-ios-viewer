@@ -102,7 +102,7 @@ public struct SettingsScreen<Content: View>: View {
                     IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                         presentationMode.wrappedValue.dismiss()
                     })
-                    .accessibilityLabel("SettingsScreen.BackIconButton")
+                    .accessibilityIdentifier("SettingsScreen.BackIconButton")
                 }
             }
             .listStyle(.plain)

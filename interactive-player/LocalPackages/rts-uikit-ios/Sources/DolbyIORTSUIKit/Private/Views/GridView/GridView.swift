@@ -75,7 +75,8 @@ struct GridView: View {
                         viewRenderer: viewModel.viewRendererProvider.renderer(for: videoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                         maxWidth: maxAllowedSubVideoWidth,
                         maxHeight: maxAllowedSubVideoHeight,
-                        contentMode: .aspectFit
+                        contentMode: .aspectFit,
+                        identifier: "GridViewVideoTile.\(videoViewModel.streamSource.sourceId.displayLabel)"
                     ) { source in
                         onVideoSelection(source)
                     }
@@ -98,7 +99,8 @@ struct GridView: View {
                         viewRenderer: viewModel.viewRendererProvider.renderer(for: videoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
                         maxWidth: .infinity,
                         maxHeight: availableHeight / CGFloat(rowsCount),
-                        contentMode: .aspectFit
+                        contentMode: .aspectFit,
+                        identifier: "GridViewVideoTile.\(videoViewModel.streamSource.sourceId.displayLabel)"
                     ) { source in
                         onVideoSelection(source)
                     }

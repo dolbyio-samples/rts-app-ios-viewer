@@ -57,10 +57,13 @@ struct StatisticsInfoView: View {
                         Text(verbatim: item.key, font: fontTable)
                             .foregroundColor(Color(theme.neutral200))
                             .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
-
+                            .accessibilityIdentifier("Key.\(item.key)")
+                            .accessibilityValue(item.key)
                         Text(verbatim: item.value, font: fontTableValue)
                             .foregroundColor(Color(theme.onBackground))
                             .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
+                            .accessibilityIdentifier("Value.\(item.key)")
+                            .accessibilityValue(item.value)
                     }
                     .padding([.top], Layout.spacing0_5x)
                 }

@@ -41,7 +41,7 @@ public struct SelectionsScreen: View {
                                     IconButton(iconAsset: .chevronLeft, tintColor: .white, action: {
                                         presentationMode.wrappedValue.dismiss()
                                     })
-                                    .accessibilityLabel("\(screenName).BackIconButton")
+                                    .accessibilityIdentifier("\(screenName).BackIconButton")
                                 }
                             }
         }

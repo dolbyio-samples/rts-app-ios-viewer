@@ -72,7 +72,7 @@ struct LandingView: View {
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 SettingsButton { isShowingSettingsView = true }
-                    .accessibilityLabel(
+                    .accessibilityIdentifier(
                         viewModel.hasSavedStreams
                         ? "RecentScreen.SettingButton"
                         : "InputScreen.SettingButton"

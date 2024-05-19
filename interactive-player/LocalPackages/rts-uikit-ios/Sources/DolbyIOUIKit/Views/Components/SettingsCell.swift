@@ -36,25 +36,29 @@ public struct SettingsCell: View {
         SwiftUI.Button(action: action) {
             HStack {
 
-                Text(
-                    text,
-                    bundle: bundle,
-                    font: .custom("AvenirNext-Regular", size: FontSize.body),
-                    textColor: textColor
-                )
+                 
+                    Text(
+                        text,
+                        bundle: bundle,
+                        font: .custom("AvenirNext-Regular", size: FontSize.body),
+                        textColor: textColor
+                    )
+                
 
                 Spacer()
 
-                Text(
-                    value,
-                    bundle: bundle,
-                    font: .custom("AvenirNext-Regular", size: FontSize.body),
-                    textColor: valueColor
-                )
+                
+                    Text(
+                        value,
+                        bundle: bundle,
+                        font: .custom("AvenirNext-Regular", size: FontSize.body),
+                        textColor: valueColor
+                    )
+                
 
                 if let imageRight = image {
                     IconView(iconAsset: imageRight)
-                        .accessibilityLabel(text.toString())
+                        .accessibilityIdentifier(text.toString())
                 }
             }
         }

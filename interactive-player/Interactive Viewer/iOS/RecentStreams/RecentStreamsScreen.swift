@@ -102,7 +102,7 @@ struct RecentStreamsScreen: View {
                         text: "recent-streams.play-new.button"
                     )
                     .frame(maxWidth: 400)
-                    .accessibilityLabel("RecentStreamsScreen.PlayNewButton")
+                    .accessibilityIdentifier("RecentStreamsScreen.PlayNewButton")
                 }
                 .padding([.leading, .trailing], horizontalSizeClass == .regular ? Layout.spacing5x : Layout.spacing3x)
             }
