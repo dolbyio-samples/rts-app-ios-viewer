@@ -19,7 +19,7 @@ let package = Package(
             targets: ["DolbyIORTSUIKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/millicast/millicast-sdk-swift-package", exact: "1.8.3")
+        .package(url: "https://github.com/millicast/millicast-sdk-swift-package", exact: "1.8.5")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
