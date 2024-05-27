@@ -8,6 +8,7 @@ on:
       - 'rts-viewer-tvos/**'
     tags:
       - '*'
+  workflow_dispatch:
 
 jobs:
   Build-And-Deploy-TVOS-App-To-Appstore:
@@ -39,13 +40,13 @@ jobs:
           bundle exec fastlane build_and_deploy_to_appstore --env tvos-appstore build_number:$GITHUB_RUN_NUMBER
 
   Build-And-Deploy-iOS-App-To-Appstore:
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1.126.0
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1.2
 
