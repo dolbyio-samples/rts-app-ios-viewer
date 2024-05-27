@@ -72,7 +72,7 @@ final class StreamDetailInputViewModel: ObservableObject {
                 )
             )
         }
-        
+
         let configuration = SubscriptionConfiguration(
             useDevelopmentServer: useDevelopmentServer,
             videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
