@@ -107,9 +107,6 @@ struct SingleStreamView: View {
                             contentMode: .aspectFit,
                             identifier: "SingleStreamViewVideoTile.\(videoRendererViewModel.streamSource.sourceId.displayLabel)"
                         )
-                        .sheet(isPresented: $isShowingStatsInfoScreen) {
-                            statisticsView()
-                        }
                         .tag(videoRendererViewModel.streamSource.id)
                         .frame(width: proxy.size.width, height: proxy.size.height)
                     }
@@ -122,6 +119,9 @@ struct SingleStreamView: View {
                 .overlay(alignment: .bottom) {
                     bottomToolBarView
                         .offset(x: 0, y: showScreenControls ? 0 : Animation.offset)
+                }
+                .sheet(isPresented: $isShowingStatsInfoScreen) {
+                    statisticsView()
                 }
                 .onAppear {
                     showControlsAndObserveInteractions()
