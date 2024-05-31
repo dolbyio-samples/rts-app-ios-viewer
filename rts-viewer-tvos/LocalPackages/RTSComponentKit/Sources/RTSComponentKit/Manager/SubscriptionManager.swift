@@ -2,107 +2,194 @@
 //  SubscriptionManager.swift
 //
 
-import AVFoundation
+import Combine
 import Foundation
 import MillicastSDK
 import os
+import SwiftUI
 
-public protocol SubscriptionManagerProtocol: AnyObject {
-    var state: AsyncStream<MCSubscriber.State> { get }
-    var statsReport: AsyncStream<MCStatsReport> { get }
-    var activity: AsyncStream<MCSubscriber.ActivityEvent> { get }
-    var tracks: AsyncStream<TrackEvent> { get }
-    var layers: AsyncStream<LayersEvent> { get }
-
-    func connect(streamName: String, accountID: String) async throws -> Bool
-    func startSubscribe() async throws -> Bool
-    func stopSubscribe() async throws -> Bool
-    func selectLayer(layer: MCLayerData?) async throws -> Bool
-}
-
-public final class SubscriptionManager: SubscriptionManagerProtocol {
+public actor SubscriptionManager: ObservableObject {
     private static let logger = Logger(
         subsystem: Bundle.module.bundleIdentifier!,
         category: String(describing: SubscriptionManager.self)
     )
 
-    private let subscriber: MCSubscriber
-
-    public lazy var state: AsyncStream<MCSubscriber.State> = subscriber.state()
-    public lazy var statsReport: AsyncStream<MCStatsReport> = subscriber.statsReport()
-    public lazy var activity: AsyncStream<MCSubscriber.ActivityEvent> = subscriber.activity()
-    public lazy var tracks: AsyncStream<TrackEvent> = subscriber.tracks()
-    public lazy var layers: AsyncStream<LayersEvent> = subscriber.layers()
-
-    public init() {
-        subscriber = MCSubscriber()
+    public enum SubscriptionError: Error, Equatable {
+        case signalingError(reason: String)
+        case connectError(status: Int32, reason: String)
     }
 
-    public func connect(streamName: String, accountID: String) async throws -> Bool {
-        Self.logger.debug("Start a new connect request")
+    public enum State: Equatable {
+        case subscribed(sources: [Source])
+        case stopped
+        case error(SubscriptionError)
+    }
 
+    @Published public var state: State = .stopped
+    @Published public var statistics: StatisticsReport?
+
+    private var subscriber: MCSubscriber?
+    private var sourceBuilder = SourceBuilder()
+
+    private var subscriberEventObservationTasks: [Task<Void, Never>] = []
+    private var sourceSubscription: AnyCancellable?
+
+    // MARK: Subscribe API methods
+
+    public init() {
+        // Configure the AVAudioSession with our settings.
+        AVAudioSession.configure()
+    }
+
+    public func subscribe(streamName: String, accountID: String) async throws {
+        let subscriber = MCSubscriber()
+        self.subscriber = subscriber
+
+        registerToSubscriberEvents()
+
+        Self.logger.debug("Start a new connect request")
         let isConnected = await subscriber.isConnected()
         let isSubscribed = await subscriber.isSubscribed()
+
         guard !isSubscribed, !isConnected else {
             Self.logger.debug("Returning as the subscriber is already subscribed or connected")
-            return false
+            throw "Returning as the subscriber is already subscribed or connected"
         }
 
         try await subscriber.setCredentials(makeCredentials(streamName: streamName, accountID: accountID))
-
         try await subscriber.connect()
-
         Self.logger.debug("Connection successful")
-        return true
-    }
-
-    public func startSubscribe() async throws -> Bool {
-        Self.logger.debug("Start a subscription")
-
-        let isConnected = await subscriber.isConnected()
-        guard isConnected else {
-            Self.logger.debug("Returning as the subscriber is not connected")
-            return false
-        }
-
-        let isSubscribed = await subscriber.isSubscribed()
-        guard !isSubscribed else {
-            Self.logger.debug("Returning as the subscriber is already subscribed")
-            return false
-        }
 
         await subscriber.enableStats(true)
-
         try await subscriber.subscribe()
-
         Self.logger.debug("Subscription successful")
-
-        return true
     }
 
-    public func stopSubscribe() async throws -> Bool {
+    public func unSubscribe() async throws {
+        guard let subscriber else {
+            throw "No subscriber instance is present"
+        }
+
         Self.logger.debug("Stop subscription")
-
         await subscriber.enableStats(false)
-
         try await subscriber.unsubscribe()
-
         try await subscriber.disconnect()
-
         Self.logger.debug("Successfully stopped subscription")
-        return true
+
+        deregisterToSubscriberEvents()
+        reset()
     }
 
-    public func selectLayer(layer: MCLayerData?) async throws -> Bool {
-        try await subscriber.select(layer)
-        return true
+    private func reset() {
+        sourceBuilder.reset()
+        subscriber = nil
     }
 }
 
-// MARK: Maker functions
+// MARK: Observations
+
+extension SubscriptionManager {
+
+    // swiftlint:disable cyclomatic_complexity function_body_length
+    func registerToSubscriberEvents() {
+        Task { [weak self] in
+            guard
+                let self,
+                let subscriber = await self.subscriber
+            else {
+                return
+            }
+
+            let taskStateObservation = Task {
+                for await state in subscriber.state() {
+                    switch state {
+                    case .connected:
+                        // No-op
+                        break
+
+                    case .disconnected:
+                        await self.updateState(to: .stopped)
+
+                    case .subscribed:
+                        switch await self.state {
+                        case .subscribed:
+                            // No-op, preserve the current subscribed state
+                            break
+                        default:
+                            await self.updateState(to: .subscribed(sources: []))
+                        }
+
+                    case let .connectionError(status: status, reason: reason):
+                        await self.updateState(to: .error(.connectError(status: status, reason: reason)))
+
+                    case .signalingError(reason: let reason):
+                        await self.updateState(to: .error(.signalingError(reason: reason)))
+                    }
+                }
+            }
+
+            let tracksObservation = Task {
+                for await track in subscriber.rtsRemoteTrackAdded() {
+                    await self.sourceBuilder.addTrack(track)
+                }
+            }
+
+            let statsObservation = Task {
+                for await statsReport in subscriber.statsReport() {
+                    guard let stats = StatisticsReport(report: statsReport) else {
+                        return
+                    }
+                    await self.updateStats(stats)
+                }
+            }
+
+            let cancellable = await self.sourceBuilder.sourcePublisher
+                .sink { source in
+                    Task {
+                        await self.updateState(to: .subscribed(sources: source))
+                    }
+                }
+
+            _ = await [
+                self.addEventObservationTask(taskStateObservation),
+                self.addEventObservationTask(tracksObservation),
+                self.addEventObservationTask(statsObservation),
+                self.updateSourceSubscription(cancellable),
+                taskStateObservation.value,
+                tracksObservation.value,
+                statsObservation.value
+            ]
+        }
+    }
+    // swiftlint:enable cyclomatic_complexity function_body_length
+
+    func deregisterToSubscriberEvents() {
+        subscriberEventObservationTasks.removeAll()
+        sourceSubscription = nil
+    }
+}
+
+// MARK: Private Helpers
 
 private extension SubscriptionManager {
+    func updateStats(_ stats: StatisticsReport) {
+        statistics = stats
+    }
 
+    func updateState(to state: State) {
+        self.state = state
+    }
+
+    func addEventObservationTask(_ task: Task<Void, Never>) {
+        subscriberEventObservationTasks.append(task)
+    }
+
+    func updateSourceSubscription(_ subscription: AnyCancellable) {
+        sourceSubscription = subscription
+    }
+}
+
+private extension SubscriptionManager {
     var clientOptions: MCClientOptions {
         let optionsSub = MCClientOptions()
         optionsSub.statsDelayMs = 1000
@@ -119,4 +206,19 @@ private extension SubscriptionManager {
 
         return credentials
     }
+}
+
+// MARK: Helper to throw plain string as errors
+extension String: Error { }
+
+// MARK: Helper to compare layers by encoding id
+extension MCRTSRemoteVideoTrackLayer: Comparable {
+   public static func < (lhs: MCRTSRemoteVideoTrackLayer, rhs: MCRTSRemoteVideoTrackLayer) -> Bool {
+       switch (lhs.encodingId?.lowercased(), rhs.encodingId?.lowercased()) {
+       case ("h", "m"), ("l", "m"), ("h", "s"), ("l", "s"), ("m", "s"):
+           return false
+       default:
+           return true
+       }
+   }
 }

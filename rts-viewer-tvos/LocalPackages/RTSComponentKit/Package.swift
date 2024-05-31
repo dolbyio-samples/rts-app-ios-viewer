@@ -18,11 +18,9 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/millicast/millicast-sdk-swift-package", exact: "1.8.5")
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        .binaryTarget(name: "MillicastSDK", path: "../MillicastSDK.xcframework"),
         .target(
             name: "DolbyIOUIKit",
             dependencies: [],
@@ -33,14 +31,14 @@ let package = Package(
             name: "RTSComponentKit",
             dependencies: [
                 .byName(name: "DolbyIOUIKit"),
-                .product(name: "MillicastSDK", package: "millicast-sdk-swift-package")
+                .byName(name: "MillicastSDK")
             ]
         ),
         .testTarget(
             name: "RTSComponentKitTests",
             dependencies: [
                 "RTSComponentKit",
-                .product(name: "MillicastSDK", package: "millicast-sdk-swift-package")
+                "MillicastSDK"
             ]
         )
     ]

@@ -7,9 +7,9 @@ import SwiftUI
 public struct LoadingView: View {
 
     @State private var spin: Bool = false
-    var tintColor: Color?
+    private let tintColor: Color?
 
-    public init(tintColor: Color?) {
+    public init(tintColor: Color? = nil) {
         self.tintColor = tintColor
     }
 

@@ -10,8 +10,8 @@ public enum ImageAsset: String, ImageAssetable {
 
     case arrowLeft = "arrow-left"
     case arrowRight = "arrow-right"
-    case textLink = "text-link"
     case chevronLeft = "chevron-left"
+    case chevronRight = "chevron-right"
 
     // MARK: Actions
 

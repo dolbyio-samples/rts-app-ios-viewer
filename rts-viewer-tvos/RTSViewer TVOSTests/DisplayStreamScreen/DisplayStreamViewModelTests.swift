@@ -58,7 +58,7 @@ final class DisplayStreamViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isStreamActive)
 
         // When
-        mockDataStore.state = .subscribed(state: .init(mainVideoTrack: MCVideoTrack()))
+        mockDataStore.state = .subscribed(state: .init(mainVideoTrack: MCRTSRemoteVideoTrack()))
         waitForExpectations(timeout: 2.0)
 
         // Then
