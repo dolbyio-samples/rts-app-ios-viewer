@@ -10,11 +10,11 @@ import MillicastSDK
 
 struct VideoView: View {
 
-    let videoTrack: MCVideoTrack
+    let videoTrack: MCRTSRemoteVideoTrack
 
     var body: some View {
         GeometryReader { geometry in
-            MCVideoSwiftUIView(videoTrack: videoTrack, scalingMode: .aspectFit, rendererType: .sampleBuffer)
+            MCVideoSwiftUIView(rtsRemoteVideoTrack: videoTrack, scalingMode: .aspectFit, rendererType: .sampleBuffer)
                 .frame(width: geometry.size.width, height: geometry.size.height)
         }
     }

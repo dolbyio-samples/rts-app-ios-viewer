@@ -11,13 +11,11 @@ public protocol SubscriptionManagerProtocol: AnyObject {
     var state: AsyncStream<MCSubscriber.State> { get }
     var statsReport: AsyncStream<MCStatsReport> { get }
     var activity: AsyncStream<MCSubscriber.ActivityEvent> { get }
-    var tracks: AsyncStream<TrackEvent> { get }
-    var layers: AsyncStream<LayersEvent> { get }
+    var tracks: AsyncStream<MCRTSRemoteTrack> { get }
 
     func connect(streamName: String, accountID: String) async throws -> Bool
     func startSubscribe() async throws -> Bool
     func stopSubscribe() async throws -> Bool
-    func selectLayer(layer: MCLayerData?) async throws -> Bool
 }
 
 public final class SubscriptionManager: SubscriptionManagerProtocol {
@@ -31,8 +29,7 @@ public final class SubscriptionManager: SubscriptionManagerProtocol {
     public lazy var state: AsyncStream<MCSubscriber.State> = subscriber.state()
     public lazy var statsReport: AsyncStream<MCStatsReport> = subscriber.statsReport()
     public lazy var activity: AsyncStream<MCSubscriber.ActivityEvent> = subscriber.activity()
-    public lazy var tracks: AsyncStream<TrackEvent> = subscriber.tracks()
-    public lazy var layers: AsyncStream<LayersEvent> = subscriber.layers()
+    public lazy var tracks: AsyncStream<MCRTSRemoteTrack> = subscriber.rtsRemoteTrackAdded()
 
     public init() {
         subscriber = MCSubscriber()
@@ -90,11 +87,6 @@ public final class SubscriptionManager: SubscriptionManagerProtocol {
         try await subscriber.disconnect()
 
         Self.logger.debug("Successfully stopped subscription")
-        return true
-    }
-
-    public func selectLayer(layer: MCLayerData?) async throws -> Bool {
-        try await subscriber.select(layer)
         return true
     }
 }

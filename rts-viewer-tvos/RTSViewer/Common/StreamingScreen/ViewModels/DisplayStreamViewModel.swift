@@ -22,7 +22,7 @@ final class DisplayStreamViewModel: ObservableObject {
 
     @Published private(set) var selectedVideoQuality: VideoQuality = .auto
     @Published private(set) var videoQualityList: [VideoQuality] = []
-    @Published private(set) var videoTrack: MCVideoTrack? {
+    @Published private(set) var videoTrack: MCRTSRemoteVideoTrack? {
         didSet {
             isStreamActive = videoTrack != nil
         }

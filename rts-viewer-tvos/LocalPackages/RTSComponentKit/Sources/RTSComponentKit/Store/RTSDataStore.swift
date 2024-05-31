@@ -9,10 +9,10 @@ import SwiftUI
 open class RTSDataStore: ObservableObject {
 
     public struct SubscribedState: Equatable {
-        public fileprivate(set) var mainVideoTrack: MCVideoTrack?
+        public fileprivate(set) var mainVideoTrack: MCRTSRemoteVideoTrack?
         public fileprivate(set) var statisticsData: StatisticsData?
 
-        public init(mainVideoTrack: MCVideoTrack? = nil, statisticsData: StatisticsData? = nil) {
+        public init(mainVideoTrack: MCRTSRemoteVideoTrack? = nil, statisticsData: StatisticsData? = nil) {
             self.mainVideoTrack = mainVideoTrack
             self.statisticsData = statisticsData
         }
@@ -38,7 +38,7 @@ open class RTSDataStore: ObservableObject {
     @Published public var videoQualityList: [VideoQuality] = []
     @Published public var selectedVideoQuality = VideoQuality.auto
 
-    private var mainVideoTrack: MCVideoTrack?
+    private var mainVideoTrack: MCRTSRemoteVideoTrack?
     private var detailedVideoQualityList = [DetailedVideoQuality]() {
         didSet {
             videoQualityList = detailedVideoQualityList.map { $0.quality }
@@ -103,7 +103,10 @@ open class RTSDataStore: ObservableObject {
 
         selectedVideoQuality = videoQuality
         selectedDetailedVideoQuality = detailedVideoQualityList.matching(videoQuality: videoQuality) ?? .auto
-        _ = try await subscriptionManager.selectLayer(layer: selectedDetailedVideoQuality.layer)
+      guard let track = self.mainVideoTrack, let layer = selectedDetailedVideoQuality.layer else {
+        return
+      }
+      try await track.enable(renderer:, layer: MCRTSRemoteVideoTrackLayer(rtsRemoteTrackLayer: layer))
     }
 }
 
@@ -142,15 +145,18 @@ extension RTSDataStore {
             }
 
             self.tracksObservation = Task {
-                for await trackEvent in subscriptionManager.tracks {
-                    switch trackEvent {
-                    case .audio:
-                        break
-
-                    case let .video(track: track, mid: _):
-                        self.mainVideoTrack = track
-                        self.updateState(to: .subscribed(state: .init(mainVideoTrack: track)))
+                for await track in subscriptionManager.tracks {
+                  if let asAudio = track.asAudio() {
+                    do {
+                      try await asAudio.enable()
+                    } catch {
+                      
                     }
+                  }
+                  if let asVideo = track.asVideo() {
+                    self.mainVideoTrack = asVideo
+                    self.updateState(to: .subscribed(state: .init(mainVideoTrack: asVideo)))
+                  }
                 }
             }
 
@@ -178,16 +184,18 @@ extension RTSDataStore {
             }
 
             self.layersObservation = Task {
-                for await layerEvent in subscriptionManager.layers {
-                    var layersForSelection: [MCLayerData] = []
-
+              guard let track = self.mainVideoTrack else {
+                return
+              }
+                for await layerEvent in track.layers() {
+                    var layersForSelection: [MCRTSRemoteTrackLayer] = []
                     // Simulcast active layers
-                    let simulcastLayers = layerEvent.activeLayers.filter({ !$0.encodingId.isEmpty })
-                    let svcLayers = layerEvent.activeLayers.filter({ $0.spatialLayerId != nil })
+                    let simulcastLayers = layerEvent.active.filter({ !$0.encodingId.isEmpty })
+                    let svcLayers = layerEvent.active.filter({ $0.spatialLayerId != nil })
                     if !simulcastLayers.isEmpty {
                         // Select the max (best) temporal layer Id from a specific encodingId
                         let dictionaryOfLayersMatchingEncodingId = Dictionary(grouping: simulcastLayers, by: { $0.encodingId })
-                        dictionaryOfLayersMatchingEncodingId.forEach { (_: String, layers: [MCLayerData]) in
+                        dictionaryOfLayersMatchingEncodingId.forEach { (_: String, layers: [MCRTSRemoteTrackLayer]) in
                             // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
                             if let layerWithBestFrameRate = layers.first(where: { $0.temporalLayerId == $0.maxTemporalLayerId }) ?? layers.last {
                                 layersForSelection.append(layerWithBestFrameRate)
@@ -197,7 +205,7 @@ extension RTSDataStore {
                     // Using SVC layer selection logic
                     else {
                         let dictionaryOfLayersMatchingSpatialLayerId = Dictionary(grouping: svcLayers, by: { $0.spatialLayerId! })
-                        dictionaryOfLayersMatchingSpatialLayerId.forEach { (_: NSNumber, layers: [MCLayerData]) in
+                        dictionaryOfLayersMatchingSpatialLayerId.forEach { (_: NSNumber, layers: [MCRTSRemoteTrackLayer]) in
                             // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
                             if let layerWithBestFrameRate = layers.first(where: { $0.spatialLayerId == $0.maxSpatialLayerId }) ?? layers.last {
                                 layersForSelection.append(layerWithBestFrameRate)
@@ -207,7 +215,7 @@ extension RTSDataStore {
 
                     layersForSelection = layersForSelection
                         .sorted { lhs, rhs in
-                            if let rhsLayerResolution = rhs.layerResolution, let lhsLayerResolution = lhs.layerResolution {
+                          if let rhsLayerResolution = rhs.resolution, let lhsLayerResolution = lhs.resolution {
                                 return rhsLayerResolution.width < lhsLayerResolution.width || rhsLayerResolution.height < rhsLayerResolution.height
                             } else {
                                 return rhs.bitrate < lhs.bitrate
@@ -363,9 +371,9 @@ extension RTSDataStore {
     }
 }
 
-extension MCLayerData: Comparable {
-    public static func < (lhs: MCLayerData, rhs: MCLayerData) -> Bool {
-        switch (lhs.encodingId.lowercased(), rhs.encodingId.lowercased()) {
+extension MCRTSRemoteVideoTrackLayer: Comparable {
+    public static func < (lhs: MCRTSRemoteVideoTrackLayer, rhs: MCRTSRemoteVideoTrackLayer) -> Bool {
+        switch (lhs.encodingId?.lowercased(), rhs.encodingId?.lowercased()) {
         case ("h", "m"), ("l", "m"), ("h", "s"), ("l", "s"), ("m", "s"):
             return false
         default:

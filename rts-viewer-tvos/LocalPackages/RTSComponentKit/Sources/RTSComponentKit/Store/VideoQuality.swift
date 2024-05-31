@@ -11,9 +11,9 @@ public enum VideoQuality: String, CaseIterable, Identifiable, Equatable {
 }
 
 public enum DetailedVideoQuality: Equatable {
-    case auto, high(MCLayerData), medium(MCLayerData), low(MCLayerData)
+    case auto, high(MCRTSRemoteTrackLayer), medium(MCRTSRemoteTrackLayer), low(MCRTSRemoteTrackLayer)
 
-    var layer: MCLayerData? {
+    var layer: MCRTSRemoteTrackLayer? {
         switch self {
         case .auto:
             return nil
