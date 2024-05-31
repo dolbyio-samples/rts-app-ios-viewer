@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "rts-uikit-ios",
+      "identity" : "millicast-sdk-swift-package",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/DolbyIO/rts-uikit-ios",
+      "location" : "https://github.com/millicast/millicast-sdk-swift-package",
       "state" : {
-        "revision" : "d0c37de86fb214f29dd3a2fd5c33469a075d5e66",
-        "version" : "0.0.6"
+        "revision" : "9f95549d5a554a9de5b435149d90f2e0d40724bd",
+        "version" : "2.0.0-beta.3"
       }
     }
   ],

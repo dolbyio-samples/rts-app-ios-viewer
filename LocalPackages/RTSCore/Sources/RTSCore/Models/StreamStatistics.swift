@@ -12,9 +12,9 @@ public struct StreamStatistics: Equatable, Hashable {
 }
 
 public struct StatsInboundRtp: Equatable, Hashable {
-    public let kind: String
-    public let sid: String
-    public let mid: String
+    public let kind: String?
+    public let sid: String?
+    public let mid: String?
     public let decoder: String?
     public let processingDelay: Double
     public let decodeTime: Double
@@ -81,9 +81,9 @@ extension StreamStatistics {
 
 extension StatsInboundRtp {
     init(_ stats: MCInboundRtpStreamStats, codecStatsList: [MCCodecsStats]?) {
-        kind = stats.kind as String
-        sid = stats.sid as String
-        mid = stats.mid as String
+        kind = stats.kind
+        sid = stats.sid
+        mid = stats.mid
         frameWidth = Int(stats.frame_width)
         frameHeight = Int(stats.frame_height)
         fps = Int(stats.frames_per_second)
@@ -116,15 +116,15 @@ extension StatsInboundRtp {
         )
         nackCount = Int(stats.nack_count)
         packetsLost = Int(stats.packets_lost)
-        decoder = stats.decoder_implementation as String?
+        decoder = stats.decoder_implementation
         audioLevel = Int(stats.audio_level)
         totalEnergy = stats.total_audio_energy
         totalSampleDuration = stats.total_samples_duration
-        codec = stats.codec_id as String?
+        codec = stats.codec_id
         timestamp = Double(stats.timestamp)
 
         if let codecStats = codecStatsList?.first(where: { $0.sid == stats.codec_id }) {
-            codecName = codecStats.mime_type as String
+            codecName = codecStats.mime_type
         }
     }
 

@@ -14,15 +14,14 @@ public actor SubscriptionManager: ObservableObject {
         category: String(describing: SubscriptionManager.self)
     )
 
-    public enum SubscriptionError: Error, Equatable {
-        case signalingError(reason: String)
-        case connectError(status: NSNumber, reason: String)
+    public struct ConnectionError: Error, Equatable {
+        public let status: NSNumber
+        public let reason: String
     }
 
     public enum State: Equatable {
         case subscribed(sources: [StreamSource])
-        case error(SubscriptionError)
-        case stopped
+        case error(ConnectionError)
         case disconnected
     }
 
@@ -140,27 +139,29 @@ extension SubscriptionManager {
 
         let streamStoppedStateObservation = Task {
             for await state in subscriber.streamStopped() {
+                guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Stream stopped \(state.description)")
-                updateState(to: .stopped)
             }
         }
 
         let taskHttpErrorStateObservation = Task {
             for await state in subscriber.httpError() {
+                guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Http error state changed to \(state.code), reason: \(state.reason)")
-                updateState(to: .error(.connectError(status: state.code, reason: state.reason)))
+                updateState(to: .error(ConnectionError(status: state.code, reason: state.reason)))
             }
         }
 
         let taskSignalingErrorStateObservation = Task {
             for await state in subscriber.signalingError() {
+                guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Signalling error state: reason - \(state.reason)")
-                updateState(to: .error(.signalingError(reason: state.reason)))
             }
         }
 
         let tracksObservation = Task {
             for await track in subscriber.rtsRemoteTrackAdded() {
+                guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Remote track added - \(track.sourceID)")
                 sourceBuilder.addTrack(track)
             }
@@ -168,7 +169,7 @@ extension SubscriptionManager {
 
         let statsObservation = Task {
             for await statsReport in subscriber.statsReport() {
-                guard let stats = StreamStatistics(statsReport) else {
+                guard !Task.isCancelled, let stats = StreamStatistics(statsReport) else {
                     return
                 }
                 updateStats(stats)
@@ -177,6 +178,7 @@ extension SubscriptionManager {
 
         let sourcesObservation = Task {
             for await sources in sourceBuilder.sourceStream {
+                guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Sources builder emitted \(sources)")
                 updateState(to: .subscribed(sources: sources))
             }

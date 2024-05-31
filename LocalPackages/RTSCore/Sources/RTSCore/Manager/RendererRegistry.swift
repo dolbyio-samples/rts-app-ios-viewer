@@ -19,4 +19,14 @@ public final class RendererRegistry {
             return renderer
         }
     }
+    
+    public func acceleratedRenderer(for source: StreamSource) -> MCVideoSwiftUIView.Renderer {
+        if let renderer = renderers[source.sourceId] {
+            return renderer
+        } else {
+            let renderer: MCVideoSwiftUIView.Renderer = .accelerated(MCAcceleratedVideoRenderer())
+            renderers[source.sourceId] = renderer
+            return renderer
+        }
+    }
 }
