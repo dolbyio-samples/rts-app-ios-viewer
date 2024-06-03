@@ -85,12 +85,13 @@ open class RTSDataStore: ObservableObject {
     }
 
     open func stopSubscribe() async throws -> Bool {
-        defer { deregisterToSubscriberStreams() }
+        defer {
+            deregisterToSubscriberStreams()
+            resetState()
+        }
         guard let subscriptionManager else { return false }
         let success = try await subscriptionManager.stopSubscribe()
 
-        self.streamDetail = nil
-        self.subscriptionManager = nil
         return success
     }
 
@@ -260,6 +261,16 @@ extension RTSDataStore {
         self.activityObservation = nil
         self.layersObservation = nil
         self.statsObservation = nil
+    }
+
+    func resetState() {
+        streamDetail = nil
+        subscriptionManager = nil
+        state = .disconnected
+        detailedVideoQualityList = []
+        selectedDetailedVideoQuality = .auto
+        mainSourceId = nil
+        mainVideoTrack = nil
     }
 }
 

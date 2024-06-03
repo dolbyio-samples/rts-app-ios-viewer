@@ -49,6 +49,7 @@ final class DisplayStreamViewModel: ObservableObject {
 
     func updateLiveIndicator(_ enabled: Bool) {
         isLiveIndicatorEnabled = enabled
+        persistentSettings.liveIndicatorEnabled = enabled
     }
 
     // swiftlint:disable function_body_length
