@@ -262,7 +262,7 @@ extension RTSDataStore {
         self.layersObservation = nil
         self.statsObservation = nil
     }
-    
+
     func resetState() {
         streamDetail = nil
         subscriptionManager = nil
