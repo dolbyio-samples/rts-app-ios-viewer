@@ -16,20 +16,26 @@ public actor SubscriptionManager: ObservableObject {
 
     public enum SubscriptionError: Error, Equatable {
         case signalingError(reason: String)
-        case connectError(status: Int32, reason: String)
+        case connectError(status: NSNumber, reason: String)
     }
 
     public enum State: Equatable {
         case subscribed(sources: [Source])
-        case stopped
         case error(SubscriptionError)
+        case stopped
     }
 
     @Published public var state: State = .stopped
     @Published public var statistics: StatisticsReport?
 
+    private enum Defaults {
+        static let productionSubscribeURL = "https://director.millicast.com/api/director/subscribe"
+        static let developmentSubscribeURL = "https://director-dev.millicast.com/api/director/subscribe"
+    }
+
     private var subscriber: MCSubscriber?
     private var sourceBuilder = SourceBuilder()
+    private let logHandler: MillicastLoggerHandler = .init()
 
     private var subscriberEventObservationTasks: [Task<Void, Never>] = []
     private var sourceSubscription: AnyCancellable?
@@ -41,9 +47,10 @@ public actor SubscriptionManager: ObservableObject {
         AVAudioSession.configure()
     }
 
-    public func subscribe(streamName: String, accountID: String) async throws {
+    public func subscribe(streamName: String, accountID: String, token: String? = nil, configuration: SubscriptionConfiguration = SubscriptionConfiguration()) async throws {
         let subscriber = MCSubscriber()
         self.subscriber = subscriber
+        logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
 
         registerToSubscriberEvents()
 
@@ -56,12 +63,29 @@ public actor SubscriptionManager: ObservableObject {
             throw "Returning as the subscriber is already subscribed or connected"
         }
 
-        try await subscriber.setCredentials(makeCredentials(streamName: streamName, accountID: accountID))
-        try await subscriber.connect()
+        try await subscriber.setCredentials(makeCredentials(
+            streamName: streamName,
+            accountID: accountID,
+            token: token ?? "",
+            useDevelopmentServer: configuration.useDevelopmentServer)
+        )
+
+        let connectionOptions = MCConnectionOptions()
+        connectionOptions.autoReconnect = configuration.autoReconnect
+        try await subscriber.connect(with: connectionOptions)
         Self.logger.debug("Connection successful")
 
-        await subscriber.enableStats(true)
-        try await subscriber.subscribe()
+        let clientOptions = MCClientOptions()
+        clientOptions.jitterMinimumDelayMs = Int32(configuration.jitterMinimumDelayMs)
+        clientOptions.statsDelayMs = Int32(configuration.statsDelayMs)
+        if let rtcEventLogOutputPath = configuration.rtcEventLogPath {
+            clientOptions.rtcEventLogOutputPath = rtcEventLogOutputPath
+        }
+        clientOptions.disableAudio = configuration.disableAudio
+        clientOptions.forcePlayoutDelay = configuration.forcePlayoutDelay
+
+        await subscriber.enableStats(configuration.enableStats)
+        try await subscriber.subscribe(with: clientOptions)
         Self.logger.debug("Subscription successful")
     }
 
@@ -83,6 +107,7 @@ public actor SubscriptionManager: ObservableObject {
     private func reset() {
         sourceBuilder.reset()
         subscriber = nil
+        logHandler.setLogFilePath(filePath: nil)
     }
 }
 
@@ -100,31 +125,29 @@ extension SubscriptionManager {
                 return
             }
 
-            let taskStateObservation = Task {
-                for await state in subscriber.state() {
-                    switch state {
-                    case .connected:
-                        // No-op
-                        break
+            let taskWebsocketStateObservation = Task {
+                for await state in subscriber.websocketState() {
+                    Self.logger.debug("Websocket connection state changed to \(state.rawValue)")
+                }
+            }
 
-                    case .disconnected:
-                        await self.updateState(to: .stopped)
+            let taskPeerConnectionStateObservation = Task {
+                for await state in subscriber.peerConnectionState() {
+                    Self.logger.debug("Peer connection state changed to \(state.rawValue)")
+                }
+            }
 
-                    case .subscribed:
-                        switch await self.state {
-                        case .subscribed:
-                            // No-op, preserve the current subscribed state
-                            break
-                        default:
-                            await self.updateState(to: .subscribed(sources: []))
-                        }
+            let taskHttpErrorStateObservation = Task {
+                for await state in subscriber.httpError() {
+                    Self.logger.debug("Http error state changed to \(state.code), reason: \(state.reason)")
+                    await self.updateState(to: .error(.connectError(status: state.code, reason: state.reason)))
+                }
+            }
 
-                    case let .connectionError(status: status, reason: reason):
-                        await self.updateState(to: .error(.connectError(status: status, reason: reason)))
-
-                    case .signalingError(reason: let reason):
-                        await self.updateState(to: .error(.signalingError(reason: reason)))
-                    }
+            let taskSignalingErrorStateObservation = Task {
+                for await state in subscriber.signalingError() {
+                    Self.logger.debug("Signalling error state: reason - \(state.reason)")
+                    await self.updateState(to: .error(.signalingError(reason: state.reason)))
                 }
             }
 
@@ -151,11 +174,17 @@ extension SubscriptionManager {
                 }
 
             _ = await [
-                self.addEventObservationTask(taskStateObservation),
+                self.addEventObservationTask(taskWebsocketStateObservation),
+                self.addEventObservationTask(taskPeerConnectionStateObservation),
+                self.addEventObservationTask(taskHttpErrorStateObservation),
+                self.addEventObservationTask(taskSignalingErrorStateObservation),
                 self.addEventObservationTask(tracksObservation),
                 self.addEventObservationTask(statsObservation),
                 self.updateSourceSubscription(cancellable),
-                taskStateObservation.value,
+                taskWebsocketStateObservation.value,
+                taskPeerConnectionStateObservation.value,
+                taskHttpErrorStateObservation.value,
+                taskSignalingErrorStateObservation.value,
                 tracksObservation.value,
                 statsObservation.value
             ]
@@ -197,12 +226,12 @@ private extension SubscriptionManager {
         return optionsSub
     }
 
-    func makeCredentials(streamName: String, accountID: String) -> MCSubscriberCredentials {
+    func makeCredentials(streamName: String, accountID: String, token: String, useDevelopmentServer: Bool) -> MCSubscriberCredentials {
         let credentials = MCSubscriberCredentials()
-        credentials.apiUrl = "https://director.millicast.com/api/director/subscribe"
         credentials.accountId = accountID
         credentials.streamName = streamName
-        credentials.token = ""
+        credentials.token = token
+        credentials.apiUrl = useDevelopmentServer ? Defaults.developmentSubscribeURL : Defaults.productionSubscribeURL
 
         return credentials
     }

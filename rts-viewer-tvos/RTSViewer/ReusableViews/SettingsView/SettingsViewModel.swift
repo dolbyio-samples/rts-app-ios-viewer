@@ -27,7 +27,7 @@ final class SettingViewModel: ObservableObject {
         case .auto:
             try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
         case .high(let layer), .medium(let layer), .low(let layer):
-            try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, layer: MCRTSRemoteVideoTrackLayer(rtsRemoteTrackLayer: layer), promote: true)
+            try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: layer), promote: true)
         }
     }
 }
