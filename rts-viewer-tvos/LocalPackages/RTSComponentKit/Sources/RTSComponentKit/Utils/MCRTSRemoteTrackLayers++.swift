@@ -58,6 +58,5 @@ extension MCRTSRemoteTrackLayers {
         default:
             return [.auto]
         }
-
     }
 }

@@ -22,10 +22,10 @@ public actor SubscriptionManager: ObservableObject {
     public enum State: Equatable {
         case subscribed(sources: [Source])
         case error(SubscriptionError)
-        case stopped
+        case disconnected
     }
 
-    @Published public var state: State = .stopped
+    @Published public var state: State = .disconnected
     @Published public var statistics: StatisticsReport?
 
     private enum Defaults {
@@ -100,6 +100,7 @@ public actor SubscriptionManager: ObservableObject {
         try await subscriber.disconnect()
         Self.logger.debug("Successfully stopped subscription")
 
+        state = .disconnected
         deregisterToSubscriberEvents()
         reset()
     }

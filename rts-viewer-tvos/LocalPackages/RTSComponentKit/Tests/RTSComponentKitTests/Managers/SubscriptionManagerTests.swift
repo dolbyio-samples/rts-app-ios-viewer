@@ -1,7 +1,6 @@
 //
 //  SubscriptionManagerTests.swift
 //
-    
 
 import XCTest
 

@@ -93,7 +93,7 @@ final class StreamingViewModel: ObservableObject {
                                 self.state = source.isVideoTrackActive ? .streaming(source: source) : .pendingActivation(source: source)
                             }
 
-                        case .stopped:
+                        case .disconnected:
                             Self.logger.debug("🎰 Stopped")
                             await MainActor.run {
                                 self.state = .stopped

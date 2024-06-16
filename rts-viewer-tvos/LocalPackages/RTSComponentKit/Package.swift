@@ -30,7 +30,6 @@ let package = Package(
         .target(
             name: "RTSComponentKit",
             dependencies: [
-                .byName(name: "DolbyIOUIKit"),
                 .byName(name: "MillicastSDK")
             ]
         ),
