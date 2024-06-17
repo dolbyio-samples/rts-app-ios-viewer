@@ -1,5 +1,5 @@
 //
-//  StatisticsReport.swift
+//  StreamStatistics.swift
 //
 
 import Foundation

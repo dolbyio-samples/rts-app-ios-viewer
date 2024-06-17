@@ -1,5 +1,5 @@
 //
-//  Source.swift
+//  StreamSource.swift
 //
 
 import Foundation
