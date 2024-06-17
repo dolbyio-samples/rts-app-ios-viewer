@@ -1,6 +1,3 @@
-excluded:
-  - RTSViewer/Legacy/
-
 # rule identifiers turned on by default to exclude from running
 disabled_rules:
   - identifier_name
@@ -9,3 +6,4 @@ disabled_rules:
   - file_length
   - multiple_closures_with_trailing_closure
   - nesting
+  - switch_case_alignment
