@@ -5,27 +5,38 @@
 import Combine
 import DolbyIORTSCore
 import Foundation
+import MillicastSDK
+import os
 
-final class SingleStreamViewModel {
-
-    let videoViewModels: [VideoRendererViewModel]
+@MainActor
+final class SingleStreamViewModel: ObservableObject {
+    let sources: [StreamSource]
     let selectedVideoSource: StreamSource
+    let selectedAudioSource: StreamSource?
     let settingsMode: SettingsMode
-    let viewRendererProvider: ViewRendererProvider
+    let subscriptionManager: SubscriptionManager
+    let pipRendererRegistry: RendererRegistry
+    let videoTracksManager: VideoTracksManager
 
     init(
-        videoViewModels: [VideoRendererViewModel],
+        sources: [StreamSource],
         selectedVideoSource: StreamSource,
-        streamDetail: StreamDetail,
-        viewRendererProvider: ViewRendererProvider
+        selectedAudioSource: StreamSource?,
+        settingsMode: SettingsMode,
+        pipRendererRegistry: RendererRegistry,
+        subscriptionManager: SubscriptionManager,
+        videoTracksManager: VideoTracksManager
     ) {
-        self.videoViewModels = videoViewModels
+        self.sources = sources
         self.selectedVideoSource = selectedVideoSource
-        self.settingsMode = .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
-        self.viewRendererProvider = viewRendererProvider
+        self.selectedAudioSource = selectedAudioSource
+        self.settingsMode = settingsMode
+        self.pipRendererRegistry = pipRendererRegistry
+        self.subscriptionManager = subscriptionManager
+        self.videoTracksManager = videoTracksManager
     }
 
     func streamSource(for id: UUID) -> StreamSource? {
-        videoViewModels.first { $0.streamSource.id == id }?.streamSource
+        sources.first { $0.id == id }
     }
 }

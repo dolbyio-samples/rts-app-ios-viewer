@@ -7,17 +7,16 @@ import SwiftUI
 import DolbyIORTSCore
 
 struct StatisticsInfoView: View {
-    private var viewModel: StatsInfoViewModel
-
     @ObservedObject private var themeManager = ThemeManager.shared
+    @ObservedObject private var viewModel: StatsInfoViewModel
 
     private let fontCaption = Font.custom("AvenirNext-Bold", size: FontSize.subhead)
     private let fontTable = Font.custom("AvenirNext-Regular", size: FontSize.body)
     private let fontTableValue = Font.custom("AvenirNext-DemiBold", size: FontSize.body)
     private let fontTitle = Font.custom("AvenirNext-Bold", size: FontSize.title2)
 
-    init(viewModel: StatsInfoViewModel) {
-        self.viewModel = viewModel
+    init(streamSource: StreamSource, subscriptionManager: SubscriptionManager) {
+        viewModel = StatsInfoViewModel(streamSource: streamSource, subscriptionManager: subscriptionManager)
     }
 
     private var theme: Theme {
@@ -52,7 +51,7 @@ struct StatisticsInfoView: View {
                         .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
                 }
 
-                ForEach(viewModel.data) { item in
+                ForEach(viewModel.statsItems) { item in
                     HStack {
                         Text(verbatim: item.key, font: fontTable)
                             .foregroundColor(Color(theme.neutral200))
@@ -83,7 +82,7 @@ struct StatisticsInfoView: View {
 
     private func formattedStatisticsText() -> String {
         var text = ""
-        viewModel.data.forEach { item in
+        viewModel.statsItems.forEach { item in
             text += "\(item.key): \(item.value)\n"
         }
         return text

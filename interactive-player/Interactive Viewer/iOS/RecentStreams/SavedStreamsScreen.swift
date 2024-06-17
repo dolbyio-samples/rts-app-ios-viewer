@@ -14,7 +14,7 @@ struct SavedStreamsScreen: View {
     @State private var isShowingStreamInputView: Bool = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingClearStreamsAlert = false
-    @State private var streamingScreenContext: StreamingScreen.Context?
+    @State private var streamingScreenContext: StreamingView.Context?
 
     @Environment(\.presentationMode) private var presentation
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -22,9 +22,7 @@ struct SavedStreamsScreen: View {
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: LazyNavigationDestinationView(
-                    StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext)
-                ),
+                destination: StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext),
                 isActive: $isShowingStreamInputView) {
                     EmptyView()
                 }
@@ -151,10 +149,7 @@ struct SavedStreamsScreen: View {
             .accessibilityIdentifier("SavedStreamsScreen.CancelButton")
         })
         .fullScreenCover(item: $streamingScreenContext) { context in
-            StreamingScreen(
-                context: context,
-                listViewPrimaryVideoQuality: .high
-            ) {
+            StreamingView(context: context) {
                 streamingScreenContext = nil
             }
         }
@@ -163,10 +158,11 @@ struct SavedStreamsScreen: View {
     private func playStream(streamDetail: SavedStreamDetail) {
         let success = viewModel.connect(streamDetail: streamDetail, saveLogs: streamDetail.saveLogs)
         if success {
-            streamingScreenContext = .init(
+            streamingScreenContext = StreamingView.Context(
                 streamName: streamDetail.streamName,
                 accountID: streamDetail.accountID,
-                listViewPrimaryVideoQuality: streamDetail.primaryVideoQuality
+                listViewPrimaryVideoQuality: streamDetail.primaryVideoQuality,
+                subscriptionManager: viewModel.subscriptionManager
             )
         }
     }

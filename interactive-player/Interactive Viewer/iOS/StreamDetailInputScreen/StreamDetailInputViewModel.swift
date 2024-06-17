@@ -4,11 +4,13 @@
 
 import Combine
 import DolbyIORTSCore
+import DolbyIORTSUIKit
 import Foundation
+import MillicastSDK
 
 @MainActor
 final class StreamDetailInputViewModel: ObservableObject {
-    let streamOrchestrator: StreamOrchestrator
+    let subscriptionManager: SubscriptionManager
     private let streamDataManager: StreamDataManagerProtocol
     private let dateProvider: DateProvider
 
@@ -29,11 +31,11 @@ final class StreamDetailInputViewModel: ObservableObject {
     @Published var validationError: ValidationError?
 
     init(
-        streamOrchestrator: StreamOrchestrator = .shared,
+        subscriptionManager: SubscriptionManager = SubscriptionManager(),
         streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
         dateProvider: DateProvider = DefaultDateProvider()
     ) {
-        self.streamOrchestrator = streamOrchestrator
+        self.subscriptionManager = subscriptionManager
         self.streamDataManager = streamDataManager
         self.dateProvider = dateProvider
     }
@@ -44,9 +46,10 @@ final class StreamDetailInputViewModel: ObservableObject {
         accountID: String,
         useDevelopmentServer: Bool,
         videoJitterMinimumDelayInMs: UInt,
-        noPlayoutDelay: Bool,
+        minPlayoutDelay: UInt?,
+        maxPlayoutDelay: UInt?,
         disableAudio: Bool,
-        primaryVideoQuality: VideoQuality,
+        primaryVideoQuality: DolbyIORTSUIKit.VideoQuality,
         saveLogs: Bool,
         saveStream: Bool
     ) -> Bool {
@@ -65,7 +68,8 @@ final class StreamDetailInputViewModel: ObservableObject {
                     streamName: streamName,
                     useDevelopmentServer: useDevelopmentServer,
                     videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
-                    noPlayoutDelay: noPlayoutDelay,
+                    minPlayoutDelay: minPlayoutDelay,
+                    maxPlayoutDelay: maxPlayoutDelay,
                     disableAudio: disableAudio,
                     primaryVideoQuality: primaryVideoQuality,
                     saveLogs: saveLogs
@@ -75,16 +79,17 @@ final class StreamDetailInputViewModel: ObservableObject {
 
         let configuration = SubscriptionConfiguration(
             useDevelopmentServer: useDevelopmentServer,
-            videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
-            noPlayoutDelay: noPlayoutDelay,
+            jitterMinimumDelayMs: videoJitterMinimumDelayInMs,
             disableAudio: disableAudio,
             rtcEventLogPath: rtcLogPath?.path,
-            sdkLogPath: sdkLogPath?.path
+            sdkLogPath: sdkLogPath?.path,
+            minPlayoutDelay: minPlayoutDelay,
+            maxPlayoutDelay: maxPlayoutDelay
         )
 
-        Task { @StreamOrchestrator [weak self] in
+        Task { [weak self] in
             guard let self = self else { return }
-            _ = try await streamOrchestrator.connect(
+            _ = try await subscriptionManager.subscribe(
                 streamName: streamName,
                 accountID: accountID,
                 configuration: configuration

@@ -14,18 +14,20 @@ struct StreamDetailInputScreen: View {
       case accountID
       case streamName
     }
-    @Binding private var streamingScreenContext: StreamingScreen.Context?
+    @Binding private var streamingScreenContext: StreamingView.Context?
 
     @State private var streamName: String = ""
     @State private var accountID: String = ""
     @State private var showAlert = false
     @State private var isDev: Bool = false
-    @State private var noPlayoutDelay: Bool = false
     @State private var disableAudio: Bool = false
     @State private var saveLogs: Bool = false
-    @State private var jitterBufferDelayInMs: Float = Float(SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs)
-    @State private var primaryVideoQuality: VideoQuality = .auto
+    @State private var jitterBufferDelayInMs: Float = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var primaryVideoQuality: DolbyIORTSUIKit.VideoQuality = .auto
     @State private var isShowingSettingsView: Bool = false
+    @State private var showPlayoutDelay: Bool = false
+    @State private var minPlayoutDelay: Float = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var maxPlayoutDelay: Float = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -38,18 +40,16 @@ struct StreamDetailInputScreen: View {
 
     @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
 
-    init(streamingScreenContext: Binding<StreamingScreen.Context?>) {
+    init(streamingScreenContext: Binding<StreamingView.Context?>) {
         _streamingScreenContext = streamingScreenContext
     }
 
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: LazyNavigationDestinationView(
-                    SettingsScreen(mode: .global, moreSettings: {
-                        AppSettingsView()
-                    })
-                ),
+                destination: SettingsScreen(mode: .global, moreSettings: {
+                    AppSettingsView()
+                }),
                 isActive: $isShowingSettingsView
             ) {
                 EmptyView()
@@ -119,7 +119,8 @@ struct StreamDetailInputScreen: View {
                                     accountID: accountID,
                                     useDevelopmentServer: isDev,
                                     videoJitterMinimumDelayInMs: UInt(jitterBufferDelayInMs),
-                                    noPlayoutDelay: noPlayoutDelay,
+                                    minPlayoutDelay: showPlayoutDelay ? UInt(minPlayoutDelay) : nil,
+                                    maxPlayoutDelay: showPlayoutDelay ? UInt(maxPlayoutDelay) : nil,
                                     disableAudio: disableAudio,
                                     primaryVideoQuality: primaryVideoQuality,
                                     saveLogs: saveLogs,
@@ -130,7 +131,8 @@ struct StreamDetailInputScreen: View {
                                     streamingScreenContext = .init(
                                         streamName: streamName,
                                         accountID: accountID,
-                                        listViewPrimaryVideoQuality: primaryVideoQuality
+                                        listViewPrimaryVideoQuality: primaryVideoQuality,
+                                        subscriptionManager: viewModel.subscriptionManager
                                     )
                                 }
                             },
@@ -206,6 +208,15 @@ struct StreamDetailInputScreen: View {
         .onChange(of: showDebugFeatures) { _ in
             resetStreamConfigurationState()
         }
+        .onChange(of: showPlayoutDelay) { _ in
+            resetPlayoutDelays()
+        }
+        .onChange(of: minPlayoutDelay) { _ in
+            syncMaxPlayoutDelay()
+        }
+        .onChange(of: maxPlayoutDelay) { _ in
+            syncMinPlayoutDelay()
+        }
     }
 
     var additionalConfigurationView: some View {
@@ -214,12 +225,6 @@ struct StreamDetailInputScreen: View {
                 Toggle(isOn: $isDev) {
                     Text(
                         "stream-detail-input.development-placeholder-label",
-                        font: .streamConfigurationItemsFont
-                    )
-                }
-                Toggle(isOn: $noPlayoutDelay) {
-                    Text(
-                        "stream-detail-input.no-playout-delay-label",
                         font: .streamConfigurationItemsFont
                     )
                 }
@@ -255,17 +260,64 @@ struct StreamDetailInputScreen: View {
                     }
                 )
 
+                Toggle(isOn: $showPlayoutDelay) {
+                    Text(
+                        "stream-detail-input.show-playout-delay-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+
+                if showPlayoutDelay {
+                    Text(
+                        "\(String(localized: "stream-detail-input.minimum-playout-delay-placeholder-label")) - \(Int(minPlayoutDelay))ms",
+                        style: .labelMedium,
+                        font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
+                    )
+
+                    Slider(
+                        value: $minPlayoutDelay,
+                        in: (0...2000),
+                        step: 50,
+                        label: {},
+                        minimumValueLabel: {
+                            Text("0")
+                        },
+                        maximumValueLabel: {
+                            Text("2sec")
+                        }
+                    )
+
+                    Text(
+                        "\(String(localized: "stream-detail-input.maximum-playout-delay-placeholder-label")) - \(Int(maxPlayoutDelay))ms",
+                        style: .labelMedium,
+                        font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
+                    )
+
+                    Slider(
+                        value: $maxPlayoutDelay,
+                        in: (0...2000),
+                        step: 50,
+                        label: {},
+                        minimumValueLabel: {
+                            Text("\(Int(minPlayoutDelay))")
+                        },
+                        maximumValueLabel: {
+                            Text("2sec")
+                        }
+                    )
+                }
+
                 HStack {
                     Text("stream-detail-input.primary-video-quality-label",
                          style: .labelMedium,
                          font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
 
                     Picker(
-                        "Primary video quality: \(primaryVideoQuality.description.uppercased())",
+                        "Primary video quality: \(primaryVideoQuality.displayText.uppercased())",
                         selection: $primaryVideoQuality
                     ) {
-                        ForEach(VideoQuality.allCases) {
-                            Text($0.description.uppercased())
+                        ForEach(DolbyIORTSUIKit.VideoQuality.allCases) {
+                            Text($0.displayText)
                                 .tag($0)
                         }
                     }
@@ -310,8 +362,9 @@ struct StreamDetailInputScreen: View {
                 accountID: accountID,
                 streamName: streamName,
                 useDevelopmentServer: false,
-                videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs,
-                noPlayoutDelay: false,
+                videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.jitterMinimumDelayMs,
+                minPlayoutDelay: SubscriptionConfiguration.Constants.minPlayoutDelay,
+                maxPlayoutDelay: SubscriptionConfiguration.Constants.maxPlayoutDelay,
                 disableAudio: false,
                 primaryVideoQuality: .auto,
                 saveLogs: false
@@ -321,8 +374,9 @@ struct StreamDetailInputScreen: View {
                     streamName: streamName,
                     accountID: accountID,
                     useDevelopmentServer: false,
-                    videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs,
-                    noPlayoutDelay: false,
+                    videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.jitterMinimumDelayMs,
+                    minPlayoutDelay: SubscriptionConfiguration.Constants.minPlayoutDelay,
+                    maxPlayoutDelay: SubscriptionConfiguration.Constants.maxPlayoutDelay,
                     disableAudio: false,
                     primaryVideoQuality: .auto,
                     saveLogs: false,
@@ -333,7 +387,8 @@ struct StreamDetailInputScreen: View {
                     streamingScreenContext = .init(
                         streamName: streamName,
                         accountID: accountID,
-                        listViewPrimaryVideoQuality: .auto
+                        listViewPrimaryVideoQuality: .auto,
+                        subscriptionManager: viewModel.subscriptionManager
                     )
                 }
             }
@@ -342,11 +397,30 @@ struct StreamDetailInputScreen: View {
 
     func resetStreamConfigurationState() {
         self.isDev = false
-        self.noPlayoutDelay = false
+        self.showPlayoutDelay = false
         self.disableAudio = false
-        self.jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.videoJitterMinimumDelayInMs)
+        self.jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
         self.primaryVideoQuality = .auto
         self.saveLogs = false
+        self.minPlayoutDelay = 0
+        self.maxPlayoutDelay = 0
+    }
+
+    func syncMaxPlayoutDelay() {
+        if minPlayoutDelay > maxPlayoutDelay {
+            maxPlayoutDelay = minPlayoutDelay
+        }
+    }
+
+    func syncMinPlayoutDelay() {
+        if minPlayoutDelay > maxPlayoutDelay {
+            minPlayoutDelay = maxPlayoutDelay
+        }
+    }
+
+    func resetPlayoutDelays() {
+        minPlayoutDelay = 0
+        maxPlayoutDelay = 0
     }
 }
 // swiftlint:enable type_body_length

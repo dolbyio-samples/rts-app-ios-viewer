@@ -4,7 +4,7 @@ import XCTest
 final class StreamSettingsTests: XCTestCase {
 
     func testStreamSettingsDefault() {
-        var settings = StreamSettings.default
+        let settings = StreamSettings.default
 
         XCTAssertEqual(settings.showSourceLabels, true)
         XCTAssertEqual(settings.multiviewLayout, .list)

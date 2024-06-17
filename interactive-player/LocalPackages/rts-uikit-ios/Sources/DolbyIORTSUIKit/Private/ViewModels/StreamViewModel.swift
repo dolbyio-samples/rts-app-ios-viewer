@@ -6,340 +6,142 @@ import Combine
 import DolbyIORTSCore
 import Foundation
 import MillicastSDK
-import SwiftUI
-import UIKit
+import os
 
-// swiftlint:disable type_body_length
+@MainActor
 final class StreamViewModel: ObservableObject {
+    private static let logger = Logger(
+        subsystem: Bundle.module.bundleIdentifier!,
+        category: String(describing: StreamViewModel.self)
+    )
 
-    enum State {
-        case loading
-        case success(displayMode: DisplayMode)
-        case error(ErrorViewModel)
-
-        fileprivate init(_ state: InternalState) {
-            switch state {
-            case .loading:
-                self = .loading
-            case let .success(
-                displayMode: displayMode,
-                sources: _,
-                selectedVideoSource: _,
-                selectedAudioSource: _,
-                settings: _,
-                detailSingleStreamViewModel: _
-            ):
-                self = .success(displayMode: displayMode)
-            case let .error(errorViewModel):
-                self = .error(errorViewModel)
-            }
-        }
+    enum DisplayMode: Equatable {
+        case single
+        case list
+        case grid
     }
 
-    fileprivate enum InternalState {
+    enum State {
         case loading
         case success(
             displayMode: DisplayMode,
             sources: [StreamSource],
             selectedVideoSource: StreamSource,
             selectedAudioSource: StreamSource?,
-            settings: StreamSettings,
-            detailSingleStreamViewModel: SingleStreamViewModel?
+            settings: StreamSettings
         )
-        case error(ErrorViewModel)
+        case error(title: String, subtitle: String?)
     }
 
-    enum DisplayMode: Equatable {
-        static func == (lhs: StreamViewModel.DisplayMode, rhs: StreamViewModel.DisplayMode) -> Bool {
-            switch (lhs, rhs) {
-            case (.grid, .grid), (.list, .list), (.single, .single):
-                return true
-            default:
-                return false
-            }
-        }
-
-        case single(SingleStreamViewModel)
-        case list(ListViewModel)
-        case grid(GridViewModel)
-    }
+    let subscriptionManager: SubscriptionManager
+    let pipRendererRegistry: RendererRegistry
+    let videoTracksManager: VideoTracksManager
 
     private let settingsManager: SettingsManager
-    private let streamOrchestrator: StreamOrchestrator
     private var subscriptions: [AnyCancellable] = []
-    private var timer: Timer?
+
+    private var audioTrackActivityObservationDictionary: [SourceID: Task<Void, Never>] = [:]
 
     let streamDetail: StreamDetail
     let settingsMode: SettingsMode
     let listViewPrimaryVideoQuality: VideoQuality
 
-    private let singleViewRendererProvider: ViewRendererProvider = .init()
-    private let gridViewRendererProvider: ViewRendererProvider = .init()
-    private let listViewMainRendererProvider: ViewRendererProvider = .init()
-    private let listViewThumbnailRendererProvider: ViewRendererProvider = .init()
+    private let trackActiveStateUpdateSubject: CurrentValueSubject<Void, Never> = CurrentValueSubject(())
 
-    @Published private(set) var state: State = .loading
-    @Published var isShowingDetailSingleViewScreen: Bool = false {
+    @Published private(set) var state: State = .loading {
         didSet {
-            guard
-                isShowingDetailSingleViewScreen != oldValue,
-                let selectedVideoSource = internalState.selectedVideoSource
-            else {
-                return
-            }
-
-            selectVideoSource(selectedVideoSource)
-        }
-    }
-
-    private var internalState: InternalState = .loading {
-        didSet {
-            state = State(internalState)
-
             // Play Audio when the selectedAudioSource changes
-            if let newlySelectedAudioSource = internalState.selectedAudioSource,
-               newlySelectedAudioSource.id != oldValue.selectedAudioSource?.id {
+            if let newlySelectedAudioSource = state.selectedAudioSource, newlySelectedAudioSource.id != oldValue.selectedAudioSource?.id {
+                if let previouslySelectedAudioSource = oldValue.selectedAudioSource {
+                    stopAudio(for: previouslySelectedAudioSource)
+                }
                 playAudio(for: newlySelectedAudioSource)
             }
 
             // Stop PiP when there is no video streams
-            if !internalState.isShowingVideoStreams {
+            if !state.isShowingVideoStreams {
                 stopPiP()
             }
         }
     }
 
-    private var sources: [StreamSource] {
-        switch internalState {
-        case let .success(
-            displayMode: _,
-            sources: existingSources,
-            selectedVideoSource: _,
-            selectedAudioSource: _,
-            settings: _,
-            detailSingleStreamViewModel: _
-        ):
-            return existingSources
-        default:
-            return []
-        }
-    }
-
     init(
-        context: StreamingScreen.Context,
-        listViewPrimaryVideoQuality: VideoQuality,
-        streamOrchestrator: StreamOrchestrator = .shared,
-        settingsManager: SettingsManager = .shared
+        context: StreamingView.Context,
+        settingsManager: SettingsManager = .shared,
+        pipRendererRegistry: RendererRegistry = RendererRegistry(),
+        videoTracksManager: VideoTracksManager = VideoTracksManager()
     ) {
-        self.streamOrchestrator = streamOrchestrator
+        self.subscriptionManager = context.subscriptionManager
         self.settingsManager = settingsManager
         self.streamDetail = context.streamDetail
         self.listViewPrimaryVideoQuality = context.listViewPrimaryVideoQuality
         self.settingsMode = .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
+        self.pipRendererRegistry = pipRendererRegistry
+        self.videoTracksManager = videoTracksManager
 
+        Task {
+            await videoTracksManager.setTrackStateUpdateSubject(trackActiveStateUpdateSubject)
+        }
         startObservers()
     }
 
-    var detailSingleStreamViewModel: SingleStreamViewModel? {
-        switch internalState {
-        case let .success(
-            displayMode: _,
-            sources: _,
-            selectedVideoSource: _,
-            selectedAudioSource: _,
-            settings: _,
-            detailSingleStreamViewModel: viewModel
-        ):
-            return viewModel
-
-        default:
-            return nil
-        }
-    }
-
-    private func secondaryVideoSources(_ sources: [StreamSource], _ matchingSource: StreamSource) -> [StreamSource] {
-        return sources.filter { $0.id != matchingSource.id }
-    }
-
-    // swiftlint:disable function_body_length
     func selectVideoSource(_ source: StreamSource) {
-        switch internalState {
+        switch state {
         case let .success(
             displayMode: displayMode,
             sources: sources,
             selectedVideoSource: _,
             selectedAudioSource: _,
-            settings: settings,
-            detailSingleStreamViewModel: _
+            settings: settings
         ):
-            guard let matchingSource = sources.first(where: { $0.id == source.id }) else {
+            guard let matchingVideoSource = sources.first(where: { $0.id == source.id }) else {
                 fatalError("Cannot select source thats not part of the current source list")
             }
 
-            let selectedAudioSource = audioSelection(from: sources, settings: settings, selectedVideoSource: matchingSource)
+            let selectedAudioSource = audioSelection(from: sources, settings: settings, selectedVideoSource: matchingVideoSource)
 
-            let updatedDisplayMode: DisplayMode
-            switch displayMode {
-            case .grid:
-                let secondaryVideoSources = secondaryVideoSources(sources, matchingSource)
-                let showSourceLabels = settings.showSourceLabels
-
-                let gridViewModel = GridViewModel(
-                    primaryVideoViewModel: VideoRendererViewModel(
-                        streamSource: matchingSource,
-                        isSelectedVideoSource: true,
-                        isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id,
-                        isPiPView: !isShowingDetailSingleViewScreen,
-                        showSourceLabel: showSourceLabels,
-                        showAudioIndicator: matchingSource.id == selectedAudioSource?.id,
-                        videoQuality: .auto
-                    ),
-                    secondaryVideoViewModels: secondaryVideoSources.map {
-                        VideoRendererViewModel(
-                            streamSource: $0,
-                            isSelectedVideoSource: false,
-                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
-                            isPiPView: false,
-                            showSourceLabel: showSourceLabels,
-                            showAudioIndicator: $0.id == selectedAudioSource?.id,
-                            videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
-                        )
-                    },
-                    viewRendererProvider: gridViewRendererProvider
-                )
-
-                updatedDisplayMode = .grid(gridViewModel)
-            case .list:
-                let secondaryVideoSources = secondaryVideoSources(sources, matchingSource)
-                let showSourceLabels = settings.showSourceLabels
-                let primaryVideoQuality = matchingSource.videoQualityList.contains(listViewPrimaryVideoQuality) ? listViewPrimaryVideoQuality : .auto
-
-                let listViewModel = ListViewModel(
-                    primaryVideoViewModel: VideoRendererViewModel(
-                        streamSource: matchingSource,
-                        isSelectedVideoSource: true,
-                        isSelectedAudioSource: matchingSource.id == selectedAudioSource?.id,
-                        isPiPView: !isShowingDetailSingleViewScreen,
-                        showSourceLabel: showSourceLabels,
-                        showAudioIndicator: matchingSource.id == selectedAudioSource?.id,
-                        videoQuality: primaryVideoQuality
-                    ),
-                    secondaryVideoViewModels: secondaryVideoSources.map {
-                        VideoRendererViewModel(
-                            streamSource: $0,
-                            isSelectedVideoSource: false,
-                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
-                            isPiPView: false,
-                            showSourceLabel: showSourceLabels,
-                            showAudioIndicator: $0.id == selectedAudioSource?.id,
-                            videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
-                        )
-                    },
-                    mainViewRendererProvider: listViewMainRendererProvider,
-                    thumbnailViewRendererProvider: listViewThumbnailRendererProvider
-                )
-
-                updatedDisplayMode = .list(listViewModel)
-            case .single:
-                let singleStreamViewModel = SingleStreamViewModel(
-                    videoViewModels: sources.map {
-                        VideoRendererViewModel(
-                            streamSource: $0,
-                            isSelectedVideoSource: $0.id == matchingSource.id,
-                            isSelectedAudioSource: $0.id == selectedAudioSource?.id,
-                            isPiPView: !isShowingDetailSingleViewScreen && $0.id == matchingSource.id,
-                            showSourceLabel: false,
-                            showAudioIndicator: false,
-                            videoQuality: .auto
-                        )
-                    },
-                    selectedVideoSource: matchingSource,
-                    streamDetail: streamDetail,
-                    viewRendererProvider: singleViewRendererProvider
-                )
-                updatedDisplayMode = .single(singleStreamViewModel)
-            }
-
-            let detailSingleStreamViewModel = SingleStreamViewModel(
-                videoViewModels: sources.map {
-                    VideoRendererViewModel(
-                        streamSource: $0,
-                        isSelectedVideoSource: $0.id == matchingSource.id,
-                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
-                        isPiPView: isShowingDetailSingleViewScreen && $0.id == matchingSource.id,
-                        showSourceLabel: false,
-                        showAudioIndicator: false,
-                        videoQuality: .auto
-                    )
-                },
-                selectedVideoSource: matchingSource,
-                streamDetail: streamDetail,
-                viewRendererProvider: singleViewRendererProvider
-            )
-            internalState = .success(
-                displayMode: updatedDisplayMode,
+            let updatedState: State = .success(
+                displayMode: displayMode,
                 sources: sources,
-                selectedVideoSource: matchingSource,
+                selectedVideoSource: matchingVideoSource,
                 selectedAudioSource: selectedAudioSource,
-                settings: settings,
-                detailSingleStreamViewModel: detailSingleStreamViewModel
+                settings: settings
             )
+            update(state: updatedState)
         default:
             fatalError("Cannot select source when the state is not `.success`")
         }
     }
-    // swiftlint:enable function_body_length
 
     func endStream() async throws {
-        _ = try await streamOrchestrator.stopConnection()
+        _ = try await subscriptionManager.unSubscribe()
         subscriptions.removeAll()
+        audioTrackActivityObservationDictionary.removeAll()
+        await videoTracksManager.reset()
     }
 
-    func playAudio(for source: StreamSource) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            try await self.streamOrchestrator.playAudio(for: source)
+    private func playAudio(for source: StreamSource) {
+        Task {
+            Self.logger.debug("🎰 Enabling audio for source \(source.sourceId)")
+            try await source.audioTrack?.enable()
         }
     }
 
-    func stopAudio(for source: StreamSource) {
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            try await self.streamOrchestrator.stopAudio(for: source)
+    private func stopAudio(for source: StreamSource) {
+        Task {
+            try await source.audioTrack?.disable()
         }
     }
 
-    private func startObservers() {
-        let settingsPublisher = settingsManager.publisher(for: settingsMode)
-        Task { @StreamOrchestrator [weak self] in
-            guard let self = self else { return }
-            await self.streamOrchestrator.statePublisher
-                .combineLatest(settingsPublisher)
-                .receive(on: DispatchQueue.main)
-                .sink { state, settings in
-                    switch state {
-                    case let .subscribed(sources: sources, numberOfStreamViewers: _):
-                        self.updateState(from: sources, settings: settings)
-                    case .connected:
-                        self.internalState = .loading
-                    case let .error(streamError):
-                        self.internalState = .error(ErrorViewModel(error: streamError))
-                    case .stopped:
-                        self.internalState = .error(.streamOffline)
-                    case .disconnected:
-                        self.internalState = .error(.noInternet)
-                    }
-                }
-                .store(in: &subscriptions)
-        }
+    private func update(state: State) {
+        self.state = state
     }
 
-    // swiftlint:disable function_body_length
-    private func updateState(from sources: [StreamSource], settings: StreamSettings) {
+    private func makeState(from sources: [StreamSource], settings: StreamSettings) -> State? {
         guard !sources.isEmpty else {
-            return
+            Self.logger.debug("🎰 Sources list is empty")
+            return nil
         }
-        updateStreamSettings(from: sources, settings: settings)
 
         let sortedSources: [StreamSource]
         switch settings.streamSortOrder {
@@ -351,7 +153,7 @@ final class StreamViewModel: ObservableObject {
 
         let selectedVideoSource: StreamSource
 
-        switch internalState {
+        switch state {
         case .error, .loading:
             selectedVideoSource = sortedSources[0]
 
@@ -360,129 +162,40 @@ final class StreamViewModel: ObservableObject {
             sources: _,
             selectedVideoSource: currentlySelectedVideoSource,
             selectedAudioSource: _,
-            settings: _,
-            detailSingleStreamViewModel: _
+            settings: _
         ):
             selectedVideoSource = sources.first { $0.id == currentlySelectedVideoSource.id } ?? sortedSources[0]
         }
 
         let selectedAudioSource = audioSelection(from: sources, settings: settings, selectedVideoSource: selectedVideoSource)
 
-        let displayMode: DisplayMode
-        switch settings.multiviewLayout {
+        let displayMode: DisplayMode = switch settings.multiviewLayout {
         case .list:
-            let secondaryVideoSources = sortedSources.filter { $0.id != selectedVideoSource.id }
-            let showSourceLabels = settings.showSourceLabels
-            let primaryVideoQuality = selectedVideoSource.videoQualityList.contains(listViewPrimaryVideoQuality) ? listViewPrimaryVideoQuality : .auto
-
-            let listViewModel = ListViewModel(
-                primaryVideoViewModel: VideoRendererViewModel(
-                    streamSource: selectedVideoSource,
-                    isSelectedVideoSource: true,
-                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id,
-                    isPiPView: !isShowingDetailSingleViewScreen,
-                    showSourceLabel: showSourceLabels,
-                    showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id,
-                    videoQuality: primaryVideoQuality
-                ),
-                secondaryVideoViewModels: secondaryVideoSources.map {
-                    VideoRendererViewModel(
-                        streamSource: $0,
-                        isSelectedVideoSource: false,
-                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
-                        isPiPView: false,
-                        showSourceLabel: showSourceLabels,
-                        showAudioIndicator: $0.id == selectedAudioSource?.id,
-                        videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
-                    )
-                },
-                mainViewRendererProvider: listViewMainRendererProvider,
-                thumbnailViewRendererProvider: listViewThumbnailRendererProvider
-            )
-
-            displayMode = .list(listViewModel)
+            .list
         case .grid:
-            let secondaryVideoSources = sortedSources.filter { $0.id != selectedVideoSource.id }
-            let showSourceLabels = settings.showSourceLabels
-
-            let gridViewModel = GridViewModel(
-                primaryVideoViewModel: VideoRendererViewModel(
-                    streamSource: selectedVideoSource,
-                    isSelectedVideoSource: true,
-                    isSelectedAudioSource: selectedVideoSource.id == selectedAudioSource?.id,
-                    isPiPView: !isShowingDetailSingleViewScreen,
-                    showSourceLabel: showSourceLabels,
-                    showAudioIndicator: selectedVideoSource.id == selectedAudioSource?.id,
-                    videoQuality: .auto
-                ),
-                secondaryVideoViewModels: secondaryVideoSources.map {
-                    VideoRendererViewModel(
-                        streamSource: $0,
-                        isSelectedVideoSource: false,
-                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
-                        isPiPView: false,
-                        showSourceLabel: showSourceLabels,
-                        showAudioIndicator: $0.id == selectedAudioSource?.id,
-                        videoQuality: $0.videoQualityList.contains(.low) ? .low : .auto
-                    )
-                },
-                viewRendererProvider: gridViewRendererProvider
-            )
-
-            displayMode = .grid(gridViewModel)
+            .grid
         case .single:
-            let singleStreamViewModel = SingleStreamViewModel(
-                videoViewModels: sortedSources.map {
-                    VideoRendererViewModel(
-                        streamSource: $0,
-                        isSelectedVideoSource: $0.id == selectedVideoSource.id,
-                        isSelectedAudioSource: $0.id == selectedAudioSource?.id,
-                        isPiPView: !isShowingDetailSingleViewScreen && $0.id == selectedVideoSource.id,
-                        showSourceLabel: false,
-                        showAudioIndicator: false,
-                        videoQuality: .auto
-                    )
-                },
-                selectedVideoSource: selectedVideoSource,
-                streamDetail: streamDetail,
-                viewRendererProvider: singleViewRendererProvider
-            )
-            displayMode = .single(singleStreamViewModel)
+            .single
         }
 
-        let detailSingleStreamViewModel = SingleStreamViewModel(
-            videoViewModels: sortedSources.map {
-                VideoRendererViewModel(
-                    streamSource: $0,
-                    isSelectedVideoSource: $0.id == selectedVideoSource.id,
-                    isSelectedAudioSource: $0.id == selectedAudioSource?.id,
-                    isPiPView: isShowingDetailSingleViewScreen && $0.id == selectedVideoSource.id,
-                    showSourceLabel: false,
-                    showAudioIndicator: false,
-                    videoQuality: .auto
-                )
-            },
-            selectedVideoSource: selectedVideoSource,
-            streamDetail: streamDetail,
-            viewRendererProvider: singleViewRendererProvider
-        )
-        self.internalState = .success(
+        return .success(
             displayMode: displayMode,
             sources: sortedSources,
             selectedVideoSource: selectedVideoSource,
             selectedAudioSource: selectedAudioSource,
-            settings: settings,
-            detailSingleStreamViewModel: detailSingleStreamViewModel
+            settings: settings
         )
     }
-    // swiftlint:enable function_body_length
 
     private func updateStreamSettings(from sources: [StreamSource], settings: StreamSettings) {
         // Only update the settings when the sources change, only sources with at least one audio track
-        let sourceIds = sources.filter { $0.audioTracksCount > 0 }.compactMap { $0.sourceId.value }
-        if sourceIds != settings.audioSources {
+        let sourceIdsWithActiveAudioTrack = sources
+            .filter { $0.audioTrack != nil && $0.audioTrack?.isActive == true }
+            .compactMap { $0.sourceId.value }
+
+        if sourceIdsWithActiveAudioTrack != settings.audioSources {
             var updatedSettings = settings
-            updatedSettings.audioSources = sourceIds
+            updatedSettings.audioSources = sourceIdsWithActiveAudioTrack
 
             // If source selected in settings is no longer available, update the settings
             if case let .source(sourceId) = settings.audioSelection, !settings.audioSources.contains(sourceId) {
@@ -495,23 +208,29 @@ final class StreamViewModel: ObservableObject {
 
     private func audioSelection(from sources: [StreamSource], settings: StreamSettings, selectedVideoSource: StreamSource) -> StreamSource? {
         // Get the sources with at least one audio track if none, uses the original sources list
-        let sourcesWithAudio = sources.filter { $0.audioTracksCount > 0 }
+        let sourcesWithAudio = sources.filter { $0.audioTrack != nil }
         if sourcesWithAudio.isEmpty {
             return nil
         }
         let selectedAudioSource: StreamSource?
         switch settings.audioSelection {
         case .firstSource:
-            selectedAudioSource = sourcesWithAudio[0]
+            selectedAudioSource = sourcesWithAudio.first
         case .mainSource:
             // If no main source available, use first source as main
-            selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId == StreamSource.SourceId.main }) ?? sourcesWithAudio[0]
+            selectedAudioSource = sourcesWithAudio
+                .first(where: { $0.sourceId == .main }) ?? sourcesWithAudio.first
         case .followVideo:
             // Use audio from the video source, if no audio track uses the last one used or just the 1st one
-            let fallbackAudioSource = internalState.selectedAudioSource != nil ? internalState.selectedAudioSource : sourcesWithAudio[0]
-            selectedAudioSource = selectedVideoSource.audioTracksCount > 0 ? selectedVideoSource : fallbackAudioSource
+            if selectedVideoSource.audioTrack != nil {
+                selectedAudioSource = selectedVideoSource
+            } else {
+                // Fallback to last used audio or else the first in the list
+                selectedAudioSource = state.selectedAudioSource ?? sourcesWithAudio.first
+            }
         case let .source(sourceId: sourceId):
-            selectedAudioSource = sourcesWithAudio.first(where: { $0.sourceId == StreamSource.SourceId(id: sourceId) }) ?? sourcesWithAudio[0]
+            selectedAudioSource = sourcesWithAudio
+                .first { $0.sourceId == SourceID(sourceId: sourceId) } ?? sourcesWithAudio.first
         }
         return selectedAudioSource
     }
@@ -521,52 +240,112 @@ final class StreamViewModel: ObservableObject {
     }
 }
 
-fileprivate extension StreamViewModel.InternalState {
+private extension StreamViewModel {
+    func startObservers() {
+
+        Task { [weak self] in
+            guard let self else { return }
+            let settingsPublisher = settingsManager.publisher(for: settingsMode)
+            let statePublisher = await subscriptionManager.$state
+
+            Publishers.CombineLatest3(statePublisher, settingsPublisher,
+                                      trackActiveStateUpdateSubject)
+                .sink { state, settings, _ in
+                    Self.logger.debug("🎰 State and settings events")
+                    Task {
+                        switch state {
+                        case let .subscribed(sources: sources):
+                            let activeSources = Array(sources.filter { $0.videoTrack.isActive == true })
+
+                            // Register Video Track events
+                            await withTaskGroup(of: Void.self) { group in
+                                for source in activeSources {
+                                    group.addTask {
+                                        await self.observeAudioTrackEvents(for: source)
+                                        await self.videoTracksManager.observeVideoTrackEvents(for: source)
+                                    }
+                                }
+                            }
+
+                            self.updateStreamSettings(from: activeSources, settings: settings)
+                            guard let newState = self.makeState(from: activeSources, settings: settings) else {
+                                Self.logger.debug("🎰 Make state returned without a value")
+                                return
+                            }
+                            self.update(state: newState)
+
+                        case .disconnected:
+                            Self.logger.debug("🎰 Stream disconnected")
+                            self.update(state: .loading)
+
+                        case .stopped:
+                            Self.logger.debug("🎰 Stream stopped")
+                            self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
+
+                        case .error(.connectError(status: 0, reason: _)):
+                            // Status code `0` represents a `no network error`
+                            Self.logger.debug("🎰 No internet connection")
+                            self.update(state: .error(title: .noInternetErrorTitle, subtitle: nil))
+
+                        case let .error(.connectError(status: status, reason: reason)):
+                            Self.logger.debug("🎰 Connection error - \(status), \(reason)")
+                            self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
+
+                        case let .error(.signalingError(reason: reason)):
+                            Self.logger.debug("🎰 Signaling error - \(reason)")
+                            self.update(state: .error(title: .genericErrorTitle, subtitle: nil))
+                        }
+                    }
+                }
+                .store(in: &subscriptions)
+        }
+    }
+
+    func observeAudioTrackEvents(for source: StreamSource) {
+        Task { [weak self] in
+            guard
+                let self,
+                let audioTrack = source.audioTrack,
+                self.audioTrackActivityObservationDictionary[source.sourceId] == nil
+            else {
+                return
+            }
+
+            Self.logger.debug("🎤 Registering for audio track lifecycle events of \(source.sourceId)")
+            let audioTrackActivityObservation = Task {
+                for await activityEvent in audioTrack.activity() {
+                    switch activityEvent {
+                    case .active:
+                        Self.logger.debug("🎤 Audio track for \(source.sourceId) is active")
+                        self.trackActiveStateUpdateSubject.send()
+
+                    case .inactive:
+                        Self.logger.debug("🎤 Audio track for \(source.sourceId) is inactive")
+                        self.trackActiveStateUpdateSubject.send()
+                    }
+                }
+            }
+            self.audioTrackActivityObservationDictionary[source.sourceId] = audioTrackActivityObservation
+
+            await audioTrackActivityObservation.value
+        }
+    }
+
+}
+
+fileprivate extension StreamViewModel.State {
     var selectedAudioSource: StreamSource? {
-        switch self {
+        return switch self {
         case let .success(
             displayMode: _,
             sources: _,
             selectedVideoSource: _,
             selectedAudioSource: currentlySelectedAudioSource,
-            settings: _,
-            detailSingleStreamViewModel: _
+            settings: _
         ):
-            return currentlySelectedAudioSource
+            currentlySelectedAudioSource
         default:
-            return nil
-        }
-    }
-
-    var selectedVideoSource: StreamSource? {
-        switch self {
-        case let .success(
-            displayMode: _,
-            sources: _,
-            selectedVideoSource: currentlySelectedVideoSource,
-            selectedAudioSource: _,
-            settings: _,
-            detailSingleStreamViewModel: _
-        ):
-            return currentlySelectedVideoSource
-        default:
-            return nil
-        }
-    }
-
-    var displayMode: StreamViewModel.DisplayMode? {
-        switch self {
-        case let .success(
-            displayMode: currentDisplayMode,
-            sources: _,
-            selectedVideoSource: _,
-            selectedAudioSource: _,
-            settings: _,
-            detailSingleStreamViewModel: _
-        ):
-            return currentDisplayMode
-        default:
-            return nil
+            nil
         }
     }
 
@@ -577,8 +356,7 @@ fileprivate extension StreamViewModel.InternalState {
             sources: sources,
             selectedVideoSource: _,
             selectedAudioSource: _,
-            settings: _,
-            detailSingleStreamViewModel: _
+            settings: _
         ):
             return !sources.isEmpty
         default:
@@ -586,4 +364,3 @@ fileprivate extension StreamViewModel.InternalState {
         }
     }
 }
-// swiftlint:enable type_body_length

@@ -5,277 +5,169 @@
 import SwiftUI
 import DolbyIORTSCore
 import DolbyIOUIKit
+import MillicastSDK
 
 struct ListView: View {
-    private enum Defaults {
-        static let maximumNumberOfTilesRatio: CGFloat = 1 / 3
-        static let defaultThumbnailSizeRatio: CGFloat = 1 / 2
-        static let horizontalGridThumbnailSizeRatio: CGFloat = 1 / 4
-        static let sideListThumbnailSizeRatio: CGFloat = 1 / 4
-        static let sideMainViewSizeRatio: CGFloat = 3 / 4
-        static let defaultCellCount = 2
-    }
-
-    /**
-     ListViewLayout describes the layout modes for the ListView:
-     leadingVertical - main tile on left, vertically scrollable 1 column grid on the right
-     trailingVertical - vertically scrollable 1 column grid on left, main tile on the right
-     bottomHorizontal - horizontally scrollable grid on top, main tile below
-     bottomVertical - vertically scrollable grid on top, main tile below
-     topHorizontal - main tile on top, horizontally scrollable grid below
-     topVertical - main tile on top, vertically scrollable grid below
-     */
-    enum ListViewLayout {
-        case leadingVertical
-        case trailingVertical
-        case bottomHorizontal(rows: Int = Defaults.defaultCellCount)
-        case bottomVertical(columns: Int = Defaults.defaultCellCount)
-        case topHorizontal(rows: Int = Defaults.defaultCellCount)
-        case topVertical(columns: Int = Defaults.defaultCellCount)
+    private enum Constants {
+        static let tileSpacing: CGFloat = Layout.spacing1x
     }
 
     private let viewModel: ListViewModel
-    private let layout: ListViewLayout
     private let onPrimaryVideoSelection: (StreamSource) -> Void
     private let onSecondaryVideoSelection: (StreamSource) -> Void
 
-    @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @State private var portraitRendererRegistry: RendererRegistry = RendererRegistry()
+    @State private var landscapeRendererRegistry: RendererRegistry = RendererRegistry()
 
     init(
-        viewModel: ListViewModel,
-        layout: ListViewLayout = .topVertical(),
+        sources: [StreamSource],
+        selectedVideoSource: StreamSource,
+        selectedAudioSource: StreamSource?,
+        showSourceLabels: Bool,
+        isShowingDetailView: Bool,
+        mainTilePreferredVideoQuality: VideoQuality,
+        subscriptionManager: SubscriptionManager,
+        pipRendererRegistry: RendererRegistry,
+        videoTracksManager: VideoTracksManager,
         onPrimaryVideoSelection: @escaping (StreamSource) -> Void,
         onSecondaryVideoSelection: @escaping (StreamSource) -> Void
     ) {
-        self.viewModel = viewModel
-        self.layout = layout
         self.onPrimaryVideoSelection = onPrimaryVideoSelection
         self.onSecondaryVideoSelection = onSecondaryVideoSelection
+        self.viewModel = ListViewModel(
+            sources: sources,
+            selectedVideoSource: selectedVideoSource,
+            selectedAudioSource: selectedAudioSource,
+            showSourceLabels: showSourceLabels,
+            isShowingDetailView: isShowingDetailView,
+            mainTilePreferredVideoQuality: mainTilePreferredVideoQuality,
+            subscriptionManager: subscriptionManager,
+            pipRendererRegistry: pipRendererRegistry,
+            videoTracksManager: videoTracksManager
+        )
+    }
+
+    private func gridItems(for screenWidth: CGFloat) -> [GridItem] {
+        Array(repeating: GridItem(.fixed(secondaryTileWidth(for: screenWidth)), spacing: Constants.tileSpacing), count: numberOfColumns)
+    }
+
+    private var numberOfColumns: Int {
+        sizeClass == .compact ? 2 : 1
+    }
+
+    private var pinnedViews: PinnedScrollableViews {
+        sizeClass == .compact ? [.sectionHeaders] : []
+    }
+
+    @ViewBuilder
+    private func primaryView(for screenSize: CGSize) -> some View {
+        let selectedVideoSource = viewModel.selectedVideoSource
+        let tileWidth = sizeClass == .compact ?
+        screenSize.width - Constants.tileSpacing :
+        screenSize.width * 0.75 - Constants.tileSpacing
+
+        VideoRendererView(
+            source: selectedVideoSource,
+            isSelectedVideoSource: true,
+            isSelectedAudioSource: selectedVideoSource == viewModel.selectedAudioSource,
+            isPiPView: viewModel.isShowingDetailView,
+            showSourceLabel: viewModel.showSourceLabels,
+            showAudioIndicator: viewModel.selectedAudioSource == selectedVideoSource,
+            maxWidth: tileWidth,
+            maxHeight: .infinity,
+            accessibilityIdentifier: "PrimaryVideoTile.\(selectedVideoSource.sourceId.displayLabel)",
+            preferredVideoQuality: viewModel.mainTilePreferredVideoQuality,
+            subscriptionManager: viewModel.subscriptionManager,
+            rendererRegistry: sizeClass == .compact ? portraitRendererRegistry : landscapeRendererRegistry,
+            pipRendererRegistry: viewModel.pipRendererRegistry,
+            videoTracksManager: viewModel.videoTracksManager,
+            action: { source in
+                onPrimaryVideoSelection(source)
+            }
+        )
+        .id(selectedVideoSource.id)
+    }
+
+    private func secondaryTileWidth(for screenWidth: CGFloat) -> CGFloat {
+        sizeClass == .compact ? screenWidth / 2 - Constants.tileSpacing : screenWidth * 0.25
     }
 
     var body: some View {
         GeometryReader { proxy in
-            VStack {
-                let screenSize = proxy.size
-                switch layout {
-                case .topVertical(columns: let columns):
-                    if deviceOrientation.isPortrait {
-                        topVerticalLayout(screenSize, columns)
-                    } else {
-                        leadingVerticalLayout(screenSize)
-                    }
-                case .topHorizontal(rows: let rows):
-                    if deviceOrientation.isPortrait {
-                        topHorizontalLayout(screenSize, rows)
-                    } else {
-                        leadingVerticalLayout(screenSize)
-                    }
-                case .bottomVertical(columns: let columns):
-                    if deviceOrientation.isPortrait {
-                        bottomVerticalLayout(screenSize, columns)
-                    } else {
-                        trailingVerticalLayout(screenSize)
-                    }
-                case .bottomHorizontal(rows: let rows):
-                    if deviceOrientation.isPortrait {
-                        bottomHorizontalLayout(screenSize, rows)
-                    } else {
-                        trailingVerticalLayout(screenSize)
-                    }
-                case .leadingVertical:
-                    if deviceOrientation.isPortrait {
-                        topVerticalLayout(screenSize, Defaults.defaultCellCount)
-                    } else {
-                        leadingVerticalLayout(screenSize)
-                    }
-                case .trailingVertical:
-                    if deviceOrientation.isPortrait {
-                        bottomVerticalLayout(screenSize, Defaults.defaultCellCount)
-                    } else {
-                        trailingVerticalLayout(screenSize)
+            DynamicStack(spacing: Constants.tileSpacing) {
+                Spacer()
+                    .frame(width: Layout.spacing0x, height: Layout.spacing0x)
+
+                primaryView(for: proxy.size)
+
+                ScrollView {
+                    LazyVGrid(columns: gridItems(for: proxy.size.width)) {
+                        Section(content: {
+                            ForEach(viewModel.secondarySources, id: \.id) { source in
+                                VideoRendererView(
+                                    source: source,
+                                    isSelectedVideoSource: false,
+                                    isSelectedAudioSource: source == viewModel.selectedAudioSource,
+                                    isPiPView: false,
+                                    showSourceLabel: viewModel.showSourceLabels,
+                                    showAudioIndicator: viewModel.selectedAudioSource == source,
+                                    maxWidth: secondaryTileWidth(for: proxy.size.width),
+                                    maxHeight: .infinity,
+                                    accessibilityIdentifier: "SecondaryVideoTile.\(source.sourceId.displayLabel)",
+                                    preferredVideoQuality: .low,
+                                    subscriptionManager: viewModel.subscriptionManager,
+                                    rendererRegistry: sizeClass == .compact ? portraitRendererRegistry : landscapeRendererRegistry,
+                                    pipRendererRegistry: viewModel.pipRendererRegistry,
+                                    videoTracksManager: viewModel.videoTracksManager,
+                                    action: { source in
+                                        onSecondaryVideoSelection(source)
+                                    }
+                                )
+                                .id(source.id)
+                            }
+                        })
                     }
                 }
             }
-        }
-        .onRotate { newOrientation in
-            if !newOrientation.isFlat && newOrientation.isValidInterfaceOrientation {
-                deviceOrientation = newOrientation
-            }
+            .frame(width: proxy.size.width, height: proxy.size.height)
         }
     }
+}
 
-    private func topVerticalLayout(_ screenSize: CGSize, _ columnsCount: Int) -> some View {
-        let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: columnsCount)
-        return ScrollView {
-            LazyVGrid(columns: columns, alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                Section(
-                    header: HStack {
-                        let maxAllowedMainVideoSize = CGSize(
-                            width: screenSize.width,
-                            height: screenSize.height * Defaults.maximumNumberOfTilesRatio
-                        )
-                        mainView(maxAllowedMainVideoSize)
-                    }
-                        .clipped()
-                ) {
-                    gridVertical(screenSize, thumbnailRatioForColumnCount(columnCount: columnsCount))
-                }
-            }
-            Spacer()
+struct DynamicStack<Content: View>: View {
+    let horizontalAlignment = HorizontalAlignment.center
+    let verticalAlignment = VerticalAlignment.center
+    let spacing: CGFloat?
+    @ViewBuilder var content: () -> Content
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    var body: some View {
+        switch sizeClass {
+        case .regular:
+            hStack
+        case .compact, .none:
+            vStack
+        @unknown default:
+            vStack
         }
     }
+}
 
-    private func topHorizontalLayout(_ screenSize: CGSize, _ rowsCount: Int) -> some View {
-        VStack {
-            let maxAllowedMainVideoSize = CGSize(
-                width: screenSize.width,
-                height: screenSize.height * Defaults.maximumNumberOfTilesRatio
-            )
-            mainView(maxAllowedMainVideoSize)
-            ScrollView(.horizontal) {
-                let availableRowHeight = horizontalGridTileAvailableHeight(screenSize: screenSize, maxAllowedMainVideoSize: maxAllowedMainVideoSize, rowsCount: rowsCount)
-                gridHorizontal(availableHeight: availableRowHeight, rowsCount: rowsCount)
-            }
-        }
+private extension DynamicStack {
+    var hStack: some View {
+        HStack(
+            alignment: verticalAlignment,
+            spacing: spacing,
+            content: content
+        )
     }
 
-    private func bottomVerticalLayout(_ screenSize: CGSize, _ columnsCount: Int) -> some View {
-        ScrollView {
-            let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: columnsCount)
-            LazyVGrid(columns: columns, alignment: .leading, pinnedViews: [.sectionFooters]) {
-                Section(
-                    footer: HStack {
-                        let maxAllowedMainVideoSize = CGSize(
-                            width: screenSize.width,
-                            height: screenSize.height * Defaults.maximumNumberOfTilesRatio
-                        )
-                        mainView(maxAllowedMainVideoSize)
-                    }
-                        .clipped()
-                ) {
-                    gridVertical(screenSize, thumbnailRatioForColumnCount(columnCount: columnsCount))
-                }
-            }
-        }
-    }
-
-    private func bottomHorizontalLayout(_ screenSize: CGSize, _ rowsCount: Int) -> some View {
-        VStack {
-            let maxAllowedMainVideoSize = CGSize(width: screenSize.width, height: screenSize.height * Defaults.maximumNumberOfTilesRatio)
-            ScrollView(.horizontal) {
-                let availableRowHeight = horizontalGridTileAvailableHeight(screenSize: screenSize, maxAllowedMainVideoSize: maxAllowedMainVideoSize, rowsCount: rowsCount)
-                gridHorizontal(availableHeight: availableRowHeight, rowsCount: rowsCount).frame(height: availableRowHeight * CGFloat(rowsCount))
-            }
-            mainView(maxAllowedMainVideoSize)
-            Spacer()
-        }
-    }
-
-    private func leadingVerticalLayout(_ screenSize: CGSize) -> some View {
-        let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: 1)
-        return HStack(alignment: .top) {
-            let maxAllowedMainVideoSize = CGSize(
-                width: screenSize.width * Defaults.sideMainViewSizeRatio,
-                height: screenSize.height
-            )
-
-            mainView(maxAllowedMainVideoSize)
-            ScrollView {
-                LazyVGrid(columns: columns, alignment: .leading) {
-                    gridVertical(screenSize, Defaults.sideListThumbnailSizeRatio)
-                }
-            }.frame(width: CGFloat(screenSize.width) * Defaults.sideListThumbnailSizeRatio)
-        }
-    }
-
-    private func trailingVerticalLayout(_ screenSize: CGSize) -> some View {
-        let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: 1)
-        return HStack(alignment: .top) {
-            ScrollView {
-                LazyVGrid(columns: columns, alignment: .trailing) {
-                    gridVertical(screenSize, Defaults.sideListThumbnailSizeRatio)
-                }
-            }
-            .frame(width: CGFloat(screenSize.width) * Defaults.sideListThumbnailSizeRatio)
-            let maxAllowedMainVideoSize = CGSize(
-                width: screenSize.width * Defaults.sideMainViewSizeRatio,
-                height: screenSize.height
-            )
-            mainView(maxAllowedMainVideoSize)
-        }
-    }
-
-    private func mainView(_ maxAllowedMainVideoSize: CGSize) -> some View {
-        let primaryVideoViewModel = viewModel.primaryVideoViewModel
-        return VideoRendererView(
-            viewModel: primaryVideoViewModel,
-            viewRenderer: viewModel.mainViewRendererProvider.renderer(for: primaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
-            maxWidth: maxAllowedMainVideoSize.width,
-            maxHeight: maxAllowedMainVideoSize.height,
-            contentMode: .aspectFit,
-            identifier: "PrimaryVideoTile.\(primaryVideoViewModel.streamSource.sourceId.displayLabel)"
-        ) { source in
-            onPrimaryVideoSelection(source)
-        }
-        .id(primaryVideoViewModel.streamSource.id)
-    }
-
-    private func gridVertical(_ screenSize: CGSize, _ thumbnailSizeRatio: CGFloat) -> some View {
-        return ForEach(viewModel.secondaryVideoViewModels, id: \.streamSource.id) { secondaryVideoViewModel in
-            let maxAllowedSubVideoWidth = screenSize.width * thumbnailSizeRatio
-            let maxAllowedSubVideoHeight = screenSize.height * thumbnailSizeRatio
-
-            VideoRendererView(
-                viewModel: secondaryVideoViewModel,
-                viewRenderer: viewModel.thumbnailViewRendererProvider.renderer(for: secondaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
-                maxWidth: maxAllowedSubVideoWidth,
-                maxHeight: maxAllowedSubVideoHeight,
-                contentMode: .aspectFit,
-                identifier: "SecondaryVideoTile.\(secondaryVideoViewModel.streamSource.sourceId.displayLabel)"
-            ) { source in
-                onSecondaryVideoSelection(source)
-            }
-            .id(secondaryVideoViewModel.streamSource.id)
-        }
-    }
-
-    private func maxAllowedMainVideoWidth(screenSize: CGSize) -> CGFloat {
-        return screenSize.width
-    }
-
-    private func maxAllowedSideMainVideoWidth(screenSize: CGSize) -> CGFloat {
-        return screenSize.width * Defaults.sideMainViewSizeRatio
-    }
-
-    private func maxAllowedMainVideoHeight(screenSize: CGSize) -> CGFloat {
-        return screenSize.height * Defaults.maximumNumberOfTilesRatio
-    }
-
-    private func gridHorizontal(availableHeight: CGFloat, rowsCount: Int) -> some View {
-        let rows = [GridItem](repeating: GridItem(.fixed(CGFloat(availableHeight)), spacing: Layout.spacing1x), count: rowsCount)
-
-        return LazyHGrid(rows: rows, alignment: .top, spacing: Layout.spacing1x) {
-            ForEach(viewModel.secondaryVideoViewModels, id: \.streamSource.id) { secondaryVideoViewModel in
-                VideoRendererView(
-                    viewModel: secondaryVideoViewModel,
-                    viewRenderer: viewModel.thumbnailViewRendererProvider.renderer(for: secondaryVideoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
-                    maxWidth: .infinity,
-                    maxHeight: availableHeight,
-                    contentMode: .aspectFit,
-                    identifier: "SecondaryVideoTile.\(secondaryVideoViewModel.streamSource.sourceId.displayLabel)"
-                ) { source in
-                    onSecondaryVideoSelection(source)
-                }
-                .id(secondaryVideoViewModel.streamSource.id)
-            }
-        }
-    }
-
-    func thumbnailRatioForColumnCount(columnCount: Int) -> CGFloat {
-        return columnCount <= 2 ? Defaults.defaultThumbnailSizeRatio : 1 / CGFloat(columnCount)
-    }
-
-    func horizontalGridTileAvailableHeight(screenSize: CGSize, maxAllowedMainVideoSize: CGSize, rowsCount: Int) -> CGFloat {
-        return (screenSize.height - maxAllowedMainVideoSize.height) * (rowsCount <= 4 ? Defaults.horizontalGridThumbnailSizeRatio : 1 / CGFloat(rowsCount))
+    var vStack: some View {
+        VStack(
+            alignment: horizontalAlignment,
+            spacing: spacing,
+            content: content
+        )
     }
 }

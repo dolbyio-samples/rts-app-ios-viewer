@@ -1,116 +1,82 @@
 //
 //  GridView.swift
 //
-//
 
 import SwiftUI
 import DolbyIORTSCore
 import DolbyIOUIKit
+import MillicastSDK
 
 struct GridView: View {
     private enum Defaults {
-        static let defaultThumbnailSizeRatio: CGFloat = 1 / 3
-
-        static let defaultCellCountVerticalPortrait = 1
-        static let defaultCellCountVerticalLandscape = 2
-        static let defaultCellCountHorizontalPortrait = 4
-        static let defaultCellCountHorizontalLandscape = 2
+        static let numberOfColumnsForPortrait = 1
+        static let numberOfColumnsForLandscape = 2
     }
 
-    /**
-     GridViewLayout describes the layout modes for the GridView:
-     horizontal - horizontally scrollable grid, where rowsPortrait - number rows in portrait mode; rowsLandscape - number of rows in landscape mode
-     vertical - vertically scrollable grid, where columnsPortrait - number columns in portrait mode; columnsLandscape - number of columns in landscape mode
-     */
-    enum GridViewLayout {
-        case horizontal(rowsPortrait: Int = Defaults.defaultCellCountHorizontalPortrait, rowsLandscape: Int = Defaults.defaultCellCountHorizontalLandscape)
-        case vertical(columnsPortrait: Int = Defaults.defaultCellCountVerticalPortrait, columnsLandscape: Int = Defaults.defaultCellCountVerticalLandscape)
-    }
-
-    private let viewModel: GridViewModel
-    private let layout: GridViewLayout
+    private var viewModel: GridViewModel!
     private let onVideoSelection: (StreamSource) -> Void
-    @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
+
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @State private var rendererRegistry: RendererRegistry = RendererRegistry()
 
     init(
-        viewModel: GridViewModel,
-        layout: GridViewLayout = .vertical(),
+        sources: [StreamSource],
+        selectedVideoSource: StreamSource,
+        selectedAudioSource: StreamSource?,
+        showSourceLabels: Bool,
+        isShowingDetailView: Bool,
+        subscriptionManager: SubscriptionManager,
+        pipRendererRegistry: RendererRegistry,
+        videoTracksManager: VideoTracksManager,
         onVideoSelection: @escaping (StreamSource) -> Void
     ) {
-        self.viewModel = viewModel
-        self.layout = layout
         self.onVideoSelection = onVideoSelection
+        self.viewModel = GridViewModel(
+            sources: sources,
+            selectedVideoSource: selectedVideoSource,
+            selectedAudioSource: selectedAudioSource,
+            showSourceLabels: showSourceLabels,
+            isShowingDetailView: isShowingDetailView,
+            subscriptionManager: subscriptionManager,
+            pipRendererRegistry: pipRendererRegistry,
+            videoTracksManager: videoTracksManager
+        )
     }
 
     var body: some View {
         GeometryReader { proxy in
-            VStack {
-                let screenSize = proxy.size
-                switch layout {
-                case .horizontal(rowsPortrait: let rowsPortrait, rowsLandscape: let rowsLandscape):
-                    gridHorizontal(screenSize.height, deviceOrientation.isPortrait ? rowsPortrait : rowsLandscape)
-                case .vertical(columnsPortrait: let columnsPortrait, columnsLandscape: let columnsLandscape):
-                    gridVertical(screenSize, deviceOrientation.isPortrait ? columnsPortrait : columnsLandscape)
-                }
-            }
-        }
-        .onRotate { newOrientation in
-            if !newOrientation.isFlat && newOrientation.isValidInterfaceOrientation {
-                deviceOrientation = newOrientation
-            }
-        }
-    }
-
-    private func gridVertical(_ screenSize: CGSize, _ columnsCount: Int) -> some View {
-        let thumbnailSizeRatio = thumbnailRatioForColumnCount(columnCount: columnsCount)
-        let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: columnsCount)
-        return ScrollView {
-            LazyVGrid(columns: columns, alignment: .leading) {
-                ForEach(viewModel.allVideoViewModels, id: \.streamSource.id) { videoViewModel in
-                    let maxAllowedSubVideoWidth = screenSize.width * thumbnailSizeRatio
-                    let maxAllowedSubVideoHeight = screenSize.height * thumbnailSizeRatio
-
-                    VideoRendererView(
-                        viewModel: videoViewModel,
-                        viewRenderer: viewModel.viewRendererProvider.renderer(for: videoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
-                        maxWidth: maxAllowedSubVideoWidth,
-                        maxHeight: maxAllowedSubVideoHeight,
-                        contentMode: .aspectFit,
-                        identifier: "GridViewVideoTile.\(videoViewModel.streamSource.sourceId.displayLabel)"
-                    ) { source in
-                        onVideoSelection(source)
+            let screenSize = proxy.size
+            let numberOfColumns = sizeClass == .compact ? Defaults.numberOfColumnsForPortrait : Defaults.numberOfColumnsForLandscape
+            let tileWidth = screenSize.width / CGFloat(numberOfColumns)
+            let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: numberOfColumns)
+            ScrollView {
+                LazyVGrid(columns: columns, alignment: .leading) {
+                    ForEach(viewModel.sources, id: \.id) { source in
+                        VideoRendererView(
+                            source: source,
+                            isSelectedVideoSource: source == viewModel.selectedVideoSource,
+                            isSelectedAudioSource: source == viewModel.selectedAudioSource,
+                            isPiPView: source == viewModel.selectedVideoSource && !viewModel.isShowingDetailView,
+                            showSourceLabel: viewModel.showSourceLabels,
+                            showAudioIndicator: source == viewModel.selectedAudioSource,
+                            maxWidth: tileWidth,
+                            maxHeight: .infinity,
+                            accessibilityIdentifier: "GridViewVideoTile.\(source.sourceId.displayLabel)",
+                            preferredVideoQuality: source == viewModel.selectedVideoSource ? .auto : .low,
+                            subscriptionManager: viewModel.subscriptionManager,
+                            rendererRegistry: rendererRegistry,
+                            pipRendererRegistry: viewModel.pipRendererRegistry,
+                            videoTracksManager: viewModel.videoTracksManager,
+                            action: { source in
+                                onVideoSelection(source)
+                            }
+                        )
+                        .id(source.id)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                     }
-                    .id(videoViewModel.streamSource.id)
-                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                 }
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
             }
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
         }
-    }
-
-    private func gridHorizontal(_ availableHeight: CGFloat, _ rowsCount: Int) -> some View {
-        let rows = [GridItem](repeating: GridItem(.fixed((availableHeight - (Layout.spacing1x * CGFloat(rowsCount))) / CGFloat(rowsCount)), spacing: Layout.spacing1x), count: rowsCount)
-
-        return ScrollView(.horizontal) {
-            LazyHGrid(rows: rows, alignment: .top, spacing: Layout.spacing1x) {
-                ForEach(viewModel.allVideoViewModels, id: \.streamSource.id) { videoViewModel in
-                    VideoRendererView(
-                        viewModel: videoViewModel,
-                        viewRenderer: viewModel.viewRendererProvider.renderer(for: videoViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
-                        maxWidth: .infinity,
-                        maxHeight: availableHeight / CGFloat(rowsCount),
-                        contentMode: .aspectFit,
-                        identifier: "GridViewVideoTile.\(videoViewModel.streamSource.sourceId.displayLabel)"
-                    ) { source in
-                        onVideoSelection(source)
-                    }
-                    .id(videoViewModel.streamSource.id)
-                }
-            }.frame(height: availableHeight)
-        }
-    }
-
-    func thumbnailRatioForColumnCount(columnCount: Int) -> CGFloat {
-        return 1 / CGFloat(columnCount)
     }
 }

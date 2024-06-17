@@ -1,17 +1,11 @@
 //
-//  StreamingStatistics.swift
+//  StatisticsReport.swift
 //
 
 import Foundation
 import MillicastSDK
 
-public struct StreamingStatistics: Equatable, Hashable {
-    public let roundTripTime: Double?
-    public var videoStatsInboundRtp: StatsInboundRtp?
-    public var audioStatsInboundRtp: StatsInboundRtp?
-}
-
-public struct AllStreamStatistics: Equatable, Hashable {
+public struct StreamStatistics: Equatable, Hashable {
     public let roundTripTime: Double?
     public var videoStatsInboundRtpList: [StatsInboundRtp]
     public var audioStatsInboundRtpList: [StatsInboundRtp]
@@ -22,7 +16,6 @@ public struct StatsInboundRtp: Equatable, Hashable {
     public let sid: String
     public let mid: String
     public let decoderImplementation: String?
-    public let trackIdentifier: String
     public let decoder: String?
     public let processingDelay: Double
     public let decodeTime: Double
@@ -53,7 +46,7 @@ public struct StatsInboundRtp: Equatable, Hashable {
     }
 }
 
-extension AllStreamStatistics {
+extension StreamStatistics {
     init?(_ report: MCStatsReport) {
         let receivedType = MCRemoteInboundRtpStreamStats.get_type()
         guard let remoteInboundStreamStatsList = report.getStatsOf(receivedType) as? [MCRemoteInboundRtpStreamStats] else {
@@ -125,7 +118,6 @@ extension StatsInboundRtp {
         )
         nackCount = Int(stats.nack_count)
         packetsLost = Int(stats.packets_lost)
-        trackIdentifier = stats.track_identifier as String
         decoder = stats.decoder_implementation as String?
         audioLevel = Int(stats.audio_level)
         totalEnergy = stats.total_audio_energy
@@ -140,5 +132,15 @@ extension StatsInboundRtp {
 
     private static func msNormalised(numerator: Double, denominator: UInt) -> Double {
         denominator == 0 ? 0 : numerator * 1000 / Double(denominator)
+    }
+}
+
+extension StreamStatistics {
+    public func videoStatistics(matching mid: String) -> StatsInboundRtp? {
+        self.videoStatsInboundRtpList.first { mid == $0.mid }
+    }
+
+    public func audioStatistics(matching mid: String) -> StatsInboundRtp? {
+        self.audioStatsInboundRtpList.first { mid == $0.mid }
     }
 }

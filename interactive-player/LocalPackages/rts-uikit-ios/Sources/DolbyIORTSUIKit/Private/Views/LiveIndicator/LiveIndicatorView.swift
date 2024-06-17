@@ -7,12 +7,16 @@ import SwiftUI
 
 struct LiveIndicatorView: View {
 
-    @StateObject private var viewModel: LiveIndicatorViewModel = .init()
-
+    private let viewModel: LiveIndicatorViewModel
     @ObservedObject private var themeManager = ThemeManager.shared
 
     private var theme: Theme {
         themeManager.theme
+    }
+
+    init(isStreamActive: Bool) {
+        self.viewModel = LiveIndicatorViewModel(isStreamActive: isStreamActive)
+        self.themeManager = themeManager
     }
 
     var body: some View {
@@ -34,6 +38,6 @@ struct LiveIndicatorView: View {
 
 struct LiveIndicatorView_Previews: PreviewProvider {
     static var previews: some View {
-        LiveIndicatorView()
+        LiveIndicatorView(isStreamActive: true)
     }
 }

@@ -2,7 +2,7 @@
 //  SavedStreamDetail.swift
 //
 
-import DolbyIORTSCore
+import DolbyIORTSUIKit
 import Foundation
 
 struct SavedStreamDetail: Identifiable, Equatable {
@@ -12,7 +12,8 @@ struct SavedStreamDetail: Identifiable, Equatable {
     let lastUsedDate: Date
     let useDevelopmentServer: Bool
     let videoJitterMinimumDelayInMs: UInt
-    let noPlayoutDelay: Bool
+    let minPlayoutDelay: UInt?
+    let maxPlayoutDelay: UInt?
     let disableAudio: Bool
     let primaryVideoQuality: VideoQuality
     let saveLogs: Bool
@@ -22,7 +23,8 @@ struct SavedStreamDetail: Identifiable, Equatable {
         streamName: String,
         useDevelopmentServer: Bool,
         videoJitterMinimumDelayInMs: UInt,
-        noPlayoutDelay: Bool,
+        minPlayoutDelay: UInt?,
+        maxPlayoutDelay: UInt?,
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
         saveLogs: Bool,
@@ -34,7 +36,8 @@ struct SavedStreamDetail: Identifiable, Equatable {
         self.lastUsedDate = dateProvider.now
         self.useDevelopmentServer = useDevelopmentServer
         self.videoJitterMinimumDelayInMs = videoJitterMinimumDelayInMs
-        self.noPlayoutDelay = noPlayoutDelay
+        self.minPlayoutDelay = minPlayoutDelay
+        self.maxPlayoutDelay = maxPlayoutDelay
         self.disableAudio = disableAudio
         self.primaryVideoQuality = primaryVideoQuality
         self.saveLogs = saveLogs
@@ -53,7 +56,8 @@ extension SavedStreamDetail {
             return nil
         }
         let useDevelopmentServer = managedObject.useDevelopmentServer
-        let noPlayoutDelay = managedObject.noPlayoutDelay
+        let minPlayoutDelay = managedObject.minPlayoutDelay
+        let maxPlayoutDelay = managedObject.maxPlayoutDelay
         let disableAudio = managedObject.disableAudio
         let saveLogs = managedObject.saveLogs
 
@@ -63,7 +67,8 @@ extension SavedStreamDetail {
         self.lastUsedDate = lastUsedDate
         self.useDevelopmentServer = useDevelopmentServer
         self.videoJitterMinimumDelayInMs = UInt(managedObject.videoJitterMinimumDelayInMs)
-        self.noPlayoutDelay = noPlayoutDelay
+        self.minPlayoutDelay = minPlayoutDelay.map { UInt(truncating: $0) }
+        self.maxPlayoutDelay = maxPlayoutDelay.map { UInt(truncating: $0) }
         self.disableAudio = disableAudio
         self.primaryVideoQuality = primaryVideoQuality
         self.saveLogs = saveLogs

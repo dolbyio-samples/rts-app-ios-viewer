@@ -8,34 +8,50 @@ import MillicastSDK
 import SwiftUI
 
 struct VideoRendererView: View {
-    private let viewModel: VideoRendererViewModel
-    private let viewRenderer: StreamSourceViewRenderer
-    private let maxWidth: CGFloat
-    private let maxHeight: CGFloat
-    private let contentMode: VideoRendererContentMode
-    private let identifier: String
-    private let action: ((StreamSource) -> Void)?
-    @State var isViewVisible = false
+    @ObservedObject private var viewModel: VideoRendererViewModel
+    private let accessibilityIdentifier: String
+    private let action: (StreamSource) -> Void
 
+    @State private var videoSize: CGSize
     @ObservedObject private var themeManager = ThemeManager.shared
     @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
 
     init(
-        viewModel: VideoRendererViewModel,
-        viewRenderer: StreamSourceViewRenderer,
+        source: StreamSource,
+        isSelectedVideoSource: Bool,
+        isSelectedAudioSource: Bool,
+        isPiPView: Bool,
+        showSourceLabel: Bool,
+        showAudioIndicator: Bool,
         maxWidth: CGFloat,
         maxHeight: CGFloat,
-        contentMode: VideoRendererContentMode,
-        identifier: String,
-        action: ((StreamSource) -> Void)? = nil
+        accessibilityIdentifier: String,
+        preferredVideoQuality: VideoQuality,
+        subscriptionManager: SubscriptionManager,
+        rendererRegistry: RendererRegistry,
+        pipRendererRegistry: RendererRegistry,
+        videoTracksManager: VideoTracksManager,
+        action: @escaping (StreamSource) -> Void
     ) {
-        self.viewModel = viewModel
-        self.viewRenderer = viewRenderer
-        self.maxWidth = maxWidth
-        self.maxHeight = maxHeight
-        self.contentMode = contentMode
-        self.identifier = identifier
+        let viewModel = VideoRendererViewModel(
+            source: source,
+            isSelectedVideoSource: isSelectedVideoSource,
+            isSelectedAudioSource: isSelectedAudioSource,
+            isPiPView: isPiPView,
+            showSourceLabel: showSourceLabel,
+            showAudioIndicator: showAudioIndicator,
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
+            preferredVideoQuality: preferredVideoQuality,
+            subscriptionManager: subscriptionManager,
+            rendererRegistry: rendererRegistry,
+            pipRendererRegistry: pipRendererRegistry,
+            videoTracksManager: videoTracksManager
+        )
+        videoSize = viewModel.videoSize
+        self.accessibilityIdentifier = accessibilityIdentifier
         self.action = action
+        self.viewModel = viewModel
     }
 
     private var theme: Theme {
@@ -58,8 +74,8 @@ struct VideoRendererView: View {
     @ViewBuilder
     private var sourceLabelView: some View {
         if viewModel.showSourceLabel {
-            SourceLabel(sourceId: viewModel.streamSource.sourceId.displayLabel)
-                .accessibilityIdentifier("SourceID.\(viewModel.streamSource.sourceId.displayLabel)")
+            SourceLabel(sourceId: viewModel.source.sourceId.displayLabel)
+                .accessibilityIdentifier("SourceID.\(viewModel.source.sourceId.displayLabel)")
                 .padding(Layout.spacing0_5x)
         } else {
             EmptyView()
@@ -68,7 +84,7 @@ struct VideoRendererView: View {
 
     @ViewBuilder
     private var videoQualityIndicatorView: some View {
-        if showDebugFeatures, let videoQualityIndicatorText = viewModel.videoQuality.description.first?.uppercased() {
+        if showDebugFeatures, let videoQualityIndicatorText = viewModel.currentVideoQuality.displayText.first?.uppercased() {
             Text(
                 verbatim: videoQualityIndicatorText,
                 font: .custom("AvenirNext-Regular", size: FontSize.caption1, relativeTo: .caption)
@@ -84,28 +100,13 @@ struct VideoRendererView: View {
     }
 
     var body: some View {
-        let videoSize: CGSize = {
-            switch contentMode {
-            case .aspectFit:
-                return viewRenderer.videoViewDisplaySize(
-                    forAvailableScreenWidth: maxWidth,
-                    availableScreenHeight: maxHeight,
-                    shouldCrop: false
-                )
-            case .aspectFill:
-                return viewRenderer.videoViewDisplaySize(
-                    forAvailableScreenWidth: maxWidth,
-                    availableScreenHeight: maxHeight,
-                    shouldCrop: true
-                )
-            case .scaleToFill:
-                return CGSize(width: maxWidth, height: maxHeight)
+        let tileSize = viewModel.tileSize(from: videoSize)
+        VideoRendererViewInternal(viewModel: viewModel)
+            .onVideoSizeChange {
+                videoSize = $0
             }
-        }()
-
-        VideoRendererViewInternal(viewModel: viewModel, viewRenderer: viewRenderer)
-            .accessibilityIdentifier(identifier)
-            .frame(width: videoSize.width, height: videoSize.height)
+            .frame(width: tileSize.width, height: tileSize.height)
+            .accessibilityIdentifier(accessibilityIdentifier)
             .overlay(alignment: .bottomLeading) {
                 sourceLabelView
             }
@@ -116,71 +117,94 @@ struct VideoRendererView: View {
                 audioPlaybackIndicatorView
             }
             .onTapGesture {
-                action?(viewModel.streamSource)
+                action(viewModel.source)
             }
             .onAppear {
-                isViewVisible = true
-                viewModel.playVideo(on: viewRenderer)
+                viewModel.handleViewAppear()
             }
             .onDisappear {
-                isViewVisible = false
-                viewModel.stopVideo(on: viewRenderer)
-            }
-            .onChange(of: viewModel.videoQuality) { newValue in
-                guard isViewVisible else { return }
-                viewModel.playVideo(on: viewRenderer, quality: newValue)
+                viewModel.handleViewDisappear()
             }
     }
 }
 
 private struct VideoRendererViewInternal: UIViewControllerRepresentable {
+    class VideoViewDelegate: MCVideoViewDelegate {
+        var onVideoSizeChange: ((CGSize) -> Void)?
+
+        func didChangeVideoSize(_ size: CGSize) {
+            onVideoSizeChange?(size)
+        }
+    }
+
     private let viewModel: VideoRendererViewModel
-    private let viewRenderer: StreamSourceViewRenderer
+    @State private var delegate: VideoViewDelegate
 
-    init(viewModel: VideoRendererViewModel, viewRenderer: StreamSourceViewRenderer) {
+    init(viewModel: VideoRendererViewModel) {
         self.viewModel = viewModel
-        self.viewRenderer = viewRenderer
+
+        let videoViewDelegate = VideoViewDelegate()
+        self.delegate = videoViewDelegate
     }
 
-    func makeUIViewController(context: Context) -> UIViewController {
-        WrappedViewController(viewModel: viewModel, viewRenderer: viewRenderer)
+    func makeUIViewController(context: Context) -> VideoViewController {
+        VideoViewController(viewModel: viewModel, delegate: delegate)
     }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        guard let wrappedView = uiViewController as? WrappedViewController else { return }
-
-        wrappedView.updateViewModel(viewModel)
+    func updateUIViewController(_ videoViewController: VideoViewController, context: Context) {
+        videoViewController.updateViewModel(viewModel, delegate: delegate)
     }
 }
 
-private class WrappedViewController: UIViewController {
-    private var viewModel: VideoRendererViewModel
-    private let viewRenderer: StreamSourceViewRenderer
+private extension VideoRendererViewInternal {
+    func onVideoSizeChange(_ perform: @escaping (CGSize) -> Void) -> some View {
+        delegate.onVideoSizeChange = perform
+        return self
+    }
+}
+
+private class VideoViewController: UIViewController {
+    private var viewModel: VideoRendererViewModel {
+        didSet {
+            let pipRenderer = viewModel.pipRenderer
+            let renderer = viewModel.renderer
+
+            pipView = MCSampleBufferVideoUIView(frame: .zero, renderer: pipRenderer)
+            videoView = MCAcceleratedVideoUIView(frame: .zero, renderer: renderer)
+            videoView.translatesAutoresizingMaskIntoConstraints = false
+
+            videoView.delegate = delegate
+            view.addSubview(videoView)
+
+            NSLayoutConstraint.activate([
+                view.topAnchor.constraint(equalTo: videoView.topAnchor),
+                view.leadingAnchor.constraint(equalTo: videoView.leadingAnchor),
+                videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+        }
+    }
+    private var videoView: MCAcceleratedVideoUIView!
+    private var pipView: MCSampleBufferVideoUIView!
+    private var videoSize: CGSize!
+
+    weak var delegate: MCVideoViewDelegate?
 
     @AppConfiguration(\.enablePiP) private var enablePiP
 
-    init(viewModel: VideoRendererViewModel, viewRenderer: StreamSourceViewRenderer) {
+    init(viewModel: VideoRendererViewModel, delegate: MCVideoViewDelegate) {
         self.viewModel = viewModel
-        self.viewRenderer = viewRenderer
         super.init(nibName: nil, bundle: nil)
-        setupView()
+        view.backgroundColor = .red
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setupView() {
-        let playbackView = viewRenderer.playbackView
-        self.view.addSubview(viewRenderer.playbackView)
-        playbackView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            self.view.topAnchor.constraint(equalTo: playbackView.topAnchor),
-            self.view.leadingAnchor.constraint(equalTo: playbackView.leadingAnchor),
-            playbackView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            playbackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
-        ])
+    func updateViewModel(_ viewModel: VideoRendererViewModel, delegate: MCVideoViewDelegate) {
+        view.subviews.forEach { $0.removeFromSuperview() }
+        self.viewModel = viewModel
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -193,20 +217,15 @@ private class WrappedViewController: UIViewController {
         configurePiPIfRequired(force: false)
     }
 
-    func updateViewModel(_ viewModel: VideoRendererViewModel) {
-        self.viewModel = viewModel
-        configurePiPIfRequired(force: false)
-    }
-
     private func configurePiPIfRequired(force: Bool) {
         guard
             viewModel.isPiPView,
             enablePiP,
             PiPManager.shared.isPiPActive == false,
-            viewRenderer.playbackView.frame != .zero,
-            (PiPManager.shared.pipView != viewRenderer.pipView || force)
+            videoView.frame != .zero,
+            (PiPManager.shared.pipView != pipView || force)
         else { return }
 
-        PiPManager.shared.set(pipView: viewRenderer.pipView, with: viewRenderer.playbackView)
+        PiPManager.shared.set(pipView: pipView, with: videoView)
     }
 }

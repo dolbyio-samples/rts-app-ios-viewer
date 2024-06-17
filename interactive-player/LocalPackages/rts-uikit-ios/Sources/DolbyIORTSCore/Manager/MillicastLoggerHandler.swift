@@ -7,14 +7,16 @@ import MillicastSDK
 import os
 
 final class MillicastLoggerHandler: NSObject {
-
-    private static let logger = Logger.make(category: String(describing: MillicastLoggerHandler.self))
+    private static let logger = Logger(
+        subsystem: Bundle.module.bundleIdentifier!,
+        category: String(describing: MillicastLoggerHandler.self)
+    )
     private var logFilePath: String?
 
     override init() {
         super.init()
         MCLogger.setDelegate(self)
-        MCLogger.disableWebsocketLogs(true)
+        MCLogger.setLogLevelWithSdk(.DEBUG, webrtc: .DEBUG, websocket: .DEBUG)
     }
 
     func setLogFilePath(filePath: String?) {
@@ -23,7 +25,7 @@ final class MillicastLoggerHandler: NSObject {
 }
 
 extension MillicastLoggerHandler: MCLoggerDelegate {
-    func onLog(withMessage message: String!, level: MCLogLevel) {
+    func onLog(withMessage message: String, level: MCLogLevel) {
         Self.logger.debug("🪵 onLog - \(message), log-level - \(level.rawValue)")
 
         guard

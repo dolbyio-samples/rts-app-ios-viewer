@@ -9,44 +9,40 @@ import SwiftUI
 
 struct Stream {
     let selectedStream: StreamDetail
-    let listViewVideoQuality: VideoQuality
+    let listViewVideoQuality: DolbyIORTSUIKit.VideoQuality
 }
 
 struct LandingView: View {
     @StateObject private var viewModel: LandingViewModel = .init()
-    @StateObject private var recentStreamsViewModel: RecentStreamsViewModel = .init()
+    @StateObject private var recentStreamsViewModel: RecentStreamsViewModel = RecentStreamsViewModel()
 
     @State private var isShowingStreamInputView = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingSettingsView: Bool = false
-    @State private var streamingScreenContext: StreamingScreen.Context?
+    @State private var streamingScreenContext: StreamingView.Context?
 
     @EnvironmentObject private var appState: AppState
 
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: LazyNavigationDestinationView(
-                    StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext)
-                ),
+                destination: StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext),
                 isActive: $isShowingStreamInputView) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SavedStreamsScreen(viewModel: recentStreamsViewModel)),
+                destination: SavedStreamsScreen(viewModel: recentStreamsViewModel),
                 isActive: $isShowingFullStreamHistoryView) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(
-                    SettingsScreen(mode: .global, moreSettings: {
-                        AppSettingsView()
-                    })
-                ),
+                destination: SettingsScreen(mode: .global, moreSettings: {
+                    AppSettingsView()
+                }),
                 isActive: $isShowingSettingsView) {
                     EmptyView()
                 }
@@ -90,10 +86,7 @@ struct LandingView: View {
             viewModel.startStreamObservations()
         }
         .fullScreenCover(item: $streamingScreenContext) { context in
-            StreamingScreen(
-                context: context,
-                listViewPrimaryVideoQuality: .high
-            ) {
+            StreamingView(context: context) {
                 streamingScreenContext = nil
             }
         }

@@ -5,6 +5,7 @@
 import SwiftUI
 import DolbyIORTSCore
 import DolbyIOUIKit
+import MillicastSDK
 
 struct SingleStreamView: View {
 
@@ -14,32 +15,50 @@ struct SingleStreamView: View {
         static let offset: CGFloat = 200.0
     }
 
-    private let viewModel: SingleStreamViewModel
     private let isShowingDetailPresentation: Bool
     private let onSelect: ((StreamSource) -> Void)
     private let onClose: (() -> Void)?
 
     @State private var showScreenControls = false
-    @State private var selectedVideoStreamSourceId: UUID
     @State private var isShowingSettingsScreen: Bool = false
     @State private var isShowingStatsInfoScreen: Bool = false
     @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
+    @State private var rendererRegistry: RendererRegistry = RendererRegistry()
+    @State private var selectedVideoStreamSourceId: UUID
 
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
 
+    @ObservedObject private var viewModel: SingleStreamViewModel
     @ObservedObject private var themeManager = ThemeManager.shared
 
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
     init(
-        viewModel: SingleStreamViewModel,
+        sources: [StreamSource],
+        selectedVideoSource: StreamSource,
+        selectedAudioSource: StreamSource?,
+        settingsMode: SettingsMode,
+        subscriptionManager: SubscriptionManager,
+        pipRendererRegistry: RendererRegistry,
         isShowingDetailPresentation: Bool,
+        videoTracksManager: VideoTracksManager,
         onSelect: @escaping (StreamSource) -> Void,
         onClose: (() -> Void)? = nil
     ) {
-        self.viewModel = viewModel
         self.isShowingDetailPresentation = isShowingDetailPresentation
         self.onSelect = onSelect
         self.onClose = onClose
+        let viewModel = SingleStreamViewModel(
+            sources: sources,
+            selectedVideoSource: selectedVideoSource,
+            selectedAudioSource: selectedAudioSource,
+            settingsMode: settingsMode,
+            pipRendererRegistry: pipRendererRegistry,
+            subscriptionManager: subscriptionManager,
+            videoTracksManager: videoTracksManager
+        )
         _selectedVideoStreamSourceId = State(wrappedValue: viewModel.selectedVideoSource.id)
+        self.viewModel = viewModel
     }
 
     private var theme: Theme {
@@ -49,7 +68,7 @@ struct SingleStreamView: View {
     @ViewBuilder
     private var topToolBarView: some View {
         HStack {
-            LiveIndicatorView()
+            LiveIndicatorView(isStreamActive: true)
             Spacer()
             if isShowingDetailPresentation {
                 closeButton
@@ -86,9 +105,7 @@ struct SingleStreamView: View {
     var body: some View {
         ZStack {
             NavigationLink(
-                destination: LazyNavigationDestinationView(
-                    SettingsScreen(mode: viewModel.settingsMode)
-                ),
+                destination: SettingsScreen(mode: viewModel.settingsMode),
                 isActive: $isShowingSettingsScreen
             ) {
                 EmptyView()
@@ -96,22 +113,34 @@ struct SingleStreamView: View {
 
             GeometryReader { proxy in
                 TabView(selection: $selectedVideoStreamSourceId) {
-                    ForEach(viewModel.videoViewModels, id: \.streamSource.id) { videoRendererViewModel in
+                    ForEach(viewModel.sources, id: \.id) { source in
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
                         VideoRendererView(
-                            viewModel: videoRendererViewModel,
-                            viewRenderer: viewModel.viewRendererProvider.renderer(for: videoRendererViewModel.streamSource, isPortait: deviceOrientation.isPortrait),
+                            source: source,
+                            isSelectedVideoSource: source == viewModel.selectedVideoSource,
+                            isSelectedAudioSource: source == viewModel.selectedAudioSource,
+                            isPiPView: source == viewModel.selectedVideoSource,
+                            showSourceLabel: false,
+                            showAudioIndicator: false,
                             maxWidth: maxAllowedVideoWidth,
                             maxHeight: maxAllowedVideoHeight,
-                            contentMode: .aspectFit,
-                            identifier: "SingleStreamViewVideoTile.\(videoRendererViewModel.streamSource.sourceId.displayLabel)"
+                            accessibilityIdentifier: "SingleStreamViewVideoTile.\(source.sourceId.displayLabel)",
+                            preferredVideoQuality: .auto,
+                            subscriptionManager: viewModel.subscriptionManager,
+                            rendererRegistry: rendererRegistry,
+                            pipRendererRegistry: viewModel.pipRendererRegistry,
+                            videoTracksManager: viewModel.videoTracksManager,
+                            action: { _ in
+                                // No-op
+                            }
                         )
-                        .tag(videoRendererViewModel.streamSource.id)
+                        .tag(source.id)
                         .frame(width: proxy.size.width, height: proxy.size.height)
                     }
                 }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .id(viewModel.sources.count)
+                .tabViewStyle(.page)
                 .overlay(alignment: .top) {
                     topToolBarView
                         .offset(x: 0, y: showScreenControls ? 0 : -Animation.offset)
@@ -160,7 +189,7 @@ struct SingleStreamView: View {
 
     private func statisticsView() -> some View {
         return HStack {
-            StatisticsInfoView(viewModel: StatsInfoViewModel(streamSource: viewModel.selectedVideoSource))
+            StatisticsInfoView(streamSource: viewModel.selectedVideoSource, subscriptionManager: viewModel.subscriptionManager)
             Spacer()
         }
         .frame(alignment: Alignment.bottom)

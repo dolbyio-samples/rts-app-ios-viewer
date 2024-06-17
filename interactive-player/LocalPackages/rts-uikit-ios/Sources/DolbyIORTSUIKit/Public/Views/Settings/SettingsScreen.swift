@@ -30,21 +30,21 @@ public struct SettingsScreen<Content: View>: View {
     public var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsMultiviewScreen(viewModel: viewModel)),
+                destination: SettingsMultiviewScreen(viewModel: viewModel),
                 isActive: $isShowingMultiviewScreen) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsStreamSortOrderScreen(viewModel: viewModel)),
+                destination: SettingsStreamSortOrderScreen(viewModel: viewModel),
                 isActive: $isShowingStreamSortOrderScreen) {
                     EmptyView()
                 }
                 .hidden()
 
             NavigationLink(
-                destination: LazyNavigationDestinationView(SettingsAudioSelectionScreen(viewModel: viewModel)),
+                destination: SettingsAudioSelectionScreen(viewModel: viewModel),
                 isActive: $isShowingAudioSelectionScreen) {
                     EmptyView()
                 }

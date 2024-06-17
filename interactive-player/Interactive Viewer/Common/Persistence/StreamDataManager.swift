@@ -135,7 +135,8 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
             streamDetailToSave.lastUsedDate = dateProvider.now
             streamDetailToSave.useDevelopmentServer = streamDetail.useDevelopmentServer
             streamDetailToSave.videoJitterMinimumDelayInMs = Int32(streamDetail.videoJitterMinimumDelayInMs)
-            streamDetailToSave.noPlayoutDelay = streamDetail.useDevelopmentServer
+            streamDetailToSave.minPlayoutDelay = streamDetail.minPlayoutDelay.map { NSNumber(value: $0) }
+            streamDetailToSave.maxPlayoutDelay = streamDetail.maxPlayoutDelay.map { NSNumber(value: $0) }
             streamDetailToSave.disableAudio = streamDetail.disableAudio
             streamDetailToSave.primaryVideoQuality = streamDetail.primaryVideoQuality.rawValue
             streamDetailToSave.saveLogs = streamDetail.saveLogs

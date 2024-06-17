@@ -20,8 +20,10 @@
 "stream-detail-input.development-placeholder-label" = "Use development server";
 "stream-detail-input.disable-audio-placeholder-label" = "Disable audio";
 "stream-detail-input.save-logs-placeholder-label" = "Save logs";
-"stream-detail-input.no-playout-delay-label" = "Disable playout delay";
+"stream-detail-input.show-playout-delay-label" = "Show playout delay";
 "stream-detail-input.jitter-buffer-delay-placeholder-label" = "Jitter Buffer Delay";
+"stream-detail-input.minimum-playout-delay-placeholder-label" = "Minimum Playout Delay";
+"stream-detail-input.maximum-playout-delay-placeholder-label" = "Maximum Playout Delay";
 "stream-detail-input.primary-video-quality-label" = "Primary video quality:";
 
 /** App configuration Screen */
@@ -39,7 +41,8 @@
 "recent-streams.account-id.title.label" = "ID:";
 "recent-streams.use-dev-server.label" = "Development server:";
 "recent-streams.video-jitter-buffer.label" = "Video Jitter buffer in ms:";
-"recent-streams.no-playout-delay.label" = "Disable playout delay:";
+"recent-streams.min-playout-delay.label" = "Min Playout delay:";
+"recent-streams.max-playout-delay.label" = "Max Playout delay:";
 "recent-streams.disable-audio.label" = "Disable Audio:";
 "recent-streams.primary-video-quality.label" = "Primary video quality:";
 "recent-streams.save-logs.label" = "Save Logs:";

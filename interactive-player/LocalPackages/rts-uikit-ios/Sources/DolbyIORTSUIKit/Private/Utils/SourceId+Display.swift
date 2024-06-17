@@ -6,8 +6,13 @@ import DolbyIORTSCore
 import DolbyIOUIKit
 import SwiftUI
 
-extension StreamSource.SourceId {
+extension SourceID {
     var displayLabel: String {
-        self.value ?? LocalizedStringKey("video-view.main.label").toString(with: .module)
+        return switch self {
+        case .main:
+            LocalizedStringKey("video-view.main.label").toString(with: .module)
+        case let .other(sourceId: sourceId):
+            sourceId
+        }
     }
 }

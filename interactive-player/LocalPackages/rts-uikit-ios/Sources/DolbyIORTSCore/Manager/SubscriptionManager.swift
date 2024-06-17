@@ -2,214 +2,272 @@
 //  SubscriptionManager.swift
 //
 
+import Combine
 import Foundation
 import MillicastSDK
 import os
-import AVFAudio
+import SwiftUI
 
-protocol SubscriptionManagerProtocol: AnyObject {
+public actor SubscriptionManager: ObservableObject {
+    private static let logger = Logger(
+        subsystem: Bundle.module.bundleIdentifier!,
+        category: String(describing: SubscriptionManager.self)
+    )
 
-    var state: AsyncStream<MCSubscriber.State> { get }
-    var statsReport: AsyncStream<MCStatsReport> { get }
-    var activityStream: AsyncStream<MCSubscriber.ActivityEvent> { get }
-    var tracks: AsyncStream<TrackEvent> { get }
-    var layers: AsyncStream<LayersEvent> { get }
-    var viewerCount: AsyncStream<Int32> { get }
+    public enum SubscriptionError: Error, Equatable {
+        case signalingError(reason: String)
+        case connectError(status: NSNumber, reason: String)
+    }
 
-    static func makeSubscriptionManager(configuration: SubscriptionConfiguration) -> Self
+    public enum State: Equatable {
+        case subscribed(sources: [StreamSource])
+        case error(SubscriptionError)
+        case stopped
+        case disconnected
+    }
 
-    func connect(streamName: String, accountID: String) async throws -> Bool
-    func subscribe() async throws -> Bool
-    func unubscribeAndDisconnect() async throws -> Bool
-    func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder) async
-    func projectVideo(for source: StreamSource, withQuality quality: VideoQuality) async throws
-    func unprojectVideo(for source: StreamSource) async throws
-    func projectAudio(for source: StreamSource) async throws
-    func unprojectAudio(for source: StreamSource) async throws
-}
-
-final class SubscriptionManager: SubscriptionManagerProtocol {
+    @Published public var state: State = .disconnected
+    @Published public var streamStatistics: StreamStatistics?
 
     private enum Defaults {
         static let productionSubscribeURL = "https://director.millicast.com/api/director/subscribe"
         static let developmentSubscribeURL = "https://director-dev.millicast.com/api/director/subscribe"
     }
 
-    private static let logger = Logger.make(category: String(describing: SubscriptionManager.self))
+    private var subscriber: MCSubscriber?
+    private var sourceBuilder = SourceBuilder()
+    private let logHandler: MillicastLoggerHandler = .init()
 
-    lazy var state: AsyncStream<MCSubscriber.State> = subscriber.state()
+    private var subscriberEventObservationTasks: [Task<Void, Never>] = []
+    private var sourceSubscription: AnyCancellable?
 
-    lazy var statsReport: AsyncStream<MCStatsReport> = subscriber.statsReport()
+    // MARK: Subscribe API methods
 
-    lazy var activityStream: AsyncStream<MCSubscriber.ActivityEvent> = subscriber.activity()
-
-    lazy var tracks: AsyncStream<TrackEvent> = subscriber.tracks()
-
-    lazy var layers: AsyncStream<LayersEvent> = subscriber.layers()
-
-    lazy var viewerCount: AsyncStream<Int32> = subscriber.viewerCount()
-
-    private let configuration: SubscriptionConfiguration
-    private let subscriber: MCSubscriber
-
-    static func makeSubscriptionManager(configuration: SubscriptionConfiguration) -> Self {
-        Self.init(configuration: configuration)
+    public init() {
+        // Configure the AVAudioSession with our settings.
+        AVAudioSession.configure()
     }
 
-    init(configuration: SubscriptionConfiguration) {
-        self.configuration = configuration
-        self.subscriber = MCSubscriber()
-    }
+    public func subscribe(streamName: String, accountID: String, token: String? = nil, configuration: SubscriptionConfiguration = SubscriptionConfiguration()) async throws {
+        let subscriber = MCSubscriber()
+        self.subscriber = subscriber
+        logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
 
-    func connect(streamName: String, accountID: String) async throws -> Bool {
-        Self.logger.debug("💼 Connect with streamName & accountID")
+        registerToSubscriberEvents()
 
-        guard streamName.count > 0, accountID.count > 0 else {
-            Self.logger.error("💼 Invalid credentials passed to connect")
-            return false
-        }
-
-        let isConnected = await subscriber.isConnected
-        let isSubscribed = await subscriber.isSubscribed
+        Self.logger.debug("Start a new connect request")
+        let isConnected = await subscriber.isConnected()
+        let isSubscribed = await subscriber.isSubscribed()
 
         guard !isSubscribed, !isConnected else {
-            Self.logger.error("💼 Subscriber has already connected or subscribed")
-            return false
+            Self.logger.debug("Returning as the subscriber is already subscribed or connected")
+            throw "Returning as the subscriber is already subscribed or connected"
         }
 
-        let credentials = makeCredentials(streamName: streamName, accountID: accountID, useDevelopmentServer: configuration.useDevelopmentServer)
-
-        try await subscriber.setCredentials(credentials)
+        try await subscriber.setCredentials(makeCredentials(
+            streamName: streamName,
+            accountID: accountID,
+            token: token ?? "",
+            useDevelopmentServer: configuration.useDevelopmentServer)
+        )
 
         let connectionOptions = MCConnectionOptions()
         connectionOptions.autoReconnect = configuration.autoReconnect
-
         try await subscriber.connect(with: connectionOptions)
+        Self.logger.debug("Connection successful")
 
-        Self.logger.debug("💼 Connect successful")
-        return true
-    }
-
-    func subscribe() async throws -> Bool {
-        Self.logger.debug("💼 Start subscribe")
-
-        let isConnected = await subscriber.isConnected
-
-        guard isConnected else {
-            Self.logger.error("💼 Subscriber hasn't completed connect to start subscribe")
-            return false
+        let playoutDelay: MCForcePlayoutDelay?
+        if let minPlayoutDelay = configuration.minPlayoutDelay, let maxPlayoutDelay = configuration.maxPlayoutDelay {
+            playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
+        } else {
+            playoutDelay = nil
         }
 
-        let isSubscribed = await subscriber.isSubscribed
-        guard !isSubscribed else {
-            Self.logger.error("💼 Subscriber has already subscribed")
-            return false
-        }
-
-        let options = MCClientOptions()
-        options.videoJitterMinimumDelayMs = Int32(configuration.videoJitterMinimumDelayInMs)
-        options.statsDelayMs = Int32(configuration.statsDelayMs)
+        let clientOptions = MCClientOptions()
+        clientOptions.jitterMinimumDelayMs = Int32(configuration.jitterMinimumDelayMs)
+        clientOptions.statsDelayMs = Int32(configuration.statsDelayMs)
         if let rtcEventLogOutputPath = configuration.rtcEventLogPath {
-            options.rtcEventLogOutputPath = rtcEventLogOutputPath
+            clientOptions.rtcEventLogOutputPath = rtcEventLogOutputPath
         }
-        options.disableAudio = configuration.disableAudio
-        options.forcePlayoutDelay = configuration.noPlayoutDelay
+        clientOptions.disableAudio = configuration.disableAudio
+        clientOptions.forcePlayoutDelay = playoutDelay
 
         await subscriber.enableStats(configuration.enableStats)
-        try await subscriber.subscribe(with: options)
-
-        Self.logger.debug("💼 Subscribe successful")
-        return true
+        try await subscriber.subscribe(with: clientOptions)
+        Self.logger.debug("Subscription successful")
     }
 
-    func unubscribeAndDisconnect() async throws -> Bool {
-        Self.logger.debug("💼 Stop subscribe")
+    public func unSubscribe() async throws {
+        guard let subscriber else {
+            throw "No subscriber instance is present"
+        }
 
+        Self.logger.debug("Stop subscription")
         await subscriber.enableStats(false)
         try await subscriber.unsubscribe()
         try await subscriber.disconnect()
+        Self.logger.debug("Successfully stopped subscription")
 
-        return true
+        state = .disconnected
+        deregisterToSubscriberEvents()
+        reset()
     }
 
-    func addRemoteTrack(_ sourceBuilder: StreamSourceBuilder) async {
-        Self.logger.debug("💼 Add remote track for source - \(sourceBuilder.sourceId), \(sourceBuilder.supportedTrackItems)")
-
-        await withThrowingTaskGroup(
-            of: (Void).self
-        ) { [self] group in
-            for trackItem in sourceBuilder.supportedTrackItems {
-                group.addTask {
-                    Self.logger.debug("💼 Add remote track for media type - \(trackItem.mediaType.rawValue)")
-                    try await self.subscriber.addRemoteTrack(trackItem.mediaType.rawValue)
-                }
-            }
-        }
-    }
-
-    func projectVideo(for source: StreamSource, withQuality quality: VideoQuality) async throws {
-        let videoTrack = source.videoTrack
-        let matchingVideoQuality = source.lowLevelVideoQualityList.matching(videoQuality: quality)
-
-        Self.logger.debug("💼 Project video for source \(source.sourceId) with quality - \(String(describing: matchingVideoQuality?.description))")
-
-        let projectionData = MCProjectionData()
-        projectionData.media = videoTrack.trackInfo.mediaType.rawValue
-        projectionData.mid = videoTrack.trackInfo.mid
-        projectionData.trackId = videoTrack.trackInfo.trackID
-        projectionData.layer = matchingVideoQuality?.layerData
-
-        try await subscriber.project(source.sourceId.value ?? "", withData: [projectionData])
-    }
-
-    func unprojectVideo(for source: StreamSource) async throws {
-        Self.logger.debug("💼 Unproject video for source \(source.sourceId)")
-        let videoTrack = source.videoTrack
-        try await subscriber.unproject([videoTrack.trackInfo.mid])
-    }
-
-    func projectAudio(for source: StreamSource) async throws {
-        Self.logger.debug("💼 Project audio for source \(source.sourceId)")
-        guard let audioTrack = source.audioTracks.first else {
-            return
-        }
-
-        let projectionData = MCProjectionData()
-        audioTrack.track.enable(true)
-        audioTrack.track.setVolume(1)
-        projectionData.media = audioTrack.trackInfo.mediaType.rawValue
-        projectionData.mid = audioTrack.trackInfo.mid
-        projectionData.trackId = audioTrack.trackInfo.trackID
-
-        try await subscriber.project(source.sourceId.value ?? "", withData: [projectionData])
-    }
-
-    func unprojectAudio(for source: StreamSource) async throws {
-        Self.logger.debug("💼 Unproject audio for source \(source.sourceId)")
-        guard let audioTrack = source.audioTracks.first else {
-            return
-        }
-
-        try await subscriber.unproject([audioTrack.trackInfo.mid])
+    private func reset() {
+        sourceBuilder.reset()
+        subscriber = nil
+        logHandler.setLogFilePath(filePath: nil)
     }
 }
 
-// MARK: Maker functions
+// MARK: Observations
+
+extension SubscriptionManager {
+
+    // swiftlint:disable function_body_length
+    func registerToSubscriberEvents() {
+        Task { [weak self] in
+            guard
+                let self,
+                let subscriber = await self.subscriber
+            else {
+                return
+            }
+
+            let taskWebsocketStateObservation = Task {
+                for await state in subscriber.websocketState() {
+                    Self.logger.debug("Websocket connection state changed to \(state.rawValue)")
+                }
+            }
+
+            let taskPeerConnectionStateObservation = Task {
+                for await state in subscriber.peerConnectionState() {
+                    Self.logger.debug("Peer connection state changed to \(state.rawValue)")
+                }
+            }
+
+            let streamStoppedStateObservation = Task {
+                for await state in subscriber.streamStopped() {
+                    Self.logger.debug("Stream stopped \(state.description)")
+                    await self.updateState(to: .stopped)
+                }
+            }
+
+            let taskHttpErrorStateObservation = Task {
+                for await state in subscriber.httpError() {
+                    Self.logger.debug("Http error state changed to \(state.code), reason: \(state.reason)")
+                    await self.updateState(to: .error(.connectError(status: state.code, reason: state.reason)))
+                }
+            }
+
+            let taskSignalingErrorStateObservation = Task {
+                for await state in subscriber.signalingError() {
+                    Self.logger.debug("Signalling error state: reason - \(state.reason)")
+                    await self.updateState(to: .error(.signalingError(reason: state.reason)))
+                }
+            }
+
+            let tracksObservation = Task {
+                for await track in subscriber.rtsRemoteTrackAdded() {
+                    Self.logger.debug("Remote track added - \(track.sourceID)")
+                    await self.sourceBuilder.addTrack(track)
+                }
+            }
+
+            let statsObservation = Task {
+                for await statsReport in subscriber.statsReport() {
+                    guard let stats = StreamStatistics(statsReport) else {
+                        return
+                    }
+                    await self.updateStats(stats)
+                }
+            }
+
+            let cancellable = await self.sourceBuilder.sourcePublisher
+                .sink { sources in
+                    Self.logger.debug("Sources builder emitted \(sources)")
+                    Task {
+                        await self.updateState(to: .subscribed(sources: sources))
+                    }
+                }
+
+            _ = await [
+                self.addEventObservationTask(taskWebsocketStateObservation),
+                self.addEventObservationTask(taskPeerConnectionStateObservation),
+                self.addEventObservationTask(taskHttpErrorStateObservation),
+                self.addEventObservationTask(taskSignalingErrorStateObservation),
+                self.addEventObservationTask(streamStoppedStateObservation),
+                self.addEventObservationTask(tracksObservation),
+                self.addEventObservationTask(statsObservation),
+                self.updateSourceSubscription(cancellable),
+                taskWebsocketStateObservation.value,
+                taskPeerConnectionStateObservation.value,
+                taskHttpErrorStateObservation.value,
+                taskSignalingErrorStateObservation.value,
+                streamStoppedStateObservation.value,
+                tracksObservation.value,
+                statsObservation.value
+            ]
+        }
+    }
+    // swiftlint:enable function_body_length
+
+    func deregisterToSubscriberEvents() {
+        subscriberEventObservationTasks.removeAll()
+        sourceSubscription = nil
+    }
+}
+
+// MARK: Private Helpers
 
 private extension SubscriptionManager {
-
-    static func makeSubscriber(with configuration: SubscriptionConfiguration) -> MCSubscriber? {
-        let subscriber = MCSubscriber()
-        return subscriber
+    func updateStats(_ stats: StreamStatistics) {
+        streamStatistics = stats
     }
 
-    func makeCredentials(streamName: String, accountID: String, useDevelopmentServer: Bool) -> MCSubscriberCredentials {
+    func updateState(to state: State) {
+        self.state = state
+    }
+
+    func addEventObservationTask(_ task: Task<Void, Never>) {
+        subscriberEventObservationTasks.append(task)
+    }
+
+    func updateSourceSubscription(_ subscription: AnyCancellable) {
+        sourceSubscription = subscription
+    }
+}
+
+private extension SubscriptionManager {
+    var clientOptions: MCClientOptions {
+        let optionsSub = MCClientOptions()
+        optionsSub.statsDelayMs = 1000
+
+        return optionsSub
+    }
+
+    func makeCredentials(streamName: String, accountID: String, token: String, useDevelopmentServer: Bool) -> MCSubscriberCredentials {
         let credentials = MCSubscriberCredentials()
         credentials.accountId = accountID
         credentials.streamName = streamName
-        credentials.token = ""
+        credentials.token = token
         credentials.apiUrl = useDevelopmentServer ? Defaults.developmentSubscribeURL : Defaults.productionSubscribeURL
 
         return credentials
     }
+}
+
+// MARK: Helper to throw plain string as errors
+extension String: Error { }
+
+// MARK: Helper to compare layers by encoding id
+extension MCRTSRemoteVideoTrackLayer: Comparable {
+   public static func < (lhs: MCRTSRemoteVideoTrackLayer, rhs: MCRTSRemoteVideoTrackLayer) -> Bool {
+       switch (lhs.encodingId?.lowercased(), rhs.encodingId?.lowercased()) {
+       case ("h", "m"), ("l", "m"), ("h", "s"), ("l", "s"), ("m", "s"):
+           return false
+       default:
+           return true
+       }
+   }
 }

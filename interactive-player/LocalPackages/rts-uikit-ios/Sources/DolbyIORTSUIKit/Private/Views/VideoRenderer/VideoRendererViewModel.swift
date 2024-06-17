@@ -3,59 +3,131 @@
 //
 
 import DolbyIORTSCore
+import Combine
 import Foundation
+import MillicastSDK
+import os
 
-enum VideoRendererContentMode {
-    case aspectFit, aspectFill, scaleToFill
-}
-
+@MainActor
 final class VideoRendererViewModel: ObservableObject {
+    private static let logger = Logger(
+        subsystem: Bundle.module.bundleIdentifier!,
+        category: String(describing: VideoRendererViewModel.self)
+    )
 
-    private let streamOrchestrator: StreamOrchestrator
+    private enum Constants {
+        static let defaultVideoTileSize = CGSize(width: 533, height: 300)
+    }
+
     let isSelectedVideoSource: Bool
     let isSelectedAudioSource: Bool
     let isPiPView: Bool
-    let streamSource: StreamSource
+    let source: StreamSource
     let showSourceLabel: Bool
     let showAudioIndicator: Bool
-    @Published var videoQuality: VideoQuality
+    let preferredVideoQuality: VideoQuality
+    let rendererRegistry: RendererRegistry
+    let pipRendererRegistry: RendererRegistry
+    let maxWidth: CGFloat
+    let maxHeight: CGFloat
+    let videoTracksManager: VideoTracksManager
+    @Published var currentVideoQuality: VideoQuality = .auto
+
+    private let subscriptionManager: SubscriptionManager
+    private var subscriptions: [AnyCancellable] = []
 
     init(
-        streamSource: StreamSource,
+        source: StreamSource,
         isSelectedVideoSource: Bool,
         isSelectedAudioSource: Bool,
         isPiPView: Bool,
         showSourceLabel: Bool,
         showAudioIndicator: Bool,
-        videoQuality: VideoQuality,
-        streamOrchestrator: StreamOrchestrator = .shared
+        maxWidth: CGFloat,
+        maxHeight: CGFloat,
+        preferredVideoQuality: VideoQuality,
+        subscriptionManager: SubscriptionManager,
+        rendererRegistry: RendererRegistry,
+        pipRendererRegistry: RendererRegistry,
+        videoTracksManager: VideoTracksManager
     ) {
-        self.streamSource = streamSource
+        self.source = source
         self.isSelectedVideoSource = isSelectedVideoSource
         self.isSelectedAudioSource = isSelectedAudioSource
         self.isPiPView = isPiPView
         self.showSourceLabel = showSourceLabel
         self.showAudioIndicator = showAudioIndicator
-        self.videoQuality = videoQuality
-        self.streamOrchestrator = streamOrchestrator
+        self.maxWidth = maxWidth
+        self.maxHeight = maxHeight
+        self.preferredVideoQuality = preferredVideoQuality
+        self.subscriptionManager = subscriptionManager
+        self.rendererRegistry = rendererRegistry
+        self.pipRendererRegistry = pipRendererRegistry
+        self.videoTracksManager = videoTracksManager
+
+        observerVideoQualityUpdates()
     }
 
-    func playVideo(on viewRenderer: StreamSourceViewRenderer, quality: VideoQuality? = nil) {
-        Task { @StreamOrchestrator in
-            try await self.streamOrchestrator.playVideo(
-                for: streamSource,
-                on: viewRenderer,
-                with: quality ?? videoQuality
+    var videoSize: CGSize {
+        let size = rendererRegistry.accelaratedRenderer(for: source).underlyingRenderer.videoSize
+        if size.width > 0, size.height > 0 {
+            return size
+        } else {
+            return Constants.defaultVideoTileSize
+        }
+    }
+
+    // swiftlint:disable force_cast
+    var renderer: MCAcceleratedVideoRenderer {
+        rendererRegistry.accelaratedRenderer(for: source).underlyingRenderer as! MCAcceleratedVideoRenderer
+    }
+
+    var pipRenderer: MCCMSampleBufferVideoRenderer {
+        pipRendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer as! MCCMSampleBufferVideoRenderer
+    }
+    // swiftlint:enable force_cast
+
+    func tileSize(from videoSize: CGSize) -> CGSize {
+        let multiplier = maxWidth / videoSize.width
+
+        let scaledWidth = videoSize.width * multiplier
+        let scaledHeight = videoSize.height * multiplier
+
+        return CGSize(width: scaledWidth, height: scaledHeight)
+    }
+
+    func handleViewAppear() {
+        VideoRendererViewModel.logger.debug("♼ Tile appear for source \(self.source.sourceId) on renderer \(self.renderer.objectIdentifier.debugDescription)")
+
+        Task {
+            await videoTracksManager.enableTrack(
+                for: source,
+                renderer: renderer,
+                preferredVideoQuality: preferredVideoQuality
             )
         }
     }
 
-    func stopVideo(on viewRenderer: StreamSourceViewRenderer) {
-        Task { @StreamOrchestrator in
-            try await self.streamOrchestrator.stopVideo(
-                for: streamSource,
-                on: viewRenderer
+    func handleViewDisappear() {
+        VideoRendererViewModel.logger.debug("♼ Tile disappear for source \(self.source.sourceId) on renderer \(self.renderer.objectIdentifier.debugDescription)")
+        Task {
+            await videoTracksManager.disableTrack(
+                for: source,
+                renderer: renderer
             )
+        }
+    }
+
+    private func observerVideoQualityUpdates() {
+        Task { [weak self] in
+            guard let self else { return }
+            await self.videoTracksManager.videoQualityPublisher
+                .map({ $0[self.source.sourceId] ?? .auto })
+                .receive(on: DispatchQueue.main)
+                .sink { quality in
+                    self.currentVideoQuality = quality
+                }
+                .store(in: &subscriptions)
         }
     }
 }

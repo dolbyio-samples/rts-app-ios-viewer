@@ -4,19 +4,37 @@
 //
 
 import DolbyIORTSCore
+import Foundation
+import MillicastSDK
+import os
 
 final class GridViewModel {
-
-    var allVideoViewModels: [VideoRendererViewModel]
-    let viewRendererProvider: ViewRendererProvider
+    let sources: [StreamSource]
+    let selectedVideoSource: StreamSource
+    let selectedAudioSource: StreamSource?
+    let subscriptionManager: SubscriptionManager
+    let showSourceLabels: Bool
+    let isShowingDetailView: Bool
+    let pipRendererRegistry: RendererRegistry
+    let videoTracksManager: VideoTracksManager
 
     init(
-        primaryVideoViewModel: VideoRendererViewModel,
-        secondaryVideoViewModels: [VideoRendererViewModel],
-        viewRendererProvider: ViewRendererProvider
+        sources: [StreamSource],
+        selectedVideoSource: StreamSource,
+        selectedAudioSource: StreamSource?,
+        showSourceLabels: Bool,
+        isShowingDetailView: Bool,
+        subscriptionManager: SubscriptionManager,
+        pipRendererRegistry: RendererRegistry,
+        videoTracksManager: VideoTracksManager
     ) {
-        self.allVideoViewModels = [primaryVideoViewModel]
-        self.allVideoViewModels.append(contentsOf: secondaryVideoViewModels)
-        self.viewRendererProvider = viewRendererProvider
+        self.sources = sources
+        self.selectedVideoSource = selectedVideoSource
+        self.selectedAudioSource = selectedAudioSource
+        self.showSourceLabels = showSourceLabels
+        self.isShowingDetailView = isShowingDetailView
+        self.subscriptionManager = subscriptionManager
+        self.pipRendererRegistry = pipRendererRegistry
+        self.videoTracksManager = videoTracksManager
     }
 }

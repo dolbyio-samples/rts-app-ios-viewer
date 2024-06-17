@@ -14,7 +14,7 @@ struct RecentStreamsScreen: View {
     @Binding private var isShowingStreamInputView: Bool
     @Binding private var isShowingFullStreamHistoryView: Bool
     @Binding private var isShowingSettingsView: Bool
-    @Binding private var streamingScreenContext: StreamingScreen.Context?
+    @Binding private var streamingScreenContext: StreamingView.Context?
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -23,7 +23,7 @@ struct RecentStreamsScreen: View {
         isShowingStreamInputView: Binding<Bool>,
         isShowingFullStreamHistoryView: Binding<Bool>,
         isShowingSettingsView: Binding<Bool>,
-        streamingScreenContext: Binding<StreamingScreen.Context?>
+        streamingScreenContext: Binding<StreamingView.Context?>
     ) {
         self.viewModel = viewModel
         _isShowingStreamInputView = isShowingStreamInputView
@@ -80,7 +80,8 @@ struct RecentStreamsScreen: View {
                                         streamingScreenContext = .init(
                                             streamName: streamDetail.streamName,
                                             accountID: streamDetail.accountID,
-                                            listViewPrimaryVideoQuality: streamDetail.primaryVideoQuality
+                                            listViewPrimaryVideoQuality: streamDetail.primaryVideoQuality,
+                                            subscriptionManager: viewModel.subscriptionManager
                                         )
                                     }
                                 }
@@ -120,7 +121,7 @@ struct RecentStreamsScreen: View {
 struct RecentStreamsScreen_Previews: PreviewProvider {
     static var previews: some View {
         RecentStreamsScreen(
-            viewModel: .init(),
+            viewModel: RecentStreamsViewModel(),
             isShowingStreamInputView: .constant(false),
             isShowingFullStreamHistoryView: .constant(false),
             isShowingSettingsView: .constant(false),

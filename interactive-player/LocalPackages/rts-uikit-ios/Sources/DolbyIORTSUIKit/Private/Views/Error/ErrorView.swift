@@ -6,22 +6,24 @@ import DolbyIOUIKit
 import SwiftUI
 
 struct ErrorView: View {
-    let viewModel: ErrorViewModel
+    let title: String
+    let subtitle: String?
 
-    init(viewModel: ErrorViewModel) {
-        self.viewModel = viewModel
+    init(title: String, subtitle: String?) {
+        self.title = title
+        self.subtitle = subtitle
     }
 
     var body: some View {
         VStack {
             Text(
-                verbatim: viewModel.titleText,
+                verbatim: title,
                 font: .custom("AvenirNext-Regular", size: FontSize.title2, relativeTo: .title2)
             )
             .multilineTextAlignment(.center)
-            if let subtitleText = viewModel.subtitleText {
+            if let subtitle = subtitle {
                 Text(
-                    verbatim: subtitleText,
+                    verbatim: subtitle,
                     font: .custom("AvenirNext-Regular", size: FontSize.subhead, relativeTo: .subheadline)
                 )
                 .multilineTextAlignment(.center)
@@ -32,6 +34,6 @@ struct ErrorView: View {
 
 struct ErrorView_Previews: PreviewProvider {
     static var previews: some View {
-        ErrorView(viewModel: .streamOffline)
+        ErrorView(title: .noInternetErrorTitle, subtitle: nil)
     }
 }
