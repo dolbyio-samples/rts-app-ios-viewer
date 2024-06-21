@@ -62,8 +62,16 @@ struct SimulcastView: View {
             onSelectVideoQuality(videoQuality)
         }, label: {
             HStack {
+              VStack(alignment: .leading) {
                 Text(videoQuality.displayText)
                     .font(theme[.avenirNextDemiBold(size: FontSize.body, style: .body)])
+                if let targetInformation = videoQuality.targetInformation {
+                  Text(targetInformation)
+                    .font(theme[.avenirNextRegular(size: FontSize.caption2, style: .caption2)])
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.leading)
+                }
+              }
 
                 Spacer()
                 if videoQuality.encodingId == viewModel.selectedVideoQuality.encodingId {
