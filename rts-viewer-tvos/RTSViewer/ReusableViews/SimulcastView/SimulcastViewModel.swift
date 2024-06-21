@@ -40,4 +40,21 @@ extension VideoQuality {
             layer.encodingId
         }
     }
+  
+    var targetInformation: String? {
+      if let layer = layer {
+        var target: [String] = []
+        if let bitrate = layer.targetBitrate {
+          target.append("bitrate: \(bitrate.intValue/1000) kbps")
+        }
+        if let resolution = layer.resolution {
+          target.append("resolution: \(resolution.width)x\(resolution.height)")
+        }
+        if let fps = layer.targetFps {
+          target.append("fps: \(fps)")
+        }
+        return "(\(target.joined(separator: ", ")))"
+      }
+      return nil
+    }
 }
