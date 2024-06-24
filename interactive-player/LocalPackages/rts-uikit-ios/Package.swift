@@ -13,13 +13,10 @@ let package = Package(
             targets: ["DolbyIOUIKit"]),
         .library(
             name: "DolbyIORTSCore",
-            targets: ["DolbyIORTSCore"]),
-        .library(
-            name: "DolbyIORTSUIKit",
-            targets: ["DolbyIORTSUIKit"])
+            targets: ["DolbyIORTSCore"])
     ],
     dependencies: [
-        .package(url: "https://github.com/millicast/millicast-sdk-swift-package", exact: "2.0.0-beta.1")
+        .package(url: "https://github.com/millicast/millicast-sdk-swift-package", exact: "2.0.0-beta.2")
     ],
     targets: [
         .target(
@@ -35,23 +32,11 @@ let package = Package(
             ],
             path: "Sources/DolbyIORTSCore"
         ),
-        .target(
-            name: "DolbyIORTSUIKit",
-            dependencies: [
-                "DolbyIOUIKit",
-                "DolbyIORTSCore"
-            ],
-            path: "Sources/DolbyIORTSUIKit",
-            resources: [.process("Resources")]
-        ),
         .testTarget(
             name: "DolbyIOUIKitTests",
             dependencies: ["DolbyIOUIKit"]),
         .testTarget(
             name: "DolbyIORTSCoreTests",
-            dependencies: ["DolbyIORTSCore"]),
-        .testTarget(
-            name: "DolbyIORTSUIKitTests",
-            dependencies: ["DolbyIORTSUIKit", "DolbyIORTSCore"])
+            dependencies: ["DolbyIORTSCore"])
     ]
 )
