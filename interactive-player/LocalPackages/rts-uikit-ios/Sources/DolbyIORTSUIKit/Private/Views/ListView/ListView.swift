@@ -12,7 +12,7 @@ struct ListView: View {
         static let tileSpacing: CGFloat = Layout.spacing1x
     }
 
-    private let viewModel: ListViewModel
+    @ObservedObject private var viewModel: ListViewModel
     private let onPrimaryVideoSelection: (StreamSource) -> Void
     private let onSecondaryVideoSelection: (StreamSource) -> Void
 
@@ -28,7 +28,6 @@ struct ListView: View {
         isShowingDetailView: Bool,
         mainTilePreferredVideoQuality: VideoQuality,
         subscriptionManager: SubscriptionManager,
-        pipRendererRegistry: RendererRegistry,
         videoTracksManager: VideoTracksManager,
         onPrimaryVideoSelection: @escaping (StreamSource) -> Void,
         onSecondaryVideoSelection: @escaping (StreamSource) -> Void
@@ -42,8 +41,6 @@ struct ListView: View {
             showSourceLabels: showSourceLabels,
             isShowingDetailView: isShowingDetailView,
             mainTilePreferredVideoQuality: mainTilePreferredVideoQuality,
-            subscriptionManager: subscriptionManager,
-            pipRendererRegistry: pipRendererRegistry,
             videoTracksManager: videoTracksManager
         )
     }

@@ -7,7 +7,8 @@ import Foundation
 import MillicastSDK
 import os
 
-final class ListViewModel {
+@MainActor
+final class ListViewModel: ObservableObject {
     let sources: [StreamSource]
     let selectedVideoSource: StreamSource
     let selectedAudioSource: StreamSource?
@@ -16,7 +17,6 @@ final class ListViewModel {
     let subscriptionManager: SubscriptionManager
     let secondarySources: [StreamSource]
     let mainTilePreferredVideoQuality: VideoQuality
-    let pipRendererRegistry: RendererRegistry
     let videoTracksManager: VideoTracksManager
 
     init(
@@ -27,7 +27,6 @@ final class ListViewModel {
         isShowingDetailView: Bool,
         mainTilePreferredVideoQuality: VideoQuality,
         subscriptionManager: SubscriptionManager,
-        pipRendererRegistry: RendererRegistry,
         videoTracksManager: VideoTracksManager
     ) {
         self.sources = sources
@@ -36,7 +35,6 @@ final class ListViewModel {
         self.showSourceLabels = showSourceLabels
         self.isShowingDetailView = isShowingDetailView
         self.mainTilePreferredVideoQuality = mainTilePreferredVideoQuality
-        self.pipRendererRegistry = pipRendererRegistry
         self.subscriptionManager = subscriptionManager
         self.secondarySources = sources.filter { $0.id != selectedVideoSource.id }
         self.videoTracksManager = videoTracksManager

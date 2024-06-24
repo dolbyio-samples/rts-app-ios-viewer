@@ -59,8 +59,7 @@ public struct StreamingView: View {
             selectedAudioSource: selectedAudioSource,
             settingsMode: viewModel.settingsMode,
             subscriptionManager: viewModel.subscriptionManager,
-            pipRendererRegistry: viewModel.pipRendererRegistry,
-            isShowingDetailPresentation: isShowingDetailPresentation, 
+            isShowingDetailPresentation: isShowingDetailPresentation,
             videoTracksManager: viewModel.videoTracksManager,
             onSelect: {
                 viewModel.selectVideoSource($0)
@@ -108,7 +107,6 @@ public struct StreamingView: View {
                     showSourceLabels: showSourceLabels,
                     isShowingDetailView: isShowingDetailSingleViewScreen,
                     mainTilePreferredVideoQuality: viewModel.listViewPrimaryVideoQuality, subscriptionManager: viewModel.subscriptionManager,
-                    pipRendererRegistry: viewModel.pipRendererRegistry,
                     videoTracksManager: viewModel.videoTracksManager,
                     onPrimaryVideoSelection: { _ in
                         isShowingDetailSingleViewScreen = true
@@ -133,7 +131,6 @@ public struct StreamingView: View {
                     showSourceLabels: showSourceLabels,
                     isShowingDetailView: isShowingDetailSingleViewScreen,
                     subscriptionManager: viewModel.subscriptionManager,
-                    pipRendererRegistry: viewModel.pipRendererRegistry, 
                     videoTracksManager: viewModel.videoTracksManager,
                     onVideoSelection: {
                         viewModel.selectVideoSource($0)

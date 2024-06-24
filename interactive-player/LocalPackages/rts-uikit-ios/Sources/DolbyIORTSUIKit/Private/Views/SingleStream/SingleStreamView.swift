@@ -39,7 +39,6 @@ struct SingleStreamView: View {
         selectedAudioSource: StreamSource?,
         settingsMode: SettingsMode,
         subscriptionManager: SubscriptionManager,
-        pipRendererRegistry: RendererRegistry,
         isShowingDetailPresentation: Bool,
         videoTracksManager: VideoTracksManager,
         onSelect: @escaping (StreamSource) -> Void,
@@ -53,7 +52,6 @@ struct SingleStreamView: View {
             selectedVideoSource: selectedVideoSource,
             selectedAudioSource: selectedAudioSource,
             settingsMode: settingsMode,
-            pipRendererRegistry: pipRendererRegistry,
             subscriptionManager: subscriptionManager,
             videoTracksManager: videoTracksManager
         )
@@ -129,7 +127,6 @@ struct SingleStreamView: View {
                             preferredVideoQuality: .auto,
                             subscriptionManager: viewModel.subscriptionManager,
                             rendererRegistry: rendererRegistry,
-                            pipRendererRegistry: viewModel.pipRendererRegistry,
                             videoTracksManager: viewModel.videoTracksManager,
                             action: { _ in
                                 // No-op

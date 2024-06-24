@@ -29,7 +29,6 @@ struct VideoRendererView: View {
         preferredVideoQuality: VideoQuality,
         subscriptionManager: SubscriptionManager,
         rendererRegistry: RendererRegistry,
-        pipRendererRegistry: RendererRegistry,
         videoTracksManager: VideoTracksManager,
         action: @escaping (StreamSource) -> Void
     ) {
@@ -45,7 +44,6 @@ struct VideoRendererView: View {
             preferredVideoQuality: preferredVideoQuality,
             subscriptionManager: subscriptionManager,
             rendererRegistry: rendererRegistry,
-            pipRendererRegistry: pipRendererRegistry,
             videoTracksManager: videoTracksManager
         )
         videoSize = viewModel.videoSize
@@ -137,7 +135,7 @@ private struct VideoRendererViewInternal: UIViewControllerRepresentable {
         }
     }
 
-    private let viewModel: VideoRendererViewModel
+    @ObservedObject private var viewModel: VideoRendererViewModel
     @State private var delegate: VideoViewDelegate
 
     init(viewModel: VideoRendererViewModel) {
@@ -164,29 +162,16 @@ private extension VideoRendererViewInternal {
 }
 
 private class VideoViewController: UIViewController {
+
+    private var targetView: UIView!
+    private var videoView: MCSampleBufferVideoUIView!
+    private var videoSize: CGSize!
+
     private var viewModel: VideoRendererViewModel {
         didSet {
-            let pipRenderer = viewModel.pipRenderer
-            let renderer = viewModel.renderer
-
-            pipView = MCSampleBufferVideoUIView(frame: .zero, renderer: pipRenderer)
-            videoView = MCAcceleratedVideoUIView(frame: .zero, renderer: renderer)
-            videoView.translatesAutoresizingMaskIntoConstraints = false
-
-            videoView.delegate = delegate
-            view.addSubview(videoView)
-
-            NSLayoutConstraint.activate([
-                view.topAnchor.constraint(equalTo: videoView.topAnchor),
-                view.leadingAnchor.constraint(equalTo: videoView.leadingAnchor),
-                videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
+            setupPlaybackView()
         }
     }
-    private var videoView: MCAcceleratedVideoUIView!
-    private var pipView: MCSampleBufferVideoUIView!
-    private var videoSize: CGSize!
 
     weak var delegate: MCVideoViewDelegate?
 
@@ -195,7 +180,6 @@ private class VideoViewController: UIViewController {
     init(viewModel: VideoRendererViewModel, delegate: MCVideoViewDelegate) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = .red
     }
 
     required init?(coder: NSCoder) {
@@ -203,29 +187,52 @@ private class VideoViewController: UIViewController {
     }
 
     func updateViewModel(_ viewModel: VideoRendererViewModel, delegate: MCVideoViewDelegate) {
-        view.subviews.forEach { $0.removeFromSuperview() }
         self.viewModel = viewModel
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configurePiPIfRequired(force: true)
+        configurePiPIfRequired()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        configurePiPIfRequired(force: false)
+        configurePiPIfRequired()
     }
 
-    private func configurePiPIfRequired(force: Bool) {
+    private func configurePiPIfRequired() {
         guard
-            viewModel.isPiPView,
             enablePiP,
-            PiPManager.shared.isPiPActive == false,
-            videoView.frame != .zero,
-            (PiPManager.shared.pipView != pipView || force)
+            PiPManager.shared.isPiPActive == false
         else { return }
 
-        PiPManager.shared.set(pipView: pipView, with: videoView)
+        PiPManager.shared.set(pipView: videoView, targetView: targetView) { [weak self] in
+            self?.setupPlaybackView()
+        }
+    }
+
+    private func setupPlaybackView() {
+        view.subviews.forEach { $0.removeFromSuperview() }
+        let renderer = viewModel.renderer
+
+        targetView = UIView()
+        targetView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(targetView)
+
+        videoView = MCSampleBufferVideoUIView(frame: .zero, renderer: renderer)
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        videoView.delegate = delegate
+        view.addSubview(videoView)
+
+        NSLayoutConstraint.activate([
+            view.topAnchor.constraint(equalTo: targetView.topAnchor),
+            view.leadingAnchor.constraint(equalTo: targetView.leadingAnchor),
+            targetView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            targetView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            view.topAnchor.constraint(equalTo: videoView.topAnchor),
+            view.leadingAnchor.constraint(equalTo: videoView.leadingAnchor),
+            videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
 }

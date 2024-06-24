@@ -10,7 +10,7 @@ import os
 
 @MainActor
 final class VideoRendererViewModel: ObservableObject {
-    private static let logger = Logger(
+    static let logger = Logger(
         subsystem: Bundle.module.bundleIdentifier!,
         category: String(describing: VideoRendererViewModel.self)
     )
@@ -27,7 +27,6 @@ final class VideoRendererViewModel: ObservableObject {
     let showAudioIndicator: Bool
     let preferredVideoQuality: VideoQuality
     let rendererRegistry: RendererRegistry
-    let pipRendererRegistry: RendererRegistry
     let maxWidth: CGFloat
     let maxHeight: CGFloat
     let videoTracksManager: VideoTracksManager
@@ -48,7 +47,6 @@ final class VideoRendererViewModel: ObservableObject {
         preferredVideoQuality: VideoQuality,
         subscriptionManager: SubscriptionManager,
         rendererRegistry: RendererRegistry,
-        pipRendererRegistry: RendererRegistry,
         videoTracksManager: VideoTracksManager
     ) {
         self.source = source
@@ -62,14 +60,13 @@ final class VideoRendererViewModel: ObservableObject {
         self.preferredVideoQuality = preferredVideoQuality
         self.subscriptionManager = subscriptionManager
         self.rendererRegistry = rendererRegistry
-        self.pipRendererRegistry = pipRendererRegistry
         self.videoTracksManager = videoTracksManager
 
         observerVideoQualityUpdates()
     }
 
     var videoSize: CGSize {
-        let size = rendererRegistry.accelaratedRenderer(for: source).underlyingRenderer.videoSize
+        let size = rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer.videoSize
         if size.width > 0, size.height > 0 {
             return size
         } else {
@@ -78,13 +75,10 @@ final class VideoRendererViewModel: ObservableObject {
     }
 
     // swiftlint:disable force_cast
-    var renderer: MCAcceleratedVideoRenderer {
-        rendererRegistry.accelaratedRenderer(for: source).underlyingRenderer as! MCAcceleratedVideoRenderer
+    var renderer: MCCMSampleBufferVideoRenderer {
+        rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer as! MCCMSampleBufferVideoRenderer
     }
 
-    var pipRenderer: MCCMSampleBufferVideoRenderer {
-        pipRendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer as! MCCMSampleBufferVideoRenderer
-    }
     // swiftlint:enable force_cast
 
     func tileSize(from videoSize: CGSize) -> CGSize {
@@ -98,7 +92,6 @@ final class VideoRendererViewModel: ObservableObject {
 
     func handleViewAppear() {
         VideoRendererViewModel.logger.debug("♼ Tile appear for source \(self.source.sourceId) on renderer \(self.renderer.objectIdentifier.debugDescription)")
-
         Task {
             await videoTracksManager.enableTrack(
                 for: source,

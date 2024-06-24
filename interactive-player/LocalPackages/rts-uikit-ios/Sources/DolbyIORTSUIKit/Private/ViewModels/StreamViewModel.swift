@@ -34,7 +34,6 @@ final class StreamViewModel: ObservableObject {
     }
 
     let subscriptionManager: SubscriptionManager
-    let pipRendererRegistry: RendererRegistry
     let videoTracksManager: VideoTracksManager
 
     private let settingsManager: SettingsManager
@@ -68,7 +67,6 @@ final class StreamViewModel: ObservableObject {
     init(
         context: StreamingView.Context,
         settingsManager: SettingsManager = .shared,
-        pipRendererRegistry: RendererRegistry = RendererRegistry(),
         videoTracksManager: VideoTracksManager = VideoTracksManager()
     ) {
         self.subscriptionManager = context.subscriptionManager
@@ -76,7 +74,6 @@ final class StreamViewModel: ObservableObject {
         self.streamDetail = context.streamDetail
         self.listViewPrimaryVideoQuality = context.listViewPrimaryVideoQuality
         self.settingsMode = .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
-        self.pipRendererRegistry = pipRendererRegistry
         self.videoTracksManager = videoTracksManager
 
         Task {

@@ -15,7 +15,6 @@ final class SingleStreamViewModel: ObservableObject {
     let selectedAudioSource: StreamSource?
     let settingsMode: SettingsMode
     let subscriptionManager: SubscriptionManager
-    let pipRendererRegistry: RendererRegistry
     let videoTracksManager: VideoTracksManager
 
     init(
@@ -23,7 +22,6 @@ final class SingleStreamViewModel: ObservableObject {
         selectedVideoSource: StreamSource,
         selectedAudioSource: StreamSource?,
         settingsMode: SettingsMode,
-        pipRendererRegistry: RendererRegistry,
         subscriptionManager: SubscriptionManager,
         videoTracksManager: VideoTracksManager
     ) {
@@ -31,7 +29,6 @@ final class SingleStreamViewModel: ObservableObject {
         self.selectedVideoSource = selectedVideoSource
         self.selectedAudioSource = selectedAudioSource
         self.settingsMode = settingsMode
-        self.pipRendererRegistry = pipRendererRegistry
         self.subscriptionManager = subscriptionManager
         self.videoTracksManager = videoTracksManager
     }

@@ -13,7 +13,7 @@ struct GridView: View {
         static let numberOfColumnsForLandscape = 2
     }
 
-    private var viewModel: GridViewModel!
+    @ObservedObject private var viewModel: GridViewModel
     private let onVideoSelection: (StreamSource) -> Void
 
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -26,7 +26,6 @@ struct GridView: View {
         showSourceLabels: Bool,
         isShowingDetailView: Bool,
         subscriptionManager: SubscriptionManager,
-        pipRendererRegistry: RendererRegistry,
         videoTracksManager: VideoTracksManager,
         onVideoSelection: @escaping (StreamSource) -> Void
     ) {
@@ -38,7 +37,6 @@ struct GridView: View {
             showSourceLabels: showSourceLabels,
             isShowingDetailView: isShowingDetailView,
             subscriptionManager: subscriptionManager,
-            pipRendererRegistry: pipRendererRegistry,
             videoTracksManager: videoTracksManager
         )
     }

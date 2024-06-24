@@ -8,14 +8,14 @@ import Foundation
 import MillicastSDK
 import os
 
-final class GridViewModel {
+@MainActor
+final class GridViewModel: ObservableObject {
     let sources: [StreamSource]
     let selectedVideoSource: StreamSource
     let selectedAudioSource: StreamSource?
     let subscriptionManager: SubscriptionManager
     let showSourceLabels: Bool
     let isShowingDetailView: Bool
-    let pipRendererRegistry: RendererRegistry
     let videoTracksManager: VideoTracksManager
 
     init(
@@ -25,7 +25,6 @@ final class GridViewModel {
         showSourceLabels: Bool,
         isShowingDetailView: Bool,
         subscriptionManager: SubscriptionManager,
-        pipRendererRegistry: RendererRegistry,
         videoTracksManager: VideoTracksManager
     ) {
         self.sources = sources
@@ -34,7 +33,6 @@ final class GridViewModel {
         self.showSourceLabels = showSourceLabels
         self.isShowingDetailView = isShowingDetailView
         self.subscriptionManager = subscriptionManager
-        self.pipRendererRegistry = pipRendererRegistry
         self.videoTracksManager = videoTracksManager
     }
 }
