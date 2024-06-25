@@ -17,7 +17,6 @@ struct GridView: View {
     private let onVideoSelection: (StreamSource) -> Void
 
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @State private var rendererRegistry: RendererRegistry = RendererRegistry()
 
     init(
         sources: [StreamSource],
@@ -43,36 +42,60 @@ struct GridView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let screenSize = proxy.size
-            let numberOfColumns = sizeClass == .compact ? Defaults.numberOfColumnsForPortrait : Defaults.numberOfColumnsForLandscape
-            let tileWidth = screenSize.width / CGFloat(numberOfColumns)
-            let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: numberOfColumns)
-            ScrollView {
-                LazyVGrid(columns: columns, alignment: .leading) {
-                    ForEach(viewModel.sources, id: \.id) { source in
-                        VideoRendererView(
-                            source: source,
-                            isSelectedVideoSource: source == viewModel.selectedVideoSource,
-                            isSelectedAudioSource: source == viewModel.selectedAudioSource,
-                            isPiPView: source == viewModel.selectedVideoSource && !viewModel.isShowingDetailView,
-                            showSourceLabel: viewModel.showSourceLabels,
-                            showAudioIndicator: source == viewModel.selectedAudioSource,
-                            maxWidth: tileWidth,
-                            maxHeight: .infinity,
-                            accessibilityIdentifier: "GridViewVideoTile.\(source.sourceId.displayLabel)",
-                            preferredVideoQuality: source == viewModel.selectedVideoSource ? .auto : .low,
-                            subscriptionManager: viewModel.subscriptionManager,
-                            rendererRegistry: rendererRegistry,
-                            videoTracksManager: viewModel.videoTracksManager,
-                            action: { source in
-                                onVideoSelection(source)
+            if viewModel.isShowingDetailView {
+                // FIXME: With the new SDK 2.0.0 only one renderer can be attached to a video track at a time
+                // Having the grid view or list view in the navigation stack cause unwanted refresh of video view's
+                // As an example when the selected video view changes or when any of the settings is changed
+                EmptyView()
+            } else {
+                let screenSize = proxy.size
+                let numberOfColumns = sizeClass == .compact ? Defaults.numberOfColumnsForPortrait : Defaults.numberOfColumnsForLandscape
+                let tileWidth = screenSize.width / CGFloat(numberOfColumns)
+                let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: numberOfColumns)
+                ScrollView {
+                    LazyVGrid(columns: columns, alignment: .leading) {
+                        ForEach(viewModel.sources, id: \.id) { source in
+                            let displayLabel = source.sourceId.displayLabel
+                            let preferredVideoQuality: VideoQuality = source == viewModel.selectedVideoSource ? .auto : .low
+                            let isSelectedVideoSource = source == viewModel.selectedVideoSource
+                            let isSelectedAudioSource = source == viewModel.selectedAudioSource
+                            let viewId = "\(GridView.self).\(displayLabel)"
+
+                            VideoRendererView(
+                                source: source,
+                                isSelectedVideoSource: isSelectedVideoSource,
+                                isSelectedAudioSource: isSelectedAudioSource,
+                                isPiPView: isSelectedVideoSource && !viewModel.isShowingDetailView,
+                                showSourceLabel: viewModel.showSourceLabels,
+                                showAudioIndicator: isSelectedAudioSource,
+                                maxWidth: tileWidth,
+                                maxHeight: .infinity,
+                                accessibilityIdentifier: "GridViewVideoTile.\(source.sourceId.displayLabel)",
+                                preferredVideoQuality: preferredVideoQuality,
+                                subscriptionManager: viewModel.subscriptionManager,
+                                videoTracksManager: viewModel.videoTracksManager,
+                                action: { source in
+                                    onVideoSelection(source)
+                                }
+                            )
+                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+                            .onAppear {
+                                GridViewModel.logger.debug("♼ Grid view: Video view appear for \(source.sourceId)")
+                                Task {
+                                    await viewModel.videoTracksManager.enableTrack(for: source, with: preferredVideoQuality, on: viewId)
+                                }
                             }
-                        )
-                        .id(source.id)
-                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+                            .onDisappear {
+                                GridViewModel.logger.debug("♼ Grid view: Video view disappear for \(source.sourceId)")
+                                Task {
+                                    await viewModel.videoTracksManager.disableTrack(for: source, on: viewId)
+                                }
+                            }
+                            .id(source.id)
+                        }
                     }
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                 }
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
             }
         }
     }

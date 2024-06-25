@@ -23,7 +23,6 @@ struct SingleStreamView: View {
     @State private var isShowingSettingsScreen: Bool = false
     @State private var isShowingStatsInfoScreen: Bool = false
     @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
-    @State private var rendererRegistry: RendererRegistry = RendererRegistry()
     @State private var selectedVideoStreamSourceId: UUID
 
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
@@ -114,29 +113,46 @@ struct SingleStreamView: View {
                     ForEach(viewModel.sources, id: \.id) { source in
                         let maxAllowedVideoWidth = proxy.size.width
                         let maxAllowedVideoHeight = proxy.size.height
+                        let displayLabel = source.sourceId.displayLabel
+                        let preferredVideoQuality: VideoQuality = .auto
+                        let isSelectedVideoSource = source == viewModel.selectedVideoSource
+                        let isSelectedAudioSource = source == viewModel.selectedAudioSource
+                        let viewId = "\(SingleStreamView.self).\(displayLabel)"
+
                         VideoRendererView(
                             source: source,
-                            isSelectedVideoSource: source == viewModel.selectedVideoSource,
-                            isSelectedAudioSource: source == viewModel.selectedAudioSource,
-                            isPiPView: source == viewModel.selectedVideoSource,
+                            isSelectedVideoSource: isSelectedVideoSource,
+                            isSelectedAudioSource: isSelectedAudioSource,
+                            isPiPView: isSelectedVideoSource,
                             showSourceLabel: false,
                             showAudioIndicator: false,
                             maxWidth: maxAllowedVideoWidth,
                             maxHeight: maxAllowedVideoHeight,
-                            accessibilityIdentifier: "SingleStreamViewVideoTile.\(source.sourceId.displayLabel)",
+                            accessibilityIdentifier: "SingleStreamViewVideoTile.\(displayLabel)",
                             preferredVideoQuality: .auto,
                             subscriptionManager: viewModel.subscriptionManager,
-                            rendererRegistry: rendererRegistry,
                             videoTracksManager: viewModel.videoTracksManager,
                             action: { _ in
                                 // No-op
                             }
                         )
                         .tag(source.id)
+                        .onAppear {
+                            SingleStreamViewModel.logger.debug("♼ Single stream view: Video view appear for \(source.sourceId)")
+                            Task {
+                                await viewModel.videoTracksManager.enableTrack(for: source, with: preferredVideoQuality, on: viewId)
+                            }
+                        }
+                        .onDisappear {
+                            SingleStreamViewModel.logger.debug("♼ Single stream view: Video view disappear for \(source.sourceId)")
+                            Task {
+                                await viewModel.videoTracksManager.disableTrack(for: source, on: viewId)
+                            }
+                        }
+                        .id(source.id)
                         .frame(width: proxy.size.width, height: proxy.size.height)
                     }
                 }
-                .id(viewModel.sources.count)
                 .tabViewStyle(.page)
                 .overlay(alignment: .top) {
                     topToolBarView

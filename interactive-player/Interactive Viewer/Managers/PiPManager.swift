@@ -31,7 +31,7 @@ final class PiPManager: NSObject {
     }
 
     func set(pipView: MCSampleBufferVideoUIView, targetView: UIView, onStopPictureInPicture: @escaping () -> Void) {
-        VideoRendererViewModel.logger.debug("♼ Set PIP view \(pipView) on target view \(targetView)")
+        PiPManager.logger.debug("🌄 Set PIP view \(pipView) on target view \(targetView)")
 
         guard AVPictureInPictureController.isPictureInPictureSupported() else {
             return
@@ -80,7 +80,7 @@ final class PiPManager: NSObject {
 
 extension PiPManager: AVPictureInPictureControllerDelegate {
     func pictureInPictureControllerDidStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
-        VideoRendererViewModel.logger.debug("♼ Started picture in picture")
+        PiPManager.logger.debug("🌄 Started picture in picture")
         guard
             let sampleBufferDisplayLayer,
             let pipVideoCallViewController
@@ -91,7 +91,7 @@ extension PiPManager: AVPictureInPictureControllerDelegate {
     }
 
     func pictureInPictureControllerWillStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
-        VideoRendererViewModel.logger.debug("♼ Will start picture in picture")
+        PiPManager.logger.debug("🌄 Will start picture in picture")
         guard
             let containerView,
             let sampleBufferDisplayLayer
@@ -103,7 +103,7 @@ extension PiPManager: AVPictureInPictureControllerDelegate {
     }
 
     func pictureInPictureControllerWillStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
-        VideoRendererViewModel.logger.debug("♼ Will stop picture in picture")
+        PiPManager.logger.debug("🌄 Will stop picture in picture")
         onStopPictureInPicture?()
         pipController = nil
         containerView = nil
@@ -112,10 +112,10 @@ extension PiPManager: AVPictureInPictureControllerDelegate {
     }
 
     func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
-        VideoRendererViewModel.logger.debug("♼ Stopped picture in picture")
+        PiPManager.logger.debug("🌄 Stopped picture in picture")
     }
 
     func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, failedToStartPictureInPictureWithError error: Error) {
-        VideoRendererViewModel.logger.debug("♼ Failed to start picture in picture \(error.localizedDescription)")
+        PiPManager.logger.debug("🌄 Failed to start picture in picture \(error.localizedDescription)")
     }
 }

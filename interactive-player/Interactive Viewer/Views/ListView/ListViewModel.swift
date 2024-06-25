@@ -9,6 +9,11 @@ import os
 
 @MainActor
 final class ListViewModel: ObservableObject {
+    static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: ListViewModel.self)
+    )
+
     let sources: [StreamSource]
     let selectedVideoSource: StreamSource
     let selectedAudioSource: StreamSource?

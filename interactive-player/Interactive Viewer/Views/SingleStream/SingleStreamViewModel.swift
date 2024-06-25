@@ -10,6 +10,11 @@ import os
 
 @MainActor
 final class SingleStreamViewModel: ObservableObject {
+    static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: SingleStreamViewModel.self)
+    )
+
     let sources: [StreamSource]
     let selectedVideoSource: StreamSource
     let selectedAudioSource: StreamSource?

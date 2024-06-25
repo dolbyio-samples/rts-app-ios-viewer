@@ -28,7 +28,6 @@ struct VideoRendererView: View {
         accessibilityIdentifier: String,
         preferredVideoQuality: VideoQuality,
         subscriptionManager: SubscriptionManager,
-        rendererRegistry: RendererRegistry,
         videoTracksManager: VideoTracksManager,
         action: @escaping (StreamSource) -> Void
     ) {
@@ -43,7 +42,6 @@ struct VideoRendererView: View {
             maxHeight: maxHeight,
             preferredVideoQuality: preferredVideoQuality,
             subscriptionManager: subscriptionManager,
-            rendererRegistry: rendererRegistry,
             videoTracksManager: videoTracksManager
         )
         videoSize = viewModel.videoSize
@@ -116,12 +114,6 @@ struct VideoRendererView: View {
             }
             .onTapGesture {
                 action(viewModel.source)
-            }
-            .onAppear {
-                viewModel.handleViewAppear()
-            }
-            .onDisappear {
-                viewModel.handleViewDisappear()
             }
     }
 }

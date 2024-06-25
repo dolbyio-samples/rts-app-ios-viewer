@@ -10,6 +10,11 @@ import os
 
 @MainActor
 final class GridViewModel: ObservableObject {
+    static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: GridViewModel.self)
+    )
+
     let sources: [StreamSource]
     let selectedVideoSource: StreamSource
     let selectedAudioSource: StreamSource?

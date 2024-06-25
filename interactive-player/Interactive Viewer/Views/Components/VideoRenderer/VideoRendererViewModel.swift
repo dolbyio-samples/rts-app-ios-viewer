@@ -10,11 +10,6 @@ import os
 
 @MainActor
 final class VideoRendererViewModel: ObservableObject {
-    static let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier!,
-        category: String(describing: VideoRendererViewModel.self)
-    )
-
     private enum Constants {
         static let defaultVideoTileSize = CGSize(width: 533, height: 300)
     }
@@ -26,7 +21,6 @@ final class VideoRendererViewModel: ObservableObject {
     let showSourceLabel: Bool
     let showAudioIndicator: Bool
     let preferredVideoQuality: VideoQuality
-    let rendererRegistry: RendererRegistry
     let maxWidth: CGFloat
     let maxHeight: CGFloat
     let videoTracksManager: VideoTracksManager
@@ -46,7 +40,6 @@ final class VideoRendererViewModel: ObservableObject {
         maxHeight: CGFloat,
         preferredVideoQuality: VideoQuality,
         subscriptionManager: SubscriptionManager,
-        rendererRegistry: RendererRegistry,
         videoTracksManager: VideoTracksManager
     ) {
         self.source = source
@@ -59,14 +52,13 @@ final class VideoRendererViewModel: ObservableObject {
         self.maxHeight = maxHeight
         self.preferredVideoQuality = preferredVideoQuality
         self.subscriptionManager = subscriptionManager
-        self.rendererRegistry = rendererRegistry
         self.videoTracksManager = videoTracksManager
 
         observerVideoQualityUpdates()
     }
 
     var videoSize: CGSize {
-        let size = rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer.videoSize
+        let size = videoTracksManager.rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer.videoSize
         if size.width > 0, size.height > 0 {
             return size
         } else {
@@ -76,7 +68,7 @@ final class VideoRendererViewModel: ObservableObject {
 
     // swiftlint:disable force_cast
     var renderer: MCCMSampleBufferVideoRenderer {
-        rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer as! MCCMSampleBufferVideoRenderer
+        videoTracksManager.rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer as! MCCMSampleBufferVideoRenderer
     }
 
     // swiftlint:enable force_cast
@@ -90,31 +82,10 @@ final class VideoRendererViewModel: ObservableObject {
         return CGSize(width: scaledWidth, height: scaledHeight)
     }
 
-    func handleViewAppear() {
-        VideoRendererViewModel.logger.debug("♼ Tile appear for source \(self.source.sourceId) on renderer \(self.renderer.objectIdentifier.debugDescription)")
-        Task {
-            await videoTracksManager.enableTrack(
-                for: source,
-                renderer: renderer,
-                preferredVideoQuality: preferredVideoQuality
-            )
-        }
-    }
-
-    func handleViewDisappear() {
-        VideoRendererViewModel.logger.debug("♼ Tile disappear for source \(self.source.sourceId) on renderer \(self.renderer.objectIdentifier.debugDescription)")
-        Task {
-            await videoTracksManager.disableTrack(
-                for: source,
-                renderer: renderer
-            )
-        }
-    }
-
     private func observerVideoQualityUpdates() {
         Task { [weak self] in
             guard let self else { return }
-            await self.videoTracksManager.videoQualityPublisher
+            await self.videoTracksManager.selectedVideoQualityPublisher
                 .map({ $0[self.source.sourceId] ?? .auto })
                 .receive(on: DispatchQueue.main)
                 .sink { quality in

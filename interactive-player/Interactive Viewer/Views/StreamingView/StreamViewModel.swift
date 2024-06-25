@@ -140,6 +140,8 @@ final class StreamViewModel: ObservableObject {
             return nil
         }
 
+        Self.logger.debug("🎰 Make state for \(sources.map({ $0.sourceId.description }).joined(separator: ", "))")
+
         let sortedSources: [StreamSource]
         switch settings.streamSortOrder {
         case .connectionOrder:

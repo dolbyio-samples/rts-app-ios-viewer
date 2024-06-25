@@ -8,7 +8,10 @@ import DolbyIORTSCore
 import MillicastSDK
 import os
 
-final actor VideoTracksManager {
+final actor VideoTracksManager: Identifiable {
+
+    typealias ViewID = String
+
     private static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: VideoTracksManager.self)
@@ -23,12 +26,18 @@ final actor VideoTracksManager {
         }
     }
 
-    private var videoTrackActivityObservationDictionary: [SourceID: Task<Void, Never>] = [:]
+    // Stored tasks
+    private var videoTrackStateObservationDictionary: [SourceID: Task<Void, Never>] = [:]
     private var layerEventsObservationDictionary: [SourceID: Task<Void, Never>] = [:]
 
+    // View's rendering a source
+    private var sourceToActiveViewsMapping: [SourceID: [ViewID]] = [:]
+
+    // View's to requested video quality
+    private var viewToRequestedVideoQualityMapping: [ViewID: VideoQuality] = [:]
+
+    // Layer information
     private var sourceToSimulcastLayersMapping: [SourceID: [MCRTSRemoteTrackLayer]] = [:]
-    private var sourceToRenderersMapping: [SourceID: [MCVideoRenderer]] = [:]
-    private var rendererToRequestedLayerMapping: [ObjectIdentifier: VideoQuality] = [:]
     private var sourceToSelectedVideoQualityAndLayerMapping: [SourceID: VideoQualityAndLayerPair] = [:] {
         didSet {
             let sourceToVideoQuality = sourceToSelectedVideoQualityAndLayerMapping
@@ -40,10 +49,15 @@ final actor VideoTracksManager {
     }
 
     private var sourceToTasks: [SourceID: SerialTasks<Void>] = [:]
-
     private var trackStateUpdateSubject: CurrentValueSubject<Void, Never>?
     private let videoQualitySubject: CurrentValueSubject<[SourceID: VideoQuality], Never> = CurrentValueSubject([:])
-    lazy var videoQualityPublisher = videoQualitySubject.eraseToAnyPublisher()
+
+    let rendererRegistry: RendererRegistry
+    lazy var selectedVideoQualityPublisher = videoQualitySubject.eraseToAnyPublisher()
+
+    init(rendererRegistry: RendererRegistry = RendererRegistry()) {
+        self.rendererRegistry = rendererRegistry
+    }
 
     func setTrackStateUpdateSubject(_ subject: CurrentValueSubject<Void, Never>) {
         trackStateUpdateSubject = subject
@@ -54,12 +68,11 @@ final actor VideoTracksManager {
             guard let self else { return }
 
             Task {
-                guard await self.videoTrackActivityObservationDictionary[source.sourceId] == nil else {
+                guard await self.videoTrackStateObservationDictionary[source.sourceId] == nil else {
                     return
                 }
 
-                Self.logger.debug("♼ Registering for video track lifecycle events of \(source.sourceId)")
-                let videoTrackActivityObservation = Task {
+                let videoTrackStateObservation = Task {
                     for await activityEvent in source.videoTrack.activity() {
                         switch activityEvent {
                         case .active:
@@ -73,15 +86,16 @@ final actor VideoTracksManager {
                         }
                     }
                 }
-                await self.addVideoTrackObservationTask(videoTrackActivityObservation, for: source)
-                await videoTrackActivityObservation.value
+                if await self.addVideoTrackObservationTask(videoTrackStateObservation, for: source) {
+                    Self.logger.debug("♼ Registering for video track lifecycle events of \(source.sourceId)")
+                    await videoTrackStateObservation.value
+                }
             }
 
             Task {
                 guard await self.layerEventsObservationDictionary[source.sourceId] == nil else {
                     return
                 }
-                Self.logger.debug("♼ Registering layers events of \(source.sourceId)")
                 let layerEventsObservationTask = Task {
                     for await layerEvent in source.videoTrack.layers() {
                         let simulcastLayers = layerEvent.layers()
@@ -89,92 +103,91 @@ final actor VideoTracksManager {
                     }
                 }
 
-                await self.addLayerEventsObservationTask(layerEventsObservationTask, for: source)
-                await layerEventsObservationTask.value
+                if await self.addLayerEventsObservationTask(layerEventsObservationTask, for: source) {
+                    Self.logger.debug("♼ Registering layers events of \(source.sourceId)")
+                    await layerEventsObservationTask.value
+                }
             }
         }
     }
 
     func reset() {
-        videoTrackActivityObservationDictionary.removeAll()
+        videoTrackStateObservationDictionary.removeAll()
         layerEventsObservationDictionary.removeAll()
     }
 
-    func enableTrack(for source: StreamSource, renderer: MCVideoRenderer, preferredVideoQuality: VideoQuality) async {
-        let rendererId = renderer.objectIdentifier
+    func enableTrack(for source: StreamSource, with preferredVideoQuality: VideoQuality, on view: ViewID) async {
         let sourceId = source.sourceId
-        Self.logger.debug("♼ Request to enable video track for source \(sourceId) with preferredVideoQuality \(preferredVideoQuality.displayText) from renderer \(rendererId.debugDescription)")
+        Self.logger.debug("♼ Request to enable video track for source \(sourceId) with preferredVideoQuality \(preferredVideoQuality.displayText) from view \(view.description)")
 
-        // If the renderer has already requested the same video quality before? - exit
-        guard rendererToRequestedLayerMapping[rendererId] != preferredVideoQuality else {
-            Self.logger.debug("♼ Exiting - Renderer already present for source \(sourceId) with preferredVideoQuality \(preferredVideoQuality.displayText)")
+        // If the view has already requested the same video quality before? if yes, exit
+        guard viewToRequestedVideoQualityMapping[view] != preferredVideoQuality else {
+            Self.logger.debug("♼ Exiting - View already presented for source \(sourceId) with preferredVideoQuality \(preferredVideoQuality.displayText)")
             return
         }
 
-        let renderersForSource = sourceToRenderersMapping[sourceId] ?? []
+        let activeViewsForSource = sourceToActiveViewsMapping[sourceId] ?? []
         // Calculate the video quality to project from the requested list
         // Note: Only one layer can be selected for a source at a given time
-        var videoQualitiesRequestedForSource = renderersForSource
-            .compactMap { rendererToRequestedLayerMapping[$0.objectIdentifier] }
+        var videoQualitiesRequestedForSource = activeViewsForSource
+            .compactMap { viewToRequestedVideoQualityMapping[$0] }
         videoQualitiesRequestedForSource.append(preferredVideoQuality)
-        let bestVideoQualityFromRequested = videoQualitiesRequestedForSource.bestVideoQualityFromTheRequestedList
+        let bestVideoQualityFromTheList = videoQualitiesRequestedForSource.bestVideoQualityFromTheRequestedList
         let simulcastLayers = sourceToSimulcastLayersMapping[sourceId]
-        let layerToSelect = simulcastLayers.map { $0.matching(quality: bestVideoQualityFromRequested) } ?? nil
-        Self.logger.debug("♼ Has \(simulcastLayers?.count ?? 0) simulcast layers for source \(sourceId)")
+        let layerToSelect = simulcastLayers.map { $0.matching(quality: bestVideoQualityFromTheList) } ?? nil
+        Self.logger.debug("♼ Source \(sourceId) has \(simulcastLayers?.count ?? 0) simulcast layers")
 
-        let videoQualityToSelect: VideoQuality = layerToSelect == nil ? .auto : bestVideoQualityFromRequested
+        let videoQualityToSelect: VideoQuality = layerToSelect == nil ? .auto : bestVideoQualityFromTheList
         let newVideoQualityAndLayerPair = VideoQualityAndLayerPair(videoQuality: videoQualityToSelect, layer: layerToSelect)
 
-        Self.logger.debug("♼ Add renderer information for source \(sourceId) and renderer \(rendererId.debugDescription)")
-        // Update renderer's requested video quality
-        rendererToRequestedLayerMapping[rendererId] = preferredVideoQuality
+        Self.logger.debug("♼ Add active view \(view.description) for source \(sourceId)")
+        // Update view's requested video quality
+        viewToRequestedVideoQualityMapping[view] = preferredVideoQuality
 
-        // Add new renderer to the list of renderers for that source
-        if var renderers = sourceToRenderersMapping[sourceId] {
-            renderers.append(renderer)
-            sourceToRenderersMapping[source.sourceId] = renderers
+        // Add new view to the list of active views for that source
+        if var views = sourceToActiveViewsMapping[sourceId] {
+            views.append(view)
+            sourceToActiveViewsMapping[source.sourceId] = views
         } else {
-            sourceToRenderersMapping[source.sourceId] = [renderer]
+            sourceToActiveViewsMapping[source.sourceId] = [view]
         }
 
         do {
             if let layerToSelect {
                 Self.logger.debug("♼ Simulcast layer - \(layerToSelect) for source \(sourceId)")
-                Self.logger.debug("♼ Selecting videoquality \(videoQualityToSelect.displayText) for source \(sourceId) on renderer \(rendererId.debugDescription)")
+                Self.logger.debug("♼ Selecting videoquality \(videoQualityToSelect.displayText) for source \(sourceId) on view \(view)")
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
 
-                try await queueEnableTrack(for: source, renderer: renderer, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
+                try await queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
             } else {
-                Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromRequested.displayText)")
-                Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on renderer \(rendererId.debugDescription)")
+                Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromTheList.displayText)")
+                Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on view \(view)")
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
 
-                try await queueEnableTrack(for: source, renderer: renderer)
+                try await queueEnableTrack(for: source)
             }
         } catch {
             Self.logger.debug("♼🛑 Enabling video track threw error \(error.localizedDescription)")
         }
     }
 
-    func disableTrack(for source: StreamSource, renderer: MCVideoRenderer) async {
-        let rendererId = renderer.objectIdentifier
+    func disableTrack(for source: StreamSource, on view: ViewID) async {
         let sourceId = source.sourceId
-        Self.logger.debug("♼ Request to disable video track for source \(sourceId) from renderer \(rendererId.debugDescription)")
-
-        Self.logger.debug("♼ Remove renderer information for source \(sourceId) and renderer \(rendererId.debugDescription)")
-        // Remove renderer from the list of renderers for that source
-        if var renderers = sourceToRenderersMapping[sourceId], renderers.contains(where: { $0.objectIdentifier == rendererId }) {
-            renderers.removeAll(where: { $0.objectIdentifier == rendererId })
-            sourceToRenderersMapping[source.sourceId] = !renderers.isEmpty ? renderers : nil
+        Self.logger.debug("♼ Request to disable video track for source \(sourceId) on view \(view.description)")
+        Self.logger.debug("♼ Remove view \(view.description) for source \(sourceId)")
+        // Remove view from the list of active views for that source
+        if var activeViews = sourceToActiveViewsMapping[sourceId], activeViews.contains(where: { $0 == view }) {
+            activeViews.removeAll(where: { $0 == view })
+            sourceToActiveViewsMapping[source.sourceId] = !activeViews.isEmpty ? activeViews : nil
         }
 
-        // Remove renderer from Renderer to requested video quality mapping
-        rendererToRequestedLayerMapping[rendererId] = nil
+        // Remove view from View to requested video quality mapping
+        viewToRequestedVideoQualityMapping[view] = nil
 
-        if let renderersForSource = sourceToRenderersMapping[sourceId], let activeRenderer = renderersForSource.first {
+        if let activeViews = sourceToActiveViewsMapping[sourceId] {
             // Calculate the video quality to project from the requested list
-            // Note: Only one layer can be selected for a source at a given time
-            let videoQualitiesRequestedForSource = renderersForSource.compactMap { rendererToRequestedLayerMapping[$0.objectIdentifier] }
+            // Note: Only one projection can exist for a source at a given time
+            let videoQualitiesRequestedForSource = activeViews.compactMap { viewToRequestedVideoQualityMapping[$0] }
             let bestVideoQualityFromRequested = videoQualitiesRequestedForSource.bestVideoQualityFromTheRequestedList
             let simulcastLayers = sourceToSimulcastLayersMapping[sourceId]
             let layerToSelect = simulcastLayers.map { $0.matching(quality: bestVideoQualityFromRequested) } ?? nil
@@ -185,21 +198,21 @@ final actor VideoTracksManager {
             do {
                 if let layerToSelect {
                     Self.logger.debug("♼ Has simulcast layer - \(layerToSelect) for source \(sourceId)")
-                    Self.logger.debug("♼ Selecting videoquality \(selectedVideoQuality.displayText) for source \(sourceId) on renderer \(activeRenderer.objectIdentifier.debugDescription)")
+                    Self.logger.debug("♼ Selecting videoquality \(selectedVideoQuality.displayText) for source \(sourceId); active view \(activeViews)")
                     sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
-                    try await queueEnableTrack(for: source, renderer: activeRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
+                    try await queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
                 } else {
                     Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromRequested.displayText)")
-                    Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on renderer \(activeRenderer.objectIdentifier.debugDescription)")
+                    Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId); active view \(activeViews)")
                     sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
-                    try await queueEnableTrack(for: source, renderer: activeRenderer)
+                    try await queueEnableTrack(for: source)
                 }
             } catch {
                 Self.logger.debug("♼🛑 Enabling video track threw error \(error.localizedDescription)")
             }
         } else {
             do {
-                Self.logger.debug("♼ Disable video track for source \(sourceId) as there are no active renderers")
+                Self.logger.debug("♼ Disable video track for source \(sourceId) as there are no active views")
 
                 // Remove selected Video quality for source
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = nil
@@ -213,11 +226,12 @@ final actor VideoTracksManager {
         }
     }
 
-    func queueEnableTrack(for source: StreamSource, renderer: MCVideoRenderer, layer: MCRTSRemoteVideoTrackLayer? = nil) async throws {
+    func queueEnableTrack(for source: StreamSource, layer: MCRTSRemoteVideoTrackLayer? = nil) async throws {
         if sourceToTasks[source.sourceId] == nil {
             sourceToTasks[source.sourceId] = SerialTasks()
         }
 
+        let renderer = rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer
         guard let serialTasks = sourceToTasks[source.sourceId] else { return }
         try await serialTasks.add {
             Self.logger.debug("♼ Queue: Enabling track for source \(source.sourceId) on renderer \(renderer.objectIdentifier.debugDescription)")
@@ -253,18 +267,16 @@ private extension VideoTracksManager {
         Self.logger.debug("♼ Add layers \(layers.count) for \(source.sourceId)")
         let sourceId = source.sourceId
 
-        // Choose any active renderer to reenable the track
-        guard let renderersForSource = sourceToRenderersMapping[sourceId], let activeRenderer = renderersForSource.first else {
-            Self.logger.debug("♼ No active renderers for \(source.sourceId)")
+        // Choose any active view to reenable the track
+        guard let activeViews = sourceToActiveViewsMapping[sourceId], let anyActiveView = activeViews.first else {
+            Self.logger.debug("♼ No active views for \(source.sourceId)")
             return
         }
 
-        let rendererId = activeRenderer.objectIdentifier
-
         // Calculate the video quality to project from the requested list
-        // Note: Only one layer can be selected for a source at a given time
-        let videoQualitiesRequestedForSource = renderersForSource
-            .compactMap { rendererToRequestedLayerMapping[$0.objectIdentifier] }
+        // Note: Only one projection can exist for a source at a given time
+        let videoQualitiesRequestedForSource = activeViews
+            .compactMap { viewToRequestedVideoQualityMapping[$0] }
         let bestVideoQualityFromRequested = videoQualitiesRequestedForSource.bestVideoQualityFromTheRequestedList
         let layerToSelect = layers.matching(quality: bestVideoQualityFromRequested)
 
@@ -281,14 +293,14 @@ private extension VideoTracksManager {
         do {
             if let layerToSelect {
                 Self.logger.debug("♼ Has simulcast layer - \(layerToSelect) for source \(sourceId)")
-                Self.logger.debug("♼ Selecting videoquality \(selectedVideoQuality.displayText) for source \(sourceId) on renderer \(rendererId.debugDescription)")
+                Self.logger.debug("♼ Selecting videoquality \(selectedVideoQuality.displayText) for source \(sourceId) on view \(anyActiveView)")
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
-                try await queueEnableTrack(for: source, renderer: activeRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
+                try await queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
             } else {
                 Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromRequested.displayText)")
-                Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on renderer \(rendererId.debugDescription)")
+                Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on view \(anyActiveView)")
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
-                try await queueEnableTrack(for: source, renderer: activeRenderer)
+                try await queueEnableTrack(for: source)
             }
         } catch {
             Self.logger.debug("♼🛑 Enabling video track threw error \(error.localizedDescription)")
@@ -297,29 +309,31 @@ private extension VideoTracksManager {
 
     func removeAllStoredData(for source: StreamSource) {
         let sourceId = source.sourceId
-        let renderers = sourceToRenderersMapping[sourceId]
+        let activeViews = sourceToActiveViewsMapping[sourceId]
 
-        renderers?.forEach { rendererToRequestedLayerMapping[$0.objectIdentifier] = nil }
+        activeViews?.forEach { viewToRequestedVideoQualityMapping[$0] = nil }
         sourceToSimulcastLayersMapping[sourceId] = nil
-        sourceToRenderersMapping[sourceId] = nil
+        sourceToActiveViewsMapping[sourceId] = nil
     }
 }
 
 // MARK: Helpers to manage `Event` Observations
 
 private extension VideoTracksManager {
-    func addVideoTrackObservationTask(_ task: Task<Void, Never>, for source: StreamSource) {
-        if let existingTask = videoTrackActivityObservationDictionary[source.sourceId] {
-            existingTask.cancel()
+    func addVideoTrackObservationTask(_ task: Task<Void, Never>, for source: StreamSource) -> Bool {
+        if videoTrackStateObservationDictionary[source.sourceId] != nil {
+            return false
         }
-        videoTrackActivityObservationDictionary[source.sourceId] = task
+        videoTrackStateObservationDictionary[source.sourceId] = task
+        return true
     }
 
-    func addLayerEventsObservationTask(_ task: Task<Void, Never>, for source: StreamSource) {
-        if let existingTask = layerEventsObservationDictionary[source.sourceId] {
-            existingTask.cancel()
+    func addLayerEventsObservationTask(_ task: Task<Void, Never>, for source: StreamSource) -> Bool {
+        if layerEventsObservationDictionary[source.sourceId] != nil {
+            return false
         }
         layerEventsObservationDictionary[source.sourceId] = task
+        return true
     }
 }
 
@@ -359,7 +373,7 @@ actor SerialTasks<Success> {
 
     func add(block: @Sendable @escaping () async throws -> Success) async throws -> Success {
         let task = Task { [previousTask] in
-            let _ = await previousTask?.result
+            _ = await previousTask?.result
             return try await block()
         }
         previousTask = task
