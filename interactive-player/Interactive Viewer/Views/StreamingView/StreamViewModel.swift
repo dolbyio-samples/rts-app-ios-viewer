@@ -247,8 +247,7 @@ private extension StreamViewModel {
             let settingsPublisher = settingsManager.publisher(for: settingsMode)
             let statePublisher = await subscriptionManager.$state
 
-            Publishers.CombineLatest3(statePublisher, settingsPublisher,
-                                      trackActiveStateUpdateSubject)
+            Publishers.CombineLatest3(statePublisher, settingsPublisher, trackActiveStateUpdateSubject)
                 .sink { state, settings, _ in
                     Self.logger.debug("🎰 State and settings events")
                     Task {

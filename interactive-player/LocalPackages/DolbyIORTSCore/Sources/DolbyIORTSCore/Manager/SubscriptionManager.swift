@@ -39,7 +39,6 @@ public actor SubscriptionManager: ObservableObject {
     private let logHandler: MillicastLoggerHandler = .init()
 
     private var subscriberEventObservationTasks: [Task<Void, Never>] = []
-    private var sourceSubscription: AnyCancellable?
 
     // MARK: Subscribe API methods
 
@@ -183,13 +182,12 @@ extension SubscriptionManager {
                 }
             }
 
-            let cancellable = await self.sourceBuilder.sourcePublisher
-                .sink { sources in
+            let sourcesObservation = Task {
+                for await sources in await self.sourceBuilder.sourceStream {
                     Self.logger.debug("Sources builder emitted \(sources)")
-                    Task {
-                        await self.updateState(to: .subscribed(sources: sources))
-                    }
+                    await self.updateState(to: .subscribed(sources: sources))
                 }
+            }
 
             _ = await [
                 self.addEventObservationTask(taskWebsocketStateObservation),
@@ -199,14 +197,15 @@ extension SubscriptionManager {
                 self.addEventObservationTask(streamStoppedStateObservation),
                 self.addEventObservationTask(tracksObservation),
                 self.addEventObservationTask(statsObservation),
-                self.updateSourceSubscription(cancellable),
+                self.addEventObservationTask(sourcesObservation),
                 taskWebsocketStateObservation.value,
                 taskPeerConnectionStateObservation.value,
                 taskHttpErrorStateObservation.value,
                 taskSignalingErrorStateObservation.value,
                 streamStoppedStateObservation.value,
                 tracksObservation.value,
-                statsObservation.value
+                statsObservation.value,
+                sourcesObservation.value
             ]
         }
     }
@@ -214,7 +213,6 @@ extension SubscriptionManager {
 
     func deregisterToSubscriberEvents() {
         subscriberEventObservationTasks.removeAll()
-        sourceSubscription = nil
     }
 }
 
@@ -231,10 +229,6 @@ private extension SubscriptionManager {
 
     func addEventObservationTask(_ task: Task<Void, Never>) {
         subscriberEventObservationTasks.append(task)
-    }
-
-    func updateSourceSubscription(_ subscription: AnyCancellable) {
-        sourceSubscription = subscription
     }
 }
 

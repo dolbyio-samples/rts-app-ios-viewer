@@ -74,6 +74,9 @@
 		E89BE2972BD73F05009DF6FD /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E89BE2962BD73F05009DF6FD /* DolbyIOUIKit */; };
 		E8B4B14C2ADD03DF003DDA44 /* URL+LogPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B4B14B2ADD03DF003DDA44 /* URL+LogPath.swift */; };
 		E8E1855F2A1099F900BF4726 /* StreamDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E1855E2A1099F900BF4726 /* StreamDetailInputViewModel.swift */; };
+		E8FADC222C2A95EE008FDC6C /* DolbyIORTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E8FADC212C2A95EE008FDC6C /* DolbyIORTSCore */; };
+		E8FADC252C2A95FE008FDC6C /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8FADC242C2A95FE008FDC6C /* DolbyIOUIKit */; };
+		E8FADC272C2A9A7E008FDC6C /* SerialTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FADC262C2A9A7E008FDC6C /* SerialTasks.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -158,6 +161,7 @@
 		E8E1855E2A1099F900BF4726 /* StreamDetailInputViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModel.swift; sourceTree = "<group>"; };
 		E8E185632A10A47000BF4726 /* InteractiveVieweriOSDebugSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSDebugSettings.xcconfig; sourceTree = "<group>"; };
 		E8E185642A10A47000BF4726 /* InteractiveVieweriOSReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSReleaseSettings.xcconfig; sourceTree = "<group>"; };
+		E8FADC262C2A9A7E008FDC6C /* SerialTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialTasks.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,7 +173,9 @@
 				E82113012C2A35D30003DBF7 /* DolbyIOUIKit in Frameworks */,
 				E89BE2972BD73F05009DF6FD /* DolbyIOUIKit in Frameworks */,
 				E82112FF2C2A35D30003DBF7 /* DolbyIORTSCore in Frameworks */,
+				E8FADC222C2A95EE008FDC6C /* DolbyIORTSCore in Frameworks */,
 				E82113062C2A36360003DBF7 /* DolbyIOUIKit in Frameworks */,
+				E8FADC252C2A95FE008FDC6C /* DolbyIOUIKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +392,7 @@
 		E87FD1812AD8E1EF00E9164A /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				E8FADC262C2A9A7E008FDC6C /* SerialTasks.swift */,
 				E82113262C2A401B0003DBF7 /* AppConfigurations.swift */,
 				E87FD0C62AD8DE4600E9164A /* ImageAsset.swift */,
 				E82112D52C2A331C0003DBF7 /* SourceId+Display.swift */,
@@ -482,6 +489,8 @@
 				E82113002C2A35D30003DBF7 /* DolbyIOUIKit */,
 				E82113032C2A36360003DBF7 /* DolbyIORTSCore */,
 				E82113052C2A36360003DBF7 /* DolbyIOUIKit */,
+				E8FADC212C2A95EE008FDC6C /* DolbyIORTSCore */,
+				E8FADC242C2A95FE008FDC6C /* DolbyIOUIKit */,
 			);
 			productName = "Millicast SDK Sample App in Swift";
 			productReference = E8816E312A1086E400064B1D /* Interactive Player.app */;
@@ -506,7 +515,8 @@
 			);
 			mainGroup = 3FE90C0F26B2AF4200B206A3;
 			packageReferences = (
-				E82113022C2A36360003DBF7 /* XCLocalSwiftPackageReference "LocalPackages/rts-uikit-ios" */,
+				E8FADC202C2A95EE008FDC6C /* XCLocalSwiftPackageReference "LocalPackages/DolbyIORTSCore" */,
+				E8FADC232C2A95FE008FDC6C /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */,
 			);
 			productRefGroup = 3FE90C1926B2AF4200B206A3 /* Products */;
 			projectDirPath = "";
@@ -583,6 +593,7 @@
 				E82112D72C2A331C0003DBF7 /* UserDefaults+Codable.swift in Sources */,
 				E87FD1C72ADCFEC700E9164A /* CoreDataManager.swift in Sources */,
 				E82113162C2A37B40003DBF7 /* ListView.swift in Sources */,
+				E8FADC272C2A9A7E008FDC6C /* SerialTasks.swift in Sources */,
 				E87FD0C72AD8DE4600E9164A /* ImageAsset.swift in Sources */,
 				E821131F2C2A37C90003DBF7 /* UserInteractionViewModel.swift in Sources */,
 				E82113112C2A37930003DBF7 /* ErrorView.swift in Sources */,
@@ -922,9 +933,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		E82113022C2A36360003DBF7 /* XCLocalSwiftPackageReference "LocalPackages/rts-uikit-ios" */ = {
+		E8FADC202C2A95EE008FDC6C /* XCLocalSwiftPackageReference "LocalPackages/DolbyIORTSCore" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "LocalPackages/rts-uikit-ios";
+			relativePath = LocalPackages/DolbyIORTSCore;
+		};
+		E8FADC232C2A95FE008FDC6C /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/DolbyIOUIKit;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -946,6 +961,14 @@
 			productName = DolbyIOUIKit;
 		};
 		E89BE2962BD73F05009DF6FD /* DolbyIOUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DolbyIOUIKit;
+		};
+		E8FADC212C2A95EE008FDC6C /* DolbyIORTSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DolbyIORTSCore;
+		};
+		E8FADC242C2A95FE008FDC6C /* DolbyIOUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DolbyIOUIKit;
 		};

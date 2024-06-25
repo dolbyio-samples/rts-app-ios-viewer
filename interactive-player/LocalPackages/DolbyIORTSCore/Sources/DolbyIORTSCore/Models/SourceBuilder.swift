@@ -2,7 +2,6 @@
 //  SourceBuilder.swift
 //
 
-import Combine
 import Foundation
 import MillicastSDK
 
@@ -36,10 +35,9 @@ class SourceBuilder {
         }
     }
 
-    private let sourceSubject: PassthroughSubject<[StreamSource], Never> = .init()
     private var sources: [StreamSource] = [] {
         didSet {
-            sourceSubject.send(sources)
+            sourceStreamContinuation.yield(sources)
         }
     }
     private var partialSources: [PartialSource] = [] {
@@ -51,7 +49,15 @@ class SourceBuilder {
 
     // MARK: Internal properties
 
-    lazy var sourcePublisher: AnyPublisher<[StreamSource], Never> = sourceSubject.eraseToAnyPublisher()
+    private(set) var sourceStream: AsyncStream<[StreamSource]>!
+    private var sourceStreamContinuation: AsyncStream<[StreamSource]>.Continuation!
+
+    init() {
+        let stream = AsyncStream { continuation in
+            self.sourceStreamContinuation = continuation
+        }
+        self.sourceStream = stream
+    }
 
     func addTrack(_ track: MCRTSRemoteTrack) {
         let sourceID = SourceID(sourceId: track.sourceID)
