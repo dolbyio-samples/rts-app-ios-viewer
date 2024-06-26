@@ -124,6 +124,7 @@ extension SubscriptionManager {
         guard let subscriber else {
             return
         }
+        Self.logger.debug("👨‍🔧 Register to subscriber events")
 
         let taskWebsocketStateObservation = Task {
             for await state in subscriber.websocketState() {
@@ -201,6 +202,7 @@ extension SubscriptionManager {
     // swiftlint:enable function_body_length
 
     func deregisterToSubscriberEvents() {
+        Self.logger.debug("👨‍🔧 Deregister to subscriber events")
         subscriberEventObservationTasks.forEach {
             $0.cancel()
         }

@@ -44,15 +44,29 @@ public struct StreamSource: Identifiable {
     public let sourceId: SourceID
     public let videoTrack: MCRTSRemoteVideoTrack
     public private(set) var audioTrack: MCRTSRemoteAudioTrack?
+    
+    // FIXME: `MCRTSRemoteTrack.isActive` returns `true` even after receiving an inactive event.
+    // Remove the below isVideoActive & isAudioActive properties once the issue is fixed
+    public private(set) var isVideoActive: Bool
+    public private(set) var isAudioActive: Bool = false
 
     init(sourceId: SourceID, videoTrack: MCRTSRemoteVideoTrack, audioTrack: MCRTSRemoteAudioTrack? = nil) {
         self.sourceId = sourceId
         self.videoTrack = videoTrack
         self.audioTrack = audioTrack
+        self.isVideoActive = true
     }
 
     mutating func addAudioTrack(_ track: MCRTSRemoteAudioTrack) {
         audioTrack = track
+    }
+    
+    mutating func setVideoActive(_ active: Bool) {
+        isVideoActive = active
+    }
+    
+    mutating func setAudioActive(_ active: Bool) {
+        isAudioActive = active
     }
 }
 
