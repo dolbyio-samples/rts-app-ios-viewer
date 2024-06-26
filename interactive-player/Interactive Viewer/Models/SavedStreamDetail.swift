@@ -9,7 +9,7 @@ struct SavedStreamDetail: Identifiable, Equatable {
     let accountID: String
     let streamName: String
     let lastUsedDate: Date
-    let useDevelopmentServer: Bool
+    let subscribeAPI: String
     let videoJitterMinimumDelayInMs: UInt
     let minPlayoutDelay: UInt?
     let maxPlayoutDelay: UInt?
@@ -20,7 +20,7 @@ struct SavedStreamDetail: Identifiable, Equatable {
     init(
         accountID: String,
         streamName: String,
-        useDevelopmentServer: Bool,
+        subscribeAPI: String,
         videoJitterMinimumDelayInMs: UInt,
         minPlayoutDelay: UInt?,
         maxPlayoutDelay: UInt?,
@@ -33,7 +33,7 @@ struct SavedStreamDetail: Identifiable, Equatable {
         self.accountID = accountID
         self.streamName = streamName
         self.lastUsedDate = dateProvider.now
-        self.useDevelopmentServer = useDevelopmentServer
+        self.subscribeAPI = subscribeAPI
         self.videoJitterMinimumDelayInMs = videoJitterMinimumDelayInMs
         self.minPlayoutDelay = minPlayoutDelay
         self.maxPlayoutDelay = maxPlayoutDelay
@@ -50,11 +50,11 @@ extension SavedStreamDetail {
             let streamName = managedObject.streamName,
             let lastUsedDate = managedObject.lastUsedDate,
             let storedVideoQuality = managedObject.primaryVideoQuality,
+            let subscribeAPI = managedObject.subscribeAPI,
             let primaryVideoQuality = VideoQuality(rawValue: storedVideoQuality)
         else {
             return nil
         }
-        let useDevelopmentServer = managedObject.useDevelopmentServer
         let minPlayoutDelay = managedObject.minPlayoutDelay
         let maxPlayoutDelay = managedObject.maxPlayoutDelay
         let disableAudio = managedObject.disableAudio
@@ -64,7 +64,7 @@ extension SavedStreamDetail {
         self.accountID = accountID
         self.streamName = streamName
         self.lastUsedDate = lastUsedDate
-        self.useDevelopmentServer = useDevelopmentServer
+        self.subscribeAPI = subscribeAPI
         self.videoJitterMinimumDelayInMs = UInt(managedObject.videoJitterMinimumDelayInMs)
         self.minPlayoutDelay = minPlayoutDelay.map { UInt(truncating: $0) }
         self.maxPlayoutDelay = maxPlayoutDelay.map { UInt(truncating: $0) }

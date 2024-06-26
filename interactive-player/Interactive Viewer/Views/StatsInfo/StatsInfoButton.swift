@@ -2,7 +2,7 @@
 //  StatsInfoButton.swift
 //
 
-import DolbyIORTSCore
+import RTSCore
 import DolbyIOUIKit
 import SwiftUI
 

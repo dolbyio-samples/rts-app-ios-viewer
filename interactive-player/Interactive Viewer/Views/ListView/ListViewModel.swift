@@ -2,7 +2,7 @@
 //  ListViewModel.swift
 //
 
-import DolbyIORTSCore
+import RTSCore
 import Foundation
 import MillicastSDK
 import os

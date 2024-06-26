@@ -2,7 +2,7 @@
 //  VideoRendererViewModel.swift
 //
 
-import DolbyIORTSCore
+import RTSCore
 import Combine
 import Foundation
 import MillicastSDK

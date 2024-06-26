@@ -6,7 +6,7 @@ import AVFoundation
 import AVKit
 import Foundation
 import MillicastSDK
-import DolbyIORTSCore
+import RTSCore
 import os
 import UIKit
 

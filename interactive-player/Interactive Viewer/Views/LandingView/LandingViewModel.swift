@@ -4,7 +4,7 @@
 
 import Combine
 import Foundation
-import DolbyIORTSCore
+import RTSCore
 
 final class LandingViewModel: ObservableObject {
     private let streamDataManager: StreamDataManagerProtocol

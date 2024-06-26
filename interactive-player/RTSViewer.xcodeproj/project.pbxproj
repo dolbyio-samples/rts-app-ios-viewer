@@ -15,10 +15,6 @@
 		E82112D72C2A331C0003DBF7 /* UserDefaults+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112D22C2A331C0003DBF7 /* UserDefaults+Codable.swift */; };
 		E82112D82C2A331C0003DBF7 /* UserDefaultsBacked.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112D32C2A331C0003DBF7 /* UserDefaultsBacked.swift */; };
 		E82112D92C2A331C0003DBF7 /* String+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112D42C2A331C0003DBF7 /* String+Error.swift */; };
-		E82112FF2C2A35D30003DBF7 /* DolbyIORTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E82112FE2C2A35D30003DBF7 /* DolbyIORTSCore */; };
-		E82113012C2A35D30003DBF7 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82113002C2A35D30003DBF7 /* DolbyIOUIKit */; };
-		E82113042C2A36360003DBF7 /* DolbyIORTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E82113032C2A36360003DBF7 /* DolbyIORTSCore */; };
-		E82113062C2A36360003DBF7 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82113052C2A36360003DBF7 /* DolbyIOUIKit */; };
 		E82113092C2A37680003DBF7 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112C92C2A330C0003DBF7 /* SettingsManager.swift */; };
 		E821130A2C2A376D0003DBF7 /* VideoTracksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112C82C2A330C0003DBF7 /* VideoTracksManager.swift */; };
 		E821130B2C2A37700003DBF7 /* PiPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112C72C2A330C0003DBF7 /* PiPManager.swift */; };
@@ -70,11 +66,10 @@
 		E87FD1C82ADCFECC00E9164A /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E87FD17E2AD8E1EF00E9164A /* RTSViewer.xcdatamodeld */; };
 		E87FD1C92ADCFED400E9164A /* DateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1822AD8E1EF00E9164A /* DateProvider.swift */; };
 		E87FD1CB2ADCFEDA00E9164A /* Task+Delayed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD1842AD8E1EF00E9164A /* Task+Delayed.swift */; };
-		E89BE2972BD73F05009DF6FD /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E89BE2962BD73F05009DF6FD /* DolbyIOUIKit */; };
 		E8B4B14C2ADD03DF003DDA44 /* URL+LogPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B4B14B2ADD03DF003DDA44 /* URL+LogPath.swift */; };
+		E8C776CE2C2BE42C002DE392 /* RTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E8C776CD2C2BE42C002DE392 /* RTSCore */; };
+		E8C776D12C2BE438002DE392 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8C776D02C2BE438002DE392 /* DolbyIOUIKit */; };
 		E8E1855F2A1099F900BF4726 /* StreamDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E1855E2A1099F900BF4726 /* StreamDetailInputViewModel.swift */; };
-		E8FADC222C2A95EE008FDC6C /* DolbyIORTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E8FADC212C2A95EE008FDC6C /* DolbyIORTSCore */; };
-		E8FADC252C2A95FE008FDC6C /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8FADC242C2A95FE008FDC6C /* DolbyIOUIKit */; };
 		E8FADC272C2A9A7E008FDC6C /* SerialTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FADC262C2A9A7E008FDC6C /* SerialTasks.swift */; };
 		E8FADC292C2AA3EC008FDC6C /* DynamicStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FADC282C2AA3EC008FDC6C /* DynamicStack.swift */; };
 /* End PBXBuildFile section */
@@ -169,13 +164,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E82113042C2A36360003DBF7 /* DolbyIORTSCore in Frameworks */,
-				E82113012C2A35D30003DBF7 /* DolbyIOUIKit in Frameworks */,
-				E89BE2972BD73F05009DF6FD /* DolbyIOUIKit in Frameworks */,
-				E82112FF2C2A35D30003DBF7 /* DolbyIORTSCore in Frameworks */,
-				E8FADC222C2A95EE008FDC6C /* DolbyIORTSCore in Frameworks */,
-				E82113062C2A36360003DBF7 /* DolbyIOUIKit in Frameworks */,
-				E8FADC252C2A95FE008FDC6C /* DolbyIOUIKit in Frameworks */,
+				E8C776D12C2BE438002DE392 /* DolbyIOUIKit in Frameworks */,
+				E8C776CE2C2BE42C002DE392 /* RTSCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,13 +474,8 @@
 			);
 			name = "Interactive Player";
 			packageProductDependencies = (
-				E89BE2962BD73F05009DF6FD /* DolbyIOUIKit */,
-				E82112FE2C2A35D30003DBF7 /* DolbyIORTSCore */,
-				E82113002C2A35D30003DBF7 /* DolbyIOUIKit */,
-				E82113032C2A36360003DBF7 /* DolbyIORTSCore */,
-				E82113052C2A36360003DBF7 /* DolbyIOUIKit */,
-				E8FADC212C2A95EE008FDC6C /* DolbyIORTSCore */,
-				E8FADC242C2A95FE008FDC6C /* DolbyIOUIKit */,
+				E8C776CD2C2BE42C002DE392 /* RTSCore */,
+				E8C776D02C2BE438002DE392 /* DolbyIOUIKit */,
 			);
 			productName = "Millicast SDK Sample App in Swift";
 			productReference = E8816E312A1086E400064B1D /* Interactive Player.app */;
@@ -515,8 +500,8 @@
 			);
 			mainGroup = 3FE90C0F26B2AF4200B206A3;
 			packageReferences = (
-				E8FADC202C2A95EE008FDC6C /* XCLocalSwiftPackageReference "LocalPackages/DolbyIORTSCore" */,
-				E8FADC232C2A95FE008FDC6C /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */,
+				E8C776CC2C2BE42C002DE392 /* XCLocalSwiftPackageReference "../LocalPackages/RTSCore" */,
+				E8C776CF2C2BE438002DE392 /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */,
 			);
 			productRefGroup = 3FE90C1926B2AF4200B206A3 /* Products */;
 			projectDirPath = "";
@@ -933,42 +918,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		E8FADC202C2A95EE008FDC6C /* XCLocalSwiftPackageReference "LocalPackages/DolbyIORTSCore" */ = {
+		E8C776CC2C2BE42C002DE392 /* XCLocalSwiftPackageReference "../LocalPackages/RTSCore" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = LocalPackages/DolbyIORTSCore;
+			relativePath = ../LocalPackages/RTSCore;
 		};
-		E8FADC232C2A95FE008FDC6C /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */ = {
+		E8C776CF2C2BE438002DE392 /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalPackages/DolbyIOUIKit;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E82112FE2C2A35D30003DBF7 /* DolbyIORTSCore */ = {
+		E8C776CD2C2BE42C002DE392 /* RTSCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = DolbyIORTSCore;
+			productName = RTSCore;
 		};
-		E82113002C2A35D30003DBF7 /* DolbyIOUIKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DolbyIOUIKit;
-		};
-		E82113032C2A36360003DBF7 /* DolbyIORTSCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DolbyIORTSCore;
-		};
-		E82113052C2A36360003DBF7 /* DolbyIOUIKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DolbyIOUIKit;
-		};
-		E89BE2962BD73F05009DF6FD /* DolbyIOUIKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DolbyIOUIKit;
-		};
-		E8FADC212C2A95EE008FDC6C /* DolbyIORTSCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DolbyIORTSCore;
-		};
-		E8FADC242C2A95FE008FDC6C /* DolbyIOUIKit */ = {
+		E8C776D02C2BE438002DE392 /* DolbyIOUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DolbyIOUIKit;
 		};

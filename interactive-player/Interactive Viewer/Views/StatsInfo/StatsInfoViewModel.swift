@@ -3,7 +3,7 @@
 //
 
 import Combine
-import DolbyIORTSCore
+import RTSCore
 import Foundation
 
 @MainActor

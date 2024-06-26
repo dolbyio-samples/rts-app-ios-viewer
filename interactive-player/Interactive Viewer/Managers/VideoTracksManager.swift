@@ -4,7 +4,7 @@
 
 import Foundation
 import Combine
-import DolbyIORTSCore
+import RTSCore
 import MillicastSDK
 import os
 

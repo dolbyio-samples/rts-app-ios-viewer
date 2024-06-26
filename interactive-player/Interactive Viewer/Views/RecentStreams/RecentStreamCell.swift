@@ -3,7 +3,7 @@
 //
 
 import DolbyIOUIKit
-import DolbyIORTSCore
+import RTSCore
 import SwiftUI
 
 struct RecentStreamCell: View {
@@ -19,7 +19,7 @@ struct RecentStreamCell: View {
         if showDebugFeatures {
             fields.append(
                 contentsOf: [
-                    (String(localized: "recent-streams.use-dev-server.label"), String(streamDetail.useDevelopmentServer)),
+                    (String(localized: "recent-streams.server-url.label"), String(streamDetail.subscribeAPI)),
                     (String(localized: "recent-streams.video-jitter-buffer.label"), String(streamDetail.videoJitterMinimumDelayInMs)),
                     (String(localized: "recent-streams.min-playout-delay.label"), streamDetail.minPlayoutDelay.map { String($0) } ?? "N/A"),
                     (String(localized: "recent-streams.max-playout-delay.label"), streamDetail.maxPlayoutDelay.map { String($0) } ?? "N/A"),
@@ -87,7 +87,7 @@ struct RecentStreamCell_Previews: PreviewProvider {
             streamDetail: SavedStreamDetail(
                 accountID: "12345",
                 streamName: "ABCDE",
-                useDevelopmentServer: true,
+                subscribeAPI: "https://director.com",
                 videoJitterMinimumDelayInMs: 20,
                 minPlayoutDelay: 0,
                 maxPlayoutDelay: 0,

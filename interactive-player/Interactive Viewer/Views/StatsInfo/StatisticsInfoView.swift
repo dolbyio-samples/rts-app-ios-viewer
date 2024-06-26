@@ -4,7 +4,7 @@
 
 import DolbyIOUIKit
 import SwiftUI
-import DolbyIORTSCore
+import RTSCore
 
 struct StatisticsInfoView: View {
     @ObservedObject private var themeManager = ThemeManager.shared

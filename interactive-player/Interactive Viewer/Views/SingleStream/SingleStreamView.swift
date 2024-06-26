@@ -3,7 +3,7 @@
 //
 
 import SwiftUI
-import DolbyIORTSCore
+import RTSCore
 import DolbyIOUIKit
 import MillicastSDK
 

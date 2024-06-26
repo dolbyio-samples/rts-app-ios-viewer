@@ -2,7 +2,7 @@
 //  VideoRendererView.swift
 //
 
-import DolbyIORTSCore
+import RTSCore
 import DolbyIOUIKit
 import MillicastSDK
 import SwiftUI

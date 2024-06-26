@@ -133,7 +133,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
             streamDetailToSave.streamName = streamDetail.streamName
             streamDetailToSave.accountID = streamDetail.accountID
             streamDetailToSave.lastUsedDate = dateProvider.now
-            streamDetailToSave.useDevelopmentServer = streamDetail.useDevelopmentServer
+            streamDetailToSave.subscribeAPI = streamDetail.subscribeAPI
             streamDetailToSave.videoJitterMinimumDelayInMs = Int32(streamDetail.videoJitterMinimumDelayInMs)
             streamDetailToSave.minPlayoutDelay = streamDetail.minPlayoutDelay.map { NSNumber(value: $0) }
             streamDetailToSave.maxPlayoutDelay = streamDetail.maxPlayoutDelay.map { NSNumber(value: $0) }

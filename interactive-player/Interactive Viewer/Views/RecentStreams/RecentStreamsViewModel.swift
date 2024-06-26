@@ -4,7 +4,7 @@
 
 import Combine
 import Foundation
-import DolbyIORTSCore
+import RTSCore
 import MillicastSDK
 
 @MainActor
@@ -92,15 +92,20 @@ final class RecentStreamsViewModel: ObservableObject {
         let currentDate = dateProvider.now
         let rtcLogPath = saveLogs ? URL.rtcLogPath(for: currentDate) : nil
         let sdkLogPath = saveLogs ? URL.sdkLogPath(for: currentDate) : nil
+        let playoutDelay: MCForcePlayoutDelay?
+        if let minPlayoutDelay = streamDetail.minPlayoutDelay, let maxPlayoutDelay = streamDetail.maxPlayoutDelay {
+            playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
+        } else {
+            playoutDelay = nil
+        }
 
         let configuration = SubscriptionConfiguration(
-            useDevelopmentServer: streamDetail.useDevelopmentServer,
+            subscribeAPI: streamDetail.subscribeAPI,
             jitterMinimumDelayMs: streamDetail.videoJitterMinimumDelayInMs,
             disableAudio: streamDetail.disableAudio,
             rtcEventLogPath: rtcLogPath?.path,
             sdkLogPath: sdkLogPath?.path,
-            minPlayoutDelay: streamDetail.minPlayoutDelay,
-            maxPlayoutDelay: streamDetail.maxPlayoutDelay
+            playoutDelay: playoutDelay
         )
 
         Task { [weak self] in

@@ -3,7 +3,7 @@
 //
 
 import DolbyIOUIKit
-import DolbyIORTSCore
+import RTSCore
 import SwiftUI
 
 // swiftlint:disable type_body_length
@@ -18,7 +18,8 @@ struct StreamDetailInputScreen: View {
     @State private var streamName: String = ""
     @State private var accountID: String = ""
     @State private var showAlert = false
-    @State private var isDev: Bool = false
+    @State private var useCustomServerURL: Bool = false
+    @State private var subscribeAPI: String = SubscriptionConfiguration.Constants.developmentSubscribeURL
     @State private var disableAudio: Bool = false
     @State private var saveLogs: Bool = false
     @State private var jitterBufferDelayInMs: Float = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
@@ -116,7 +117,7 @@ struct StreamDetailInputScreen: View {
                                 let success = viewModel.connect(
                                     streamName: streamName,
                                     accountID: accountID,
-                                    useDevelopmentServer: isDev,
+                                    subscribeAPI: useCustomServerURL ? subscribeAPI : SubscriptionConfiguration.Constants.productionSubscribeURL,
                                     videoJitterMinimumDelayInMs: UInt(jitterBufferDelayInMs),
                                     minPlayoutDelay: showPlayoutDelay ? UInt(minPlayoutDelay) : nil,
                                     maxPlayoutDelay: showPlayoutDelay ? UInt(maxPlayoutDelay) : nil,
@@ -221,12 +222,20 @@ struct StreamDetailInputScreen: View {
     var additionalConfigurationView: some View {
         DisclosureGroup {
             VStack(alignment: .leading, spacing: Layout.spacing2x) {
-                Toggle(isOn: $isDev) {
+                Toggle(isOn: $useCustomServerURL) {
                     Text(
                         "stream-detail-input.development-placeholder-label",
                         font: .streamConfigurationItemsFont
                     )
                 }
+
+                if useCustomServerURL {
+                    DolbyIOUIKit.TextField(text: $streamName, placeholderText: "stream-detail-server-url-label")
+                        .accessibilityIdentifier("InputScreen.ServerURL")
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                        .submitLabel(.next)
+                }
+
                 Toggle(isOn: $disableAudio) {
                     Text(
                         "stream-detail-input.disable-audio-placeholder-label",
@@ -336,6 +345,7 @@ struct StreamDetailInputScreen: View {
         .accentColor(Color(uiColor: themeManager.theme.onBackground))
     }
 
+    @ViewBuilder
     var demoAStream: some View {
         VStack {
             Text(
@@ -355,47 +365,57 @@ struct StreamDetailInputScreen: View {
             Spacer()
                 .frame(height: Layout.spacing2x)
 
-            let streamName = Constants.streamName
-            let accountID = Constants.accountID
-            let streamDetail = SavedStreamDetail(
-                accountID: accountID,
+            demoButton
+        }
+    }
+
+    @ViewBuilder
+    var demoButton: some View {
+        let streamName = Constants.streamName
+        let accountID = Constants.accountID
+        let productionSubscribeURL = SubscriptionConfiguration.Constants.productionSubscribeURL
+        let jitterMinimumDelayMs = SubscriptionConfiguration.Constants.jitterMinimumDelayMs
+        let disableAudio = false
+        let videoQuality = VideoQuality.auto
+        let saveLogs = false
+
+        RecentStreamCell(streamDetail: SavedStreamDetail(
+            accountID: accountID,
+            streamName: streamName,
+            subscribeAPI: productionSubscribeURL,
+            videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
+            minPlayoutDelay: nil,
+            maxPlayoutDelay: nil,
+            disableAudio: disableAudio,
+            primaryVideoQuality: videoQuality,
+            saveLogs: saveLogs
+        )) {
+            let success = viewModel.connect(
                 streamName: streamName,
-                useDevelopmentServer: false,
-                videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.jitterMinimumDelayMs,
-                minPlayoutDelay: SubscriptionConfiguration.Constants.minPlayoutDelay,
-                maxPlayoutDelay: SubscriptionConfiguration.Constants.maxPlayoutDelay,
-                disableAudio: false,
-                primaryVideoQuality: .auto,
-                saveLogs: false
+                accountID: accountID,
+                subscribeAPI: productionSubscribeURL,
+                videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
+                minPlayoutDelay: nil,
+                maxPlayoutDelay: nil,
+                disableAudio: disableAudio,
+                primaryVideoQuality: videoQuality,
+                saveLogs: saveLogs,
+                saveStream: false
             )
-            RecentStreamCell(streamDetail: streamDetail) {
-                let success = viewModel.connect(
+            showAlert = !success
+            if success {
+                streamingScreenContext = StreamingView.Context(
                     streamName: streamName,
                     accountID: accountID,
-                    useDevelopmentServer: false,
-                    videoJitterMinimumDelayInMs: SubscriptionConfiguration.Constants.jitterMinimumDelayMs,
-                    minPlayoutDelay: SubscriptionConfiguration.Constants.minPlayoutDelay,
-                    maxPlayoutDelay: SubscriptionConfiguration.Constants.maxPlayoutDelay,
-                    disableAudio: false,
-                    primaryVideoQuality: .auto,
-                    saveLogs: false,
-                    saveStream: false
+                    listViewPrimaryVideoQuality: .auto,
+                    subscriptionManager: viewModel.subscriptionManager
                 )
-                showAlert = !success
-                if success {
-                    streamingScreenContext = .init(
-                        streamName: streamName,
-                        accountID: accountID,
-                        listViewPrimaryVideoQuality: .auto,
-                        subscriptionManager: viewModel.subscriptionManager
-                    )
-                }
             }
         }
     }
 
     func resetStreamConfigurationState() {
-        self.isDev = false
+        self.useCustomServerURL = false
         self.showPlayoutDelay = false
         self.disableAudio = false
         self.jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)

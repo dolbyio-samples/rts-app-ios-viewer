@@ -1,15 +1,15 @@
 //
-//  MillicastLoggerHandler.swift
+//  MillicastLogHandler.swift
 //
 
 import Foundation
 import MillicastSDK
 import os
 
-final class MillicastLoggerHandler: NSObject {
+final class MillicastLogHandler: NSObject {
     private static let logger = Logger(
         subsystem: Bundle.module.bundleIdentifier!,
-        category: String(describing: MillicastLoggerHandler.self)
+        category: String(describing: MillicastLogHandler.self)
     )
     private var logFilePath: String?
 
@@ -24,7 +24,7 @@ final class MillicastLoggerHandler: NSObject {
     }
 }
 
-extension MillicastLoggerHandler: MCLoggerDelegate {
+extension MillicastLogHandler: MCLoggerDelegate {
     func onLog(withMessage message: String, level: MCLogLevel) {
         Self.logger.debug("🪵 onLog - \(message), log-level - \(level.rawValue)")
 

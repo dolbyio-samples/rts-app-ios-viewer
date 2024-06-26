@@ -3,7 +3,7 @@
 //
 
 import DolbyIOUIKit
-import DolbyIORTSCore
+import RTSCore
 import SwiftUI
 
 struct RecentStreamsScreen: View {

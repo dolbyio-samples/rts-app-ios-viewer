@@ -3,7 +3,7 @@
 //
 
 import Combine
-import DolbyIORTSCore
+import RTSCore
 import Foundation
 import MillicastSDK
 
@@ -43,7 +43,7 @@ final class StreamDetailInputViewModel: ObservableObject {
     func connect(
         streamName: String,
         accountID: String,
-        useDevelopmentServer: Bool,
+        subscribeAPI: String,
         videoJitterMinimumDelayInMs: UInt,
         minPlayoutDelay: UInt?,
         maxPlayoutDelay: UInt?,
@@ -62,10 +62,10 @@ final class StreamDetailInputViewModel: ObservableObject {
 
         if saveStream {
             self.streamDataManager.saveStream(
-                .init(
+                SavedStreamDetail(
                     accountID: accountID,
                     streamName: streamName,
-                    useDevelopmentServer: useDevelopmentServer,
+                    subscribeAPI: subscribeAPI,
                     videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
                     minPlayoutDelay: minPlayoutDelay,
                     maxPlayoutDelay: maxPlayoutDelay,
@@ -76,14 +76,20 @@ final class StreamDetailInputViewModel: ObservableObject {
             )
         }
 
+        let playoutDelay: MCForcePlayoutDelay?
+        if let minPlayoutDelay, let maxPlayoutDelay {
+            playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
+        } else {
+            playoutDelay = nil
+        }
+
         let configuration = SubscriptionConfiguration(
-            useDevelopmentServer: useDevelopmentServer,
+            subscribeAPI: subscribeAPI,
             jitterMinimumDelayMs: videoJitterMinimumDelayInMs,
             disableAudio: disableAudio,
             rtcEventLogPath: rtcLogPath?.path,
             sdkLogPath: sdkLogPath?.path,
-            minPlayoutDelay: minPlayoutDelay,
-            maxPlayoutDelay: maxPlayoutDelay
+            playoutDelay: playoutDelay
         )
 
         Task { [weak self] in

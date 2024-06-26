@@ -5,7 +5,7 @@
 import Combine
 import Foundation
 import DolbyIOUIKit
-import DolbyIORTSCore
+import RTSCore
 import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
