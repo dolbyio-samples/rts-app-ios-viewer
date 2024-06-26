@@ -53,13 +53,10 @@ private extension StatisticsViewModel {
     // swiftlint:disable function_body_length
     func makeStatsList(from streamStatistics: StreamStatistics) -> [StatsItem] {
         var result = [StatsItem]()
-        guard
-            let mid = source.videoTrack.currentMID,
-            let videoStatsInboundRtp = streamStatistics.videoStatistics(matching: mid)
-        else {
+        guard let videoStatsInboundRtp = streamStatistics.videoStatsInboundRtpList.first else {
             return []
         }
-        let audioStatsInboundRtp = streamStatistics.audioStatistics(matching: mid)
+        let audioStatsInboundRtp = streamStatistics.audioStatsInboundRtpList.first
 
         result.append(
             StatsItem(
@@ -125,14 +122,6 @@ private extension StatisticsViewModel {
                 )
             )
         }
-
-        let packetsReceived = videoStatsInboundRtp.packetsReceived
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.packets-received.label"),
-                value: String(packetsReceived)
-            )
-        )
 
         let framesDecoded = videoStatsInboundRtp.framesDecoded
         result.append(

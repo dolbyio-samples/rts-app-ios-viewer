@@ -65,7 +65,6 @@
 "stream.stats.decoder-impl.label" = "Decoder Impl";
 "stream.stats.processing-delay.label" = "Processing delay";
 "stream.stats.decode-time.label" = "Decode time";
-"stream.stats.packets-received.label" = "Packets received";
 "stream.stats.frames-decoded.label" = "Frames decoded";
 "stream.stats.frames-dropped.label" = "Frames dropped";
 "stream.stats.jitter-buffer-est-count.label" = "Jitter buffer Est count";

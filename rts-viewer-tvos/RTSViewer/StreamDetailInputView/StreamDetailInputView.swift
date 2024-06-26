@@ -8,8 +8,8 @@ import RTSCore
 
 struct StreamDetailInputView: View {
 
-    @State private var streamName: String = "multiview"
-    @State private var accountID: String = "k9Mwad"
+    @State private var streamName: String = ""
+    @State private var accountID: String = ""
 
     @State private var isShowingStreamingView: Bool = false
     @State private var isShowingRecentStreams: Bool = false
@@ -28,7 +28,7 @@ struct StreamDetailInputView: View {
                  - in this case - controlled by the Binded `Bool` value.
                  */
 
-                NavigationLink(destination: StreamingView(subscriptionManager: viewModel.subscriptionManager), isActive: $isShowingStreamingView) {
+                NavigationLink(destination: StreamingView(streamName: streamName, accountID: accountID), isActive: $isShowingStreamingView) {
                     EmptyView()
                 }
                 .hidden()
@@ -87,9 +87,8 @@ struct StreamDetailInputView: View {
                 return
             }
 
-            isShowingStreamingView = true
             viewModel.saveStream(streamName: streamName, accountID: accountID)
-            try await viewModel.connect(streamName: streamName, accountID: accountID)
+            isShowingStreamingView = true
         }
     }
 }

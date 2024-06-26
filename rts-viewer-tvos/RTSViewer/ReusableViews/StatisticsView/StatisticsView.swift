@@ -31,7 +31,7 @@ struct StatisticsView: View {
 
             HStack {
                 Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption)
-                    .frame(maxWidth: 250, alignment: .leading)
+                    .frame(maxWidth: 350, alignment: .leading)
                 Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -43,7 +43,7 @@ struct StatisticsView: View {
                 HStack {
                     Text(item.key)
                         .font(theme[fontAssetTable])
-                        .frame(maxWidth: 250, alignment: .leading)
+                        .frame(maxWidth: 350, alignment: .leading)
                     Text(item.value)
                         .font(fontTable)
                 }
@@ -51,9 +51,12 @@ struct StatisticsView: View {
             }
         }
         .frame(maxWidth: 700)
-        .padding([.horizontal], 35)
-        .padding([.vertical], 35)
-        .background(Color(uiColor: UIColor.Neutral.neutral800)).cornerRadius(Layout.cornerRadius6x)
+        .padding(35)
+        .background {
+            Color(uiColor: UIColor.Neutral.neutral800)
+                .opacity(0.7)
+                .cornerRadius(Layout.cornerRadius6x)
+        }
         .padding()
     }
 }

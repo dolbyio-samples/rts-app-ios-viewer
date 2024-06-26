@@ -8,7 +8,6 @@ import RTSCore
 
 @MainActor
 final class StreamDetailInputViewModel: ObservableObject {
-    let subscriptionManager: SubscriptionManager
     private let streamDataManager: StreamDataManagerProtocol
 
     private var subscriptions: [AnyCancellable] = []
@@ -20,11 +19,7 @@ final class StreamDetailInputViewModel: ObservableObject {
     }
     @Published private(set) var hasSavedStreams: Bool = false
 
-    init(
-        subscriptionManager: SubscriptionManager = SubscriptionManager(),
-        streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared
-    ) {
-        self.subscriptionManager = subscriptionManager
+    init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared) {
         self.streamDataManager = streamDataManager
 
         streamDataManager.streamDetailsSubject
@@ -37,10 +32,6 @@ final class StreamDetailInputViewModel: ObservableObject {
 
     func checkIfCredentialsAreValid(streamName: String, accountID: String) -> Bool {
         return streamName.count > 0 && accountID.count > 0
-    }
-
-    func connect(streamName: String, accountID: String) async throws {
-        try await subscriptionManager.subscribe(streamName: streamName, accountID: accountID)
     }
 
     func saveStream(streamName: String, accountID: String) {

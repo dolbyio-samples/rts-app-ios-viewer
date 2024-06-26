@@ -17,23 +17,23 @@ final class StreamingViewModel: ObservableObject {
         category: String(describing: StreamingViewModel.self)
     )
 
+    private let streamName: String
+    private let accountID: String
     private let persistentSettings: PersistentSettingsProtocol
-    private var audioTrackActivityObservationDictionary: [SourceID: Task<Void, Never>] = [:]
-    private var videoTrackActivityObservationDictionary: [SourceID: Task<Void, Never>] = [:]
-    private var layerEventsObservationTask: Task<Void, Never>?
+    private var layersEventsObservationDictionary: [SourceID: Task<Void, Never>] = [:]
+    private var stateObservation: Task<Void, Never>?
 
     private var subscriptions: [AnyCancellable] = []
-    private let trackActiveStateUpdateSubject: CurrentValueSubject<Void, Never> = CurrentValueSubject(())
 
     enum ViewState {
-        case stopped
+        case disconnected
         case loading
         case streaming(source: StreamSource)
         case noNetwork(title: String)
         case streamNotPublished(title: String, subtitle: String, source: StreamSource?)
         case otherError(message: String)
     }
-    @Published private(set) var state: ViewState = .loading
+    @Published private(set) var state: ViewState = .disconnected
     @Published private(set) var isLiveIndicatorEnabled: Bool {
         didSet {
             persistentSettings.liveIndicatorEnabled = isLiveIndicatorEnabled
@@ -46,16 +46,35 @@ final class StreamingViewModel: ObservableObject {
     let rendererRegistry: RendererRegistry
 
     init(
-        subscriptionManager: SubscriptionManager,
+        streamName: String,
+        accountID: String,
+        subscriptionManager: SubscriptionManager = SubscriptionManager(),
         persistentSettings: PersistentSettingsProtocol = PersistentSettings(),
         rendererRegistry: RendererRegistry = RendererRegistry()
     ) {
+        self.streamName = streamName
+        self.accountID = accountID
         self.subscriptionManager = subscriptionManager
         self.persistentSettings = persistentSettings
         self.rendererRegistry = rendererRegistry
 
         isLiveIndicatorEnabled = persistentSettings.liveIndicatorEnabled
-        setupStateObservers()
+
+        Task(priority: .userInitiated) { [weak self] in
+            await self?.setupStateObservers()
+        }
+    }
+
+    func subscribeToStream() {
+        Task(priority: .userInitiated) {
+            do {
+                Self.logger.debug("🎰 Subscribe to stream with \(self.streamName), \(self.accountID)")
+                try await subscriptionManager.subscribe(streamName: streamName, accountID: accountID)
+            } catch {
+                Self.logger.debug("🎰 Subscribe failed with error \(error.localizedDescription)")
+                self.state = .otherError(message: error.localizedDescription)
+            }
+        }
     }
 
     func updateLiveIndicator(_ enabled: Bool) {
@@ -63,20 +82,21 @@ final class StreamingViewModel: ObservableObject {
     }
 
     // swiftlint: disable function_body_length
-    private func setupStateObservers() {
-        Task { [weak self] in
+    private func setupStateObservers() async {
+        stateObservation = Task(priority: .userInitiated) { [weak self] in
             guard let self = self else { return }
 
-            await self.subscriptionManager.$state.combineLatest(trackActiveStateUpdateSubject)
-                .sink { state, _ in
-                    Task {
+            await self.subscriptionManager.$state
+                .receive(on: DispatchQueue.main)
+                .sink { state in
+                    Task(priority: .high) {
                         switch state {
                         case let .subscribed(sources: sources):
-                            Self.logger.debug("🎰 Subscribed, has \(sources.count) sources")
-
-                            // MARK: Picking the source with empty sourceId or the first source for display
-                            let activeSources = sources.filter { $0.videoTrack.isActive }
-                            guard let source = activeSources.first(where: { $0.sourceId == .main }) ?? sources.first else {
+                            // FIXME: `MCRTSRemoteTrack.isActive` returns true even after receiving an inactive event.
+                            // Update the filter logic to .filter { $0.videoTrack.isActive }
+                            let activeVideoSources = sources.filter { $0.isVideoActive }
+                            Self.logger.debug("🎰 Subscribed, has \(activeVideoSources.count) active video sources")
+                            guard let videoSource = activeVideoSources.first(where: { $0.sourceId == .main }) ?? activeVideoSources.first else {
                                 self.state = .streamNotPublished(
                                     title: LocalizedStringKey("stream.offline.title.label").toString(),
                                     subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
@@ -85,76 +105,80 @@ final class StreamingViewModel: ObservableObject {
                                 return
                             }
 
-                            Self.logger.debug("🎰 Picked source \(source.sourceId) for rendering")
+                            Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for rendering")
 
-                            self.observeTrackEvents(for: source)
-                            self.observeLayerEvents(for: source)
-                            let renderer = self.rendererRegistry.acceleratedRenderer(for: source)
-                            try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
-                            await MainActor.run {
-                                self.state = .streaming(source: source)
+                            // FIXME: `MCRTSRemoteTrack.isActive` returns true even after receiving an inactive event.
+                            // Update the filter logic to .filter { $0.audioTrack?.isActive == true }
+                            let activeAudioSources = sources.filter { $0.isVideoActive }
+
+                            Task(priority: .userInitiated) {
+                                await self.observeLayerEvents(for: videoSource)
+                            }
+
+                            Task(priority: .high) {
+                                let renderer = self.rendererRegistry.acceleratedRenderer(for: videoSource)
+                                try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
+
+                                if let audioTrack = videoSource.audioTrack, !activeAudioSources.contains(videoSource) {
+                                    Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for rendering")
+                                    // Enable new audio track
+                                    try await audioTrack.enable()
+                                }
+
+                                await MainActor.run {
+                                    self.state = .streaming(source: videoSource)
+                                }
                             }
 
                         case .disconnected:
-                            Self.logger.debug("🎰 Stopped")
-                            await MainActor.run {
-                                self.state = .stopped
-                            }
+                            Self.logger.debug("🎰 Disconnected")
+                            self.state = .disconnected
 
                         case .error(.connectError(status: 0, reason: _)):
                             Self.logger.debug("🎰 No internet connection")
-                            await MainActor.run {
-                                self.state = .noNetwork(
-                                    title: LocalizedStringKey("stream.network.disconnected.label").toString()
-                                )
-                            }
+                            self.state = .noNetwork(
+                                title: LocalizedStringKey("stream.network.disconnected.label").toString()
+                            )
 
                         case let .error(.connectError(status: status, reason: reason)):
                             Self.logger.debug("🎰 Connection error - \(status), \(reason)")
-                            await MainActor.run {
-                                self.state = .streamNotPublished(
-                                    title: LocalizedStringKey("stream.offline.title.label").toString(),
-                                    subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
-                                    source: nil
-                                )
-                            }
+                            self.state = .streamNotPublished(
+                                title: LocalizedStringKey("stream.offline.title.label").toString(),
+                                subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
+                                source: nil
+                            )
 
                         case let .error(.signalingError(reason: reason)):
                             Self.logger.debug("🎰 Signaling error - \(reason)")
-                            await MainActor.run {
-                                self.state = .otherError(message: reason)
-                            }
+                            self.state = .otherError(message: reason)
                         case .stopped:
                             Self.logger.debug("🎰 Stream stopped")
-                            await MainActor.run {
-                                self.state = .streamNotPublished(
-                                    title: LocalizedStringKey("stream.offline.title.label").toString(),
-                                    subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
-                                    source: nil
-                                )
-                            }
+                            self.state = .streamNotPublished(
+                                title: LocalizedStringKey("stream.offline.title.label").toString(),
+                                subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
+                                source: nil
+                            )
                         }
                     }
                 }
                 .store(in: &subscriptions)
         }
+        await stateObservation?.value
     }
     // swiftlint: enable function_body_length
 
-    func stopSubscribe() async throws {
-        _ = try await subscriptionManager.unSubscribe()
-        removeAllObservations()
-        Self.logger.debug("🎰 Unsubscribed successfully")
-    }
-
-    func videoViewDidAppear() async throws {
-        switch state {
-        case let .streaming(source: source):
-            if let audioTrack = source.audioTrack {
-                try await audioTrack.enable()
+    func stopSubscribe() {
+        Task(priority: .userInitiated) {
+            do {
+                Self.logger.debug("🎰 Subscribe to stream with \(self.streamName), \(self.accountID)")
+                removeAllObservations()
+                _ = try await subscriptionManager.unSubscribe()
+                Self.logger.debug("🎰 Unsubscribed successfully")
+                state = .disconnected
+            } catch {
+                Self.logger.debug("🎰 Unsubscribe failed with error \(error.localizedDescription)")
+                self.state = .otherError(message: error.localizedDescription)
             }
-        default:
-            Self.logger.debug("🎰 Invalid state when calling `videoViewDidAppear`")
         }
     }
 }
@@ -163,91 +187,12 @@ final class StreamingViewModel: ObservableObject {
 
 extension StreamingViewModel {
 
-    func observeTrackEvents(for source: StreamSource) {
-        Self.logger.debug("♼ Registering for track lifecycle events of \(source.sourceId)")
-
-        Task { [weak self] in
-            guard let self, let audioTrack = source.audioTrack else { return }
-
-            var tasksToAwait: [Task<Void, Never>] = []
-
-            if audioTrackActivityObservationDictionary[source.sourceId] == nil {
-                Self.logger.debug("♼ Registering for audio track lifecycle events of \(source.sourceId)")
-                let audioTrackActivityObservation = Task {
-                    for await activityEvent in audioTrack.activity() {
-                        switch activityEvent {
-                        case .active:
-                            Self.logger.debug("♼ Audio track for \(source.sourceId) is active")
-                            self.audioTrackIsActive(for: source)
-
-                        case .inactive:
-                            Self.logger.debug("♼ Audio track for \(source.sourceId) is inactive")
-                            self.audioTrackIsInactive(for: source)
-                        }
-                    }
-                }
-                audioTrackActivityObservationDictionary[source.sourceId] = audioTrackActivityObservation
-                tasksToAwait.append(audioTrackActivityObservation)
-            }
-
-            if videoTrackActivityObservationDictionary[source.sourceId] == nil {
-                Self.logger.debug("♼ Registering for video track lifecycle events of \(source.sourceId)")
-                let videoTrackActivityObservation = Task {
-                    for await activityEvent in source.videoTrack.activity() {
-                        switch activityEvent {
-                        case .active:
-                            Self.logger.debug("♼ Video track for \(source.sourceId) is active")
-                            self.trackActiveStateUpdateSubject.send()
-
-                        case .inactive:
-                            Self.logger.debug("♼ Video track for \(source.sourceId) is inactive")
-                            self.trackActiveStateUpdateSubject.send()
-                        }
-                    }
-                }
-                videoTrackActivityObservationDictionary[source.sourceId] = videoTrackActivityObservation
-                tasksToAwait.append(videoTrackActivityObservation)
-            }
-
-            await withTaskGroup(of: Void.self) { group in
-                for task in tasksToAwait {
-                    group.addTask {
-                        await task.value
-                    }
-                }
-            }
-        }
-    }
-
-    func removeAllObservations() {
-        audioTrackActivityObservationDictionary.forEach { (sourceId, _) in
-            audioTrackActivityObservationDictionary[sourceId]?.cancel()
-            audioTrackActivityObservationDictionary[sourceId] = nil
-        }
-        videoTrackActivityObservationDictionary.forEach { (sourceId, _) in
-            videoTrackActivityObservationDictionary[sourceId]?.cancel()
-            videoTrackActivityObservationDictionary[sourceId] = nil
-        }
-        subscriptions.removeAll()
-
-        layerEventsObservationTask?.cancel()
-        layerEventsObservationTask = nil
-    }
-
-    func audioTrackIsActive(for source: StreamSource) {
-        // No-op
-    }
-
-    func audioTrackIsInactive(for source: StreamSource) {
-        // No-op
-    }
-}
-
-private extension StreamingViewModel {
-    func observeLayerEvents(for source: StreamSource) {
-        Task { [weak self] in
-            guard let self else { return }
-            self.layerEventsObservationTask = Task {
+    // swiftlint:disable cyclomatic_complexity function_body_length
+    func observeLayerEvents(for source: StreamSource) async {
+        var tasks: [Task<Void, Never>] = []
+        if layersEventsObservationDictionary[source.sourceId] == nil {
+            Self.logger.debug("♼ Registering layer events for \(source.sourceId)")
+            let layerEventsObservationTask = Task {
                 for await layerEvent in source.videoTrack.layers() {
                     let videoQualities = layerEvent.layers()
                         .map(VideoQuality.init)
@@ -256,7 +201,26 @@ private extension StreamingViewModel {
                 }
             }
 
-            await self.layerEventsObservationTask?.value
+            layersEventsObservationDictionary[source.sourceId] = layerEventsObservationTask
+            tasks.append(layerEventsObservationTask)
         }
+
+        _ = await withTaskGroup(of: Void.self) { group in
+            for task in tasks {
+                group.addTask {
+                    await task.value
+                }
+            }
+        }
+    }
+    // swiftlint:enable cyclomatic_complexity function_body_length
+
+    func removeAllObservations() {
+        subscriptions.removeAll()
+        layersEventsObservationDictionary.forEach { (sourceId, _) in
+            layersEventsObservationDictionary[sourceId]?.cancel()
+            layersEventsObservationDictionary[sourceId] = nil
+        }
+        stateObservation?.cancel()
     }
 }

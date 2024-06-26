@@ -10,15 +10,15 @@ import MillicastSDK
 
 struct StreamingView: View {
 
-    @StateObject private var viewModel: StreamingViewModel
+    @ObservedObject private var viewModel: StreamingViewModel
 
     @State private var showSettingsView = false
     @State private var showStatsView = false
 
     @Environment(\.dismiss) var dismiss
 
-    init(subscriptionManager: SubscriptionManager) {
-        _viewModel = StateObject(wrappedValue: StreamingViewModel(subscriptionManager: subscriptionManager))
+    init(streamName: String, accountID: String) {
+        viewModel = StreamingViewModel(streamName: streamName, accountID: accountID)
     }
 
     private func makeBackgroundView(@ViewBuilder content: () -> some View, opacity: CGFloat) -> some View {
@@ -44,11 +44,6 @@ struct StreamingView: View {
                             }
                             .padding()
                         }
-                        .onAppear {
-                            Task {
-                                try await viewModel.videoViewDidAppear()
-                            }
-                        }
                         .overlay(alignment: .bottomLeading) {
                             if showStatsView {
                                 StatisticsView(source: source, subscriptionManager: viewModel.subscriptionManager)
@@ -73,12 +68,8 @@ struct StreamingView: View {
                                 )
                             }
                         }
-                case .loading, .stopped:
-                    GeometryReader { proxy in
-                        LoadingView()
-                            .frame(width: proxy.size.width, height: proxy.size.height)
-                    }
-
+                case .loading, .disconnected:
+                    LoadingView()
                 case let .noNetwork(title: title):
                     ErrorView(title: title, subtitle: nil)
                 case let .streamNotPublished(title: title, subtitle: subtitle, source: _):
@@ -87,6 +78,7 @@ struct StreamingView: View {
                     ErrorView(title: message, subtitle: nil)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(alignment: .topLeading) {
                 // swiftlint: disable switch_case_alignment
                 let isStreamLive = switch viewModel.state {
@@ -112,11 +104,12 @@ struct StreamingView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.subscribeToStream()
+        }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
-            Task {
-                try await viewModel.stopSubscribe()
-            }
+            viewModel.stopSubscribe()
         }
         .navigationBarHidden(true)
         .onExitCommand {
@@ -132,7 +125,7 @@ struct StreamingView: View {
 #if DEBUG
 struct StreamingView_Previews: PreviewProvider {
     static var previews: some View {
-        StreamingView(subscriptionManager: SubscriptionManager())
+        StreamingView(streamName: "StreamName", accountID: "AccountID")
     }
 }
 #endif
