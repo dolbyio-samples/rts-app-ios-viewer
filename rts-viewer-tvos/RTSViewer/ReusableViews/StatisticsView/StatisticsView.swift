@@ -4,14 +4,14 @@
 
 import DolbyIOUIKit
 import SwiftUI
-import RTSComponentKit
+import RTSCore
 import Foundation
 
 struct StatisticsView: View {
     @StateObject private var viewModel: StatisticsViewModel
 
-    init(subscriptionManager: SubscriptionManager) {
-        _viewModel = StateObject(wrappedValue: StatisticsViewModel(subscriptionManager: subscriptionManager))
+    init(source: StreamSource, subscriptionManager: SubscriptionManager) {
+        _viewModel = StateObject(wrappedValue: StatisticsViewModel(source: source, subscriptionManager: subscriptionManager))
     }
 
     private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption2, style: .caption2)
@@ -19,6 +19,7 @@ struct StatisticsView: View {
 
     private let fontAssetCaption = FontAsset.avenirNextDemiBold(size: FontSize.caption1, style: .caption)
     private let fontAssetTitle = FontAsset.avenirNextBold(size: FontSize.title3, style: .title3)
+    private let theme = ThemeManager.shared.theme
 
     var body: some View {
         VStack {
@@ -30,7 +31,7 @@ struct StatisticsView: View {
 
             HStack {
                 Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption)
-                    .frame(maxWidth: 250, alignment: .leading)
+                    .frame(maxWidth: 350, alignment: .leading)
                 Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -40,17 +41,22 @@ struct StatisticsView: View {
 
             ForEach(viewModel.statsDataList) { item in
                 HStack {
-                    Text(text: item.key, fontAsset: fontAssetTable)
-                        .frame(maxWidth: 250, alignment: .leading)
-                    Text(item.value).font(fontTable)
+                    Text(item.key)
+                        .font(theme[fontAssetTable])
+                        .frame(maxWidth: 350, alignment: .leading)
+                    Text(item.value)
+                        .font(fontTable)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .frame(maxWidth: 700)
-        .padding([.horizontal], 35)
-        .padding([.vertical], 35)
-        .background(Color(uiColor: UIColor.Neutral.neutral800)).cornerRadius(Layout.cornerRadius6x)
+        .padding(35)
+        .background {
+            Color(uiColor: UIColor.Neutral.neutral800)
+                .opacity(0.7)
+                .cornerRadius(Layout.cornerRadius6x)
+        }
         .padding()
     }
 }

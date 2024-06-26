@@ -6,7 +6,7 @@ import Combine
 import Foundation
 import MillicastSDK
 import os
-import RTSComponentKit
+import RTSCore
 import UIKit
 import SwiftUI
 
@@ -17,132 +17,229 @@ final class StreamingViewModel: ObservableObject {
         category: String(describing: StreamingViewModel.self)
     )
 
+    private let streamName: String
+    private let accountID: String
     private let persistentSettings: PersistentSettingsProtocol
-    private var audioTrackActivityObservationDictionary: [SourceID: Task<Void, Never>] = [:]
-    private var videoTrackActivityObservationDictionary: [SourceID: Task<Void, Never>] = [:]
-    private var layerEventsObservationTask: Task<Void, Never>?
+    private var layersEventsObservationDictionary: [SourceID: Task<Void, Never>] = [:]
+    private var stateObservation: Task<Void, Never>?
+    private var reconnectionTimer: Timer?
 
     private var subscriptions: [AnyCancellable] = []
-    private let trackActiveStateUpdateSubject: CurrentValueSubject<Void, Never> = CurrentValueSubject(())
 
     enum ViewState {
-        case stopped
+        case disconnected
         case loading
-        case streaming(source: Source)
+        case streaming(source: StreamSource)
         case noNetwork(title: String)
-        case streamNotPublished(title: String, subtitle: String, source: Source?)
+        case streamNotPublished(title: String, subtitle: String, source: StreamSource?)
         case otherError(message: String)
     }
-    @Published private(set) var state: ViewState = .loading
+    @Published private(set) var state: ViewState = .disconnected
     @Published private(set) var isLiveIndicatorEnabled: Bool {
         didSet {
             persistentSettings.liveIndicatorEnabled = isLiveIndicatorEnabled
         }
     }
-    @Published private(set) var videoQualityList: [VideoQuality] = []
-    @Published var selectedVideoQuality: VideoQuality = .auto
+    @Published private(set) var videoQualityList: [VideoQuality] = [] {
+        didSet {
+            // Set video quality selection to auto if the layer is missing
+            if !videoQualityList.contains(where: { $0.encodingId == selectedVideoQuality.encodingId }) {
+                Self.logger.debug("♼ Reset layer to `auto`")
+                switch state {
+                case let .streaming(source: source):
+                    select(videoQuality: .auto, for: source)
+                default:
+                    break
+                }
+            }
+        }
+    }
+    @Published private(set) var selectedVideoQuality: VideoQuality = .auto
 
     let subscriptionManager: SubscriptionManager
     let rendererRegistry: RendererRegistry
 
     init(
-        subscriptionManager: SubscriptionManager,
+        streamName: String,
+        accountID: String,
+        subscriptionManager: SubscriptionManager = SubscriptionManager(),
         persistentSettings: PersistentSettingsProtocol = PersistentSettings(),
         rendererRegistry: RendererRegistry = RendererRegistry()
     ) {
+        self.streamName = streamName
+        self.accountID = accountID
         self.subscriptionManager = subscriptionManager
         self.persistentSettings = persistentSettings
         self.rendererRegistry = rendererRegistry
 
         isLiveIndicatorEnabled = persistentSettings.liveIndicatorEnabled
-        setupStateObservers()
+
+        Task(priority: .userInitiated) { [weak self] in
+            await self?.setupStateObservers()
+        }
+    }
+
+    @objc func subscribeToStream() {
+        Task(priority: .userInitiated) {
+            do {
+                Self.logger.debug("🎰 Subscribe to stream with \(self.streamName), \(self.accountID)")
+                try await subscriptionManager.subscribe(streamName: streamName, accountID: accountID)
+            } catch {
+                Self.logger.debug("🎰 Subscribe failed with error \(error.localizedDescription)")
+                self.state = .otherError(message: error.localizedDescription)
+            }
+        }
     }
 
     func updateLiveIndicator(_ enabled: Bool) {
         isLiveIndicatorEnabled = enabled
     }
 
-    // swiftlint: disable function_body_length
-    private func setupStateObservers() {
-        Task { [weak self] in
+    func select(videoQuality: VideoQuality, for source: StreamSource) {
+        guard videoQuality.encodingId != selectedVideoQuality.encodingId else {
+            return
+        }
+
+        Task(priority: .userInitiated) { [weak self] in
+            guard let self else { return }
+            do {
+                Self.logger.debug("🎰 Select video quality")
+                let renderer = self.rendererRegistry.acceleratedRenderer(for: source)
+                self.selectedVideoQuality = videoQuality
+                switch videoQuality {
+                case .auto:
+                    try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
+                case let .quality(underlyingLayer):
+                    try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: underlyingLayer), promote: true)
+                }
+            } catch {
+                Self.logger.debug("🎰 Select video quality error \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // swiftlint: disable function_body_length cyclomatic_complexity
+    private func setupStateObservers() async {
+        stateObservation = Task(priority: .userInitiated) { [weak self] in
             guard let self = self else { return }
 
-            await self.subscriptionManager.$state.combineLatest(trackActiveStateUpdateSubject)
-                .sink { state, _ in
+            await self.subscriptionManager.$state
+                .sink { state in
                     Task {
+                        guard !Task.isCancelled else { return }
+
                         switch state {
                         case let .subscribed(sources: sources):
-                            Self.logger.debug("🎰 Subscribed, has \(sources.count) sources")
-
-                            // MARK: Picking the source with empty sourceId or the first source for display
-                            let activeSources = sources.filter { $0.videoTrack.isActive }
-                            guard let source = activeSources.first(where: { $0.sourceId == .main }) ?? sources.first else {
-                                return
-                            }
-
-                            Self.logger.debug("🎰 Picked source \(source.sourceId) for rendering")
-                            if !self.rendererRegistry.hasRenderer(for: source) {
-                                self.rendererRegistry.registerRenderer(renderer: .sampleBuffer(MCCMSampleBufferVideoRenderer()), for: source)
-                            }
-
-                            self.observeTrackEvents(for: source)
-                            self.observeLayerEvents(for: source)
-                            let renderer = self.rendererRegistry.renderer(for: source)
-                            try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
-                            await MainActor.run {
-                                self.state = .streaming(source: source)
-                            }
-
-                        case .disconnected:
-                            Self.logger.debug("🎰 Stopped")
-                            await MainActor.run {
-                                self.state = .stopped
-                            }
-
-                        case .error(.connectError(status: 0, reason: _)):
-                            Self.logger.debug("🎰 No internet connection")
-                            await MainActor.run {
-                                self.state = .noNetwork(
-                                    title: LocalizedStringKey("stream.network.disconnected.label").toString()
-                                )
-                            }
-
-                        case let .error(.connectError(status: status, reason: reason)):
-                            Self.logger.debug("🎰 Connection error - \(status), \(reason)")
-                            await MainActor.run {
+                            let activeVideoSources = sources.filter { $0.videoTrack.isActive }
+                            Self.logger.debug("🎰 Subscribed, has \(activeVideoSources.count) active video sources")
+                            guard let videoSource = activeVideoSources.first(where: { $0.sourceId == .main }) ?? activeVideoSources.first else {
                                 self.state = .streamNotPublished(
                                     title: LocalizedStringKey("stream.offline.title.label").toString(),
                                     subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
                                     source: nil
                                 )
+                                self.selectedVideoQuality = .auto
+                                return
                             }
+
+                            switch self.state {
+                            case let .streaming(source: previousSource):
+                                Self.logger.debug("🎰 Disabling previous source \(previousSource.sourceId)")
+                                if previousSource.audioTrack?.isActive == true {
+                                    try await previousSource.audioTrack?.disable()
+                                }
+                                if previousSource.videoTrack.isActive {
+                                    try await previousSource.videoTrack.disable()
+                                }
+                            default:
+                                break
+                            }
+
+                            Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for rendering")
+
+                            Task(priority: .userInitiated) {
+                                guard !Task.isCancelled else { return }
+
+                                await self.observeLayerEvents(for: videoSource)
+                            }
+
+                            Task(priority: .high) {
+                                guard !Task.isCancelled, videoSource.videoTrack.isActive else { return }
+
+                                let renderer = self.rendererRegistry.acceleratedRenderer(for: videoSource)
+                                try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
+                                Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for rendering")
+
+                                if let audioTrack = videoSource.audioTrack, videoSource.videoTrack.isActive {
+                                    Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
+                                    // Enable new audio track
+                                    try await audioTrack.enable()
+                                }
+
+                                await MainActor.run {
+                                    self.state = .streaming(source: videoSource)
+                                }
+                            }
+
+                        case .disconnected:
+                            Self.logger.debug("🎰 Disconnected")
+                            guard !Task.isCancelled else { return }
+
+                            self.state = .disconnected
+
+                        case .error(.connectError(status: 0, reason: _)):
+                            Self.logger.debug("🎰 No internet connection")
+                            guard !Task.isCancelled else { return }
+
+                            self.state = .noNetwork(
+                                title: LocalizedStringKey("stream.network.disconnected.label").toString()
+                            )
+
+                        case let .error(.connectError(status: status, reason: reason)):
+                            Self.logger.debug("🎰 Connection error - \(status), \(reason)")
+                            guard !Task.isCancelled else { return }
+                            self.scheduleReconnection()
+                            self.state = .streamNotPublished(
+                                title: LocalizedStringKey("stream.offline.title.label").toString(),
+                                subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
+                                source: nil
+                            )
 
                         case let .error(.signalingError(reason: reason)):
                             Self.logger.debug("🎰 Signaling error - \(reason)")
-                            await MainActor.run {
-                                self.state = .otherError(message: reason)
-                            }
+                            guard !Task.isCancelled else { return }
+
+                            self.state = .otherError(message: reason)
+                        case .stopped:
+                            Self.logger.debug("🎰 Stream stopped")
+                            guard !Task.isCancelled else { return }
+
+                            self.state = .streamNotPublished(
+                                title: LocalizedStringKey("stream.offline.title.label").toString(),
+                                subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
+                                source: nil
+                            )
                         }
                     }
                 }
                 .store(in: &subscriptions)
         }
+        await stateObservation?.value
     }
-    // swiftlint: enable function_body_length
+    // swiftlint: enable function_body_length cyclomatic_complexity
 
-    func stopSubscribe() async throws {
-        _ = try await subscriptionManager.unSubscribe()
-        removeAllObservations()
-    }
-
-    func videoViewDidAppear() async throws {
-        switch state {
-        case let .streaming(source: source):
-            if let audioTrack = source.audioTrack {
-                try await audioTrack.enable()
+    func stopSubscribe() {
+        Task(priority: .userInitiated) {
+            do {
+                Self.logger.debug("🎰 Subscribe to stream with \(self.streamName), \(self.accountID)")
+                removeAllObservations()
+                _ = try await subscriptionManager.unSubscribe()
+                Self.logger.debug("🎰 Unsubscribed successfully")
+                state = .disconnected
+            } catch {
+                Self.logger.debug("🎰 Unsubscribe failed with error \(error.localizedDescription)")
+                self.state = .otherError(message: error.localizedDescription)
             }
-        default:
-            Self.logger.debug("🎰 Invalid state when calling `videoViewDidAppear`")
         }
     }
 }
@@ -151,149 +248,45 @@ final class StreamingViewModel: ObservableObject {
 
 extension StreamingViewModel {
 
-    func observeTrackEvents(for source: Source) {
-        Self.logger.debug("♼ Registering for track lifecycle events of \(source.sourceId)")
-
-        Task { [weak self] in
-            guard let self, let audioTrack = source.audioTrack else { return }
-
-            var tasksToAwait: [Task<Void, Never>] = []
-
-            if audioTrackActivityObservationDictionary[source.sourceId] == nil {
-                Self.logger.debug("♼ Registering for audio track lifecycle events of \(source.sourceId)")
-                let audioTrackActivityObservation = Task {
-                    for await activityEvent in audioTrack.activity() {
-                        switch activityEvent {
-                        case .active:
-                            Self.logger.debug("♼ Audio track for \(source.sourceId) is active")
-                            self.audioTrackIsActive(for: source)
-
-                        case .inactive:
-                            Self.logger.debug("♼ Audio track for \(source.sourceId) is inactive")
-                            self.audioTrackIsInactive(for: source)
-                        }
-                    }
-                }
-                audioTrackActivityObservationDictionary[source.sourceId] = audioTrackActivityObservation
-                tasksToAwait.append(audioTrackActivityObservation)
-            }
-
-            if videoTrackActivityObservationDictionary[source.sourceId] == nil {
-                Self.logger.debug("♼ Registering for video track lifecycle events of \(source.sourceId)")
-                let videoTrackActivityObservation = Task {
-                    for await activityEvent in source.videoTrack.activity() {
-                        switch activityEvent {
-                        case .active:
-                            Self.logger.debug("♼ Video track for \(source.sourceId) is active")
-                            self.trackActiveStateUpdateSubject.send()
-
-                        case .inactive:
-                            Self.logger.debug("♼ Video track for \(source.sourceId) is inactive")
-                            self.trackActiveStateUpdateSubject.send()
-                        }
-                    }
-                }
-                videoTrackActivityObservationDictionary[source.sourceId] = videoTrackActivityObservation
-                tasksToAwait.append(videoTrackActivityObservation)
-            }
-
-            await withTaskGroup(of: Void.self) { group in
-                for task in tasksToAwait {
-                    group.addTask {
-                        await task.value
-                    }
-                }
-            }
-        }
-    }
-
-    func removeAllObservations() {
-        audioTrackActivityObservationDictionary.forEach { (sourceId, _) in
-            audioTrackActivityObservationDictionary[sourceId]?.cancel()
-            audioTrackActivityObservationDictionary[sourceId] = nil
-        }
-        videoTrackActivityObservationDictionary.forEach { (sourceId, _) in
-            videoTrackActivityObservationDictionary[sourceId]?.cancel()
-            videoTrackActivityObservationDictionary[sourceId] = nil
-        }
-        subscriptions.removeAll()
-
-        layerEventsObservationTask?.cancel()
-        layerEventsObservationTask = nil
-    }
-
-    func audioTrackIsActive(for source: Source) {
-        // No-op
-    }
-
-    func audioTrackIsInactive(for source: Source) {
-        // No-op
-    }
-}
-
-private extension StreamingViewModel {
     // swiftlint:disable function_body_length
-    func observeLayerEvents(for source: Source) {
-        Task { [weak self] in
-            guard let self else { return }
-            self.layerEventsObservationTask = Task {
-                for await layerEvent in source.videoTrack.layers() {
-                    var layersForSelection: [MCRTSRemoteTrackLayer] = []
-                    // Simulcast active layers
-                    let simulcastLayers = layerEvent.active.filter({ !$0.encodingId.isEmpty })
-                    let svcLayers = layerEvent.active.filter({ $0.spatialLayerId != nil })
-                    if !simulcastLayers.isEmpty {
-                        // Select the max (best) temporal layer Id from a specific encodingId
-                        let dictionaryOfLayersMatchingEncodingId = Dictionary(grouping: simulcastLayers, by: { $0.encodingId })
-                        dictionaryOfLayersMatchingEncodingId.forEach { (_: String, layers: [MCRTSRemoteTrackLayer]) in
-                            // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
-                            if let layerWithBestFrameRate = layers.first(where: { $0.temporalLayerId == $0.maxTemporalLayerId }) ?? layers.last {
-                                layersForSelection.append(layerWithBestFrameRate)
-                            }
-                        }
-                    }
-                    // Using SVC layer selection logic
-                    else {
-                        let dictionaryOfLayersMatchingSpatialLayerId = Dictionary(grouping: svcLayers, by: { $0.spatialLayerId! })
-                        dictionaryOfLayersMatchingSpatialLayerId.forEach { (_: NSNumber, layers: [MCRTSRemoteTrackLayer]) in
-                            // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
-                            if let layerWithBestFrameRate = layers.first(where: { $0.spatialLayerId == $0.maxSpatialLayerId }) ?? layers.last {
-                                layersForSelection.append(layerWithBestFrameRate)
-                            }
-                        }
-                    }
-
-                    layersForSelection = layersForSelection
-                        .sorted { lhs, rhs in
-                          if let rhsLayerResolution = rhs.resolution, let lhsLayerResolution = lhs.resolution {
-                                return rhsLayerResolution.width < lhsLayerResolution.width || rhsLayerResolution.height < rhsLayerResolution.height
-                            } else {
-                                return rhs.bitrate < lhs.bitrate
-                            }
-                        }
-                    let topSimulcastLayers = Array(layersForSelection.prefix(3))
-                    switch topSimulcastLayers.count {
-                    case 2:
-                        self.videoQualityList = [
-                            .auto,
-                            .high(topSimulcastLayers[0]),
-                            .low(topSimulcastLayers[1])
-                        ]
-                    case 3...Int.max:
-                        self.videoQualityList = [
-                            .auto,
-                            .high(topSimulcastLayers[0]),
-                            .medium(topSimulcastLayers[1]),
-                            .low(topSimulcastLayers[2])
-                        ]
-                    default:
-                        self.videoQualityList = [.auto]
-                    }
-                }
-            }
-
-            await self.layerEventsObservationTask?.value
+    func observeLayerEvents(for source: StreamSource) async {
+        if layersEventsObservationDictionary[source.sourceId] != nil {
+            layersEventsObservationDictionary[source.sourceId]?.cancel()
+            layersEventsObservationDictionary[source.sourceId] = nil
         }
+
+        Self.logger.debug("♼ Registering layer events for \(source.sourceId)")
+        let layerEventsObservationTask = Task {
+            for await layerEvent in source.videoTrack.layers() {
+                guard !Task.isCancelled else { return }
+
+                let videoQualities = layerEvent.layers()
+                    .map(VideoQuality.init)
+                    .reduce([.auto]) { $0 + [$1] }
+                Self.logger.debug("♼ Received layers \(videoQualities.count)")
+                self.videoQualityList = videoQualities
+            }
+        }
+
+        layersEventsObservationDictionary[source.sourceId] = layerEventsObservationTask
+
+        _ = await layerEventsObservationTask.value
     }
     // swiftlint:enable function_body_length
+
+    func removeAllObservations() {
+        Self.logger.debug("🎰 Remove all observations")
+        subscriptions.removeAll()
+        layersEventsObservationDictionary.forEach { (sourceId, _) in
+            layersEventsObservationDictionary[sourceId]?.cancel()
+            layersEventsObservationDictionary[sourceId] = nil
+        }
+        stateObservation?.cancel()
+        reconnectionTimer?.invalidate()
+        reconnectionTimer = nil
+    }
+
+    func scheduleReconnection() {
+        self.reconnectionTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(subscribeToStream), userInfo: nil, repeats: false)
+    }
 }
