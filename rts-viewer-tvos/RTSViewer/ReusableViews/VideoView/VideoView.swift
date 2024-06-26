@@ -5,7 +5,7 @@
 import DolbyIOUIKit
 import Foundation
 import SwiftUI
-import RTSComponentKit
+import RTSCore
 import MillicastSDK
 
 struct VideoView: View {

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,7 +18,6 @@
 		E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC82C1010BE001733EA /* Assets.xcassets */; };
 		E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC92C1010BE001733EA /* Localizable.strings */; };
 		E82A0C13296CEA0F007214B8 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */; };
-		E82A0C15296CEA12007214B8 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C14296CEA12007214B8 /* RTSComponentKit */; };
 		E82A0C1E296D0F04007214B8 /* StreamDetailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A0C1A296D0F04007214B8 /* StreamDetailInputView.swift */; };
 		E83CDA3A2A10917A008690FD /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA2F2A10917A008690FD /* FooterView.swift */; };
 		E83CDA3D2A10917A008690FD /* NavigationHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA312A10917A008690FD /* NavigationHeaderView.swift */; };
@@ -46,6 +45,9 @@
 		E8BA8E232991FE400043DEE1 /* StatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BA8E212991FE400043DEE1 /* StatisticsViewModel.swift */; };
 		E8C47C6E29778BAA0026E877 /* StreamDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6C29778BAA0026E877 /* StreamDataManager.swift */; };
 		E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6F29778BD00026E877 /* RTSViewer.xcdatamodeld */; };
+		E8C776D42C2BE948002DE392 /* RTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E8C776D32C2BE948002DE392 /* RTSCore */; };
+		E8C776D72C2BEA5F002DE392 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8C776D62C2BEA5F002DE392 /* DolbyIOUIKit */; };
+		E8C776D92C2BEEA5002DE392 /* VideoQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */; };
 		E8D1947C29717D410080C4E0 /* RecentStreamsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsView.swift */; };
 		E8D5AE59299068E20019C132 /* StreamDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */; };
 		E8D5AE5D2990840E0019C132 /* MockRTSDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */; };
@@ -136,6 +138,7 @@
 		E8BA8E212991FE400043DEE1 /* StatisticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewModel.swift; sourceTree = "<group>"; };
 		E8C47C6C29778BAA0026E877 /* StreamDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDataManager.swift; sourceTree = "<group>"; };
 		E8C47C7029778BD00026E877 /* RTSViewer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RTSViewer.xcdatamodel; sourceTree = "<group>"; };
+		E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQuality.swift; sourceTree = "<group>"; };
 		E8D1947A29717D410080C4E0 /* RecentStreamsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsView.swift; sourceTree = "<group>"; };
 		E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModel.swift; sourceTree = "<group>"; };
 		E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRTSDataStore.swift; sourceTree = "<group>"; };
@@ -152,8 +155,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8C776D72C2BEA5F002DE392 /* DolbyIOUIKit in Frameworks */,
+				E8C776D42C2BE948002DE392 /* RTSCore in Frameworks */,
 				E82A0C13296CEA0F007214B8 /* DolbyIOUIKit in Frameworks */,
-				E82A0C15296CEA12007214B8 /* RTSComponentKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,6 +354,7 @@
 			isa = PBXGroup;
 			children = (
 				E8752B4D298C75BD002D5C2B /* StreamDetail.swift */,
+				E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -487,7 +492,8 @@
 			name = "RTSViewer TVOS";
 			packageProductDependencies = (
 				E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */,
-				E82A0C14296CEA12007214B8 /* RTSComponentKit */,
+				E8C776D32C2BE948002DE392 /* RTSCore */,
+				E8C776D62C2BEA5F002DE392 /* DolbyIOUIKit */,
 			);
 			productName = "Millicast SDK Sample App in Swift";
 			productReference = 631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */;
@@ -541,6 +547,8 @@
 			);
 			mainGroup = 3FE90C0F26B2AF4200B206A3;
 			packageReferences = (
+				E8C776D22C2BE948002DE392 /* XCLocalSwiftPackageReference "../LocalPackages/RTSCore" */,
+				E8C776D52C2BEA5F002DE392 /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */,
 			);
 			productRefGroup = 3FE90C1926B2AF4200B206A3 /* Products */;
 			projectDirPath = "";
@@ -614,6 +622,7 @@
 				E844ABED296DA5B20067B78C /* StreamingView.swift in Sources */,
 				E83CDA3D2A10917A008690FD /* NavigationHeaderView.swift in Sources */,
 				E8BA8E102991CB0E0043DEE1 /* StreamingViewModel.swift in Sources */,
+				E8C776D92C2BEEA5002DE392 /* VideoQuality.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
 				E83F0F932C192D4B00F6FA6B /* SettingsViewModel.swift in Sources */,
 				E83CDA492A10917A008690FD /* BackgroundContainerView.swift in Sources */,
@@ -1063,14 +1072,29 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		E8C776D22C2BE948002DE392 /* XCLocalSwiftPackageReference "../LocalPackages/RTSCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../LocalPackages/RTSCore;
+		};
+		E8C776D52C2BEA5F002DE392 /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/DolbyIOUIKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DolbyIOUIKit;
 		};
-		E82A0C14296CEA12007214B8 /* RTSComponentKit */ = {
+		E8C776D32C2BE948002DE392 /* RTSCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = RTSComponentKit;
+			productName = RTSCore;
+		};
+		E8C776D62C2BEA5F002DE392 /* DolbyIOUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DolbyIOUIKit;
 		};
 		E8D5AE6029908D690019C132 /* RTSComponentKit */ = {
 			isa = XCSwiftPackageProductDependency;

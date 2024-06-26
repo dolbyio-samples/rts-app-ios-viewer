@@ -6,7 +6,7 @@ import Combine
 import Foundation
 import MillicastSDK
 import os
-import RTSComponentKit
+import RTSCore
 import UIKit
 import SwiftUI
 
@@ -28,9 +28,9 @@ final class StreamingViewModel: ObservableObject {
     enum ViewState {
         case stopped
         case loading
-        case streaming(source: Source)
+        case streaming(source: StreamSource)
         case noNetwork(title: String)
-        case streamNotPublished(title: String, subtitle: String, source: Source?)
+        case streamNotPublished(title: String, subtitle: String, source: StreamSource?)
         case otherError(message: String)
     }
     @Published private(set) var state: ViewState = .loading
@@ -77,17 +77,19 @@ final class StreamingViewModel: ObservableObject {
                             // MARK: Picking the source with empty sourceId or the first source for display
                             let activeSources = sources.filter { $0.videoTrack.isActive }
                             guard let source = activeSources.first(where: { $0.sourceId == .main }) ?? sources.first else {
+                                self.state = .streamNotPublished(
+                                    title: LocalizedStringKey("stream.offline.title.label").toString(),
+                                    subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
+                                    source: nil
+                                )
                                 return
                             }
 
                             Self.logger.debug("🎰 Picked source \(source.sourceId) for rendering")
-                            if !self.rendererRegistry.hasRenderer(for: source) {
-                                self.rendererRegistry.registerRenderer(renderer: .sampleBuffer(MCCMSampleBufferVideoRenderer()), for: source)
-                            }
 
                             self.observeTrackEvents(for: source)
                             self.observeLayerEvents(for: source)
-                            let renderer = self.rendererRegistry.renderer(for: source)
+                            let renderer = self.rendererRegistry.acceleratedRenderer(for: source)
                             try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
                             await MainActor.run {
                                 self.state = .streaming(source: source)
@@ -122,6 +124,15 @@ final class StreamingViewModel: ObservableObject {
                             await MainActor.run {
                                 self.state = .otherError(message: reason)
                             }
+                        case .stopped:
+                            Self.logger.debug("🎰 Stream stopped")
+                            await MainActor.run {
+                                self.state = .streamNotPublished(
+                                    title: LocalizedStringKey("stream.offline.title.label").toString(),
+                                    subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
+                                    source: nil
+                                )
+                            }
                         }
                     }
                 }
@@ -133,6 +144,7 @@ final class StreamingViewModel: ObservableObject {
     func stopSubscribe() async throws {
         _ = try await subscriptionManager.unSubscribe()
         removeAllObservations()
+        Self.logger.debug("🎰 Unsubscribed successfully")
     }
 
     func videoViewDidAppear() async throws {
@@ -151,7 +163,7 @@ final class StreamingViewModel: ObservableObject {
 
 extension StreamingViewModel {
 
-    func observeTrackEvents(for source: Source) {
+    func observeTrackEvents(for source: StreamSource) {
         Self.logger.debug("♼ Registering for track lifecycle events of \(source.sourceId)")
 
         Task { [weak self] in
@@ -222,78 +234,29 @@ extension StreamingViewModel {
         layerEventsObservationTask = nil
     }
 
-    func audioTrackIsActive(for source: Source) {
+    func audioTrackIsActive(for source: StreamSource) {
         // No-op
     }
 
-    func audioTrackIsInactive(for source: Source) {
+    func audioTrackIsInactive(for source: StreamSource) {
         // No-op
     }
 }
 
 private extension StreamingViewModel {
-    // swiftlint:disable function_body_length
-    func observeLayerEvents(for source: Source) {
+    func observeLayerEvents(for source: StreamSource) {
         Task { [weak self] in
             guard let self else { return }
             self.layerEventsObservationTask = Task {
                 for await layerEvent in source.videoTrack.layers() {
-                    var layersForSelection: [MCRTSRemoteTrackLayer] = []
-                    // Simulcast active layers
-                    let simulcastLayers = layerEvent.active.filter({ !$0.encodingId.isEmpty })
-                    let svcLayers = layerEvent.active.filter({ $0.spatialLayerId != nil })
-                    if !simulcastLayers.isEmpty {
-                        // Select the max (best) temporal layer Id from a specific encodingId
-                        let dictionaryOfLayersMatchingEncodingId = Dictionary(grouping: simulcastLayers, by: { $0.encodingId })
-                        dictionaryOfLayersMatchingEncodingId.forEach { (_: String, layers: [MCRTSRemoteTrackLayer]) in
-                            // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
-                            if let layerWithBestFrameRate = layers.first(where: { $0.temporalLayerId == $0.maxTemporalLayerId }) ?? layers.last {
-                                layersForSelection.append(layerWithBestFrameRate)
-                            }
-                        }
-                    }
-                    // Using SVC layer selection logic
-                    else {
-                        let dictionaryOfLayersMatchingSpatialLayerId = Dictionary(grouping: svcLayers, by: { $0.spatialLayerId! })
-                        dictionaryOfLayersMatchingSpatialLayerId.forEach { (_: NSNumber, layers: [MCRTSRemoteTrackLayer]) in
-                            // Picking the layer matching the max temporal layer id - represents the layer with the best FPS
-                            if let layerWithBestFrameRate = layers.first(where: { $0.spatialLayerId == $0.maxSpatialLayerId }) ?? layers.last {
-                                layersForSelection.append(layerWithBestFrameRate)
-                            }
-                        }
-                    }
-
-                    layersForSelection = layersForSelection
-                        .sorted { lhs, rhs in
-                          if let rhsLayerResolution = rhs.resolution, let lhsLayerResolution = lhs.resolution {
-                                return rhsLayerResolution.width < lhsLayerResolution.width || rhsLayerResolution.height < rhsLayerResolution.height
-                            } else {
-                                return rhs.bitrate < lhs.bitrate
-                            }
-                        }
-                    let topSimulcastLayers = Array(layersForSelection.prefix(3))
-                    switch topSimulcastLayers.count {
-                    case 2:
-                        self.videoQualityList = [
-                            .auto,
-                            .high(topSimulcastLayers[0]),
-                            .low(topSimulcastLayers[1])
-                        ]
-                    case 3...Int.max:
-                        self.videoQualityList = [
-                            .auto,
-                            .high(topSimulcastLayers[0]),
-                            .medium(topSimulcastLayers[1]),
-                            .low(topSimulcastLayers[2])
-                        ]
-                    default:
-                        self.videoQualityList = [.auto]
-                    }
+                    let videoQualities = layerEvent.layers()
+                        .map(VideoQuality.init)
+                        .reduce([.auto]) { $0 + [$1] }
+                    self.videoQualityList = videoQualities
                 }
             }
 
             await self.layerEventsObservationTask?.value
         }
     }
-    // swiftlint:enable function_body_length
 }

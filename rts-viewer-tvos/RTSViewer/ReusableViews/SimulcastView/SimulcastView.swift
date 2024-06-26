@@ -3,7 +3,7 @@
 //
 
 import DolbyIOUIKit
-import RTSComponentKit
+import RTSCore
 import SwiftUI
 
 struct SimulcastView: View {
@@ -16,7 +16,7 @@ struct SimulcastView: View {
     private let onSelectVideoQuality: (VideoQuality) -> Void
     @FocusState private var focusedVideoQuality: FocusableField?
 
-    init(source: Source, videoQualityList: [VideoQuality], selectedVideoQuality: VideoQuality, onSelectVideoQuality: @escaping (VideoQuality) -> Void) {
+    init(source: StreamSource, videoQualityList: [VideoQuality], selectedVideoQuality: VideoQuality, onSelectVideoQuality: @escaping (VideoQuality) -> Void) {
         viewModel = SimulcastViewModel(source: source, videoQualityList: videoQualityList, selectedVideoQuality: selectedVideoQuality)
         self.onSelectVideoQuality = onSelectVideoQuality
     }

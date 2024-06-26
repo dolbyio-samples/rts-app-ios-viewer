@@ -4,12 +4,12 @@
 
 import DolbyIOUIKit
 import SwiftUI
-import RTSComponentKit
+import RTSCore
 
 struct StreamDetailInputView: View {
 
-    @State private var streamName: String = ""
-    @State private var accountID: String = ""
+    @State private var streamName: String = "multiview"
+    @State private var accountID: String = "k9Mwad"
 
     @State private var isShowingStreamingView: Bool = false
     @State private var isShowingRecentStreams: Bool = false

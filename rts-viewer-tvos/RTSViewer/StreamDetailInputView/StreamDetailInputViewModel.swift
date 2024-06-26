@@ -4,7 +4,7 @@
 
 import Combine
 import Foundation
-import RTSComponentKit
+import RTSCore
 
 @MainActor
 final class StreamDetailInputViewModel: ObservableObject {

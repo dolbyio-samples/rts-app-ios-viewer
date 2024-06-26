@@ -4,7 +4,4 @@
    <FileRef
       location = "container:RTSViewer.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:LocalPackages/RTSComponentKit">
-   </FileRef>
 </Workspace>

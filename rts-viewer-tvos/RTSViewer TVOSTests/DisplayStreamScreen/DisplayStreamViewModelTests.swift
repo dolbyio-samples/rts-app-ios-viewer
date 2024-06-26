@@ -3,7 +3,7 @@
 //
 
 @testable import RTSViewer_TVOS
-@testable import RTSComponentKit
+@testable import RTSCore
 
 import Combine
 import MillicastSDK

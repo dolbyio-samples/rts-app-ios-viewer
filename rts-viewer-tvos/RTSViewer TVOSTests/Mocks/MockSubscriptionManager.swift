@@ -4,7 +4,7 @@
 
 import Foundation
 import MillicastSDK
-import RTSComponentKit
+import RTSCore
 
 final class MockSubscriptionManager: SubscriptionManagerProtocol {
     lazy var state: AsyncStream<MCSubscriber.State> = stateStream

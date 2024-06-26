@@ -4,7 +4,7 @@
 
 import DolbyIOUIKit
 import SwiftUI
-import RTSComponentKit
+import RTSCore
 import Network
 import MillicastSDK
 
@@ -35,7 +35,7 @@ struct StreamingView: View {
             ZStack {
                 switch viewModel.state {
                 case let .streaming(source: source):
-                    VideoView(renderer: viewModel.rendererRegistry.renderer(for: source))
+                    VideoView(renderer: viewModel.rendererRegistry.acceleratedRenderer(for: source))
                         .overlay(alignment: .bottomTrailing) {
                             SettingsButton {
                                 withAnimation {
@@ -51,7 +51,7 @@ struct StreamingView: View {
                         }
                         .overlay(alignment: .bottomLeading) {
                             if showStatsView {
-                                StatisticsView(subscriptionManager: viewModel.subscriptionManager)
+                                StatisticsView(source: source, subscriptionManager: viewModel.subscriptionManager)
                             }
                         }
                         .overlay(alignment: .trailing) {

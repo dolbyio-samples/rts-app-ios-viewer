@@ -3,7 +3,7 @@
 //
 
 import DolbyIOUIKit
-import RTSComponentKit
+import RTSCore
 import SwiftUI
 
 @MainActor
@@ -26,7 +26,7 @@ struct SettingsView: View {
     private let onUpdateSelectedVideoQuality: (VideoQuality) -> Void
 
     init(
-        source: Source,
+        source: StreamSource,
         showStatsView: Binding<Bool>,
         showLiveIndicator: Binding<Bool>,
         videoQualityList: [VideoQuality],

@@ -3,7 +3,7 @@
 //
 
 import DolbyIOUIKit
-import RTSComponentKit
+import RTSCore
 import SwiftUI
 
 struct RecentStreamsView: View {

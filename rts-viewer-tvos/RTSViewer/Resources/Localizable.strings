@@ -38,10 +38,15 @@
 "recent-streams.account-id.label" = "Account ID";
 "recent-streams.format.label %@" = "%@";
 
-/** Streaming Settings */
+/** Streaming Statistics */
 "stream.settings.label" = "Settings";
 "stream.stats.name.label" = "Name";
 "stream.stats.value.label" = "Value";
+"stream.media-stats.label" = "Streaming statistics";
+"stream.stats.copy.label" = "Copy Stream statistics";
+"stream.stats.name.label" = "Name";
+"stream.stats.value.label" = "Value";
+"stream.stats.mid.label" = "MID";
 "stream.stats.rtt.label" = "RTT";
 "stream.stats.video-resolution.label" = "Video Resolution";
 "stream.stats.fps.label" = "FPS";
@@ -57,4 +62,13 @@
 "stream.stats.timestamp.label" = "Timestamp";
 "stream.stats.server.label" = "Server";
 "stream.stats.cluster.label" = "Cluster";
-
+"stream.stats.decoder-impl.label" = "Decoder Impl";
+"stream.stats.processing-delay.label" = "Processing delay";
+"stream.stats.decode-time.label" = "Decode time";
+"stream.stats.packets-received.label" = "Packets received";
+"stream.stats.frames-decoded.label" = "Frames decoded";
+"stream.stats.frames-dropped.label" = "Frames dropped";
+"stream.stats.jitter-buffer-est-count.label" = "Jitter buffer Est count";
+"stream.stats.jitter-buffer-delay.label" = "Jitter buffer delay";
+"stream.stats.jitter-buffer-target-delay.label" = "Jitter buffer target delay";
+"stream.stats.jitter-buffer-minimum-delay.label" = "Jitter buffer min delay";
