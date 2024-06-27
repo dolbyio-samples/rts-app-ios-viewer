@@ -10,7 +10,7 @@ import MillicastSDK
 
 struct StreamingView: View {
 
-    @ObservedObject private var viewModel: StreamingViewModel
+    @StateObject private var viewModel: StreamingViewModel
 
     @State private var showSettingsView = false
     @State private var showStatsView = false
@@ -18,7 +18,7 @@ struct StreamingView: View {
     @Environment(\.dismiss) var dismiss
 
     init(streamName: String, accountID: String) {
-        viewModel = StreamingViewModel(streamName: streamName, accountID: accountID)
+        _viewModel = StateObject(wrappedValue: StreamingViewModel(streamName: streamName, accountID: accountID))
     }
 
     private func makeBackgroundView(@ViewBuilder content: () -> some View, opacity: CGFloat) -> some View {

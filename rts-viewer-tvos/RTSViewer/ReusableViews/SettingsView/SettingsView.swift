@@ -109,14 +109,15 @@ struct SettingsView: View {
             showSimulcastView = true
         }, label: {
             HStack(spacing: Layout.spacing0x) {
-                IconView(name: .simulcast, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                let iconColor = Color(uiColor: viewModel.videoQualityList.isEmpty ? .tertiaryLabel : .secondaryLabel)
+                IconView(name: .simulcast, tintColor: iconColor)
 
                 Spacer()
                     .frame(width: Layout.spacing2x)
 
                 Text(
                     text: "stream.simulcast.label",
-                    mode: .primary,
+                    mode: viewModel.videoQualityList.isEmpty ? .tertiary : .primary,
                     fontAsset: .avenirNextDemiBold(
                         size: FontSize.body,
                         style: .body
@@ -127,8 +128,9 @@ struct SettingsView: View {
 
                 Text(viewModel.selectedVideoQuality.displayText)
                     .font(theme[.avenirNextRegular(size: FontSize.body, style: .body)])
-                    .foregroundStyle(.secondary)
-                IconView(name: .chevronRight, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                    .foregroundStyle(viewModel.videoQualityList.isEmpty ? .tertiary : .secondary)
+
+                IconView(name: .chevronRight, tintColor: iconColor)
             }
             .frame(height: Layout.spacing10x)
         })
@@ -138,7 +140,7 @@ struct SettingsView: View {
     private var statsToggle: some View {
         Toggle(isOn: $showStatsView, label: {
             HStack(spacing: Layout.spacing2x) {
-                IconView(name: .info, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                IconView(name: .info, tintColor: Color(uiColor: .secondaryLabel))
                 Text(text: "stream.media-stats.label", mode: .primary, fontAsset: .avenirNextDemiBold(
                     size: FontSize.body,
                     style: .body
@@ -152,7 +154,7 @@ struct SettingsView: View {
     private var liveIndicatorToggle: some View {
         Toggle(isOn: $showLiveIndicator, label: {
             HStack(spacing: Layout.spacing2x) {
-                IconView(name: .liveStream, tintColor: Color(uiColor: UIColor.Neutral.neutral300))
+                IconView(name: .liveStream, tintColor: Color(uiColor: .secondaryLabel))
                 Text(text: "stream.live-indicator.label", mode: .primary, fontAsset: .avenirNextDemiBold(
                     size: FontSize.body,
                     style: .body

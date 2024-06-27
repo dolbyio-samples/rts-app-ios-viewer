@@ -5,8 +5,10 @@
 
 import AVFAudio
 import Foundation
+import os
 
 extension AVAudioSession {
+    private static let logger = Logger(subsystem: Bundle.module.bundleIdentifier!, category: String(describing: AVAudioSession.self))
     public static func configure() {
         let session = Self.sharedInstance()
         do {
@@ -17,7 +19,7 @@ extension AVAudioSession {
 #endif
             try session.setActive(true)
         } catch {
-            // No-op
+            Self.logger.debug("📺 Error configuring AVAudioSession \(error.localizedDescription)")
         }
     }
 }

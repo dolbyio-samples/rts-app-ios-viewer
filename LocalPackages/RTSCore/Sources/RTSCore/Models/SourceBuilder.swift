@@ -14,9 +14,6 @@ private class PartialSource {
         didSet {
             if let videoTrack {
                 source = StreamSource(sourceId: sourceId, videoTrack: videoTrack, audioTrack: audioTrack)
-                // Track is active when its first received
-                isVideoActive = true
-                source?.setAudioActive(isAudioActive)
             }
         }
     }
@@ -25,20 +22,7 @@ private class PartialSource {
             if let audioTrack {
                 source?.addAudioTrack(audioTrack)
                 // Track is active when its first received
-                isAudioActive = true
             }
-        }
-    }
-
-    var isVideoActive: Bool = false {
-        didSet {
-            source?.setVideoActive(isVideoActive)
-        }
-    }
-
-    var isAudioActive: Bool = false {
-        didSet {
-            source?.setAudioActive(isAudioActive)
         }
     }
 
@@ -59,16 +43,12 @@ final class SourceBuilder {
     private var audioTrackActivityObservationDictionary: [SourceID: Task<Void, Never>] = [:]
     private var videoTrackActivityObservationDictionary: [SourceID: Task<Void, Never>] = [:]
 
-    // FIXME: `MCRTSRemoteTrack.isActive` returns true even after receiving an inactive event.
-    // This prevents the application from filtering a list of active sources(video tracks) from the sources(video tracks) list
-    // The workaround is to maintain the list locally
-    private var inactiveVideoSources: Set<SourceID> = []
-    private var inactiveAudioSources: Set<SourceID> = []
-    private let audioTrackStateUpdateSubject: PassthroughSubject<(SourceID, Bool), Never> = PassthroughSubject()
-    private let videoTrackStateUpdateSubject: PassthroughSubject<(SourceID, Bool), Never> = PassthroughSubject()
+    private let audioTrackStateUpdateSubject: PassthroughSubject<SourceID, Never> = PassthroughSubject()
+    private let videoTrackStateUpdateSubject: PassthroughSubject<SourceID, Never> = PassthroughSubject()
 
     private var sources: [StreamSource] = [] {
         didSet {
+            Self.logger.debug("👨‍🔧 Sources updated, \(self.sources)")
             sources.forEach { observeTrackEvents(for: $0) }
             sourceStreamContinuation.yield(sources)
         }
@@ -89,23 +69,21 @@ final class SourceBuilder {
         self.sourceStream = stream
         
         audioTrackStateUpdateSubject
-            .sink { [weak self] sourceId, active in
+            .sink { [weak self] sourceId in
                 guard let self, let source = self.partialSources.first(where: { $0.sourceId == sourceId }) else {
                     return
                 }
-                Self.logger.debug("👨‍🔧 Handle audio track active state change \(sourceId), \(active)")
-                source.isAudioActive = active
+                Self.logger.debug("👨‍🔧 Handle audio track active state change \(sourceId); isActive \(source.audioTrack?.isActive == true)")
                 self.sources = self.makeSources()
             }
             .store(in: &subscriptions)
 
         videoTrackStateUpdateSubject
-            .sink { [weak self] sourceId, active in
+            .sink { [weak self] sourceId in
                 guard let self, let source = self.partialSources.first(where: { $0.sourceId == sourceId }) else {
                     return
                 }
-                Self.logger.debug("👨‍🔧 Handle video track active state change \(sourceId), \(active)")
-                source.isVideoActive = active
+                Self.logger.debug("👨‍🔧 Handle video track active state change \(sourceId); isActive \(source.audioTrack?.isActive == true)")
                 self.sources = self.makeSources()
             }
             .store(in: &subscriptions)
@@ -128,10 +106,10 @@ final class SourceBuilder {
     }
 
     func reset() {
+        Self.logger.debug("👨‍🔧 Reset source builder")
+
         partialSources.removeAll()
         subscriptions.removeAll()
-        inactiveVideoSources = []
-        inactiveAudioSources = []
 
         audioTrackActivityObservationDictionary.forEach { (sourceId, _) in
             audioTrackActivityObservationDictionary[sourceId]?.cancel()
@@ -157,16 +135,15 @@ private extension SourceBuilder {
                 Self.logger.debug("👨‍🔧 Registering for audio track lifecycle events of \(source.sourceId)")
                 let audioTrackActivityObservation = Task {
                     for await activityEvent in audioTrack.activity() {
+                        guard !Task.isCancelled else { return }
                         switch activityEvent {
                         case .active:
-                            Self.logger.debug("👨‍🔧 Audio track for \(source.sourceId) is active")
-                            self.inactiveAudioSources.remove(source.sourceId)
-                            self.audioTrackStateUpdateSubject.send((source.sourceId, true))
+                            Self.logger.debug("👨‍🔧 Audio track for \(source.sourceId) is active, \(audioTrack.isActive)")
+                            self.audioTrackStateUpdateSubject.send(source.sourceId)
 
                         case .inactive:
-                            Self.logger.debug("👨‍🔧 Audio track for \(source.sourceId) is inactive")
-                            self.inactiveAudioSources.insert(source.sourceId)
-                            self.audioTrackStateUpdateSubject.send((source.sourceId, false))
+                            Self.logger.debug("👨‍🔧 Audio track for \(source.sourceId) is inactive, \(audioTrack.isActive)")
+                            self.audioTrackStateUpdateSubject.send(source.sourceId)
                         }
                     }
                 }
@@ -178,16 +155,15 @@ private extension SourceBuilder {
                 Self.logger.debug("👨‍🔧 Registering for video track lifecycle events of \(source.sourceId)")
                 let videoTrackActivityObservation = Task {
                     for await activityEvent in source.videoTrack.activity() {
+                        guard !Task.isCancelled else { return }
                         switch activityEvent {
                         case .active:
-                            Self.logger.debug("👨‍🔧 Video track for \(source.sourceId) is active")
-                            self.inactiveVideoSources.remove(source.sourceId)
-                            self.videoTrackStateUpdateSubject.send((source.sourceId, true))
+                            Self.logger.debug("👨‍🔧 Video track for \(source.sourceId) is active, \(source.videoTrack.isActive)")
+                            self.videoTrackStateUpdateSubject.send(source.sourceId)
                             
                         case .inactive:
-                            Self.logger.debug("👨‍🔧 Video track for \(source.sourceId) is inactive")
-                            self.inactiveVideoSources.insert(source.sourceId)
-                            self.videoTrackStateUpdateSubject.send((source.sourceId, false))
+                            Self.logger.debug("👨‍🔧 Video track for \(source.sourceId) is inactive, \(source.videoTrack.isActive)")
+                            self.videoTrackStateUpdateSubject.send(source.sourceId)
                         }
                     }
                 }

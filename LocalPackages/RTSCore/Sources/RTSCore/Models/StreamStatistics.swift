@@ -15,7 +15,6 @@ public struct StatsInboundRtp: Equatable, Hashable {
     public let kind: String
     public let sid: String
     public let mid: String
-    public let decoderImplementation: String?
     public let decoder: String?
     public let processingDelay: Double
     public let decodeTime: Double
@@ -85,7 +84,6 @@ extension StatsInboundRtp {
         kind = stats.kind as String
         sid = stats.sid as String
         mid = stats.mid as String
-        decoderImplementation = stats.decoder_implementation as String?
         frameWidth = Int(stats.frame_width)
         frameHeight = Int(stats.frame_height)
         fps = Int(stats.frames_per_second)

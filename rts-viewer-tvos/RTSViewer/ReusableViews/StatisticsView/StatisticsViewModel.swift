@@ -65,7 +65,7 @@ private extension StatisticsViewModel {
             )
         )
 
-        if let decoderImplementation = videoStatsInboundRtp.decoderImplementation {
+        if let decoderImplementation = videoStatsInboundRtp.decoder {
             result.append(
                 StatsItem(
                     key: String(localized: "stream.stats.decoder-impl.label"),
