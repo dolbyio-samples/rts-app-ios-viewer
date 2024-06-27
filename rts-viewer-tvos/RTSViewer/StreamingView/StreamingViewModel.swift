@@ -40,8 +40,21 @@ final class StreamingViewModel: ObservableObject {
             persistentSettings.liveIndicatorEnabled = isLiveIndicatorEnabled
         }
     }
-    @Published private(set) var videoQualityList: [VideoQuality] = []
-    @Published var selectedVideoQuality: VideoQuality = .auto
+    @Published private(set) var videoQualityList: [VideoQuality] = [] {
+        didSet {
+            // Set video quality selection to auto if the layer is missing
+            if !videoQualityList.contains(where: { $0.encodingId == selectedVideoQuality.encodingId }) {
+                Self.logger.debug("♼ Reset layer to `auto`")
+                switch state {
+                case let .streaming(source: source):
+                    select(videoQuality: .auto, for: source)
+                default:
+                    break
+                }
+            }
+        }
+    }
+    @Published private(set) var selectedVideoQuality: VideoQuality = .auto
 
     let subscriptionManager: SubscriptionManager
     let rendererRegistry: RendererRegistry
@@ -82,6 +95,29 @@ final class StreamingViewModel: ObservableObject {
         isLiveIndicatorEnabled = enabled
     }
 
+    func select(videoQuality: VideoQuality, for source: StreamSource) {
+        guard videoQuality.encodingId != selectedVideoQuality.encodingId else {
+            return
+        }
+
+        Task(priority: .userInitiated) { [weak self] in
+            guard let self else { return }
+            do {
+                Self.logger.debug("🎰 Select video quality")
+                let renderer = self.rendererRegistry.acceleratedRenderer(for: source)
+                self.selectedVideoQuality = videoQuality
+                switch videoQuality {
+                case .auto:
+                    try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
+                case let .quality(underlyingLayer):
+                    try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: underlyingLayer), promote: true)
+                }
+            } catch {
+                Self.logger.debug("🎰 Select video quality error \(error.localizedDescription)")
+            }
+        }
+    }
+
     // swiftlint: disable function_body_length cyclomatic_complexity
     private func setupStateObservers() async {
         stateObservation = Task(priority: .userInitiated) { [weak self] in
@@ -102,6 +138,7 @@ final class StreamingViewModel: ObservableObject {
                                     subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
                                     source: nil
                                 )
+                                self.selectedVideoQuality = .auto
                                 return
                             }
 
@@ -213,31 +250,27 @@ extension StreamingViewModel {
 
     // swiftlint:disable function_body_length
     func observeLayerEvents(for source: StreamSource) async {
-        var tasks: [Task<Void, Never>] = []
-        if layersEventsObservationDictionary[source.sourceId] == nil {
-            Self.logger.debug("♼ Registering layer events for \(source.sourceId)")
-            let layerEventsObservationTask = Task {
-                for await layerEvent in source.videoTrack.layers() {
-                    guard !Task.isCancelled else { return }
-
-                    let videoQualities = layerEvent.layers()
-                        .map(VideoQuality.init)
-                        .reduce([.auto]) { $0 + [$1] }
-                    self.videoQualityList = videoQualities
-                }
-            }
-
-            layersEventsObservationDictionary[source.sourceId] = layerEventsObservationTask
-            tasks.append(layerEventsObservationTask)
+        if layersEventsObservationDictionary[source.sourceId] != nil {
+            layersEventsObservationDictionary[source.sourceId]?.cancel()
+            layersEventsObservationDictionary[source.sourceId] = nil
         }
 
-        _ = await withTaskGroup(of: Void.self) { group in
-            for task in tasks {
-                group.addTask {
-                    await task.value
-                }
+        Self.logger.debug("♼ Registering layer events for \(source.sourceId)")
+        let layerEventsObservationTask = Task {
+            for await layerEvent in source.videoTrack.layers() {
+                guard !Task.isCancelled else { return }
+
+                let videoQualities = layerEvent.layers()
+                    .map(VideoQuality.init)
+                    .reduce([.auto]) { $0 + [$1] }
+                Self.logger.debug("♼ Received layers \(videoQualities.count)")
+                self.videoQualityList = videoQualities
             }
         }
+
+        layersEventsObservationDictionary[source.sourceId] = layerEventsObservationTask
+
+        _ = await layerEventsObservationTask.value
     }
     // swiftlint:enable function_body_length
 

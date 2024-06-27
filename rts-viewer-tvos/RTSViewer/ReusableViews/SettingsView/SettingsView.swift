@@ -23,7 +23,7 @@ struct SettingsView: View {
     @FocusState private var focus: FocusableField?
 
     private let theme = ThemeManager.shared.theme
-    private let onUpdateSelectedVideoQuality: (VideoQuality) -> Void
+    private let onSelectVideoQuality: (StreamSource, VideoQuality) -> Void
 
     init(
         source: StreamSource,
@@ -32,17 +32,16 @@ struct SettingsView: View {
         videoQualityList: [VideoQuality],
         selectedVideoQuality: VideoQuality,
         rendererRegistry: RendererRegistry,
-        onUpdateSelectedVideoQuality: @escaping (VideoQuality) -> Void
+        onSelectVideoQuality: @escaping (StreamSource, VideoQuality) -> Void
     ) {
         viewModel = SettingViewModel(
             source: source,
             videoQualityList: videoQualityList,
-            selectedVideoQuality: selectedVideoQuality,
-            rendererRegistry: rendererRegistry
+            selectedVideoQuality: selectedVideoQuality
         )
         _showStatsView = showStatsView
         _showLiveIndicator = showLiveIndicator
-        self.onUpdateSelectedVideoQuality = onUpdateSelectedVideoQuality
+        self.onSelectVideoQuality = onSelectVideoQuality
     }
 
     var body: some View {
@@ -72,8 +71,7 @@ struct SettingsView: View {
                     selectedVideoQuality: viewModel.selectedVideoQuality) { videoQuality in
                         Task {
                             showSimulcastView = false
-                            onUpdateSelectedVideoQuality(videoQuality)
-                            try await viewModel.select(videoQuality: videoQuality)
+                            onSelectVideoQuality(viewModel.source, videoQuality)
                         }
                     }
                     .onExitCommand {
