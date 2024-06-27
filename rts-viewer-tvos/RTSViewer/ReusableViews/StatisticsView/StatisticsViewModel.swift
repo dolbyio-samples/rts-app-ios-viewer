@@ -8,7 +8,6 @@ import RTSCore
 import UIKit
 import SwiftUI
 
-@MainActor
 final class StatisticsViewModel: ObservableObject {
 
     struct StatsItem: Identifiable {
@@ -18,32 +17,11 @@ final class StatisticsViewModel: ObservableObject {
     }
 
     private let source: StreamSource
-    private let subscriptionManager: SubscriptionManager
-    private var subscriptions: [AnyCancellable] = []
+    let statsItems: [StatsItem]
 
-    @Published private(set) var statsDataList: [StatsItem] = []
-
-    init(source: StreamSource, subscriptionManager: SubscriptionManager) {
+    init(source: StreamSource, streamStatistics: StreamStatistics) {
         self.source = source
-        self.subscriptionManager = subscriptionManager
-
-        Task { [weak self] in
-            guard let self else { return }
-            let subscription = await subscriptionManager.$streamStatistics
-                .sink { statisticsReport in
-                    guard let statisticsReport else { return }
-                    Task {
-                        await MainActor.run {
-                            self.statsDataList = self.makeStatsList(from: statisticsReport)
-                        }
-                    }
-                }
-            self.store(subscription: subscription)
-        }
-    }
-
-    private func store(subscription: AnyCancellable) {
-        subscriptions.append(subscription)
+        statsItems = Self.makeStatsList(from: source, streamStatistics: streamStatistics)
     }
 }
 
@@ -51,12 +29,12 @@ final class StatisticsViewModel: ObservableObject {
 private extension StatisticsViewModel {
 
     // swiftlint:disable function_body_length
-    func makeStatsList(from streamStatistics: StreamStatistics) -> [StatsItem] {
+    static func makeStatsList(from source: StreamSource, streamStatistics: StreamStatistics) -> [StatsItem] {
         var result = [StatsItem]()
-        guard let videoStatsInboundRtp = streamStatistics.videoStatsInboundRtpList.first else {
+        guard let videoStatsInboundRtp = streamStatistics.videoStatsInboundRtpList.first(where: { $0.mid == source.videoTrack.currentMID }) else {
             return []
         }
-        let audioStatsInboundRtp = streamStatistics.audioStatsInboundRtpList.first
+        let audioStatsInboundRtp = streamStatistics.audioStatsInboundRtpList.first(where: { $0.mid == source.videoTrack.currentMID })
 
         if let mid = videoStatsInboundRtp.mid {
             result.append(
@@ -242,7 +220,7 @@ private extension StatisticsViewModel {
     }
     // swiftlint:enable function_body_length
 
-    func dateString(timestamp: Double) -> String {
+    static func dateString(timestamp: Double) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.locale = NSLocale.current
@@ -252,16 +230,16 @@ private extension StatisticsViewModel {
         return dateFormatter.string(from: date)
     }
 
-    func formatBytes(bytes: Int) -> String {
+    static func formatBytes(bytes: Int) -> String {
         return "\(formatNumber(input: bytes))B"
     }
 
-    func formatBitRate(bitRate: Int) -> String {
+    static func formatBitRate(bitRate: Int) -> String {
         let value = formatNumber(input: bitRate).lowercased()
         return "\(value)bps"
     }
 
-    func formatNumber(input: Int) -> String {
+    static func formatNumber(input: Int) -> String {
         if input < KILOBYTES { return String(input) }
         if input >= KILOBYTES && input < MEGABYTES { return "\(input / KILOBYTES) K"} else { return "\(input / MEGABYTES) M" }
     }

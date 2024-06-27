@@ -8,10 +8,10 @@ import RTSCore
 import Foundation
 
 struct StatisticsView: View {
-    @ObservedObject private var viewModel: StatisticsViewModel
+    private let viewModel: StatisticsViewModel
 
-    init(source: StreamSource, subscriptionManager: SubscriptionManager) {
-        viewModel = StatisticsViewModel(source: source, subscriptionManager: subscriptionManager)
+    init(source: StreamSource, streamStatistics: StreamStatistics) {
+        viewModel = StatisticsViewModel(source: source, streamStatistics: streamStatistics)
     }
 
     private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption2, style: .caption2)
@@ -39,7 +39,7 @@ struct StatisticsView: View {
             Spacer()
                 .frame(height: Layout.spacing1x)
 
-            ForEach(viewModel.statsDataList) { item in
+            ForEach(viewModel.statsItems) { item in
                 HStack {
                     Text(item.key)
                         .font(theme[fontAssetTable])

@@ -45,8 +45,8 @@ struct StreamingView: View {
                             .padding()
                         }
                         .overlay(alignment: .bottomLeading) {
-                            if showStatsView {
-                                StatisticsView(source: source, subscriptionManager: viewModel.subscriptionManager)
+                            if showStatsView, let streamStatistics = viewModel.streamStatistics {
+                                StatisticsView(source: source, streamStatistics: streamStatistics)
                             }
                         }
                         .overlay(alignment: .trailing) {

@@ -26,13 +26,14 @@ final class StreamingViewModel: ObservableObject {
 
     private var subscriptions: [AnyCancellable] = []
 
-    enum ViewState {
+    enum ViewState: Equatable {
         case disconnected
         case streaming(source: StreamSource)
         case noNetwork(title: String)
         case streamNotPublished(title: String, subtitle: String, source: StreamSource?)
         case otherError(message: String)
     }
+
     @Published private(set) var state: ViewState = .disconnected
     @Published private(set) var isLiveIndicatorEnabled: Bool {
         didSet {
@@ -54,6 +55,7 @@ final class StreamingViewModel: ObservableObject {
         }
     }
     @Published private(set) var selectedVideoQuality: VideoQuality = .auto
+    @Published private(set) var streamStatistics: StreamStatistics?
 
     let subscriptionManager: SubscriptionManager
     let rendererRegistry: RendererRegistry
@@ -76,6 +78,7 @@ final class StreamingViewModel: ObservableObject {
         Task(priority: .userInitiated) { [weak self] in
             await self?.setupStateObservers()
         }
+        observeStreamStatistics()
     }
 
     @objc func subscribeToStream() {
@@ -269,6 +272,7 @@ extension StreamingViewModel {
         reconnectionTimer?.invalidate()
         reconnectionTimer = nil
         clearLayerInformation()
+        streamStatistics = nil
     }
 
     func clearLayerInformation() {
@@ -278,5 +282,19 @@ extension StreamingViewModel {
 
     func scheduleReconnection() {
         self.reconnectionTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(subscribeToStream), userInfo: nil, repeats: false)
+    }
+
+    func observeStreamStatistics() {
+        Task { [weak self] in
+            guard let self else { return }
+            await subscriptionManager.$streamStatistics
+                .sink { statistics in
+                    guard let statistics else { return }
+                    Task {
+                        self.streamStatistics = statistics
+                    }
+                }
+                .store(in: &subscriptions)
+        }
     }
 }
