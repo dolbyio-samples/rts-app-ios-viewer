@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,54 +11,45 @@
 		631DD25826F1E18E0023D24A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1D26B2AF4200B206A3 /* ContentView.swift */; };
 		631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */; };
 		631DD26326F1E18E0023D24A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */; };
-		637644BA2726F08300519FDD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 637644B92726F08300519FDD /* Assets.xcassets */; };
-		6D29393C2988C844004EF087 /* AnyGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D29393A2988C844004EF087 /* AnyGestureRecognizer.swift */; };
-		6D61A9DC2999E3A1004CAF9E /* StreamToolbarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61A9DA2999E3A1004CAF9E /* StreamToolbarViewModel.swift */; };
-		6D61A9E3299AEE67004CAF9E /* StreamingToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61A9E1299AECE6004CAF9E /* StreamingToolbarView.swift */; };
-		6D61A9FC299DBC30004CAF9E /* StreamConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61A9FA299DBC30004CAF9E /* StreamConnectionView.swift */; };
+		6D61A9FC299DBC30004CAF9E /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61A9FA299DBC30004CAF9E /* ErrorView.swift */; };
 		6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61AA06299F51AC004CAF9E /* VideoView.swift */; };
 		6D6382B92977BCAE00DF4DA7 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
+		E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC82C1010BE001733EA /* Assets.xcassets */; };
+		E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC92C1010BE001733EA /* Localizable.strings */; };
+		E825CC222C2D0FF8009D878B /* RTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E825CC212C2D0FF8009D878B /* RTSCore */; };
 		E82A0C13296CEA0F007214B8 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */; };
-		E82A0C15296CEA12007214B8 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82A0C14296CEA12007214B8 /* RTSComponentKit */; };
-		E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */; };
-		E82A0C20296D0F04007214B8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E82A0C1C296D0F04007214B8 /* Localizable.strings */; };
-		E82FC5072977CF3E0050777F /* Task+Delayed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82FC5052977CF3B0050777F /* Task+Delayed.swift */; };
+		E82A0C1E296D0F04007214B8 /* StreamDetailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A0C1A296D0F04007214B8 /* StreamDetailInputView.swift */; };
 		E83CDA3A2A10917A008690FD /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA2F2A10917A008690FD /* FooterView.swift */; };
 		E83CDA3D2A10917A008690FD /* NavigationHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA312A10917A008690FD /* NavigationHeaderView.swift */; };
-		E83CDA462A10917A008690FD /* VideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA362A10917A008690FD /* VideoRenderer.swift */; };
 		E83CDA492A10917A008690FD /* BackgroundContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA382A10917A008690FD /* BackgroundContainerView.swift */; };
 		E83CDA512A1092A3008690FD /* ImageAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CDA4F2A1092A3008690FD /* ImageAsset.swift */; };
-		E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844ABEB296DA5B20067B78C /* StreamingScreen.swift */; };
+		E83F0F932C192D4B00F6FA6B /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83F0F922C192D4B00F6FA6B /* SettingsViewModel.swift */; };
+		E83F0F962C192ECF00F6FA6B /* LiveIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83F0F952C192ECF00F6FA6B /* LiveIndicatorView.swift */; };
+		E83F0F982C19305800F6FA6B /* SettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83F0F972C19305800F6FA6B /* SettingsButton.swift */; };
+		E844ABED296DA5B20067B78C /* StreamingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844ABEB296DA5B20067B78C /* StreamingView.swift */; };
 		E8752B4B298C72F7002D5C2B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B49298C72F7002D5C2B /* CoreDataManager.swift */; };
 		E8752B4F298C75BD002D5C2B /* StreamDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B4D298C75BD002D5C2B /* StreamDetail.swift */; };
 		E8752B52298C7D02002D5C2B /* DateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B50298C7D02002D5C2B /* DateProvider.swift */; };
 		E8752B57298C7F9F002D5C2B /* RecentStreamsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B55298C7F9F002D5C2B /* RecentStreamsViewModel.swift */; };
 		E8752B5A298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B58298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift */; };
 		E8752B69298CA513002D5C2B /* StreamDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B68298CA513002D5C2B /* StreamDataManagerTests.swift */; };
-		E8752B6D298CA614002D5C2B /* RecentStreamsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B6C298CA614002D5C2B /* RecentStreamsViewModelTests.swift */; };
-		E8752B6F298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B6E298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift */; };
 		E8752B72298CA78D002D5C2B /* MockDateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B71298CA78D002D5C2B /* MockDateProvider.swift */; };
 		E8752B74298CB535002D5C2B /* MockStreamDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B73298CB535002D5C2B /* MockStreamDataManager.swift */; };
 		E8B48E86297A2957000DC59A /* RecentStreamButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B48E84297A2957000DC59A /* RecentStreamButton.swift */; };
-		E8BA8E102991CB0E0043DEE1 /* DisplayStreamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BA8E0E2991CB0E0043DEE1 /* DisplayStreamViewModel.swift */; };
+		E8BA8E102991CB0E0043DEE1 /* StreamingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BA8E0E2991CB0E0043DEE1 /* StreamingViewModel.swift */; };
 		E8BA8E192991E8B30043DEE1 /* SimulcastViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BA8E172991E8B30043DEE1 /* SimulcastViewModel.swift */; };
 		E8BA8E1D2991EED30043DEE1 /* SimulcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BA8E1B2991EED30043DEE1 /* SimulcastView.swift */; };
 		E8BA8E202991EF3C0043DEE1 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BA8E1E2991EF3C0043DEE1 /* SettingsView.swift */; };
 		E8BA8E232991FE400043DEE1 /* StatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BA8E212991FE400043DEE1 /* StatisticsViewModel.swift */; };
 		E8C47C6E29778BAA0026E877 /* StreamDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6C29778BAA0026E877 /* StreamDataManager.swift */; };
 		E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E8C47C6F29778BD00026E877 /* RTSViewer.xcdatamodeld */; };
-		E8D1947C29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */; };
+		E8C776D42C2BE948002DE392 /* RTSCore in Frameworks */ = {isa = PBXBuildFile; productRef = E8C776D32C2BE948002DE392 /* RTSCore */; };
+		E8C776D72C2BEA5F002DE392 /* DolbyIOUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8C776D62C2BEA5F002DE392 /* DolbyIOUIKit */; };
+		E8C776D92C2BEEA5002DE392 /* VideoQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */; };
+		E8D1947C29717D410080C4E0 /* RecentStreamsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsView.swift */; };
 		E8D5AE59299068E20019C132 /* StreamDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */; };
-		E8D5AE5D2990840E0019C132 /* MockRTSDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */; };
-		E8D5AE5F299088EF0019C132 /* MockSubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */; };
-		E8D5AE6129908D690019C132 /* RTSComponentKit in Frameworks */ = {isa = PBXBuildFile; productRef = E8D5AE6029908D690019C132 /* RTSComponentKit */; };
-		E8D5AE6629908DDB0019C132 /* StreamDetailInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */; };
-		E8E1855C2A10970600BF4726 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E1855A2A10970600BF4726 /* NetworkMonitor.swift */; };
-		E8F2EE24299324AF00AF0471 /* SimulcastViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE23299324AF00AF0471 /* SimulcastViewModelTests.swift */; };
-		E8F2EE262993276B00AF0471 /* DisplayStreamViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE252993276B00AF0471 /* DisplayStreamViewModelTests.swift */; };
 		E8F2EE2829932A9100AF0471 /* MockPersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE2729932A9100AF0471 /* MockPersistentSettings.swift */; };
-		E8F2EE2A29932C4900AF0471 /* MockNetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE2929932C4900AF0471 /* MockNetworkMonitor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,30 +86,28 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3FA8DB9827046061009713E8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3FA8DBA82704AECD009713E8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTSViewer.swift; sourceTree = "<group>"; };
 		3FE90C1D26B2AF4200B206A3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RTSViewer TVOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		637644B92726F08300519FDD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		6D29393A2988C844004EF087 /* AnyGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyGestureRecognizer.swift; sourceTree = "<group>"; };
-		6D61A9DA2999E3A1004CAF9E /* StreamToolbarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamToolbarViewModel.swift; sourceTree = "<group>"; };
-		6D61A9E1299AECE6004CAF9E /* StreamingToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingToolbarView.swift; sourceTree = "<group>"; };
-		6D61A9FA299DBC30004CAF9E /* StreamConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamConnectionView.swift; sourceTree = "<group>"; };
+		6D61A9FA299DBC30004CAF9E /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		6D61AA06299F51AC004CAF9E /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
+		E80E2BC82C1010BE001733EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E80E2BC92C1010BE001733EA /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		E80E2BCA2C1010BE001733EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = IDETemplateMacros.plist; path = RTSViewer.xcworkspace/xcshareddata/IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
-		E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDetailInputScreen.swift; sourceTree = "<group>"; };
-		E82A0C1C296D0F04007214B8 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		E82FC5052977CF3B0050777F /* Task+Delayed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Delayed.swift"; sourceTree = "<group>"; };
+		E82A0C1A296D0F04007214B8 /* StreamDetailInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDetailInputView.swift; sourceTree = "<group>"; };
 		E83CDA2F2A10917A008690FD /* FooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		E83CDA312A10917A008690FD /* NavigationHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationHeaderView.swift; sourceTree = "<group>"; };
-		E83CDA362A10917A008690FD /* VideoRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoRenderer.swift; sourceTree = "<group>"; };
 		E83CDA382A10917A008690FD /* BackgroundContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundContainerView.swift; sourceTree = "<group>"; };
 		E83CDA4F2A1092A3008690FD /* ImageAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageAsset.swift; sourceTree = "<group>"; };
-		E844ABEB296DA5B20067B78C /* StreamingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingScreen.swift; sourceTree = "<group>"; };
+		E83F0F922C192D4B00F6FA6B /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		E83F0F952C192ECF00F6FA6B /* LiveIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveIndicatorView.swift; sourceTree = "<group>"; };
+		E83F0F972C19305800F6FA6B /* SettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButton.swift; sourceTree = "<group>"; };
+		E844ABEB296DA5B20067B78C /* StreamingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingView.swift; sourceTree = "<group>"; };
 		E8649BF0295284F400309BF7 /* TVOSDebugSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TVOSDebugSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BF1295284F400309BF7 /* TVOSReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TVOSReleaseSettings.xcconfig; sourceTree = "<group>"; };
 		E8649BF2295299FB00309BF7 /* fastlane */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fastlane; sourceTree = "<group>"; };
@@ -129,28 +118,20 @@
 		E8752B58298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamButtonViewModel.swift; sourceTree = "<group>"; };
 		E8752B5F298CA4C4002D5C2B /* RTSViewerTVOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RTSViewerTVOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8752B68298CA513002D5C2B /* StreamDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDataManagerTests.swift; sourceTree = "<group>"; };
-		E8752B6C298CA614002D5C2B /* RecentStreamsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsViewModelTests.swift; sourceTree = "<group>"; };
-		E8752B6E298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamButtonViewModelTests.swift; sourceTree = "<group>"; };
 		E8752B71298CA78D002D5C2B /* MockDateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDateProvider.swift; sourceTree = "<group>"; };
 		E8752B73298CB535002D5C2B /* MockStreamDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStreamDataManager.swift; sourceTree = "<group>"; };
 		E8B48E84297A2957000DC59A /* RecentStreamButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamButton.swift; sourceTree = "<group>"; };
-		E8BA8E0E2991CB0E0043DEE1 /* DisplayStreamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayStreamViewModel.swift; sourceTree = "<group>"; };
+		E8BA8E0E2991CB0E0043DEE1 /* StreamingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingViewModel.swift; sourceTree = "<group>"; };
 		E8BA8E172991E8B30043DEE1 /* SimulcastViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulcastViewModel.swift; sourceTree = "<group>"; };
 		E8BA8E1B2991EED30043DEE1 /* SimulcastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulcastView.swift; sourceTree = "<group>"; };
 		E8BA8E1E2991EF3C0043DEE1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E8BA8E212991FE400043DEE1 /* StatisticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewModel.swift; sourceTree = "<group>"; };
 		E8C47C6C29778BAA0026E877 /* StreamDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamDataManager.swift; sourceTree = "<group>"; };
 		E8C47C7029778BD00026E877 /* RTSViewer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RTSViewer.xcdatamodel; sourceTree = "<group>"; };
-		E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsScreen.swift; sourceTree = "<group>"; };
+		E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoQuality.swift; sourceTree = "<group>"; };
+		E8D1947A29717D410080C4E0 /* RecentStreamsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsView.swift; sourceTree = "<group>"; };
 		E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModel.swift; sourceTree = "<group>"; };
-		E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRTSDataStore.swift; sourceTree = "<group>"; };
-		E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSubscriptionManager.swift; sourceTree = "<group>"; };
-		E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModelTests.swift; sourceTree = "<group>"; };
-		E8E1855A2A10970600BF4726 /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
-		E8F2EE23299324AF00AF0471 /* SimulcastViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulcastViewModelTests.swift; sourceTree = "<group>"; };
-		E8F2EE252993276B00AF0471 /* DisplayStreamViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayStreamViewModelTests.swift; sourceTree = "<group>"; };
 		E8F2EE2729932A9100AF0471 /* MockPersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPersistentSettings.swift; sourceTree = "<group>"; };
-		E8F2EE2929932C4900AF0471 /* MockNetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkMonitor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,8 +139,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8C776D72C2BEA5F002DE392 /* DolbyIOUIKit in Frameworks */,
+				E8C776D42C2BE948002DE392 /* RTSCore in Frameworks */,
 				E82A0C13296CEA0F007214B8 /* DolbyIOUIKit in Frameworks */,
-				E82A0C15296CEA12007214B8 /* RTSComponentKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,7 +149,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8D5AE6129908D690019C132 /* RTSComponentKit in Frameworks */,
+				E825CC222C2D0FF8009D878B /* RTSCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,13 +159,12 @@
 		3FE90C0F26B2AF4200B206A3 = {
 			isa = PBXGroup;
 			children = (
-				E8575F752999A14B001E609C /* Common */,
 				E8649BED295284F400309BF7 /* Configuration */,
 				E8649BF2295299FB00309BF7 /* fastlane */,
+				E8A0C5CA2A10B88000C1D99B /* Frameworks */,
 				3FE90C1926B2AF4200B206A3 /* Products */,
 				3FE90C1A26B2AF4200B206A3 /* RTSViewer */,
 				E8752B60298CA4C4002D5C2B /* RTSViewer TVOSTests */,
-				E8A0C5CA2A10B88000C1D99B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -199,11 +180,19 @@
 		3FE90C1A26B2AF4200B206A3 /* RTSViewer */ = {
 			isa = PBXGroup;
 			children = (
-				E83CDA0E2A1088A8008690FD /* Common */,
-				E8575F762999A17C001E609C /* TVOS */,
+				3FE90C1D26B2AF4200B206A3 /* ContentView.swift */,
 				E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */,
+				E8752B4C298C75A4002D5C2B /* Models */,
+				E8C47C6B29778BAA0026E877 /* Persistence */,
 				3FE90C2126B2AF4300B206A3 /* Preview Content */,
 				3FA8DBA82704AECD009713E8 /* README.md */,
+				E8D1947929717D050080C4E0 /* RecentStreamsView */,
+				E80E2BC72C1010BE001733EA /* Resources */,
+				E83CDA2D2A10917A008690FD /* ReusableViews */,
+				3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */,
+				E82A0C19296D0F04007214B8 /* StreamDetailInputView */,
+				E844ABEA296DA4C60067B78C /* StreamingView */,
+				E82FC5042977CF2A0050777F /* Utils */,
 			);
 			path = RTSViewer;
 			sourceTree = "<group>";
@@ -216,42 +205,50 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		E82A0C19296D0F04007214B8 /* StreamDetailInputScreen */ = {
+		E80E2BC72C1010BE001733EA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E82A0C1A296D0F04007214B8 /* StreamDetailInputScreen.swift */,
+				E80E2BC82C1010BE001733EA /* Assets.xcassets */,
+				E80E2BC92C1010BE001733EA /* Localizable.strings */,
+				E80E2BCA2C1010BE001733EA /* Info.plist */,
 			);
-			path = StreamDetailInputScreen;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E82A0C19296D0F04007214B8 /* StreamDetailInputView */ = {
+			isa = PBXGroup;
+			children = (
+				E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */,
+				E82A0C1A296D0F04007214B8 /* StreamDetailInputView.swift */,
+			);
+			path = StreamDetailInputView;
 			sourceTree = "<group>";
 		};
 		E82FC5042977CF2A0050777F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				E8E1855A2A10970600BF4726 /* NetworkMonitor.swift */,
 				E83CDA4F2A1092A3008690FD /* ImageAsset.swift */,
-				E82FC5052977CF3B0050777F /* Task+Delayed.swift */,
 				E8752B50298C7D02002D5C2B /* DateProvider.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		E83CDA0E2A1088A8008690FD /* Common */ = {
+		E83CDA2D2A10917A008690FD /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
-				E8F32B562999AA7B00DF3D5B /* StreamingScreen */,
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		E83CDA2D2A10917A008690FD /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				E83CDA2E2A10917A008690FD /* Footer */,
-				E83CDA302A10917A008690FD /* NavigationViews */,
-				E83CDA352A10917A008690FD /* VideoRenderer */,
 				E83CDA372A10917A008690FD /* BackgroundView */,
+				E83F0F9B2C19326100F6FA6B /* ErrorView */,
+				E83CDA2E2A10917A008690FD /* Footer */,
+				E83F0F942C192EB800F6FA6B /* LiveIndicatorView */,
+				E83CDA302A10917A008690FD /* NavigationViews */,
+				E8B9777B2C0F518600DDA99E /* RecentStreamButton */,
+				E83F0F992C19305F00F6FA6B /* SettingsButton */,
+				E83F0F912C192D2B00F6FA6B /* SettingsView */,
+				E8B977702C0F4CE500DDA99E /* SimulcastView */,
+				E8B977712C0F4D1100DDA99E /* StatisticsView */,
+				E83F0F9C2C19328D00F6FA6B /* VideoView */,
 			);
-			path = Components;
+			path = ReusableViews;
 			sourceTree = "<group>";
 		};
 		E83CDA2E2A10917A008690FD /* Footer */ = {
@@ -270,14 +267,6 @@
 			path = NavigationViews;
 			sourceTree = "<group>";
 		};
-		E83CDA352A10917A008690FD /* VideoRenderer */ = {
-			isa = PBXGroup;
-			children = (
-				E83CDA362A10917A008690FD /* VideoRenderer.swift */,
-			);
-			path = VideoRenderer;
-			sourceTree = "<group>";
-		};
 		E83CDA372A10917A008690FD /* BackgroundView */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,52 +275,54 @@
 			path = BackgroundView;
 			sourceTree = "<group>";
 		};
-		E844ABEA296DA4C60067B78C /* StreamingScreen */ = {
+		E83F0F912C192D2B00F6FA6B /* SettingsView */ = {
 			isa = PBXGroup;
 			children = (
-				6D29393A2988C844004EF087 /* AnyGestureRecognizer.swift */,
 				E8BA8E1E2991EF3C0043DEE1 /* SettingsView.swift */,
-				E8BA8E1B2991EED30043DEE1 /* SimulcastView.swift */,
-				6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */,
-				E844ABEB296DA5B20067B78C /* StreamingScreen.swift */,
-				6D61A9E1299AECE6004CAF9E /* StreamingToolbarView.swift */,
+				E83F0F922C192D4B00F6FA6B /* SettingsViewModel.swift */,
+			);
+			path = SettingsView;
+			sourceTree = "<group>";
+		};
+		E83F0F942C192EB800F6FA6B /* LiveIndicatorView */ = {
+			isa = PBXGroup;
+			children = (
+				E83F0F952C192ECF00F6FA6B /* LiveIndicatorView.swift */,
+			);
+			path = LiveIndicatorView;
+			sourceTree = "<group>";
+		};
+		E83F0F992C19305F00F6FA6B /* SettingsButton */ = {
+			isa = PBXGroup;
+			children = (
+				E83F0F972C19305800F6FA6B /* SettingsButton.swift */,
+			);
+			path = SettingsButton;
+			sourceTree = "<group>";
+		};
+		E83F0F9B2C19326100F6FA6B /* ErrorView */ = {
+			isa = PBXGroup;
+			children = (
+				6D61A9FA299DBC30004CAF9E /* ErrorView.swift */,
+			);
+			path = ErrorView;
+			sourceTree = "<group>";
+		};
+		E83F0F9C2C19328D00F6FA6B /* VideoView */ = {
+			isa = PBXGroup;
+			children = (
 				6D61AA06299F51AC004CAF9E /* VideoView.swift */,
 			);
-			path = StreamingScreen;
+			path = VideoView;
 			sourceTree = "<group>";
 		};
-		E8575F752999A14B001E609C /* Common */ = {
+		E844ABEA296DA4C60067B78C /* StreamingView */ = {
 			isa = PBXGroup;
 			children = (
-				3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */,
-				E83CDA2D2A10917A008690FD /* Components */,
-				E8C47C6B29778BAA0026E877 /* Persistence */,
-				E8F32B542999AA3300DF3D5B /* Recent Streams */,
-				E82FC5042977CF2A0050777F /* Utils */,
+				E8BA8E0E2991CB0E0043DEE1 /* StreamingViewModel.swift */,
+				E844ABEB296DA5B20067B78C /* StreamingView.swift */,
 			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		E8575F762999A17C001E609C /* TVOS */ = {
-			isa = PBXGroup;
-			children = (
-				3FE90C1D26B2AF4200B206A3 /* ContentView.swift */,
-				E8D1947929717D050080C4E0 /* RecentStreamsScreen */,
-				E861E325299EFCD100AEB3B5 /* Resources */,
-				E82A0C19296D0F04007214B8 /* StreamDetailInputScreen */,
-				E844ABEA296DA4C60067B78C /* StreamingScreen */,
-			);
-			path = TVOS;
-			sourceTree = "<group>";
-		};
-		E861E325299EFCD100AEB3B5 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				637644B92726F08300519FDD /* Assets.xcassets */,
-				3FA8DB9827046061009713E8 /* Info.plist */,
-				E82A0C1C296D0F04007214B8 /* Localizable.strings */,
-			);
-			name = Resources;
+			path = StreamingView;
 			sourceTree = "<group>";
 		};
 		E8649BED295284F400309BF7 /* Configuration */ = {
@@ -347,27 +338,16 @@
 			isa = PBXGroup;
 			children = (
 				E8752B4D298C75BD002D5C2B /* StreamDetail.swift */,
+				E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		E8752B54298C7F6E002D5C2B /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				E8752B55298C7F9F002D5C2B /* RecentStreamsViewModel.swift */,
-				E8752B58298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift */,
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		E8752B60298CA4C4002D5C2B /* RTSViewer TVOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				E8F2EE222993249400AF0471 /* DisplayStreamScreen */,
 				E8752B70298CA779002D5C2B /* Mocks */,
 				E8752B6A298CA596002D5C2B /* Persistence */,
-				E8752B6B298CA605002D5C2B /* RecentStreamsScreen */,
-				E8D5AE6429908DB20019C132 /* StreamDetailInputScreen */,
 			);
 			path = "RTSViewer TVOSTests";
 			sourceTree = "<group>";
@@ -380,24 +360,12 @@
 			path = Persistence;
 			sourceTree = "<group>";
 		};
-		E8752B6B298CA605002D5C2B /* RecentStreamsScreen */ = {
-			isa = PBXGroup;
-			children = (
-				E8752B6C298CA614002D5C2B /* RecentStreamsViewModelTests.swift */,
-				E8752B6E298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift */,
-			);
-			path = RecentStreamsScreen;
-			sourceTree = "<group>";
-		};
 		E8752B70298CA779002D5C2B /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
 				E8752B71298CA78D002D5C2B /* MockDateProvider.swift */,
-				E8F2EE2929932C4900AF0471 /* MockNetworkMonitor.swift */,
 				E8F2EE2729932A9100AF0471 /* MockPersistentSettings.swift */,
-				E8D5AE5A299084050019C132 /* MockRTSDataStore.swift */,
 				E8752B73298CB535002D5C2B /* MockStreamDataManager.swift */,
-				E8D5AE5E299088EF0019C132 /* MockSubscriptionManager.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -409,16 +377,31 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		E8BA8E0C2991BC4B0043DEE1 /* ViewModels */ = {
+		E8B977702C0F4CE500DDA99E /* SimulcastView */ = {
 			isa = PBXGroup;
 			children = (
-				E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */,
-				E8BA8E0E2991CB0E0043DEE1 /* DisplayStreamViewModel.swift */,
+				E8BA8E1B2991EED30043DEE1 /* SimulcastView.swift */,
 				E8BA8E172991E8B30043DEE1 /* SimulcastViewModel.swift */,
-				E8BA8E212991FE400043DEE1 /* StatisticsViewModel.swift */,
-				6D61A9DA2999E3A1004CAF9E /* StreamToolbarViewModel.swift */,
 			);
-			path = ViewModels;
+			path = SimulcastView;
+			sourceTree = "<group>";
+		};
+		E8B977712C0F4D1100DDA99E /* StatisticsView */ = {
+			isa = PBXGroup;
+			children = (
+				6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */,
+				E8BA8E212991FE400043DEE1 /* StatisticsViewModel.swift */,
+			);
+			path = StatisticsView;
+			sourceTree = "<group>";
+		};
+		E8B9777B2C0F518600DDA99E /* RecentStreamButton */ = {
+			isa = PBXGroup;
+			children = (
+				E8752B58298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift */,
+				E8B48E84297A2957000DC59A /* RecentStreamButton.swift */,
+			);
+			path = RecentStreamButton;
 			sourceTree = "<group>";
 		};
 		E8C47C6B29778BAA0026E877 /* Persistence */ = {
@@ -432,48 +415,13 @@
 			path = Persistence;
 			sourceTree = "<group>";
 		};
-		E8D1947929717D050080C4E0 /* RecentStreamsScreen */ = {
+		E8D1947929717D050080C4E0 /* RecentStreamsView */ = {
 			isa = PBXGroup;
 			children = (
-				E8752B54298C7F6E002D5C2B /* ViewModels */,
-				E8D1947A29717D410080C4E0 /* RecentStreamsScreen.swift */,
-				E8B48E84297A2957000DC59A /* RecentStreamButton.swift */,
+				E8752B55298C7F9F002D5C2B /* RecentStreamsViewModel.swift */,
+				E8D1947A29717D410080C4E0 /* RecentStreamsView.swift */,
 			);
-			path = RecentStreamsScreen;
-			sourceTree = "<group>";
-		};
-		E8D5AE6429908DB20019C132 /* StreamDetailInputScreen */ = {
-			isa = PBXGroup;
-			children = (
-				E8D5AE6529908DDB0019C132 /* StreamDetailInputViewModelTests.swift */,
-			);
-			path = StreamDetailInputScreen;
-			sourceTree = "<group>";
-		};
-		E8F2EE222993249400AF0471 /* DisplayStreamScreen */ = {
-			isa = PBXGroup;
-			children = (
-				E8F2EE252993276B00AF0471 /* DisplayStreamViewModelTests.swift */,
-				E8F2EE23299324AF00AF0471 /* SimulcastViewModelTests.swift */,
-			);
-			path = DisplayStreamScreen;
-			sourceTree = "<group>";
-		};
-		E8F32B542999AA3300DF3D5B /* Recent Streams */ = {
-			isa = PBXGroup;
-			children = (
-				E8752B4C298C75A4002D5C2B /* Models */,
-			);
-			path = "Recent Streams";
-			sourceTree = "<group>";
-		};
-		E8F32B562999AA7B00DF3D5B /* StreamingScreen */ = {
-			isa = PBXGroup;
-			children = (
-				E8BA8E0C2991BC4B0043DEE1 /* ViewModels */,
-				6D61A9FA299DBC30004CAF9E /* StreamConnectionView.swift */,
-			);
-			path = StreamingScreen;
+			path = RecentStreamsView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -496,7 +444,8 @@
 			name = "RTSViewer TVOS";
 			packageProductDependencies = (
 				E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */,
-				E82A0C14296CEA12007214B8 /* RTSComponentKit */,
+				E8C776D32C2BE948002DE392 /* RTSCore */,
+				E8C776D62C2BEA5F002DE392 /* DolbyIOUIKit */,
 			);
 			productName = "Millicast SDK Sample App in Swift";
 			productReference = 631DD26926F1E18E0023D24A /* RTSViewer TVOS.app */;
@@ -518,7 +467,7 @@
 			);
 			name = RTSViewerTVOSTests;
 			packageProductDependencies = (
-				E8D5AE6029908D690019C132 /* RTSComponentKit */,
+				E825CC212C2D0FF8009D878B /* RTSCore */,
 			);
 			productName = "RTSViewer TVOSTests";
 			productReference = E8752B5F298CA4C4002D5C2B /* RTSViewerTVOSTests.xctest */;
@@ -550,6 +499,8 @@
 			);
 			mainGroup = 3FE90C0F26B2AF4200B206A3;
 			packageReferences = (
+				E8C776D22C2BE948002DE392 /* XCLocalSwiftPackageReference "../LocalPackages/RTSCore" */,
+				E8C776D52C2BEA5F002DE392 /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */,
 			);
 			productRefGroup = 3FE90C1926B2AF4200B206A3 /* Products */;
 			projectDirPath = "";
@@ -567,9 +518,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				631DD26326F1E18E0023D24A /* Preview Assets.xcassets in Resources */,
+				E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */,
+				E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */,
 				3FA8DBAA2704AECD009713E8 /* README.md in Resources */,
-				E82A0C20296D0F04007214B8 /* Localizable.strings in Resources */,
-				637644BA2726F08300519FDD /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -613,34 +564,32 @@
 				E8D5AE59299068E20019C132 /* StreamDetailInputViewModel.swift in Sources */,
 				E83CDA3A2A10917A008690FD /* FooterView.swift in Sources */,
 				E8BA8E202991EF3C0043DEE1 /* SettingsView.swift in Sources */,
-				6D61A9FC299DBC30004CAF9E /* StreamConnectionView.swift in Sources */,
+				6D61A9FC299DBC30004CAF9E /* ErrorView.swift in Sources */,
 				E8B48E86297A2957000DC59A /* RecentStreamButton.swift in Sources */,
 				E8752B52298C7D02002D5C2B /* DateProvider.swift in Sources */,
-				E8D1947C29717D410080C4E0 /* RecentStreamsScreen.swift in Sources */,
+				E8D1947C29717D410080C4E0 /* RecentStreamsView.swift in Sources */,
 				E8BA8E1D2991EED30043DEE1 /* SimulcastView.swift in Sources */,
-				6D61A9E3299AEE67004CAF9E /* StreamingToolbarView.swift in Sources */,
 				E8752B57298C7F9F002D5C2B /* RecentStreamsViewModel.swift in Sources */,
 				6D6382B92977BCAE00DF4DA7 /* StatisticsView.swift in Sources */,
-				E844ABED296DA5B20067B78C /* StreamingScreen.swift in Sources */,
-				6D61A9DC2999E3A1004CAF9E /* StreamToolbarViewModel.swift in Sources */,
+				E844ABED296DA5B20067B78C /* StreamingView.swift in Sources */,
 				E83CDA3D2A10917A008690FD /* NavigationHeaderView.swift in Sources */,
-				E8BA8E102991CB0E0043DEE1 /* DisplayStreamViewModel.swift in Sources */,
-				6D29393C2988C844004EF087 /* AnyGestureRecognizer.swift in Sources */,
+				E8BA8E102991CB0E0043DEE1 /* StreamingViewModel.swift in Sources */,
+				E8C776D92C2BEEA5002DE392 /* VideoQuality.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
+				E83F0F932C192D4B00F6FA6B /* SettingsViewModel.swift in Sources */,
 				E83CDA492A10917A008690FD /* BackgroundContainerView.swift in Sources */,
 				6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */,
-				E82A0C1E296D0F04007214B8 /* StreamDetailInputScreen.swift in Sources */,
+				E82A0C1E296D0F04007214B8 /* StreamDetailInputView.swift in Sources */,
 				E8752B4B298C72F7002D5C2B /* CoreDataManager.swift in Sources */,
-				E82FC5072977CF3E0050777F /* Task+Delayed.swift in Sources */,
-				E8E1855C2A10970600BF4726 /* NetworkMonitor.swift in Sources */,
 				E8BA8E232991FE400043DEE1 /* StatisticsViewModel.swift in Sources */,
 				E8C47C6E29778BAA0026E877 /* StreamDataManager.swift in Sources */,
 				E8752B4F298C75BD002D5C2B /* StreamDetail.swift in Sources */,
+				E83F0F962C192ECF00F6FA6B /* LiveIndicatorView.swift in Sources */,
 				631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */,
 				E8BA8E192991E8B30043DEE1 /* SimulcastViewModel.swift in Sources */,
-				E83CDA462A10917A008690FD /* VideoRenderer.swift in Sources */,
 				E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,
 				E8752B5A298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift in Sources */,
+				E83F0F982C19305800F6FA6B /* SettingsButton.swift in Sources */,
 				B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -650,17 +599,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E8752B72298CA78D002D5C2B /* MockDateProvider.swift in Sources */,
-				E8F2EE24299324AF00AF0471 /* SimulcastViewModelTests.swift in Sources */,
-				E8D5AE5D2990840E0019C132 /* MockRTSDataStore.swift in Sources */,
 				E8752B74298CB535002D5C2B /* MockStreamDataManager.swift in Sources */,
-				E8752B6F298CA622002D5C2B /* RecentStreamButtonViewModelTests.swift in Sources */,
 				E8752B69298CA513002D5C2B /* StreamDataManagerTests.swift in Sources */,
-				E8752B6D298CA614002D5C2B /* RecentStreamsViewModelTests.swift in Sources */,
-				E8F2EE2A29932C4900AF0471 /* MockNetworkMonitor.swift in Sources */,
 				E8F2EE2829932A9100AF0471 /* MockPersistentSettings.swift in Sources */,
-				E8D5AE6629908DDB0019C132 /* StreamDetailInputViewModelTests.swift in Sources */,
-				E8D5AE5F299088EF0019C132 /* MockSubscriptionManager.swift in Sources */,
-				E8F2EE262993276B00AF0471 /* DisplayStreamViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -811,7 +752,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = RTSViewer/TVOS/Info.plist;
+				INFOPLIST_FILE = RTSViewer/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -841,7 +782,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = RTSViewer/TVOS/Info.plist;
+				INFOPLIST_FILE = RTSViewer/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -992,7 +933,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = RTSViewer/TVOS/Info.plist;
+				INFOPLIST_FILE = RTSViewer/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1075,18 +1016,34 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		E8C776D22C2BE948002DE392 /* XCLocalSwiftPackageReference "../LocalPackages/RTSCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../LocalPackages/RTSCore;
+		};
+		E8C776D52C2BEA5F002DE392 /* XCLocalSwiftPackageReference "LocalPackages/DolbyIOUIKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/DolbyIOUIKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		E825CC212C2D0FF8009D878B /* RTSCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E8C776D22C2BE948002DE392 /* XCLocalSwiftPackageReference "../LocalPackages/RTSCore" */;
+			productName = RTSCore;
+		};
 		E82A0C12296CEA0F007214B8 /* DolbyIOUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DolbyIOUIKit;
 		};
-		E82A0C14296CEA12007214B8 /* RTSComponentKit */ = {
+		E8C776D32C2BE948002DE392 /* RTSCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = RTSComponentKit;
+			productName = RTSCore;
 		};
-		E8D5AE6029908D690019C132 /* RTSComponentKit */ = {
+		E8C776D62C2BEA5F002DE392 /* DolbyIOUIKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = RTSComponentKit;
+			productName = DolbyIOUIKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 
