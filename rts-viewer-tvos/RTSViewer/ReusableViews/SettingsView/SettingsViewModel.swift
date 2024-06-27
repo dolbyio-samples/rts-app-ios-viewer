@@ -4,30 +4,16 @@
 
 import Foundation
 import MillicastSDK
-import RTSComponentKit
+import RTSCore
 
-@MainActor
-final class SettingViewModel: ObservableObject {
-    private let rendererRegistry: RendererRegistry
-
-    let source: Source
+final class SettingViewModel {
+    let source: StreamSource
     let videoQualityList: [VideoQuality]
     let selectedVideoQuality: VideoQuality
 
-    init(source: Source, videoQualityList: [VideoQuality], selectedVideoQuality: VideoQuality, rendererRegistry: RendererRegistry) {
+    init(source: StreamSource, videoQualityList: [VideoQuality], selectedVideoQuality: VideoQuality) {
         self.source = source
         self.videoQualityList = videoQualityList
         self.selectedVideoQuality = selectedVideoQuality
-        self.rendererRegistry = rendererRegistry
-    }
-
-    func select(videoQuality: VideoQuality) async throws {
-        let renderer = rendererRegistry.renderer(for: source)
-        switch videoQuality {
-        case .auto:
-            try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
-        case .high(let layer), .medium(let layer), .low(let layer):
-            try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: layer), promote: true)
-        }
     }
 }

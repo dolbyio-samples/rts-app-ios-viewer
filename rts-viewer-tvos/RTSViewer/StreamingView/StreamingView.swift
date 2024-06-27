@@ -62,8 +62,8 @@ struct StreamingView: View {
                                     videoQualityList: viewModel.videoQualityList,
                                     selectedVideoQuality: viewModel.selectedVideoQuality,
                                     rendererRegistry: viewModel.rendererRegistry,
-                                    onUpdateSelectedVideoQuality: {
-                                        viewModel.selectedVideoQuality = $0
+                                    onSelectVideoQuality: { source, videoQuality in
+                                        viewModel.select(videoQuality: videoQuality, for: source)
                                     }
                                 )
                             }
