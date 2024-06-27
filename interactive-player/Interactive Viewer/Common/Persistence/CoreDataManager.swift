@@ -27,7 +27,8 @@ final class CoreDataManager {
         }
         container.loadPersistentStores(completionHandler: { _, error in
             if let error = error {
-                fatalError("Failed loading persistent stores with error: \(error.localizedDescription)")
+//                fatalError("Failed loading persistent stores with error: \(error.localizedDescription)")
+                print("$$$ \("Failed loading persistent stores with error: \(error.localizedDescription)")")
             }
         })
     }
