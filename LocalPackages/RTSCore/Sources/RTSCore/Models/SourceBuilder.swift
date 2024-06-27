@@ -101,8 +101,17 @@ final class SourceBuilder {
         if partialSources.firstIndex(where: { $0.sourceId == sourceID }) == nil {
             partialSources.append(partialSource)
         }
-        if let newSource = partialSource.source, !sources.contains(where: { $0.sourceId == newSource.sourceId }) {
+        guard let newSource = partialSource.source else {
+            return
+        }
+
+        if !sources.contains(where: { $0.sourceId == newSource.sourceId }) {
             sources.append(newSource)
+        } else if let index = sources.firstIndex(where: { $0.sourceId == newSource.sourceId }) {
+            var updatesSources = sources
+            updatesSources.remove(at: index)
+            updatesSources.insert(newSource, at: index)
+            sources = updatesSources
         }
     }
 

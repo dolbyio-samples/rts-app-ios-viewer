@@ -173,7 +173,7 @@ final class StreamingViewModel: ObservableObject {
                                 try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
                                 Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for rendering")
 
-                                if let audioTrack = videoSource.audioTrack, videoSource.videoTrack.isActive {
+                                if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
                                     Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
                                     // Enable new audio track
                                     try await audioTrack.enable()
