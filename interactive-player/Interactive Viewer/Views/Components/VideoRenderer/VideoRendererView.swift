@@ -115,6 +115,9 @@ struct VideoRendererView: View {
             .onTapGesture {
                 action?(viewModel.source)
             }
+            .onAppear {
+                viewModel.setForceRedrawOfRenderer()
+            }
     }
 }
 
@@ -143,7 +146,11 @@ private struct VideoRendererViewInternal: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ videoViewController: VideoViewController, context: Context) {
-        guard videoViewController.isPiPView != viewModel.isPiPView, videoViewController.renderer != viewModel.renderer else {
+        guard 
+            videoViewController.isPiPView != viewModel.isPiPView ||
+            videoViewController.renderer != viewModel.renderer ||
+            viewModel.forceRedrawOfRendererView
+        else {
             return
         }
         videoViewController.update(

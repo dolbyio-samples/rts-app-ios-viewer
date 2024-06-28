@@ -24,7 +24,14 @@ final class VideoRendererViewModel: ObservableObject {
     let maxWidth: CGFloat
     let maxHeight: CGFloat
     let videoTracksManager: VideoTracksManager
-    @Published var currentVideoQuality: VideoQuality = .auto
+    @Published private(set) var currentVideoQuality: VideoQuality = .auto
+    
+    // FIXME: Attaching the renderer to new instances of `MCSampleBufferVideoUIView` causes of flicker in the UI
+    // Hence the `videoViewController.renderer != viewModel.renderer` check is performed on `updateUIViewController`
+    // to limit the number of updates.
+    // Further investigate the reason for the flicker which happens only on the SampleBuffer based renderer and not
+    // on the Metal based one.
+    @Published private(set) var forceRedrawOfRendererView: Bool = false
 
     private let subscriptionManager: SubscriptionManager
     private var subscriptions: [AnyCancellable] = []
@@ -55,6 +62,10 @@ final class VideoRendererViewModel: ObservableObject {
         self.videoTracksManager = videoTracksManager
 
         observerVideoQualityUpdates()
+    }
+    
+    func setForceRedrawOfRenderer() {
+        forceRedrawOfRendererView = true
     }
 
     var videoSize: CGSize {
