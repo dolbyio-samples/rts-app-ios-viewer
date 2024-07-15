@@ -23,6 +23,7 @@ final class StreamingViewModel: ObservableObject {
     private var layersEventsObservationDictionary: [SourceID: Task<Void, Never>] = [:]
     private var stateObservation: Task<Void, Never>?
     private var reconnectionTimer: Timer?
+    private var isWebsocketConnected: Bool = false
 
     private var subscriptions: [AnyCancellable] = []
 
@@ -129,12 +130,11 @@ final class StreamingViewModel: ObservableObject {
                 .sink { state in
                     Task {
                         guard !Task.isCancelled else { return }
-
                         switch state {
                         case let .subscribed(sources: sources):
                             let activeVideoSources = sources.filter { $0.videoTrack.isActive }
                             Self.logger.debug("🎰 Subscribed, has \(activeVideoSources.count) active video sources")
-                            guard let videoSource = activeVideoSources.first(where: { $0.sourceId == .main }) ?? activeVideoSources.first else {
+                            guard let videoSource = activeVideoSources.first(where: { $0.sourceId == .main }) else {
                                 self.state = .streamNotPublished(
                                     title: LocalizedStringKey("stream.offline.title.label").toString(),
                                     subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
@@ -158,7 +158,7 @@ final class StreamingViewModel: ObservableObject {
                                 break
                             }
 
-                            Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for rendering")
+                            Self.logger.debug("🎰 Picked source \(videoSource.sourceId)")
 
                             Task(priority: .userInitiated) {
                                 guard !Task.isCancelled else { return }
@@ -171,7 +171,7 @@ final class StreamingViewModel: ObservableObject {
 
                                 let renderer = self.rendererRegistry.acceleratedRenderer(for: videoSource)
                                 try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
-                                Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for rendering")
+                                Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for video")
 
                                 if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
                                     Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
@@ -194,6 +194,10 @@ final class StreamingViewModel: ObservableObject {
                             Self.logger.debug("🎰 No internet connection")
                             guard !Task.isCancelled else { return }
 
+                            if !self.isWebsocketConnected {
+                                self.scheduleReconnection()
+                            }
+
                             self.state = .noNetwork(
                                 title: LocalizedStringKey("stream.network.disconnected.label").toString()
                             )
@@ -201,13 +205,29 @@ final class StreamingViewModel: ObservableObject {
                         case let .error(connectionError):
                             Self.logger.debug("🎰 Connection error - \(connectionError.status), \(connectionError.reason)")
                             guard !Task.isCancelled else { return }
-                            self.scheduleReconnection()
+
+                            if !self.isWebsocketConnected {
+                                self.scheduleReconnection()
+                            }
+
                             self.state = .streamNotPublished(
                                 title: LocalizedStringKey("stream.offline.title.label").toString(),
                                 subtitle: LocalizedStringKey("stream.offline.subtitle.label").toString(),
                                 source: nil
                             )
                         }
+                    }
+                }
+                .store(in: &subscriptions)
+
+            await self.subscriptionManager.$websocketState
+                .receive(on: DispatchQueue.main)
+                .sink { websocketState in
+                    switch websocketState {
+                    case .CONNECTED:
+                        self.isWebsocketConnected = true
+                    default:
+                        break
                     }
                 }
                 .store(in: &subscriptions)
@@ -281,6 +301,7 @@ extension StreamingViewModel {
     }
 
     func scheduleReconnection() {
+        Self.logger.debug("🎰 Schedule reconnection")
         self.reconnectionTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(subscribeToStream), userInfo: nil, repeats: false)
     }
 

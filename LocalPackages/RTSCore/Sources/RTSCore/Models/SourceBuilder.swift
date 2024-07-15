@@ -44,7 +44,7 @@ final class SourceBuilder {
     private let audioTrackStateUpdateSubject: PassthroughSubject<SourceID, Never> = PassthroughSubject()
     private let videoTrackStateUpdateSubject: PassthroughSubject<SourceID, Never> = PassthroughSubject()
 
-    private var sources: [StreamSource] = [] {
+    private(set) var sources: [StreamSource] = [] {
         didSet {
             Self.logger.debug("👨‍🔧 Sources updated, \(self.sources)")
             sourceStreamContinuation.yield(sources)

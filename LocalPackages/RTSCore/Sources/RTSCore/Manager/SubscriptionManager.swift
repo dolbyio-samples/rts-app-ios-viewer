@@ -27,10 +27,12 @@ public actor SubscriptionManager: ObservableObject {
 
     @Published public var state: State = .disconnected
     @Published public var streamStatistics: StreamStatistics?
+    @Published public var websocketState: MCConnectionState = .IDLE
 
     private var subscriber: MCSubscriber?
     private var sourceBuilder = SourceBuilder()
     private let logHandler: MillicastLogHandler = .init()
+    private var isReconnectingPeerConnection: Bool = false
 
     private var subscriberEventObservationTasks: [Task<Void, Never>] = []
 
@@ -128,12 +130,20 @@ extension SubscriptionManager {
         let taskWebsocketStateObservation = Task {
             for await state in subscriber.websocketState() {
                 Self.logger.debug("👨‍🔧 Websocket connection state changed to \(state.rawValue)")
+                self.websocketState = state
             }
         }
 
         let taskPeerConnectionStateObservation = Task {
             for await state in subscriber.peerConnectionState() {
                 Self.logger.debug("👨‍🔧 Peer connection state changed to \(state.rawValue)")
+                if state == .CONNECTING {
+                    setReconnectingPeerConnection(true)
+                } else if state == .CONNECTED && isReconnectingPeerConnection && !sourceBuilder.sources.isEmpty {
+                    Self.logger.debug("👨‍🔧 Peer connection restored")
+                    updateState(to: .subscribed(sources: sourceBuilder.sources))
+                    setReconnectingPeerConnection(false)
+                }
             }
         }
 
@@ -221,6 +231,10 @@ private extension SubscriptionManager {
 
     func updateState(to state: State) {
         self.state = state
+    }
+    
+    func setReconnectingPeerConnection(_ isReconnecting: Bool) {
+        isReconnectingPeerConnection = isReconnecting
     }
 
     func addEventObservationTask(_ task: Task<Void, Never>) {
