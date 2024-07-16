@@ -287,6 +287,7 @@ private extension StreamViewModel {
                             self.updateAudioSourceListing(for: activeSources, currentSettings: settings)
                             guard let newState = self.makeState(from: activeSources, settings: settings) else {
                                 Self.logger.debug("🎰 Make state returned without a value")
+                                self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
                                 return
                             }
                             self.update(state: newState)
