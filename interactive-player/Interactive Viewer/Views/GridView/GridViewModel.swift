@@ -31,7 +31,11 @@ final class GridViewModel {
         subscriptionManager: SubscriptionManager,
         videoTracksManager: VideoTracksManager
     ) {
-        self.sources = sources
+        var sortedSources = sources
+            .filter { $0.id != selectedVideoSource.id }
+        sortedSources.insert(selectedVideoSource, at: 0)
+
+        self.sources = sortedSources
         self.selectedVideoSource = selectedVideoSource
         self.selectedAudioSource = selectedAudioSource
         self.showSourceLabels = showSourceLabels
