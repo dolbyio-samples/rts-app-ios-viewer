@@ -25,6 +25,7 @@
 "stream-detail-input.minimum-playout-delay-placeholder-label" = "Minimum Playout Delay";
 "stream-detail-input.maximum-playout-delay-placeholder-label" = "Maximum Playout Delay";
 "stream-detail-input.primary-video-quality-label" = "Primary video quality:";
+"stream-detail-input.max-bitrate-label" = "Maxium Bitrate:";
 "stream-detail-server-url-label" = "Server URL";
 
 /** App configuration Screen */
@@ -42,8 +43,9 @@
 "recent-streams.account-id.title.label" = "ID:";
 "recent-streams.server-url.label" = "Server URL:";
 "recent-streams.video-jitter-buffer.label" = "Video Jitter buffer in ms:";
-"recent-streams.min-playout-delay.label" = "Min Playout delay:";
-"recent-streams.max-playout-delay.label" = "Max Playout delay:";
+"recent-streams.min-playout-delay.label" = "Min Playout Delay:";
+"recent-streams.max-playout-delay.label" = "Max Playout Delay:";
+"recent-streams.max-bitrate.label" = "Maxium Bitrate:";
 "recent-streams.disable-audio.label" = "Disable Audio:";
 "recent-streams.primary-video-quality.label" = "Primary video quality:";
 "recent-streams.save-logs.label" = "Save Logs:";

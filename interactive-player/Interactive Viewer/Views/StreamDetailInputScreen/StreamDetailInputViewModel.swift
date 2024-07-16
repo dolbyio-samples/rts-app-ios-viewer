@@ -46,6 +46,7 @@ final class StreamDetailInputViewModel: ObservableObject {
         maxPlayoutDelay: UInt?,
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
+        maxBitrate: UInt,
         saveLogs: Bool,
         persistStream: Bool
     ) -> Bool {
@@ -64,6 +65,7 @@ final class StreamDetailInputViewModel: ObservableObject {
                     maxPlayoutDelay: maxPlayoutDelay,
                     disableAudio: disableAudio,
                     primaryVideoQuality: primaryVideoQuality,
+                    maxBitrate: maxBitrate,
                     saveLogs: saveLogs
                 )
             )

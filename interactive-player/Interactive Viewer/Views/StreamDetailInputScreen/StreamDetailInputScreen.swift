@@ -8,11 +8,11 @@ import SwiftUI
 
 // swiftlint:disable type_body_length
 struct StreamDetailInputScreen: View {
-
     enum InputFocusable: Hashable {
-      case accountID
-      case streamName
+        case accountID
+        case streamName
     }
+
     @Binding private var streamingScreenContext: StreamingView.Context?
 
     @State private var streamName: String = ""
@@ -22,12 +22,13 @@ struct StreamDetailInputScreen: View {
     @State private var subscribeAPI: String = SubscriptionConfiguration.Constants.developmentSubscribeURL
     @State private var disableAudio: Bool = false
     @State private var saveLogs: Bool = false
-    @State private var jitterBufferDelayInMs: Float = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var jitterBufferDelayInMs: Float = .init(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
     @State private var primaryVideoQuality: VideoQuality = .auto
+    @State private var maxBitrate: UInt = 0
     @State private var isShowingSettingsView: Bool = false
     @State private var showPlayoutDelay: Bool = false
-    @State private var minPlayoutDelay: Float = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
-    @State private var maxPlayoutDelay: Float = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var minPlayoutDelay: Float = .init(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var maxPlayoutDelay: Float = .init(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -128,6 +129,7 @@ struct StreamDetailInputScreen: View {
                                     maxPlayoutDelay: maxPlayoutDelay,
                                     disableAudio: disableAudio,
                                     primaryVideoQuality: primaryVideoQuality,
+                                    maxBitrate: maxBitrate,
                                     saveLogs: saveLogs,
                                     persistStream: true
                                 )
@@ -273,7 +275,7 @@ struct StreamDetailInputScreen: View {
                 )
                 Slider(
                     value: $jitterBufferDelayInMs,
-                    in: (0...2000),
+                    in: 0...2000,
                     step: 50,
                     label: {},
                     minimumValueLabel: {
@@ -300,7 +302,7 @@ struct StreamDetailInputScreen: View {
 
                     Slider(
                         value: $minPlayoutDelay,
-                        in: (0...2000),
+                        in: 0...2000,
                         step: 50,
                         label: {},
                         minimumValueLabel: {
@@ -319,7 +321,7 @@ struct StreamDetailInputScreen: View {
 
                     Slider(
                         value: $maxPlayoutDelay,
-                        in: (0...2000),
+                        in: 0...2000,
                         step: 50,
                         label: {},
                         minimumValueLabel: {
@@ -339,6 +341,23 @@ struct StreamDetailInputScreen: View {
                     Picker(
                         "Primary video quality: \(primaryVideoQuality.displayText.uppercased())",
                         selection: $primaryVideoQuality
+                    ) {
+                        ForEach(VideoQuality.allCases) {
+                            Text($0.displayText)
+                                .tag($0)
+                        }
+                    }
+                    .pickerStyle(.automatic)
+                }
+
+                HStack {
+                    Text("stream-detail-input.max-bitrate-label",
+                         style: .labelMedium,
+                         font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
+
+                    Picker(
+                        "Maximum Bitrate: \(maxBitrate)",
+                        selection: $maxBitrate
                     ) {
                         ForEach(VideoQuality.allCases) {
                             Text($0.displayText)
@@ -404,6 +423,7 @@ struct StreamDetailInputScreen: View {
             maxPlayoutDelay: nil,
             disableAudio: disableAudio,
             primaryVideoQuality: videoQuality,
+            maxBitrate: maxBitrate,
             saveLogs: saveLogs
         )) {
             let success = viewModel.validateAndSaveStream(
@@ -415,6 +435,7 @@ struct StreamDetailInputScreen: View {
                 maxPlayoutDelay: nil,
                 disableAudio: disableAudio,
                 primaryVideoQuality: videoQuality,
+                maxBitrate: maxBitrate,
                 saveLogs: saveLogs,
                 persistStream: false
             )
@@ -442,14 +463,14 @@ struct StreamDetailInputScreen: View {
     }
 
     func resetStreamConfigurationState() {
-        self.useCustomServerURL = false
-        self.showPlayoutDelay = false
-        self.disableAudio = false
-        self.jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
-        self.primaryVideoQuality = .auto
-        self.saveLogs = false
-        self.minPlayoutDelay = 0
-        self.maxPlayoutDelay = 0
+        useCustomServerURL = false
+        showPlayoutDelay = false
+        disableAudio = false
+        jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+        primaryVideoQuality = .auto
+        saveLogs = false
+        minPlayoutDelay = 0
+        maxPlayoutDelay = 0
     }
 
     func syncMaxPlayoutDelay() {
@@ -469,6 +490,7 @@ struct StreamDetailInputScreen: View {
         maxPlayoutDelay = 0
     }
 }
+
 // swiftlint:enable type_body_length
 
 extension Font {
