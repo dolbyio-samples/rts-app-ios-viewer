@@ -14,7 +14,7 @@ final class PiPManager: NSObject {
     static let shared: PiPManager = PiPManager()
     static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
-        category: String(describing: VideoRendererViewModel.self)
+        category: String(describing: PiPManager.self)
     )
 
     private override init() {}
