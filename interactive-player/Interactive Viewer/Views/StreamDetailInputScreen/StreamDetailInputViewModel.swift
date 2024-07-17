@@ -3,9 +3,9 @@
 //
 
 import Combine
-import RTSCore
 import Foundation
 import MillicastSDK
+import RTSCore
 
 @MainActor
 final class StreamDetailInputViewModel: ObservableObject {
@@ -44,9 +44,9 @@ final class StreamDetailInputViewModel: ObservableObject {
         videoJitterMinimumDelayInMs: UInt,
         minPlayoutDelay: UInt?,
         maxPlayoutDelay: UInt?,
+        maxBitrate: UInt,
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
-        maxBitrate: UInt,
         saveLogs: Bool,
         persistStream: Bool
     ) -> Bool {
@@ -78,15 +78,15 @@ final class StreamDetailInputViewModel: ObservableObject {
         videoJitterMinimumDelayInMs: UInt,
         minPlayoutDelay: UInt?,
         maxPlayoutDelay: UInt?,
+        maxBitrate: UInt,
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
         saveLogs: Bool
     ) -> SubscriptionConfiguration {
-        let playoutDelay: MCForcePlayoutDelay?
-        if let minPlayoutDelay, let maxPlayoutDelay {
+        var playoutDelay: MCForcePlayoutDelay?
+        if let minPlayoutDelay,
+           let maxPlayoutDelay {
             playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
-        } else {
-            playoutDelay = nil
         }
         let currentDate = dateProvider.now
         let rtcLogPath = saveLogs ? URL.rtcLogPath(for: currentDate) : nil
@@ -95,12 +95,14 @@ final class StreamDetailInputViewModel: ObservableObject {
         return SubscriptionConfiguration(
             subscribeAPI: subscribeAPI,
             jitterMinimumDelayMs: videoJitterMinimumDelayInMs,
+            maxBitrate: maxBitrate,
             disableAudio: disableAudio,
             rtcEventLogPath: rtcLogPath?.path,
             sdkLogPath: sdkLogPath?.path,
             playoutDelay: playoutDelay
         )
     }
+
     // swiftlint:enable function_parameter_count
 
     func clearAllStreams() {

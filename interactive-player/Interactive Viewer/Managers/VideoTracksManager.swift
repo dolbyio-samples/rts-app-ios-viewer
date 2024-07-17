@@ -141,8 +141,7 @@ final actor VideoTracksManager {
         Self.logger.debug("♼ Remove view \(view.description) for source \(sourceId)")
         // Remove view from the list of active views for that source
         if var activeViews = sourceToActiveViewsMapping[sourceId],
-           activeViews.contains(where: { $0 == view })
-        {
+           activeViews.contains(where: { $0 == view }) {
             activeViews.removeAll(where: { $0 == view })
             self.sourceToActiveViewsMapping[source.sourceId] = !activeViews.isEmpty ? activeViews : nil
         }

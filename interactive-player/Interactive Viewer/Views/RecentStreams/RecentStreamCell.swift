@@ -36,8 +36,7 @@ struct RecentStreamCell: View {
     private let action: () -> Void
 
     init(streamDetail: SavedStreamDetail,
-         action: @escaping () -> Void)
-    {
+         action: @escaping () -> Void) {
         self.streamDetail = streamDetail
         self.action = action
     }

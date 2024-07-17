@@ -4,12 +4,11 @@
 
 import Combine
 import Foundation
-import RTSCore
 import MillicastSDK
+import RTSCore
 
 @MainActor
 final class RecentStreamsViewModel: ObservableObject {
-
     private let streamDataManager: StreamDataManagerProtocol
     private let settingsManager: SettingsManager
     private let dateProvider: DateProvider
@@ -21,14 +20,13 @@ final class RecentStreamsViewModel: ObservableObject {
             topStreamDetails = Array(streamDetails.prefix(3))
         }
     }
+
     @Published private(set) var topStreamDetails: [SavedStreamDetail] = []
     @Published private(set) var lastPlayedStream: SavedStreamDetail?
 
-    init(
-        streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
-        settingsManager: SettingsManager = .shared,
-        dateProvider: DateProvider = DefaultDateProvider()
-    ) {
+    init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
+         settingsManager: SettingsManager = .shared,
+         dateProvider: DateProvider = DefaultDateProvider()) {
         self.streamDataManager = streamDataManager
         self.settingsManager = settingsManager
         self.dateProvider = dateProvider
@@ -41,7 +39,7 @@ final class RecentStreamsViewModel: ObservableObject {
                     }
                 }
             }
-        .store(in: &subscriptions)
+            .store(in: &subscriptions)
     }
 
     func fetchAllStreams() {
@@ -90,16 +88,16 @@ final class RecentStreamsViewModel: ObservableObject {
         let currentDate = dateProvider.now
         let rtcLogPath = streamDetail.saveLogs ? URL.rtcLogPath(for: currentDate) : nil
         let sdkLogPath = streamDetail.saveLogs ? URL.sdkLogPath(for: currentDate) : nil
-        let playoutDelay: MCForcePlayoutDelay?
-        if let minPlayoutDelay = streamDetail.minPlayoutDelay, let maxPlayoutDelay = streamDetail.maxPlayoutDelay {
+        var playoutDelay: MCForcePlayoutDelay?
+        if let minPlayoutDelay = streamDetail.minPlayoutDelay,
+           let maxPlayoutDelay = streamDetail.maxPlayoutDelay {
             playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
-        } else {
-            playoutDelay = nil
         }
 
         return SubscriptionConfiguration(
             subscribeAPI: streamDetail.subscribeAPI,
             jitterMinimumDelayMs: streamDetail.videoJitterMinimumDelayInMs,
+            maxBitrate: streamDetail.maxBitrate,
             disableAudio: streamDetail.disableAudio,
             rtcEventLogPath: rtcLogPath?.path,
             sdkLogPath: sdkLogPath?.path,

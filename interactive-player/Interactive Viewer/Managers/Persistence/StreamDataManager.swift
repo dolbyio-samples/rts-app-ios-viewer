@@ -17,7 +17,6 @@ protocol StreamDataManagerProtocol: AnyObject {
 }
 
 final class StreamDataManager: NSObject, StreamDataManagerProtocol {
-
     enum StreamDataManagerType {
         case `default`, testing
     }
@@ -55,10 +54,10 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
         }
         self.dateProvider = dateProvider
 
-        streamDetailFetchResultsController = NSFetchedResultsController(fetchRequest: Self.recentStreamsFetchRequest,
-                                                                        managedObjectContext: managedObjectContext,
-                                                                        sectionNameKeyPath: nil,
-                                                                        cacheName: nil)
+        self.streamDetailFetchResultsController = NSFetchedResultsController(fetchRequest: Self.recentStreamsFetchRequest,
+                                                                             managedObjectContext: managedObjectContext,
+                                                                             sectionNameKeyPath: nil,
+                                                                             cacheName: nil)
 
         super.init()
 
@@ -146,7 +145,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
             let request: NSFetchRequest<StreamDetailManagedObject> = Self.recentStreamsFetchRequest
             let updatedResults = try coreDataManager.context.fetch(request)
             if updatedResults.count > Constants.maximumAllowedStreams {
-                let streamsToDelete = updatedResults[(Constants.maximumAllowedStreams)..<updatedResults.count]
+                let streamsToDelete = updatedResults[(Constants.maximumAllowedStreams) ..< updatedResults.count]
                 streamsToDelete.forEach(coreDataManager.context.delete)
             }
             coreDataManager.saveContext()
@@ -168,7 +167,6 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
 }
 
 extension StreamDataManager: NSFetchedResultsControllerDelegate {
-
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if let newStreamDetails = controller.fetchedObjects as? [StreamDetailManagedObject] {
             let streamDetails = newStreamDetails.compactMap { SavedStreamDetail(managedObject: $0) }

@@ -3,6 +3,7 @@
 //
 
 import DolbyIOUIKit
+import MillicastSDK
 import RTSCore
 import SwiftUI
 
@@ -19,12 +20,14 @@ struct StreamDetailInputScreen: View {
     @State private var accountID: String = ""
     @State private var showAlert = false
     @State private var useCustomServerURL: Bool = false
+    @State private var setMaxBitrate: Bool = false
     @State private var subscribeAPI: String = SubscriptionConfiguration.Constants.developmentSubscribeURL
     @State private var disableAudio: Bool = false
     @State private var saveLogs: Bool = false
     @State private var jitterBufferDelayInMs: Float = .init(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
     @State private var primaryVideoQuality: VideoQuality = .auto
-    @State private var maxBitrate: UInt = 0
+    @State private var maxBitrateString: String = "0"
+    @State private var maxBitrate: UInt = SubscriptionConfiguration.Constants.maxBitrate
     @State private var isShowingSettingsView: Bool = false
     @State private var showPlayoutDelay: Bool = false
     @State private var minPlayoutDelay: Float = .init(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
@@ -127,9 +130,9 @@ struct StreamDetailInputScreen: View {
                                     videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
                                     minPlayoutDelay: minPlayoutDelay,
                                     maxPlayoutDelay: maxPlayoutDelay,
+                                    maxBitrate: maxBitrate,
                                     disableAudio: disableAudio,
                                     primaryVideoQuality: primaryVideoQuality,
-                                    maxBitrate: maxBitrate,
                                     saveLogs: saveLogs,
                                     persistStream: true
                                 )
@@ -143,6 +146,7 @@ struct StreamDetailInputScreen: View {
                                     videoJitterMinimumDelayInMs: videoJitterMinimumDelayInMs,
                                     minPlayoutDelay: minPlayoutDelay,
                                     maxPlayoutDelay: maxPlayoutDelay,
+                                    maxBitrate: maxBitrate,
                                     disableAudio: disableAudio,
                                     primaryVideoQuality: primaryVideoQuality,
                                     saveLogs: saveLogs
@@ -234,6 +238,10 @@ struct StreamDetailInputScreen: View {
         }
         .onChange(of: maxPlayoutDelay) { _ in
             syncMinPlayoutDelay()
+        }
+        .onChange(of: maxBitrateString) { bitrateString in
+            guard let bitrate = Int(bitrateString) else { return }
+            maxBitrate = UInt(bitrate)
         }
     }
 
@@ -350,21 +358,19 @@ struct StreamDetailInputScreen: View {
                     .pickerStyle(.automatic)
                 }
 
-                HStack {
-                    Text("stream-detail-input.max-bitrate-label",
-                         style: .labelMedium,
-                         font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body))
+                Toggle(isOn: $setMaxBitrate) {
+                    Text(
+                        "stream-detail-input.set-max-bitrate-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
 
-                    Picker(
-                        "Maximum Bitrate: \(maxBitrate)",
-                        selection: $maxBitrate
-                    ) {
-                        ForEach(VideoQuality.allCases) {
-                            Text($0.displayText)
-                                .tag($0)
-                        }
-                    }
-                    .pickerStyle(.automatic)
+                if setMaxBitrate {
+                    DolbyIOUIKit.TextField(text: $maxBitrateString, placeholderText: "stream-detail-input.max-bitrate-label")
+                        .keyboardType(.numberPad)
+                        .accessibilityIdentifier("InputScreen.MaximumBitrate")
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                        .submitLabel(.next)
                 }
             }
             .padding()
@@ -413,45 +419,46 @@ struct StreamDetailInputScreen: View {
         let disableAudio = false
         let videoQuality = VideoQuality.auto
         let saveLogs = false
+        let playoutDelayMin = showPlayoutDelay ? UInt(minPlayoutDelay) : nil
+        let playoutDelayMax = showPlayoutDelay ? UInt(maxPlayoutDelay) : nil
 
-        RecentStreamCell(streamDetail: SavedStreamDetail(
-            accountID: accountID,
-            streamName: streamName,
-            subscribeAPI: productionSubscribeURL,
-            videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
-            minPlayoutDelay: nil,
-            maxPlayoutDelay: nil,
-            disableAudio: disableAudio,
-            primaryVideoQuality: videoQuality,
-            maxBitrate: maxBitrate,
-            saveLogs: saveLogs
-        )) {
-            let success = viewModel.validateAndSaveStream(
-                streamName: streamName,
-                accountID: accountID,
-                subscribeAPI: productionSubscribeURL,
-                videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
-                minPlayoutDelay: nil,
-                maxPlayoutDelay: nil,
-                disableAudio: disableAudio,
-                primaryVideoQuality: videoQuality,
-                maxBitrate: maxBitrate,
-                saveLogs: saveLogs,
-                persistStream: false
-            )
+        RecentStreamCell(streamDetail: SavedStreamDetail(accountID: accountID,
+                                                         streamName: streamName,
+                                                         subscribeAPI: productionSubscribeURL,
+                                                         videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
+                                                         minPlayoutDelay: playoutDelayMin,
+                                                         maxPlayoutDelay: playoutDelayMax,
+                                                         disableAudio: disableAudio,
+                                                         primaryVideoQuality: videoQuality,
+                                                         maxBitrate: maxBitrate,
+                                                         saveLogs: saveLogs)) {
+            let success = viewModel.validateAndSaveStream(streamName: streamName,
+                                                          accountID: accountID,
+                                                          subscribeAPI: productionSubscribeURL,
+                                                          videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
+                                                          minPlayoutDelay: playoutDelayMin,
+                                                          maxPlayoutDelay: playoutDelayMax,
+                                                          maxBitrate: maxBitrate,
+                                                          disableAudio: disableAudio,
+                                                          primaryVideoQuality: videoQuality,
+                                                          saveLogs: saveLogs,
+                                                          persistStream: false)
 
             guard success else {
                 showAlert = true
                 return
             }
 
+            let playoutDelay: MCForcePlayoutDelay? = showPlayoutDelay ? MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay)) : nil
+
             let configuration = SubscriptionConfiguration(
                 subscribeAPI: productionSubscribeURL,
                 jitterMinimumDelayMs: jitterMinimumDelayMs,
+                maxBitrate: maxBitrate,
                 disableAudio: disableAudio,
                 rtcEventLogPath: nil,
                 sdkLogPath: nil,
-                playoutDelay: nil
+                playoutDelay: playoutDelay
             )
             streamingScreenContext = StreamingView.Context(
                 streamName: streamName,
@@ -471,6 +478,7 @@ struct StreamDetailInputScreen: View {
         saveLogs = false
         minPlayoutDelay = 0
         maxPlayoutDelay = 0
+        maxBitrate = SubscriptionConfiguration.Constants.maxBitrate
     }
 
     func syncMaxPlayoutDelay() {

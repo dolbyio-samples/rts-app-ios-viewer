@@ -80,6 +80,9 @@ public actor SubscriptionManager: ObservableObject {
             let clientOptions = MCClientOptions()
             clientOptions.jitterMinimumDelayMs = Int32(configuration.jitterMinimumDelayMs)
             clientOptions.statsDelayMs = Int32(configuration.statsDelayMs)
+            if configuration.maxBitrate > 0 {
+                clientOptions.maximumBitrate = NSNumber(value: configuration.maxBitrate)
+            }
             if let rtcEventLogOutputPath = configuration.rtcEventLogPath {
                 clientOptions.rtcEventLogOutputPath = rtcEventLogOutputPath
             }
