@@ -1,14 +1,24 @@
 {
+  "originHash" : "350f3a4231a91e6b70c75f0177fae04514d6b537cbf4d413120edf515f4c9355",
   "pins" : [
     {
       "identity" : "millicast-sdk-swift-package",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/millicast/millicast-sdk-swift-package",
       "state" : {
-        "revision" : "83c18963b46cbabcb37bde44198acc8218d48d3a",
-        "version" : "1.4.2"
+        "revision" : "8e8feebf07a75e60f4016498de00f60c586fa247",
+        "version" : "1.8.5"
+      }
+    },
+    {
+      "identity" : "rts-uikit-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DolbyIO/rts-uikit-ios",
+      "state" : {
+        "revision" : "e5a2a8150dcc79a14d13a8df2ecdf15c7a6e5794",
+        "version" : "0.0.4"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
