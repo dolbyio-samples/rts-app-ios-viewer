@@ -24,14 +24,14 @@ struct StreamDetailInputScreen: View {
     @State private var subscribeAPI: String = SubscriptionConfiguration.Constants.developmentSubscribeURL
     @State private var disableAudio: Bool = false
     @State private var saveLogs: Bool = false
-    @State private var jitterBufferDelayInMs: Float = .init(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
     @State private var primaryVideoQuality: VideoQuality = .auto
     @State private var maxBitrateString: String = "0"
     @State private var maxBitrate: UInt = SubscriptionConfiguration.Constants.maxBitrate
     @State private var isShowingSettingsView: Bool = false
     @State private var showPlayoutDelay: Bool = false
-    @State private var minPlayoutDelay: Float = .init(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
-    @State private var maxPlayoutDelay: Float = .init(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var minPlayoutDelay = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var maxPlayoutDelay: = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -422,27 +422,31 @@ struct StreamDetailInputScreen: View {
         let playoutDelayMin = showPlayoutDelay ? UInt(minPlayoutDelay) : nil
         let playoutDelayMax = showPlayoutDelay ? UInt(maxPlayoutDelay) : nil
 
-        RecentStreamCell(streamDetail: SavedStreamDetail(accountID: accountID,
-                                                         streamName: streamName,
-                                                         subscribeAPI: productionSubscribeURL,
-                                                         videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
-                                                         minPlayoutDelay: playoutDelayMin,
-                                                         maxPlayoutDelay: playoutDelayMax,
-                                                         disableAudio: disableAudio,
-                                                         primaryVideoQuality: videoQuality,
-                                                         maxBitrate: maxBitrate,
-                                                         saveLogs: saveLogs)) {
-            let success = viewModel.validateAndSaveStream(streamName: streamName,
-                                                          accountID: accountID,
-                                                          subscribeAPI: productionSubscribeURL,
-                                                          videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
-                                                          minPlayoutDelay: playoutDelayMin,
-                                                          maxPlayoutDelay: playoutDelayMax,
-                                                          maxBitrate: maxBitrate,
-                                                          disableAudio: disableAudio,
-                                                          primaryVideoQuality: videoQuality,
-                                                          saveLogs: saveLogs,
-                                                          persistStream: false)
+        RecentStreamCell(streamDetail: SavedStreamDetail(
+            accountID: accountID,
+            streamName: streamName,
+            subscribeAPI: productionSubscribeURL,
+            videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
+            minPlayoutDelay: playoutDelayMin,
+            maxPlayoutDelay: playoutDelayMax,
+            disableAudio: disableAudio,
+            primaryVideoQuality: videoQuality,
+            maxBitrate: maxBitrate,
+            saveLogs: saveLogs
+        )) {
+            let success = viewModel.validateAndSaveStream(
+                streamName: streamName,
+                accountID: accountID,
+                subscribeAPI: productionSubscribeURL,
+                videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
+                minPlayoutDelay: playoutDelayMin,
+                maxPlayoutDelay: playoutDelayMax,
+                maxBitrate: maxBitrate,
+                disableAudio: disableAudio,
+                primaryVideoQuality: videoQuality,
+                saveLogs: saveLogs,
+                persistStream: false
+            )
 
             guard success else {
                 showAlert = true
