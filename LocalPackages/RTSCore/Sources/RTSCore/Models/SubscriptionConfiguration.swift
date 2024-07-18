@@ -29,16 +29,17 @@ public struct SubscriptionConfiguration {
     public let enableStats: Bool
     public let playoutDelay: MCForcePlayoutDelay?
 
-    public init(subscribeAPI: String = Constants.productionSubscribeURL,
-                autoReconnect: Bool = Constants.autoReconnect,
-                jitterMinimumDelayMs: UInt = Constants.jitterMinimumDelayMs,
-                statsDelayMs: UInt = Constants.statsDelayMs,
-                maxBitrate: UInt = Constants.maxBitrate,
-                disableAudio: Bool = Constants.disableAudio,
-                rtcEventLogPath: String? = nil,
-                sdkLogPath: String? = nil,
-                enableStats: Bool = Constants.enableStats,
-                playoutDelay: MCForcePlayoutDelay? = Constants.playoutDelay)
+    public init(
+        subscribeAPI: String = Constants.productionSubscribeURL,
+        autoReconnect: Bool = Constants.autoReconnect,
+        jitterMinimumDelayMs: UInt = Constants.jitterMinimumDelayMs,
+        statsDelayMs: UInt = Constants.statsDelayMs,
+        maxBitrate: UInt = Constants.maxBitrate,
+        disableAudio: Bool = Constants.disableAudio,
+        rtcEventLogPath: String? = nil,
+        sdkLogPath: String? = nil,
+        enableStats: Bool = Constants.enableStats,
+        playoutDelay: MCForcePlayoutDelay? = Constants.playoutDelay)
     {
         self.subscribeAPI = subscribeAPI
         self.autoReconnect = autoReconnect
