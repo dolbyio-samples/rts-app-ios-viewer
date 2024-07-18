@@ -417,7 +417,7 @@ struct StreamDetailInputScreen: View {
         let saveLogs = false
         let playoutDelayMin = showPlayoutDelay ? UInt(minPlayoutDelay) : nil
         let playoutDelayMax = showPlayoutDelay ? UInt(maxPlayoutDelay) : nil
-        let maxBitrate: UInt = UInt(maxBitrateString) ?? 0
+        let maxBitrate: UInt = isShowingMaxBitrate ? UInt(maxBitrateString) ?? 0 : 0
 
         RecentStreamCell(streamDetail: SavedStreamDetail(
             accountID: accountID,
