@@ -20,18 +20,17 @@ struct StreamDetailInputScreen: View {
     @State private var accountID: String = ""
     @State private var showAlert = false
     @State private var useCustomServerURL: Bool = false
-    @State private var setMaxBitrate: Bool = false
+    @State private var isShowingMaxBitrate: Bool = false
     @State private var subscribeAPI: String = SubscriptionConfiguration.Constants.developmentSubscribeURL
     @State private var disableAudio: Bool = false
     @State private var saveLogs: Bool = false
     @State private var jitterBufferDelayInMs = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
     @State private var primaryVideoQuality: VideoQuality = .auto
     @State private var maxBitrateString: String = "0"
-    @State private var maxBitrate: UInt = SubscriptionConfiguration.Constants.maxBitrate
     @State private var isShowingSettingsView: Bool = false
     @State private var showPlayoutDelay: Bool = false
     @State private var minPlayoutDelay = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
-    @State private var maxPlayoutDelay: = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var maxPlayoutDelay = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -122,6 +121,7 @@ struct StreamDetailInputScreen: View {
                                 let videoJitterMinimumDelayInMs = UInt(jitterBufferDelayInMs)
                                 let minPlayoutDelay = showPlayoutDelay ? UInt(minPlayoutDelay) : nil
                                 let maxPlayoutDelay = showPlayoutDelay ? UInt(maxPlayoutDelay) : nil
+                                let maxBitrate: UInt = UInt(maxBitrateString) ?? 0
 
                                 let success = viewModel.validateAndSaveStream(
                                     streamName: streamName,
@@ -239,10 +239,6 @@ struct StreamDetailInputScreen: View {
         .onChange(of: maxPlayoutDelay) { _ in
             syncMinPlayoutDelay()
         }
-        .onChange(of: maxBitrateString) { bitrateString in
-            guard let bitrate = Int(bitrateString) else { return }
-            maxBitrate = UInt(bitrate)
-        }
     }
 
     var additionalConfigurationView: some View {
@@ -358,14 +354,14 @@ struct StreamDetailInputScreen: View {
                     .pickerStyle(.automatic)
                 }
 
-                Toggle(isOn: $setMaxBitrate) {
+                Toggle(isOn: $isShowingMaxBitrate) {
                     Text(
                         "stream-detail-input.set-max-bitrate-label",
                         font: .streamConfigurationItemsFont
                     )
                 }
 
-                if setMaxBitrate {
+                if isShowingMaxBitrate {
                     DolbyIOUIKit.TextField(text: $maxBitrateString, placeholderText: "stream-detail-input.max-bitrate-label")
                         .keyboardType(.numberPad)
                         .accessibilityIdentifier("InputScreen.MaximumBitrate")
@@ -421,6 +417,7 @@ struct StreamDetailInputScreen: View {
         let saveLogs = false
         let playoutDelayMin = showPlayoutDelay ? UInt(minPlayoutDelay) : nil
         let playoutDelayMax = showPlayoutDelay ? UInt(maxPlayoutDelay) : nil
+        let maxBitrate: UInt = UInt(maxBitrateString) ?? 0
 
         RecentStreamCell(streamDetail: SavedStreamDetail(
             accountID: accountID,
@@ -434,6 +431,7 @@ struct StreamDetailInputScreen: View {
             maxBitrate: maxBitrate,
             saveLogs: saveLogs
         )) {
+
             let success = viewModel.validateAndSaveStream(
                 streamName: streamName,
                 accountID: accountID,
@@ -482,7 +480,7 @@ struct StreamDetailInputScreen: View {
         saveLogs = false
         minPlayoutDelay = 0
         maxPlayoutDelay = 0
-        maxBitrate = SubscriptionConfiguration.Constants.maxBitrate
+        maxBitrateString = "0"
     }
 
     func syncMaxPlayoutDelay() {

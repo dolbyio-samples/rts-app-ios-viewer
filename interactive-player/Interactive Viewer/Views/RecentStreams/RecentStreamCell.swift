@@ -22,10 +22,14 @@ struct RecentStreamCell: View {
                     (String(localized: "recent-streams.server-url.label"), String(streamDetail.subscribeAPI)),
                     (String(localized: "recent-streams.video-jitter-buffer.label"), String(streamDetail.videoJitterMinimumDelayInMs)),
                     (String(localized: "recent-streams.min-playout-delay.label"), streamDetail.minPlayoutDelay.map { String($0) } ?? "N/A"),
-                    (String(localized: "recent-streams.max-playout-delay.label"), streamDetail.maxPlayoutDelay.map { String($0) } ?? "N/A"),
+                    (String(localized: "recent-streams.max-playout-delay.label"), streamDetail.maxPlayoutDelay.map { String($0) } ?? "N/A")
+                ]
+            )
+            fields.append(
+                contentsOf: [
                     (String(localized: "recent-streams.disable-audio.label"), String(streamDetail.disableAudio)),
                     (String(localized: "recent-streams.primary-video-quality.label"), streamDetail.primaryVideoQuality.displayText),
-                    (String(localized: "recent-streams.max-bitrate.label"), String(streamDetail.maxBitrate)),
+                    (String(localized: "recent-streams.max-bitrate.label"), String(streamDetail.maxBitrate ?? 0)),
                     (String(localized: "recent-streams.save-logs.label"), String(streamDetail.saveLogs))
                 ]
             )

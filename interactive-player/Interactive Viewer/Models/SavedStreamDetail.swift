@@ -15,7 +15,7 @@ struct SavedStreamDetail: Identifiable, Equatable {
     let maxPlayoutDelay: UInt?
     let disableAudio: Bool
     let primaryVideoQuality: VideoQuality
-    let maxBitrate: UInt
+    let maxBitrate: UInt?
     let saveLogs: Bool
 
     init(accountID: String,
@@ -59,7 +59,7 @@ extension SavedStreamDetail {
         let maxPlayoutDelay = managedObject.maxPlayoutDelay
         let disableAudio = managedObject.disableAudio
         let saveLogs = managedObject.saveLogs
-        let maxBitrate = managedObject.maxBitrate
+        let maxBitrate = managedObject.maxBitrate ?? 0
 
         self.id = UUID()
         self.accountID = accountID
@@ -71,7 +71,7 @@ extension SavedStreamDetail {
         self.maxPlayoutDelay = maxPlayoutDelay.map { UInt(truncating: $0) }
         self.disableAudio = disableAudio
         self.primaryVideoQuality = primaryVideoQuality
-        self.maxBitrate = UInt(maxBitrate)
+        self.maxBitrate = UInt(truncating: maxBitrate)
         self.saveLogs = saveLogs
     }
 }

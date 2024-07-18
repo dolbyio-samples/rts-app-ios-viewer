@@ -97,7 +97,7 @@ final class RecentStreamsViewModel: ObservableObject {
         return SubscriptionConfiguration(
             subscribeAPI: streamDetail.subscribeAPI,
             jitterMinimumDelayMs: streamDetail.videoJitterMinimumDelayInMs,
-            maxBitrate: streamDetail.maxBitrate,
+            maxBitrate: streamDetail.maxBitrate ?? 0,
             disableAudio: streamDetail.disableAudio,
             rtcEventLogPath: rtcLogPath?.path,
             sdkLogPath: sdkLogPath?.path,

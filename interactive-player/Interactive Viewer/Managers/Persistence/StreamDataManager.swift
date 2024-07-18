@@ -138,7 +138,7 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
             streamDetailToSave.maxPlayoutDelay = streamDetail.maxPlayoutDelay.map { NSNumber(value: $0) }
             streamDetailToSave.disableAudio = streamDetail.disableAudio
             streamDetailToSave.primaryVideoQuality = streamDetail.primaryVideoQuality.rawValue
-            streamDetailToSave.maxBitrate = Int32(streamDetail.maxBitrate)
+            streamDetailToSave.maxBitrate = streamDetail.maxBitrate.map { NSNumber(value: $0) }
             streamDetailToSave.saveLogs = streamDetail.saveLogs
 
             // Delete streams that are older and exceeding the maximum allowed count
