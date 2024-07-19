@@ -84,8 +84,7 @@ final class StreamDetailInputViewModel: ObservableObject {
         saveLogs: Bool
     ) -> SubscriptionConfiguration {
         var playoutDelay: MCForcePlayoutDelay?
-        if let minPlayoutDelay,
-           let maxPlayoutDelay {
+        if let minPlayoutDelay, let maxPlayoutDelay {
             playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
         }
         let currentDate = dateProvider.now
