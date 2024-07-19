@@ -415,20 +415,17 @@ struct StreamDetailInputScreen: View {
         let disableAudio = false
         let videoQuality = VideoQuality.auto
         let saveLogs = false
-        let playoutDelayMin = showPlayoutDelay ? UInt(minPlayoutDelay) : nil
-        let playoutDelayMax = showPlayoutDelay ? UInt(maxPlayoutDelay) : nil
-        let maxBitrate: UInt = isShowingMaxBitrate ? UInt(maxBitrateString) ?? 0 : 0
-
+    
         RecentStreamCell(streamDetail: SavedStreamDetail(
             accountID: accountID,
             streamName: streamName,
             subscribeAPI: productionSubscribeURL,
             videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
-            minPlayoutDelay: playoutDelayMin,
-            maxPlayoutDelay: playoutDelayMax,
+            minPlayoutDelay: nil,
+            maxPlayoutDelay: nil,
             disableAudio: disableAudio,
             primaryVideoQuality: videoQuality,
-            maxBitrate: maxBitrate,
+            maxBitrate: 0,
             saveLogs: saveLogs
         )) {
 
@@ -437,9 +434,9 @@ struct StreamDetailInputScreen: View {
                 accountID: accountID,
                 subscribeAPI: productionSubscribeURL,
                 videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
-                minPlayoutDelay: playoutDelayMin,
-                maxPlayoutDelay: playoutDelayMax,
-                maxBitrate: maxBitrate,
+                minPlayoutDelay: nil,
+                maxPlayoutDelay: nil,
+                maxBitrate: 0,
                 disableAudio: disableAudio,
                 primaryVideoQuality: videoQuality,
                 saveLogs: saveLogs,
@@ -456,7 +453,6 @@ struct StreamDetailInputScreen: View {
             let configuration = SubscriptionConfiguration(
                 subscribeAPI: productionSubscribeURL,
                 jitterMinimumDelayMs: jitterMinimumDelayMs,
-                maxBitrate: maxBitrate,
                 disableAudio: disableAudio,
                 rtcEventLogPath: nil,
                 sdkLogPath: nil,
