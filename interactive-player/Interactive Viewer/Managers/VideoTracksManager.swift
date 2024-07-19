@@ -56,9 +56,9 @@ final actor VideoTracksManager {
 
     func observeLayerUpdates(for source: StreamSource) {
         Task { [weak self] in
-            guard 
+            guard
                 let self,
-                  await self.layerEventsObservationDictionary[source.sourceId] == nil 
+                  await self.layerEventsObservationDictionary[source.sourceId] == nil
             else {
                 return
             }

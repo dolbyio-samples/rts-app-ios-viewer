@@ -415,7 +415,7 @@ struct StreamDetailInputScreen: View {
         let disableAudio = false
         let videoQuality = VideoQuality.auto
         let saveLogs = false
-    
+
         RecentStreamCell(streamDetail: SavedStreamDetail(
             accountID: accountID,
             streamName: streamName,
