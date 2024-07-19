@@ -448,15 +448,13 @@ struct StreamDetailInputScreen: View {
                 return
             }
 
-            let playoutDelay: MCForcePlayoutDelay? = showPlayoutDelay ? MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay)) : nil
-
             let configuration = SubscriptionConfiguration(
                 subscribeAPI: productionSubscribeURL,
                 jitterMinimumDelayMs: jitterMinimumDelayMs,
                 disableAudio: disableAudio,
                 rtcEventLogPath: nil,
                 sdkLogPath: nil,
-                playoutDelay: playoutDelay
+                playoutDelay: nil
             )
             streamingScreenContext = StreamingView.Context(
                 streamName: streamName,

@@ -39,8 +39,8 @@ public struct SubscriptionConfiguration {
         rtcEventLogPath: String? = nil,
         sdkLogPath: String? = nil,
         enableStats: Bool = Constants.enableStats,
-        playoutDelay: MCForcePlayoutDelay? = Constants.playoutDelay)
-    {
+        playoutDelay: MCForcePlayoutDelay? = Constants.playoutDelay
+    ) {
         self.subscribeAPI = subscribeAPI
         self.autoReconnect = autoReconnect
         self.jitterMinimumDelayMs = jitterMinimumDelayMs

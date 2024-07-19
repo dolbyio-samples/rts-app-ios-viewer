@@ -24,9 +24,11 @@ final class RecentStreamsViewModel: ObservableObject {
     @Published private(set) var topStreamDetails: [SavedStreamDetail] = []
     @Published private(set) var lastPlayedStream: SavedStreamDetail?
 
-    init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
-         settingsManager: SettingsManager = .shared,
-         dateProvider: DateProvider = DefaultDateProvider()) {
+    init(
+        streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared,
+        settingsManager: SettingsManager = .shared,
+        dateProvider: DateProvider = DefaultDateProvider()
+    ) {
         self.streamDataManager = streamDataManager
         self.settingsManager = settingsManager
         self.dateProvider = dateProvider
@@ -90,7 +92,8 @@ final class RecentStreamsViewModel: ObservableObject {
         let sdkLogPath = streamDetail.saveLogs ? URL.sdkLogPath(for: currentDate) : nil
         var playoutDelay: MCForcePlayoutDelay?
         if let minPlayoutDelay = streamDetail.minPlayoutDelay,
-           let maxPlayoutDelay = streamDetail.maxPlayoutDelay {
+           let maxPlayoutDelay = streamDetail.maxPlayoutDelay
+        {
             playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
         }
 

@@ -18,17 +18,19 @@ struct SavedStreamDetail: Identifiable, Equatable {
     let maxBitrate: UInt?
     let saveLogs: Bool
 
-    init(accountID: String,
-         streamName: String,
-         subscribeAPI: String,
-         videoJitterMinimumDelayInMs: UInt,
-         minPlayoutDelay: UInt?,
-         maxPlayoutDelay: UInt?,
-         disableAudio: Bool,
-         primaryVideoQuality: VideoQuality,
-         maxBitrate: UInt,
-         saveLogs: Bool,
-         dateProvider: DateProvider = DefaultDateProvider()) {
+    init(
+        accountID: String,
+        streamName: String,
+        subscribeAPI: String,
+        videoJitterMinimumDelayInMs: UInt,
+        minPlayoutDelay: UInt?,
+        maxPlayoutDelay: UInt?,
+        disableAudio: Bool,
+        primaryVideoQuality: VideoQuality,
+        maxBitrate: UInt,
+        saveLogs: Bool,
+        dateProvider: DateProvider = DefaultDateProvider()
+    ) {
         self.id = UUID()
         self.accountID = accountID
         self.streamName = streamName
@@ -46,12 +48,13 @@ struct SavedStreamDetail: Identifiable, Equatable {
 
 extension SavedStreamDetail {
     init?(managedObject: StreamDetailManagedObject) {
-        guard let accountID = managedObject.accountID,
-              let streamName = managedObject.streamName,
-              let lastUsedDate = managedObject.lastUsedDate,
-              let storedVideoQuality = managedObject.primaryVideoQuality,
-              let subscribeAPI = managedObject.subscribeAPI,
-              let primaryVideoQuality = VideoQuality(rawValue: storedVideoQuality)
+        guard
+            let accountID = managedObject.accountID,
+            let streamName = managedObject.streamName,
+            let lastUsedDate = managedObject.lastUsedDate,
+            let storedVideoQuality = managedObject.primaryVideoQuality,
+            let subscribeAPI = managedObject.subscribeAPI,
+            let primaryVideoQuality = VideoQuality(rawValue: storedVideoQuality)
         else {
             return nil
         }
