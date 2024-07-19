@@ -56,8 +56,12 @@ final actor VideoTracksManager {
 
     func observeLayerUpdates(for source: StreamSource) {
         Task { [weak self] in
-            guard let self,
-                  await self.layerEventsObservationDictionary[source.sourceId] == nil else { return }
+            guard 
+                let self,
+                  await self.layerEventsObservationDictionary[source.sourceId] == nil 
+            else {
+                return
+            }
             let layerEventsObservationTask = Task {
                 for await layerEvent in source.videoTrack.layers() {
                     let simulcastLayers = layerEvent.layers()
