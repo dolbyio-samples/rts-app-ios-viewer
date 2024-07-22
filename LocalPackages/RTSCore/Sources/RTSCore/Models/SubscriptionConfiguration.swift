@@ -10,6 +10,7 @@ public struct SubscriptionConfiguration {
         public static let autoReconnect = true
         public static let jitterMinimumDelayMs: UInt = 20
         public static let statsDelayMs: UInt = 1000
+        public static let maxBitrate: UInt = 0
         public static let disableAudio = false
         public static let enableStats = true
         public static let playoutDelay: MCForcePlayoutDelay? = nil
@@ -21,6 +22,7 @@ public struct SubscriptionConfiguration {
     public let autoReconnect: Bool
     public let jitterMinimumDelayMs: UInt
     public let statsDelayMs: UInt
+    public let maxBitrate: UInt
     public let disableAudio: Bool
     public let rtcEventLogPath: String?
     public let sdkLogPath: String?
@@ -32,6 +34,7 @@ public struct SubscriptionConfiguration {
         autoReconnect: Bool = Constants.autoReconnect,
         jitterMinimumDelayMs: UInt = Constants.jitterMinimumDelayMs,
         statsDelayMs: UInt = Constants.statsDelayMs,
+        maxBitrate: UInt = Constants.maxBitrate,
         disableAudio: Bool = Constants.disableAudio,
         rtcEventLogPath: String? = nil,
         sdkLogPath: String? = nil,
@@ -42,6 +45,7 @@ public struct SubscriptionConfiguration {
         self.autoReconnect = autoReconnect
         self.jitterMinimumDelayMs = jitterMinimumDelayMs
         self.statsDelayMs = statsDelayMs
+        self.maxBitrate = maxBitrate
         self.disableAudio = disableAudio
         self.rtcEventLogPath = rtcEventLogPath
         self.sdkLogPath = sdkLogPath
