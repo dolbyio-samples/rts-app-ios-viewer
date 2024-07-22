@@ -3,8 +3,8 @@
 //
 
 import DolbyIOUIKit
-import SwiftUI
 import RTSCore
+import SwiftUI
 
 struct StatisticsInfoView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -15,8 +15,12 @@ struct StatisticsInfoView: View {
     private let fontTableValue = Font.custom("AvenirNext-DemiBold", size: FontSize.body)
     private let fontTitle = Font.custom("AvenirNext-Bold", size: FontSize.title2)
 
-    init(streamSource: StreamSource, streamStatistics: StreamStatistics?) {
-        viewModel = StatsInfoViewModel(streamSource: streamSource, streamStatistics: streamStatistics)
+    init(
+        streamSource: StreamSource,
+        targetBitrate: Int?,
+        streamStatistics: StreamStatistics?
+    ) {
+        viewModel = StatsInfoViewModel(streamSource: streamSource, targetBitrate: targetBitrate, streamStatistics: streamStatistics)
     }
 
     private var theme: Theme {

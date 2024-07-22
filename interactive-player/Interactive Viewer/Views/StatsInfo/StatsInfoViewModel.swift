@@ -2,16 +2,22 @@
 //  StatsInfoViewModel.swift
 //
 
-import RTSCore
 import Foundation
+import RTSCore
 
 final class StatsInfoViewModel {
     private let streamSource: StreamSource
-    let statsItems: [StatsItem]
+    var statsItems: [StatsItem] = []
+    let targetBitrate: Int
 
-    init(streamSource: StreamSource, streamStatistics: StreamStatistics?) {
+    init(
+        streamSource: StreamSource,
+        targetBitrate: Int?,
+        streamStatistics: StreamStatistics?
+    ) {
         self.streamSource = streamSource
-        self.statsItems = streamStatistics.map { Self.makeStatsItems(for: $0, streamSource: streamSource) } ?? []
+        self.targetBitrate = targetBitrate ?? 0
+        self.statsItems = streamStatistics.map { Self.makeStatsItems(for: $0, targetBitrate: self.targetBitrate, streamSource: streamSource) } ?? []
     }
 
     struct StatsItem: Identifiable {
@@ -21,7 +27,9 @@ final class StatsInfoViewModel {
     }
 
     // swiftlint:disable function_body_length
-    private static func makeStatsItems(for streamStatistics: StreamStatistics, streamSource: StreamSource) -> [StatsItem] {
+    private static func makeStatsItems(for streamStatistics: StreamStatistics,
+                                       targetBitrate: Int?,
+                                       streamSource: StreamSource) -> [StatsItem] {
         guard
             let mid = streamSource.videoTrack.currentMID,
             let videoStatsInboundRtp = streamStatistics.videoStatistics(matching: mid)
@@ -81,6 +89,15 @@ final class StatsInfoViewModel {
                 value: String(fps)
             )
         )
+
+        if let bitrate = targetBitrate {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.target-bitrate.label"),
+                    value: String(bitrate)
+                )
+            )
+        }
 
         let videoBytesReceived = videoStatsInboundRtp.bytesReceived
         result.append(
@@ -222,6 +239,7 @@ final class StatsInfoViewModel {
         }
         return result
     }
+
     // swiftlint:enable function_body_length
 
     private static func dateString(_ timestamp: Double) -> String {
@@ -245,7 +263,7 @@ final class StatsInfoViewModel {
 
     private static func formatNumber(input: Int) -> String {
         if input < KILOBYTES { return String(input) }
-        if input >= KILOBYTES && input < MEGABYTES { return "\(input / KILOBYTES) K"} else { return "\(input / MEGABYTES) M" }
+        if input >= KILOBYTES && input < MEGABYTES { return "\(input / KILOBYTES) K" } else { return "\(input / MEGABYTES) M" }
     }
 }
 

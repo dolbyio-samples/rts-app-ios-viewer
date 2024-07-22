@@ -46,9 +46,9 @@ final actor VideoTracksManager {
     private var layerEventsObservationDictionary: [SourceID: Task<Void, Never>] = [:]
     private var sourceToTasks: [SourceID: SerialTasks] = [:]
     private let videoQualitySubject: CurrentValueSubject<[SourceID: VideoQuality], Never> = CurrentValueSubject([:])
-
     let rendererRegistry: RendererRegistry
     lazy var selectedVideoQualityPublisher = videoQualitySubject.eraseToAnyPublisher()
+    @Published var targetBitrate: Int = 0
 
     init(rendererRegistry: RendererRegistry = RendererRegistry()) {
         self.rendererRegistry = rendererRegistry
@@ -126,11 +126,21 @@ final actor VideoTracksManager {
                 Self.logger.debug("♼ Selecting videoquality \(videoQualityToSelect.displayText) for source \(sourceId) on view \(view)")
                 self.sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
 
+                if let bitrate = layerToSelect.targetBitrate {
+                    Self.logger.debug("♼ Updating target bitrate to \(bitrate) for source \(sourceId)")
+                    self.targetBitrate = Int(truncating: bitrate)
+                }
+
                 try await self.queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
             } else {
                 Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromTheList.displayText)")
                 Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on view \(view)")
                 self.sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
+
+                if let bitrate = newVideoQualityAndLayerPair.layer?.targetBitrate {
+                    Self.logger.debug("♼ Updating target bitrate to \(bitrate) for source \(sourceId)")
+                    self.targetBitrate = Int(truncating: bitrate)
+                }
 
                 try await self.queueEnableTrack(for: source)
             }

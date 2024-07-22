@@ -22,6 +22,7 @@ final class SingleStreamViewModel: ObservableObject {
     let subscriptionManager: SubscriptionManager
     let videoTracksManager: VideoTracksManager
     @Published private(set) var streamStatistics: StreamStatistics?
+    @Published private(set) var targetBitrate: Int?
 
     private var subscriptions: [AnyCancellable] = []
 
@@ -57,6 +58,17 @@ final class SingleStreamViewModel: ObservableObject {
                     self.streamStatistics = statistics
                 }
                 .store(in: &subscriptions)
+
+            await self.videoTracksManager.$targetBitrate
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] bitrate in
+                    guard let self else { return }
+                    if bitrate > 0 {
+                        self.targetBitrate = bitrate
+                    }
+                }
+                .store(in: &subscriptions)
         }
+
     }
 }
