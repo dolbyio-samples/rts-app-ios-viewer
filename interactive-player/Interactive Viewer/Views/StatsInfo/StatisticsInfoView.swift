@@ -8,19 +8,15 @@ import SwiftUI
 
 struct StatisticsInfoView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
-    private let viewModel: StatsInfoViewModel
+    @ObservedObject private var viewModel: StatsInfoViewModel
 
     private let fontCaption = Font.custom("AvenirNext-Bold", size: FontSize.subhead)
     private let fontTable = Font.custom("AvenirNext-Regular", size: FontSize.body)
     private let fontTableValue = Font.custom("AvenirNext-DemiBold", size: FontSize.body)
     private let fontTitle = Font.custom("AvenirNext-Bold", size: FontSize.title2)
 
-    init(
-        streamSource: StreamSource,
-        targetBitrate: Int?,
-        streamStatistics: StreamStatistics?
-    ) {
-        viewModel = StatsInfoViewModel(streamSource: streamSource, targetBitrate: targetBitrate, streamStatistics: streamStatistics)
+    init(statsInfoViewModel: StatsInfoViewModel) {
+        self.viewModel = statsInfoViewModel
     }
 
     private var theme: Theme {
@@ -70,6 +66,20 @@ struct StatisticsInfoView: View {
                     }
                     .padding([.top], Layout.spacing0_5x)
                 }
+
+                HStack {
+                    Text("stream.stats.target-bitrate.label", font: fontTable)
+                        .foregroundColor(Color(theme.neutral200))
+                        .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
+                        .accessibilityIdentifier("Key.stream.stats.target-bitrate.label")
+                        .accessibilityValue("stream.stats.target-bitrate.label")
+                    Text(verbatim: "\(viewModel.targetBitrate)", font: fontTableValue)
+                        .foregroundColor(Color(theme.onBackground))
+                        .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
+                        .accessibilityIdentifier("Value.\(viewModel.targetBitrate)")
+                        .accessibilityValue("\(viewModel.targetBitrate)")
+                }
+                .padding([.top], Layout.spacing0_5x)
             }
             .padding([.leading, .trailing], Layout.spacing2x)
             .padding(.bottom, Layout.spacing3x)

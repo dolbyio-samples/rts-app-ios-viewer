@@ -193,9 +193,8 @@ struct SingleStreamView: View {
 
     private func statisticsView() -> some View {
         HStack {
-            StatisticsInfoView(streamSource: viewModel.selectedVideoSource,
-                               targetBitrate: viewModel.targetBitrate,
-                               streamStatistics: viewModel.streamStatistics)
+            StatisticsInfoView(statsInfoViewModel: viewModel.statsInfoViewModel)
+
             Spacer()
         }
         .frame(alignment: Alignment.bottom)

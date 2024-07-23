@@ -48,7 +48,7 @@ final actor VideoTracksManager {
     private let videoQualitySubject: CurrentValueSubject<[SourceID: VideoQuality], Never> = CurrentValueSubject([:])
     let rendererRegistry: RendererRegistry
     lazy var selectedVideoQualityPublisher = videoQualitySubject.eraseToAnyPublisher()
-    @Published var targetBitrate: Int = 0
+    @Published var sourcedTargetBitrates: [SourceID: Int?] = [:]
 
     init(rendererRegistry: RendererRegistry = RendererRegistry()) {
         self.rendererRegistry = rendererRegistry
@@ -58,7 +58,7 @@ final actor VideoTracksManager {
         Task { [weak self] in
             guard
                 let self,
-                  await self.layerEventsObservationDictionary[source.sourceId] == nil
+                await self.layerEventsObservationDictionary[source.sourceId] == nil
             else {
                 return
             }
@@ -126,21 +126,11 @@ final actor VideoTracksManager {
                 Self.logger.debug("♼ Selecting videoquality \(videoQualityToSelect.displayText) for source \(sourceId) on view \(view)")
                 self.sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
 
-                if let bitrate = layerToSelect.targetBitrate {
-                    Self.logger.debug("♼ Updating target bitrate to \(bitrate) for source \(sourceId)")
-                    self.targetBitrate = Int(truncating: bitrate)
-                }
-
                 try await self.queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
             } else {
                 Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromTheList.displayText)")
                 Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on view \(view)")
                 self.sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
-
-                if let bitrate = newVideoQualityAndLayerPair.layer?.targetBitrate {
-                    Self.logger.debug("♼ Updating target bitrate to \(bitrate) for source \(sourceId)")
-                    self.targetBitrate = Int(truncating: bitrate)
-                }
 
                 try await self.queueEnableTrack(for: source)
             }
@@ -274,11 +264,19 @@ private extension VideoTracksManager {
                 Self.logger.debug("♼ Has simulcast layer - \(layerToSelect) for source \(sourceId)")
                 Self.logger.debug("♼ Selecting videoquality \(selectedVideoQuality.displayText) for source \(sourceId) on view \(anyActiveView)")
                 self.sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
+
+                let targetBitrateForLayer = self.getTargetBitrate(from: layerToSelect, sourceId: sourceId)
+                self.sourcedTargetBitrates[sourceId] = targetBitrateForLayer
+
                 try await self.queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
             } else {
                 Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromRequested.displayText)")
                 Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on view \(anyActiveView)")
                 self.sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
+
+                let targetBitrateForLayer = self.getTargetBitrate(from: newVideoQualityAndLayerPair.layer, sourceId: sourceId)
+                self.sourcedTargetBitrates[sourceId] = targetBitrateForLayer
+
                 try await self.queueEnableTrack(for: source)
             }
         } catch {
@@ -293,6 +291,15 @@ private extension VideoTracksManager {
         activeViews?.forEach { self.viewToRequestedVideoQualityMapping[$0] = nil }
         self.sourceToSimulcastLayersMapping[sourceId] = nil
         self.sourceToActiveViewsMapping[sourceId] = nil
+    }
+
+    func getTargetBitrate(from layer: MCRTSRemoteTrackLayer?, sourceId: SourceID) -> Int? {
+        if let bitrate = layer?.targetBitrate {
+            let targetBitrate = Int(truncating: bitrate)
+            Self.logger.debug("♼ Updating target bitrate to \(targetBitrate) for source \(sourceId)")
+            return targetBitrate
+        }
+        return nil
     }
 }
 
