@@ -2,13 +2,12 @@
 //  SingleStreamView.swift
 //
 
-import SwiftUI
-import RTSCore
 import DolbyIOUIKit
 import MillicastSDK
+import RTSCore
+import SwiftUI
 
 struct SingleStreamView: View {
-
     private enum Animation {
         static let duration: CGFloat = 0.75
         static let blendDuration: CGFloat = 3.0
@@ -16,8 +15,9 @@ struct SingleStreamView: View {
     }
 
     private let isShowingDetailPresentation: Bool
-    private let onSelect: ((StreamSource) -> Void)
+    private let onSelect: (StreamSource) -> Void
     private let onClose: (() -> Void)?
+    private var viewModel: SingleStreamViewModel
 
     @State private var showingScreenControls = false
     @State private var isShowingSettingsScreen: Bool = false
@@ -26,7 +26,6 @@ struct SingleStreamView: View {
 
     @StateObject private var userInteractionViewModel: UserInteractionViewModel = .init()
 
-    @ObservedObject private var viewModel: SingleStreamViewModel
     @ObservedObject private var themeManager = ThemeManager.shared
 
     init(
