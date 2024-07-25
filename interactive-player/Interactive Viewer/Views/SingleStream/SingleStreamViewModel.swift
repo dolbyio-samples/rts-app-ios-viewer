@@ -2,14 +2,13 @@
 //  SingleStreamViewModel.swift
 //
 
-import Combine
-import RTSCore
 import Foundation
 import MillicastSDK
 import os
+import RTSCore
 
 @MainActor
-final class SingleStreamViewModel: ObservableObject {
+final class SingleStreamViewModel {
     static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: SingleStreamViewModel.self)
@@ -21,9 +20,10 @@ final class SingleStreamViewModel: ObservableObject {
     let settingsMode: SettingsMode
     let subscriptionManager: SubscriptionManager
     let videoTracksManager: VideoTracksManager
-    @Published private(set) var streamStatistics: StreamStatistics?
 
-    private var subscriptions: [AnyCancellable] = []
+    lazy var statsInfoViewModel = StatsInfoViewModel(streamSource: selectedVideoSource,
+                                                     videoTracksManager: videoTracksManager,
+                                                     subscriptionManager: subscriptionManager)
 
     init(
         sources: [StreamSource],
@@ -39,24 +39,9 @@ final class SingleStreamViewModel: ObservableObject {
         self.settingsMode = settingsMode
         self.subscriptionManager = subscriptionManager
         self.videoTracksManager = videoTracksManager
-
-        observeStats()
     }
 
     func streamSource(for id: UUID) -> StreamSource? {
         sources.first { $0.id == id }
-    }
-
-    private func observeStats() {
-        Task { [weak self] in
-            guard let self else { return }
-            await self.subscriptionManager.$streamStatistics
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] statistics in
-                    guard let self else { return }
-                    self.streamStatistics = statistics
-                }
-                .store(in: &subscriptions)
-        }
     }
 }

@@ -158,3 +158,4 @@ Follow video: Switch audio source when a video is selected. If the selected vide
 "stream.stats.jitter-buffer-delay.label" = "Jitter buffer delay";
 "stream.stats.jitter-buffer-target-delay.label" = "Jitter buffer target delay";
 "stream.stats.jitter-buffer-minimum-delay.label" = "Jitter buffer min delay";
+"stream.stats.target-bitrate.label" = "Target Bitrate";
