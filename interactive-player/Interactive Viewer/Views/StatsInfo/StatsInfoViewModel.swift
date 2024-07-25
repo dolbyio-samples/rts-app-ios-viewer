@@ -2,16 +2,37 @@
 //  StatsInfoViewModel.swift
 //
 
-import RTSCore
+import Combine
 import Foundation
+import RTSCore
 
-final class StatsInfoViewModel {
+@MainActor
+final class StatsInfoViewModel: ObservableObject {
+    @Published private(set) var statsItems: [StatsItem] = []
+    @Published private(set) var targetBitrate: String = "N/A"
+    private let subscriptionManager: SubscriptionManager
+    private let videoTracksManager: VideoTracksManager
     private let streamSource: StreamSource
-    let statsItems: [StatsItem]
+    private var subscriptions: [AnyCancellable] = []
 
-    init(streamSource: StreamSource, streamStatistics: StreamStatistics?) {
+    init(
+        streamSource: StreamSource,
+        videoTracksManager: VideoTracksManager,
+        subscriptionManager: SubscriptionManager
+    ) {
         self.streamSource = streamSource
-        self.statsItems = streamStatistics.map { Self.makeStatsItems(for: $0, streamSource: streamSource) } ?? []
+        self.videoTracksManager = videoTracksManager
+        self.subscriptionManager = subscriptionManager
+
+        Task {
+            self.statsItems = await subscriptionManager.streamStatistics.map { Self.makeStatsItems(for: $0, streamSource: streamSource) } ?? []
+            let sourcedBitrates = await videoTracksManager.sourcedTargetBitrates
+            guard let sourcedBitrate = sourcedBitrates[streamSource.sourceId],
+                  let sourcedBitrate else { return }
+            self.targetBitrate = Self.formatBitRate(bitRate: sourcedBitrate)
+        }
+
+        observeStats()
     }
 
     struct StatsItem: Identifiable {
@@ -20,8 +41,36 @@ final class StatsInfoViewModel {
         var value: String
     }
 
+    private func observeStats() {
+        Task { [weak self] in
+            guard let self else { return }
+            await self.subscriptionManager.$streamStatistics
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] statistics in
+                    guard let self else { return }
+                    self.statsItems = statistics.map { Self.makeStatsItems(for: $0, streamSource: self.streamSource) } ?? []
+                }
+                .store(in: &subscriptions)
+
+            await self.videoTracksManager.$sourcedTargetBitrates
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] sourcedBitrates in
+                    guard let self else { return }
+                    if let sourcedBitrate = sourcedBitrates[streamSource.sourceId],
+                       let sourcedBitrate {
+                        self.targetBitrate = Self.formatBitRate(bitRate: sourcedBitrate)
+                    } else {
+                        self.targetBitrate = "N/A"
+                    }
+                }
+                .store(in: &subscriptions)
+        }
+    }
+}
+
+private extension StatsInfoViewModel {
     // swiftlint:disable function_body_length
-    private static func makeStatsItems(for streamStatistics: StreamStatistics, streamSource: StreamSource) -> [StatsItem] {
+    static func makeStatsItems(for streamStatistics: StreamStatistics, streamSource: StreamSource) -> [StatsItem] {
         guard
             let mid = streamSource.videoTrack.currentMID,
             let videoStatsInboundRtp = streamStatistics.videoStatistics(matching: mid)
@@ -222,9 +271,10 @@ final class StatsInfoViewModel {
         }
         return result
     }
+
     // swiftlint:enable function_body_length
 
-    private static func dateString(_ timestamp: Double) -> String {
+    static func dateString(_ timestamp: Double) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.locale = NSLocale.current
@@ -234,18 +284,18 @@ final class StatsInfoViewModel {
         return dateFormatter.string(from: date)
     }
 
-    private static func formatBytes(bytes: Int) -> String {
+    static func formatBytes(bytes: Int) -> String {
         return "\(formatNumber(input: bytes))B"
     }
 
-    private static func formatBitRate(bitRate: Int) -> String {
+    static func formatBitRate(bitRate: Int) -> String {
         let value = formatNumber(input: bitRate).lowercased()
         return "\(value)bps"
     }
 
-    private static func formatNumber(input: Int) -> String {
+    static func formatNumber(input: Int) -> String {
         if input < KILOBYTES { return String(input) }
-        if input >= KILOBYTES && input < MEGABYTES { return "\(input / KILOBYTES) K"} else { return "\(input / MEGABYTES) M" }
+        if input >= KILOBYTES && input < MEGABYTES { return "\(input / KILOBYTES) K" } else { return "\(input / MEGABYTES) M" }
     }
 }
 
