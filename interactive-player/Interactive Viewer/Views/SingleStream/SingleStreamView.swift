@@ -192,7 +192,7 @@ struct SingleStreamView: View {
 
     private func statisticsView() -> some View {
         HStack {
-            StatisticsInfoView(statsInfoViewModel: viewModel.statsInfoViewModel)
+            StatsInfoView(statsInfoViewModel: viewModel.statsInfoViewModel)
 
             Spacer()
         }

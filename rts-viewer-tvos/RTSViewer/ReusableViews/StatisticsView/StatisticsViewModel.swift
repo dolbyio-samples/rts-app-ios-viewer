@@ -5,11 +5,10 @@
 import Combine
 import Foundation
 import RTSCore
-import UIKit
 import SwiftUI
+import UIKit
 
 final class StatisticsViewModel: ObservableObject {
-
     struct StatsItem: Identifiable {
         var id: String { key }
         var key: String
@@ -26,8 +25,8 @@ final class StatisticsViewModel: ObservableObject {
 }
 
 // MARK: Stats report parsing
-private extension StatisticsViewModel {
 
+private extension StatisticsViewModel {
     // swiftlint:disable function_body_length
     static func makeStatsList(from source: StreamSource, streamStatistics: StreamStatistics) -> [StatsItem] {
         var result = [StatsItem]()
@@ -35,6 +34,33 @@ private extension StatisticsViewModel {
             return []
         }
         let audioStatsInboundRtp = streamStatistics.audioStatsInboundRtpList.first(where: { $0.mid == source.videoTrack.currentMID })
+
+        if let streamViewId = streamStatistics.streamViewId {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.stream-view-id.label"),
+                    value: streamViewId
+                )
+            )
+        }
+
+        if let subscriberId = streamStatistics.subscriberId {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.subscriber-id.label"),
+                    value: subscriberId
+                )
+            )
+        }
+
+        if let clusterId = streamStatistics.clusterId {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.cluster-id.label"),
+                    value: clusterId
+                )
+            )
+        }
 
         if let mid = videoStatsInboundRtp.mid {
             result.append(
@@ -103,6 +129,14 @@ private extension StatisticsViewModel {
             )
         }
 
+        let packetsReceived = videoStatsInboundRtp.packetsReceived
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.packets-received.label"),
+                value: String(packetsReceived)
+            )
+        )
+
         let framesDecoded = videoStatsInboundRtp.framesDecoded
         result.append(
             StatsItem(
@@ -112,12 +146,14 @@ private extension StatisticsViewModel {
         )
 
         let framesDropped = videoStatsInboundRtp.framesDropped
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.frames-dropped.label"),
-                value: String(framesDropped)
+        if framesDropped > 0 {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.frames-dropped.label"),
+                    value: String(framesDropped)
+                )
             )
-        )
+        }
 
         let jitterBufferEmittedCount = videoStatsInboundRtp.jitterBufferEmittedCount
         result.append(
@@ -169,14 +205,17 @@ private extension StatisticsViewModel {
         )
 
         let videoPacketsLost = videoStatsInboundRtp.packetsLost
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.video-packet-loss.label"),
-                value: String(videoPacketsLost)
+        if videoPacketsLost > 0 {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.video-packet-loss.label"),
+                    value: String(videoPacketsLost)
+                )
             )
-        )
+        }
 
-        if let audioPacketsLost = audioStatsInboundRtp?.packetsLost {
+        if let audioPacketsLost = audioStatsInboundRtp?.packetsLost,
+           audioPacketsLost > 0 {
             result.append(
                 StatsItem(
                     key: String(localized: "stream.stats.audio-packet-loss.label"),
@@ -185,22 +224,98 @@ private extension StatisticsViewModel {
             )
         }
 
-        if let rtt = streamStatistics.roundTripTime {
+        let freezeCount = videoStatsInboundRtp.freezeCount
+        if freezeCount > 0 {
             result.append(
                 StatsItem(
-                    key: String(localized: "stream.stats.rtt.label"),
-                    value: String(rtt)
+                    key: String(localized: "stream.stats.freeze-count.label"),
+                    value: String(freezeCount)
                 )
             )
         }
-        if let timestamp = audioStatsInboundRtp?.timestamp {
+
+        let freezeDuration = videoStatsInboundRtp.freezeDuration
+        if freezeDuration > 0 {
             result.append(
                 StatsItem(
-                    key: String(localized: "stream.stats.timestamp.label"),
-                    value: dateString(timestamp: timestamp / 1000)
+                    key: String(localized: "stream.stats.freeze-duration.label"),
+                    value: String(format: "%.2f ms", freezeDuration)
                 )
             )
         }
+
+        let pauseCount = videoStatsInboundRtp.pauseCount
+        if pauseCount > 0 {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.pause-count.label"),
+                    value: String(pauseCount)
+                )
+            )
+        }
+
+        let pauseDuration = videoStatsInboundRtp.pauseDuration
+        if pauseDuration > 0 {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.pause-duration.label"),
+                    value: String(format: "%.2f ms", pauseDuration)
+                )
+            )
+        }
+
+        if let videoStatsOutboundRtp = streamStatistics.outboundVideoStatistics() {
+            let retransmittedPackets = videoStatsOutboundRtp.retransmittedPackets
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.retransmitted-packets.label"),
+                    value: String(retransmittedPackets)
+                )
+            )
+
+            let retransmittedBytes = videoStatsOutboundRtp.retransmittedBytes
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.retransmitted-bytes.label"),
+                    value: String(retransmittedBytes)
+                )
+            )
+        }
+
+        if let currentRTT = streamStatistics.currentRoundTripTime {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.current-rtt.label"),
+                    value: String(currentRTT)
+                )
+            )
+        }
+
+        if let totalRTT = streamStatistics.totalRoundTripTime {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.total-rtt.label"),
+                    value: String(totalRTT)
+                )
+            )
+        }
+
+        let timestamp = videoStatsInboundRtp.timestamp
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.timestamp.label"),
+                value: dateString(timestamp / 1000)
+            )
+        )
+
+        let totalTime = videoStatsInboundRtp.totalTime
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.total-stream-time.label"),
+                value: elapsedTimeString(totalTime / 1000)
+            )
+        )
+
         let audioCodec = audioStatsInboundRtp?.codecName
         let videoCodec = videoStatsInboundRtp.codecName
         if audioCodec != nil || videoCodec != nil {
@@ -216,15 +331,35 @@ private extension StatisticsViewModel {
                 )
             )
         }
+
+        let incomingBitrate = videoStatsInboundRtp.incomingBitrate
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.incoming-bitrate.label"),
+                value: formatBitRate(bitRate: Int(incomingBitrate))
+            )
+        )
+
         return result
     }
+
     // swiftlint:enable function_body_length
 
-    static func dateString(timestamp: Double) -> String {
+    static func dateString(_ timestamp: Double) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.locale = NSLocale.current
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+
+        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+        return dateFormatter.string(from: date)
+    }
+
+    static func elapsedTimeString(_ timestamp: Double) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
+        dateFormatter.locale = NSLocale.current
+        dateFormatter.dateFormat = "HH:mm:ss"
 
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         return dateFormatter.string(from: date)
@@ -241,7 +376,7 @@ private extension StatisticsViewModel {
 
     static func formatNumber(input: Int) -> String {
         if input < KILOBYTES { return String(input) }
-        if input >= KILOBYTES && input < MEGABYTES { return "\(input / KILOBYTES) K"} else { return "\(input / MEGABYTES) M" }
+        if input >= KILOBYTES && input < MEGABYTES { return "\(input / KILOBYTES) K" } else { return "\(input / MEGABYTES) M" }
     }
 }
 

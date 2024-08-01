@@ -33,8 +33,8 @@ public actor SubscriptionManager: ObservableObject {
     private var sourceBuilder = SourceBuilder()
     private let logHandler: MillicastLogHandler = .init()
     private var isReconnectingPeerConnection: Bool = false
-
     private var subscriberEventObservationTasks: [Task<Void, Never>] = []
+    private var startTime: Double?
 
     // MARK: Subscribe API methods
 
@@ -53,7 +53,7 @@ public actor SubscriptionManager: ObservableObject {
             await self.registerToSubscriberEvents()
         }
 
-        let subscribeTask = Task(priority: .high) {  [weak subscriber] in
+        let subscribeTask = Task(priority: .high) { [weak subscriber] in
             guard let subscriber else { return }
             Self.logger.debug("👨‍🔧 Start a new connect request")
             let isConnected = await subscriber.isConnected()
@@ -69,7 +69,7 @@ public actor SubscriptionManager: ObservableObject {
             credentials.streamName = streamName
             credentials.token = token ?? ""
             credentials.apiUrl = configuration.subscribeAPI
-            
+
             try await subscriber.setCredentials(credentials)
 
             let connectionOptions = MCConnectionOptions()
@@ -116,13 +116,13 @@ public actor SubscriptionManager: ObservableObject {
         sourceBuilder.reset()
         subscriber = nil
         logHandler.setLogFilePath(filePath: nil)
+        startTime = nil
     }
 }
 
 // MARK: Observations
 
 extension SubscriptionManager {
-
     // swiftlint:disable function_body_length
     func registerToSubscriberEvents() async {
         guard let subscriber else {
@@ -182,7 +182,7 @@ extension SubscriptionManager {
 
         let statsObservation = Task {
             for await statsReport in subscriber.statsReport() {
-                guard !Task.isCancelled, let stats = StreamStatistics(statsReport) else {
+                guard !Task.isCancelled, let stats = StreamStatistics(statsReport, startTime: startTime) else {
                     return
                 }
                 updateStats(stats)
@@ -214,6 +214,7 @@ extension SubscriptionManager {
             sourcesObservation.value
         ]
     }
+
     // swiftlint:enable function_body_length
 
     func deregisterToSubscriberEvents() {
@@ -230,12 +231,15 @@ extension SubscriptionManager {
 private extension SubscriptionManager {
     func updateStats(_ stats: StreamStatistics) {
         streamStatistics = stats
+        if startTime == nil {
+            startTime = stats.videoStatsInboundRtpList.first?.startTime
+        }
     }
 
     func updateState(to state: State) {
         self.state = state
     }
-    
+
     func setReconnectingPeerConnection(_ isReconnecting: Bool) {
         isReconnectingPeerConnection = isReconnecting
     }
@@ -246,4 +250,5 @@ private extension SubscriptionManager {
 }
 
 // MARK: Helper to throw plain string as errors
-extension String: Error { }
+
+extension String: Error {}

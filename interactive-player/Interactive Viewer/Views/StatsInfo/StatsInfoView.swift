@@ -1,12 +1,12 @@
 //
-//  StatisticsInfoView.swift
+//  StatsInfoView.swift
 //
 
 import DolbyIOUIKit
 import RTSCore
 import SwiftUI
 
-struct StatisticsInfoView: View {
+struct StatsInfoView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @ObservedObject private var viewModel: StatsInfoViewModel
 
@@ -52,34 +52,11 @@ struct StatisticsInfoView: View {
                 }
 
                 ForEach(viewModel.statsItems) { item in
-                    HStack {
-                        Text(verbatim: item.key, font: fontTable)
-                            .foregroundColor(Color(theme.neutral200))
-                            .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
-                            .accessibilityIdentifier("Key.\(item.key)")
-                            .accessibilityValue(item.key)
-                        Text(verbatim: item.value, font: fontTableValue)
-                            .foregroundColor(Color(theme.onBackground))
-                            .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
-                            .accessibilityIdentifier("Value.\(item.key)")
-                            .accessibilityValue(item.value)
-                    }
-                    .padding([.top], Layout.spacing0_5x)
+                    statLabel(for: item.key, value: item.value)
                 }
 
-                HStack {
-                    Text("stream.stats.target-bitrate.label", font: fontTable)
-                        .foregroundColor(Color(theme.neutral200))
-                        .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
-                        .accessibilityIdentifier("Key.stream.stats.target-bitrate.label")
-                        .accessibilityValue("stream.stats.target-bitrate.label")
-                    Text(verbatim: "\(viewModel.targetBitrate)", font: fontTableValue)
-                        .foregroundColor(Color(theme.onBackground))
-                        .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
-                        .accessibilityIdentifier("Value.\(viewModel.targetBitrate)")
-                        .accessibilityValue("\(viewModel.targetBitrate)")
-                }
-                .padding([.top], Layout.spacing0_5x)
+                statLabel(for: String(localized: "stream.stats.target-bitrate.label"), value: viewModel.targetBitrate)
+                statLabel(for: String(localized: "stream.stats.outgoing-bitrate.label"), value: viewModel.outgoingBitrate)
             }
             .padding([.leading, .trailing], Layout.spacing2x)
             .padding(.bottom, Layout.spacing3x)
@@ -92,6 +69,23 @@ struct StatisticsInfoView: View {
                 Image(systemName: "doc.on.doc")
             }
         }
+    }
+
+    @ViewBuilder
+    private func statLabel(for title: String, value: String) -> some View {
+        HStack {
+            Text(verbatim: title, font: fontTable)
+                .foregroundColor(Color(theme.neutral200))
+                .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
+                .accessibilityIdentifier("Key.\(title)")
+                .accessibilityValue(title)
+            Text(verbatim: value, font: fontTableValue)
+                .foregroundColor(Color(theme.onBackground))
+                .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
+                .accessibilityIdentifier("Value.\(value)")
+                .accessibilityValue("\(value)")
+        }
+        .padding([.top], Layout.spacing0_5x)
     }
 
     private func formattedStatisticsText() -> String {

@@ -38,8 +38,8 @@
 		E821131D2C2A37C90003DBF7 /* SingleStreamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112E52C2A339D0003DBF7 /* SingleStreamViewModel.swift */; };
 		E821131E2C2A37C90003DBF7 /* SingleStreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112E62C2A339D0003DBF7 /* SingleStreamView.swift */; };
 		E821131F2C2A37C90003DBF7 /* UserInteractionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112E42C2A339D0003DBF7 /* UserInteractionViewModel.swift */; };
-		E82113202C2A37D00003DBF7 /* StatisticsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112E92C2A339D0003DBF7 /* StatisticsInfoView.swift */; };
-		E82113212C2A37D00003DBF7 /* StatsInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112EA2C2A339D0003DBF7 /* StatsInfoViewModel.swift */; };
+		E82113202C2A37D00003DBF7 /* StatsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112E92C2A339D0003DBF7 /* StatsInfoView.swift */; };
+		E82113212C2A37D00003DBF7 /* StatisticsInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112EA2C2A339D0003DBF7 /* StatisticsInfoViewModel.swift */; };
 		E82113222C2A37D00003DBF7 /* StatsInfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112E82C2A339D0003DBF7 /* StatsInfoButton.swift */; };
 		E82113232C2A37D80003DBF7 /* StreamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112FA2C2A339D0003DBF7 /* StreamViewModel.swift */; };
 		E82113242C2A37D80003DBF7 /* StreamingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112F92C2A339D0003DBF7 /* StreamingView.swift */; };
@@ -111,8 +111,8 @@
 		E82112E52C2A339D0003DBF7 /* SingleStreamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleStreamViewModel.swift; sourceTree = "<group>"; };
 		E82112E62C2A339D0003DBF7 /* SingleStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleStreamView.swift; sourceTree = "<group>"; };
 		E82112E82C2A339D0003DBF7 /* StatsInfoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsInfoButton.swift; sourceTree = "<group>"; };
-		E82112E92C2A339D0003DBF7 /* StatisticsInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsInfoView.swift; sourceTree = "<group>"; };
-		E82112EA2C2A339D0003DBF7 /* StatsInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsInfoViewModel.swift; sourceTree = "<group>"; };
+		E82112E92C2A339D0003DBF7 /* StatsInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsInfoView.swift; sourceTree = "<group>"; };
+		E82112EA2C2A339D0003DBF7 /* StatisticsInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsInfoViewModel.swift; sourceTree = "<group>"; };
 		E82112EC2C2A339D0003DBF7 /* VideoRendererViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRendererViewModel.swift; sourceTree = "<group>"; };
 		E82112ED2C2A339D0003DBF7 /* VideoRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRendererView.swift; sourceTree = "<group>"; };
 		E82112EF2C2A339D0003DBF7 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
@@ -246,8 +246,8 @@
 			isa = PBXGroup;
 			children = (
 				E82112E82C2A339D0003DBF7 /* StatsInfoButton.swift */,
-				E82112E92C2A339D0003DBF7 /* StatisticsInfoView.swift */,
-				E82112EA2C2A339D0003DBF7 /* StatsInfoViewModel.swift */,
+				E82112E92C2A339D0003DBF7 /* StatsInfoView.swift */,
+				E82112EA2C2A339D0003DBF7 /* StatisticsInfoViewModel.swift */,
 			);
 			path = StatsInfo;
 			sourceTree = "<group>";
@@ -557,7 +557,7 @@
 				E82113172C2A37C30003DBF7 /* SettingsMultiviewScreen.swift in Sources */,
 				E83CDA072A10878C008690FD /* ContentView.swift in Sources */,
 				E87FD1C52ADCFEB700E9164A /* SavedStreamDetail.swift in Sources */,
-				E82113202C2A37D00003DBF7 /* StatisticsInfoView.swift in Sources */,
+				E82113202C2A37D00003DBF7 /* StatsInfoView.swift in Sources */,
 				E821131C2C2A37C30003DBF7 /* SettingsViewModel.swift in Sources */,
 				E87FD1CB2ADCFEDA00E9164A /* Task+Delayed.swift in Sources */,
 				E83CDA092A10878C008690FD /* RecentStreamsViewModel.swift in Sources */,
@@ -567,7 +567,7 @@
 				E821131E2C2A37C90003DBF7 /* SingleStreamView.swift in Sources */,
 				E82113132C2A37A00003DBF7 /* GridView.swift in Sources */,
 				E82113182C2A37C30003DBF7 /* SettingsButton.swift in Sources */,
-				E82113212C2A37D00003DBF7 /* StatsInfoViewModel.swift in Sources */,
+				E82113212C2A37D00003DBF7 /* StatisticsInfoViewModel.swift in Sources */,
 				E821130C2C2A378A0003DBF7 /* VideoRendererViewModel.swift in Sources */,
 				E82113192C2A37C30003DBF7 /* SettingsScreen.swift in Sources */,
 				E87FD1C92ADCFED400E9164A /* DateProvider.swift in Sources */,
