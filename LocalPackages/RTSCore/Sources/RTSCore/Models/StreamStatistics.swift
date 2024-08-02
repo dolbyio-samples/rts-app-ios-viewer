@@ -6,9 +6,15 @@ import Foundation
 import MillicastSDK
 
 public struct StreamStatistics: Equatable, Hashable {
-    public let roundTripTime: Double?
+    public let streamViewId: String?
+    public let subscriberId: String?
+    public let clusterId: String?
+    public let currentRoundTripTime: Double?
+    public let totalRoundTripTime: Double?
     public var videoStatsInboundRtpList: [StatsInboundRtp]
     public var audioStatsInboundRtpList: [StatsInboundRtp]
+    public var videoStatsOutboundRtpList: [StatsOutboundRtp]
+    public var audioStatsOutboundRtpList: [StatsOutboundRtp]
 }
 
 public struct StatsInboundRtp: Equatable, Hashable {
@@ -37,25 +43,46 @@ public struct StatsInboundRtp: Equatable, Hashable {
     public let jitter: Double
     public let packetsReceived: Int
     public let packetsLost: Int
+    public let freezeCount: Int
+    public let freezeDuration: Double
+    public let pauseCount: Int
+    public let pauseDuration: Double
+    public let startTime: Double
     public let timestamp: Double
+    public let totalTime: Double
     public var codecName: String?
+    public var incomingBitrate: Double
 
     public var videoResolution: String {
         "\(frameWidth) x \(frameHeight)"
     }
 }
 
+public struct StatsOutboundRtp: Equatable, Hashable {
+    public let kind: String?
+    public let sid: String?
+    public let retransmittedPackets: Int
+    public let retransmittedBytes: Int
+}
+
 extension StreamStatistics {
-    init?(_ report: MCStatsReport) {
+    init?(_ report: MCStatsReport, startTime: Double? = nil) {
+        let streamDetails = report.getStreamDetails().asViewDetails()
+        streamViewId = streamDetails?.streamViewId
+        subscriberId = streamDetails?.subscriberId
+        clusterId = streamDetails?.clusterId
+
         let receivedType = MCRemoteInboundRtpStreamStats.get_type()
         guard let remoteInboundStreamStatsList = report.getStatsOf(receivedType) as? [MCRemoteInboundRtpStreamStats] else {
             return nil
         }
-        roundTripTime = remoteInboundStreamStatsList.first.map { $0.round_trip_time }
+
+        currentRoundTripTime = remoteInboundStreamStatsList.first.map { $0.round_trip_time }
+        totalRoundTripTime = remoteInboundStreamStatsList.first.map { $0.total_round_trip_time }
 
         let inboundRtpStreamStatsType = MCInboundRtpStreamStats.get_type()
         guard let inboundRtpStreamStatsList = report.getStatsOf(inboundRtpStreamStatsType) as? [MCInboundRtpStreamStats] else {
-           return nil
+            return nil
         }
 
         let codecType = MCCodecsStats.get_type()
@@ -65,7 +92,7 @@ extension StreamStatistics {
         let videos = inboundRtpStreamStatsList
             .filter { $0.kind == "video" }
             .map {
-                StatsInboundRtp($0, codecStatsList: codecStatsList)
+                StatsInboundRtp($0, codecStatsList: codecStatsList, startTime: startTime)
             }
         videoStatsInboundRtpList.append(contentsOf: videos)
 
@@ -73,14 +100,36 @@ extension StreamStatistics {
         let audios = inboundRtpStreamStatsList
             .filter { $0.kind == "audio" }
             .map {
-                StatsInboundRtp($0, codecStatsList: codecStatsList)
+                StatsInboundRtp($0, codecStatsList: codecStatsList, startTime: startTime)
             }
         audioStatsInboundRtpList.append(contentsOf: audios)
+
+        videoStatsOutboundRtpList = [StatsOutboundRtp]()
+        audioStatsOutboundRtpList = [StatsOutboundRtp]()
+
+        let outboundType = MCOutboundRtpStreamStats.get_type()
+        let outboundStreamStatsList = report.getStatsOf(outboundType) as? [MCOutboundRtpStreamStats]
+
+        if let outboundList = outboundStreamStatsList {
+            let videoOutbound = outboundList
+                .filter { $0.kind == "video" }
+                .compactMap { StatsOutboundRtp($0) }
+
+            videoStatsOutboundRtpList.append(contentsOf: videoOutbound)
+
+            let audioOutbound = outboundList
+                .filter { $0.kind == "audio" }
+                .compactMap { StatsOutboundRtp($0) }
+
+            audioStatsOutboundRtpList.append(contentsOf: audioOutbound)
+        }
     }
 }
 
 extension StatsInboundRtp {
-    init(_ stats: MCInboundRtpStreamStats, codecStatsList: [MCCodecsStats]?) {
+    init(_ stats: MCInboundRtpStreamStats,
+         codecStatsList: [MCCodecsStats]?,
+         startTime: Double? = nil) {
         kind = stats.kind
         sid = stats.sid
         mid = stats.mid
@@ -94,6 +143,11 @@ extension StatsInboundRtp {
         framesDropped = Int(stats.frames_dropped)
         jitterBufferEmittedCount = Int(stats.jitter_buffer_emitted_count)
         jitter = stats.jitter * 1000
+        freezeCount = Int(stats.freeze_count)
+        freezeDuration = stats.total_freezes_duration
+        pauseCount = Int(stats.pause_count)
+        pauseDuration = stats.total_pauses_duration
+
         processingDelay = Self.msNormalised(
             numerator: stats.total_processing_delay,
             denominator: stats.frames_decoded
@@ -122,10 +176,19 @@ extension StatsInboundRtp {
         totalSampleDuration = stats.total_samples_duration
         codec = stats.codec_id
         timestamp = Double(stats.timestamp)
+        if let startTime {
+            self.startTime = startTime
+        } else {
+            self.startTime = timestamp
+        }
+        
+        totalTime = timestamp - self.startTime
 
         if let codecStats = codecStatsList?.first(where: { $0.sid == stats.codec_id }) {
             codecName = codecStats.mime_type
         }
+
+        incomingBitrate = totalTime == 0 ? 0 : Double(bytesReceived) / totalTime
     }
 
     private static func msNormalised(numerator: Double, denominator: UInt) -> Double {
@@ -133,12 +196,25 @@ extension StatsInboundRtp {
     }
 }
 
-extension StreamStatistics {
-    public func videoStatistics(matching mid: String) -> StatsInboundRtp? {
-        self.videoStatsInboundRtpList.first { mid == $0.mid }
+extension StatsOutboundRtp {
+    init?(_ stats: MCOutboundRtpStreamStats) {
+        kind = stats.kind
+        sid = stats.sid
+        retransmittedPackets = Int(stats.retransmitted_packets_sent)
+        retransmittedBytes = Int(stats.retransmitted_bytes_sent)
+    }
+}
+
+public extension StreamStatistics {
+    func inboundVideoStatistics(matching mid: String) -> StatsInboundRtp? {
+        videoStatsInboundRtpList.first { mid == $0.mid }
     }
 
-    public func audioStatistics(matching mid: String) -> StatsInboundRtp? {
-        self.audioStatsInboundRtpList.first { mid == $0.mid }
+    func inboundAudioStatistics(matching mid: String) -> StatsInboundRtp? {
+        audioStatsInboundRtpList.first { mid == $0.mid }
+    }
+
+    func outboundVideoStatistics() -> StatsOutboundRtp? {
+        videoStatsOutboundRtpList.first
     }
 }

@@ -10,6 +10,9 @@ import RTSCore
 final class StatsInfoViewModel: ObservableObject {
     @Published private(set) var statsItems: [StatsItem] = []
     @Published private(set) var targetBitrate: String = "N/A"
+    @Published private(set) var outgoingBitrate: String = "N/A"
+    @Published private(set) var subscriberId: String = "N/A"
+    @Published private(set) var streamId: String = "N/A"
     private let subscriptionManager: SubscriptionManager
     private let videoTracksManager: VideoTracksManager
     private let streamSource: StreamSource
@@ -26,10 +29,14 @@ final class StatsInfoViewModel: ObservableObject {
 
         Task {
             self.statsItems = await subscriptionManager.streamStatistics.map { Self.makeStatsItems(for: $0, streamSource: streamSource) } ?? []
-            let sourcedBitrates = await videoTracksManager.sourcedTargetBitrates
-            guard let sourcedBitrate = sourcedBitrates[streamSource.sourceId],
-                  let sourcedBitrate else { return }
-            self.targetBitrate = Self.formatBitRate(bitRate: sourcedBitrate)
+            let sourcedBitrates = await videoTracksManager.sourcedBitrates
+            guard let sourcedBitrate = sourcedBitrates[streamSource.sourceId] else { return }
+            if let target = sourcedBitrate.targetBitrate {
+                self.targetBitrate = Self.formatBitRate(bitRate: target)
+            }
+            if let bitrate = sourcedBitrate.bitrate {
+                self.outgoingBitrate = Self.formatBitRate(bitRate: bitrate)
+            }
         }
 
         observeStats()
@@ -52,15 +59,21 @@ final class StatsInfoViewModel: ObservableObject {
                 }
                 .store(in: &subscriptions)
 
-            await self.videoTracksManager.$sourcedTargetBitrates
+            await self.videoTracksManager.$sourcedBitrates
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] sourcedBitrates in
                     guard let self else { return }
-                    if let sourcedBitrate = sourcedBitrates[streamSource.sourceId],
-                       let sourcedBitrate {
-                        self.targetBitrate = Self.formatBitRate(bitRate: sourcedBitrate)
-                    } else {
-                        self.targetBitrate = "N/A"
+                    if let sourcedBitrate = sourcedBitrates[streamSource.sourceId] {
+                        if let target = sourcedBitrate.targetBitrate {
+                            self.targetBitrate = Self.formatBitRate(bitRate: target)
+                        } else {
+                            self.targetBitrate = "N/A"
+                        }
+                        if let bitrate = sourcedBitrate.bitrate {
+                            self.outgoingBitrate = Self.formatBitRate(bitRate: bitrate)
+                        } else {
+                            self.outgoingBitrate = "N/A"
+                        }
                     }
                 }
                 .store(in: &subscriptions)
@@ -70,16 +83,45 @@ final class StatsInfoViewModel: ObservableObject {
 
 private extension StatsInfoViewModel {
     // swiftlint:disable function_body_length
+    // swiftlint:disable cyclomatic_complexity
     static func makeStatsItems(for streamStatistics: StreamStatistics, streamSource: StreamSource) -> [StatsItem] {
         guard
             let mid = streamSource.videoTrack.currentMID,
-            let videoStatsInboundRtp = streamStatistics.videoStatistics(matching: mid)
+            let videoStatsInboundRtp = streamStatistics.inboundVideoStatistics(matching: mid)
         else {
             return []
         }
-        let audioStatsInboundRtp = streamStatistics.audioStatistics(matching: mid)
+
+        let audioStatsInboundRtp = streamStatistics.inboundAudioStatistics(matching: mid)
 
         var result = [StatsItem]()
+
+        if let streamViewId = streamStatistics.streamViewId {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.stream-view-id.label"),
+                    value: streamViewId
+                )
+            )
+        }
+
+        if let subscriberId = streamStatistics.subscriberId {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.subscriber-id.label"),
+                    value: subscriberId
+                )
+            )
+        }
+
+        if let clusterId = streamStatistics.clusterId {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.cluster-id.label"),
+                    value: clusterId
+                )
+            )
+        }
 
         if let mid = videoStatsInboundRtp.mid {
             result.append(
@@ -165,12 +207,14 @@ private extension StatsInfoViewModel {
         )
 
         let framesDropped = videoStatsInboundRtp.framesDropped
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.frames-dropped.label"),
-                value: String(framesDropped)
+        if framesDropped > 0 {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.frames-dropped.label"),
+                    value: String(framesDropped)
+                )
             )
-        )
+        }
 
         let jitterBufferEmittedCount = videoStatsInboundRtp.jitterBufferEmittedCount
         result.append(
@@ -222,14 +266,17 @@ private extension StatsInfoViewModel {
         )
 
         let videoPacketsLost = videoStatsInboundRtp.packetsLost
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.video-packet-loss.label"),
-                value: String(videoPacketsLost)
+        if videoPacketsLost > 0 {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.video-packet-loss.label"),
+                    value: String(videoPacketsLost)
+                )
             )
-        )
+        }
 
-        if let audioPacketsLost = audioStatsInboundRtp?.packetsLost {
+        if let audioPacketsLost = audioStatsInboundRtp?.packetsLost,
+           audioPacketsLost > 0 {
             result.append(
                 StatsItem(
                     key: String(localized: "stream.stats.audio-packet-loss.label"),
@@ -238,22 +285,98 @@ private extension StatsInfoViewModel {
             )
         }
 
-        if let rtt = streamStatistics.roundTripTime {
+        let freezeCount = videoStatsInboundRtp.freezeCount
+        if freezeCount > 0 {
             result.append(
                 StatsItem(
-                    key: String(localized: "stream.stats.rtt.label"),
-                    value: String(rtt)
+                    key: String(localized: "stream.stats.freeze-count.label"),
+                    value: String(freezeCount)
                 )
             )
         }
-        if let timestamp = audioStatsInboundRtp?.timestamp {
+
+        let freezeDuration = videoStatsInboundRtp.freezeDuration
+        if freezeDuration > 0 {
             result.append(
                 StatsItem(
-                    key: String(localized: "stream.stats.timestamp.label"),
-                    value: dateString(timestamp / 1000)
+                    key: String(localized: "stream.stats.freeze-duration.label"),
+                    value: String(format: "%.2f ms", freezeDuration)
                 )
             )
         }
+
+        let pauseCount = videoStatsInboundRtp.pauseCount
+        if pauseCount > 0 {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.pause-count.label"),
+                    value: String(pauseCount)
+                )
+            )
+        }
+
+        let pauseDuration = videoStatsInboundRtp.pauseDuration
+        if pauseDuration > 0 {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.pause-duration.label"),
+                    value: String(format: "%.2f ms", pauseDuration)
+                )
+            )
+        }
+
+        if let videoStatsOutboundRtp = streamStatistics.outboundVideoStatistics() {
+            let retransmittedPackets = videoStatsOutboundRtp.retransmittedPackets
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.retransmitted-packets.label"),
+                    value: String(retransmittedPackets)
+                )
+            )
+
+            let retransmittedBytes = videoStatsOutboundRtp.retransmittedBytes
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.retransmitted-bytes.label"),
+                    value: String(retransmittedBytes)
+                )
+            )
+        }
+
+        if let currentRtt = streamStatistics.currentRoundTripTime {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.current-rtt.label"),
+                    value: String(currentRtt)
+                )
+            )
+        }
+
+        if let totalRtt = streamStatistics.totalRoundTripTime {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.total-rtt.label"),
+                    value: String(totalRtt)
+                )
+            )
+        }
+
+        let timestamp = videoStatsInboundRtp.timestamp
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.timestamp.label"),
+                value: dateString(timestamp / 1000)
+            )
+        )
+
+        let totalTime = videoStatsInboundRtp.totalTime
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.total-stream-time.label"),
+                value: elapsedTimeString(totalTime / 1000)
+            )
+        )
+
         let audioCodec = audioStatsInboundRtp?.codecName
         let videoCodec = videoStatsInboundRtp.codecName
         if audioCodec != nil || videoCodec != nil {
@@ -269,16 +392,36 @@ private extension StatsInfoViewModel {
                 )
             )
         }
+
+        let incomingBitrate = videoStatsInboundRtp.incomingBitrate
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.incoming-bitrate.label"),
+                value: formatBitRate(bitRate: Int(incomingBitrate))
+            )
+        )
+
         return result
     }
 
     // swiftlint:enable function_body_length
+    // swiftlint:enable cyclomatic_complexity
 
     static func dateString(_ timestamp: Double) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
         dateFormatter.locale = NSLocale.current
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS'Z'"
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+
+        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+        return dateFormatter.string(from: date)
+    }
+
+    static func elapsedTimeString(_ timestamp: Double) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
+        dateFormatter.locale = NSLocale.current
+        dateFormatter.dateFormat = "HH:mm:ss"
 
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         return dateFormatter.string(from: date)
