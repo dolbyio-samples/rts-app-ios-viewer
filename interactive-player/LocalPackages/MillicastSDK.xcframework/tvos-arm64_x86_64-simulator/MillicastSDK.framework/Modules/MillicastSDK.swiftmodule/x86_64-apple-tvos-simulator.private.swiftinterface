@@ -1,0 +1,244 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target x86_64-apple-tvos14.5-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name MillicastSDK
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import AVFoundation
+import Combine
+import CoreGraphics
+import Foundation
+@_exported import MillicastSDK
+import ObjectiveC
+import Swift
+import SwiftUI
+import UIKit
+import _Concurrency
+import _StringProcessing
+extension MillicastSDK.MCPublisher {
+  public typealias State = MillicastSDK.PublishingState
+  public typealias ActivityEvent = MillicastSDK.PublisherActivityEvent
+  #if compiler(>=5.3) && $EffectfulProp
+  public var isConnected: Swift.Bool {
+    get async
+  }
+  #endif
+  #if compiler(>=5.3) && $EffectfulProp
+  public var isPublishing: Swift.Bool {
+    get async
+  }
+  #endif
+  #if compiler(>=5.3) && $EffectfulProp
+  public var credentials: MillicastSDK.MCPublisherCredentials {
+    get async
+  }
+  #endif
+}
+extension MillicastSDK.MCPublisher {
+  public func state() -> _Concurrency.AsyncStream<MillicastSDK.MCPublisher.State>
+  public func statsReport() -> _Concurrency.AsyncStream<MillicastSDK.MCStatsReport>
+  public func viewerCount() -> _Concurrency.AsyncStream<Swift.Int32>
+  public func activity() -> _Concurrency.AsyncStream<MillicastSDK.MCPublisher.ActivityEvent>
+}
+extension MillicastSDK.MCPublisher {
+  public var statePublisher: Combine.AnyPublisher<MillicastSDK.MCPublisher.State, Swift.Never> {
+    get
+  }
+  public var statsReportPublisher: Combine.AnyPublisher<MillicastSDK.MCStatsReport, Swift.Never> {
+    get
+  }
+  public var viewerCountPublisher: Combine.AnyPublisher<Swift.Int32, Swift.Never> {
+    get
+  }
+  public var activityPublisher: Combine.AnyPublisher<MillicastSDK.MCPublisher.ActivityEvent, Swift.Never> {
+    get
+  }
+}
+@frozen public enum PublishingState : Swift.Equatable {
+  case disconnected
+  case connected
+  case publishing
+  case connectionError(status: Swift.Int32, reason: Swift.String)
+  case signalingError(reason: Swift.String)
+  public static func == (a: MillicastSDK.PublishingState, b: MillicastSDK.PublishingState) -> Swift.Bool
+}
+@frozen public enum SubscribingState : Swift.Equatable {
+  case disconnected
+  case connected
+  case subscribed
+  case connectionError(status: Swift.Int32, reason: Swift.String)
+  case signalingError(reason: Swift.String)
+  public static func == (a: MillicastSDK.SubscribingState, b: MillicastSDK.SubscribingState) -> Swift.Bool
+}
+@frozen public enum SubscriberActivityEvent : Swift.Equatable {
+  case active(streamId: Swift.String, tracks: [Swift.String], sourceId: Swift.String)
+  case inactive(streamId: Swift.String, sourceId: Swift.String)
+  public static func == (a: MillicastSDK.SubscriberActivityEvent, b: MillicastSDK.SubscriberActivityEvent) -> Swift.Bool
+}
+@frozen public enum PublisherActivityEvent : Swift.Equatable {
+  case active
+  case inactive
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: MillicastSDK.PublisherActivityEvent, b: MillicastSDK.PublisherActivityEvent) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@frozen public enum TrackEvent : Swift.Equatable {
+  case audio(track: MillicastSDK.MCAudioTrack, mid: Swift.String)
+  case video(track: MillicastSDK.MCVideoTrack, mid: Swift.String)
+  public static func == (a: MillicastSDK.TrackEvent, b: MillicastSDK.TrackEvent) -> Swift.Bool
+}
+public struct VadEvent : Swift.Equatable {
+  public let mid: Swift.String
+  public let sourceId: Swift.String
+  public static func == (a: MillicastSDK.VadEvent, b: MillicastSDK.VadEvent) -> Swift.Bool
+}
+public struct LayersEvent : Swift.Equatable {
+  public let mid: Swift.String
+  public let activeLayers: [MillicastSDK.MCLayerData]
+  public let inactiveLayers: [Swift.String]
+  public static func == (a: MillicastSDK.LayersEvent, b: MillicastSDK.LayersEvent) -> Swift.Bool
+}
+extension MillicastSDK.MCSubscriber {
+  public typealias State = MillicastSDK.SubscribingState
+  public typealias ActivityEvent = MillicastSDK.SubscriberActivityEvent
+  #if compiler(>=5.3) && $EffectfulProp
+  public var isConnected: Swift.Bool {
+    get async
+  }
+  #endif
+  #if compiler(>=5.3) && $EffectfulProp
+  public var isSubscribed: Swift.Bool {
+    get async
+  }
+  #endif
+  #if compiler(>=5.3) && $EffectfulProp
+  public var credentials: MillicastSDK.MCSubscriberCredentials {
+    get async
+  }
+  #endif
+}
+extension MillicastSDK.MCSubscriber {
+  public typealias StateAsyncStream = _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.State>
+  public func state() -> _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.State>
+  public func activity() -> _Concurrency.AsyncStream<MillicastSDK.MCSubscriber.ActivityEvent>
+  public func tracks() -> _Concurrency.AsyncStream<MillicastSDK.TrackEvent>
+  public func layers() -> _Concurrency.AsyncStream<MillicastSDK.LayersEvent>
+  public func vad() -> _Concurrency.AsyncStream<MillicastSDK.VadEvent>
+  public func statsReport() -> _Concurrency.AsyncStream<MillicastSDK.MCStatsReport>
+  public func viewerCount() -> _Concurrency.AsyncStream<Swift.Int32>
+}
+extension MillicastSDK.MCSubscriber {
+  public var statePublisher: Combine.AnyPublisher<MillicastSDK.MCSubscriber.State, Swift.Never> {
+    get
+  }
+  public var activityPublisher: Combine.AnyPublisher<MillicastSDK.MCSubscriber.ActivityEvent, Swift.Never> {
+    get
+  }
+  public var tracksPublisher: Combine.AnyPublisher<MillicastSDK.TrackEvent, Swift.Never> {
+    get
+  }
+  public var layersPublisher: Combine.AnyPublisher<MillicastSDK.LayersEvent, Swift.Never> {
+    get
+  }
+  public var vadPublisher: Combine.AnyPublisher<MillicastSDK.VadEvent, Swift.Never> {
+    get
+  }
+  public var statsReportPublisher: Combine.AnyPublisher<MillicastSDK.MCStatsReport, Swift.Never> {
+    get
+  }
+  public var viewerCountPublisher: Combine.AnyPublisher<Swift.Int32, Swift.Never> {
+    get
+  }
+}
+public struct MCVideoSwiftUIView : SwiftUI.View {
+  public enum RendererType {
+    case openGL
+    case metal
+    case sampleBuffer
+    public static func == (a: MillicastSDK.MCVideoSwiftUIView.RendererType, b: MillicastSDK.MCVideoSwiftUIView.RendererType) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public init(videoTrack: MillicastSDK.MCVideoTrack, scalingMode: MillicastSDK.MCVideoViewScalingMode = .aspectFit, mirror: Swift.Bool = false, rendererType: MillicastSDK.MCVideoSwiftUIView.RendererType = .metal)
+  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+    get
+  }
+  public typealias Body = @_opaqueReturnTypeOf("$s12MillicastSDK18MCVideoSwiftUIViewV4bodyQrvp", 0) __
+}
+public enum MCVideoViewScalingMode : Swift.Int {
+  case aspectFit
+  case aspectFill
+  case resize
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol MCVideoUIViewType {
+  var scalingMode: MillicastSDK.MCVideoViewScalingMode { get set }
+  func attach(videoTrack: MillicastSDK.MCVideoTrack, mirrored: Swift.Bool)
+}
+extension MillicastSDK.MCVideoUIViewType {
+  public func attach(videoTrack: MillicastSDK.MCVideoTrack)
+}
+public typealias MCVideoUIView = UIKit.UIView & MillicastSDK.MCVideoUIViewType
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class MCSampleBufferVideoUIView : UIKit.UIView, MillicastSDK.MCVideoUIViewType {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public class var layerClass: Swift.AnyClass {
+    @objc get
+  }
+  @_Concurrency.MainActor(unsafe) public var mirror: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var scalingMode: MillicastSDK.MCVideoViewScalingMode {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var sampleBufferDisplayLayer: AVFoundation.AVSampleBufferDisplayLayer {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame frameRect: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) public func attach(videoTrack: MillicastSDK.MCVideoTrack, mirrored: Swift.Bool)
+  @objc deinit
+}
+extension MillicastSDK.MCSampleBufferVideoUIView : MillicastSDK.MCCMSampleBufferVideoRendererDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func didChange(_ size: CoreFoundation.CGSize)
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func canHandleMoreFrames() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func didReceive(_ buffer: CoreMedia.CMSampleBuffer!)
+}
+@objc @_Concurrency.MainActor(unsafe) public class MCAcceleratedVideoUIView : UIKit.UIView, MillicastSDK.MCVideoUIViewType {
+  @_Concurrency.MainActor(unsafe) public var scalingMode: MillicastSDK.MCVideoViewScalingMode {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var mirror: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var videoSize: CoreFoundation.CGSize {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public init(frame: CoreFoundation.CGRect, useOpenGL: Swift.Bool = false)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) public func attach(videoTrack: MillicastSDK.MCVideoTrack, mirrored: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
+  @objc deinit
+}
+extension MillicastSDK.MCAcceleratedVideoUIView : MillicastSDK.MCIosVideoRendererDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func didChangeVideoSize(_ size: CoreFoundation.CGSize)
+}
+extension UIKit.UIImage {
+  public func convertToBuffer() -> CoreVideo.CVPixelBuffer?
+}
+extension MillicastSDK.PublishingState : Swift.Sendable {}
+extension MillicastSDK.SubscribingState : Swift.Sendable {}
+extension MillicastSDK.SubscriberActivityEvent : Swift.Sendable {}
+extension MillicastSDK.PublisherActivityEvent : Swift.Hashable {}
+extension MillicastSDK.PublisherActivityEvent : Swift.Sendable {}
+extension MillicastSDK.MCVideoSwiftUIView.RendererType : Swift.Equatable {}
+extension MillicastSDK.MCVideoSwiftUIView.RendererType : Swift.Hashable {}
+extension MillicastSDK.MCVideoViewScalingMode : Swift.Equatable {}
+extension MillicastSDK.MCVideoViewScalingMode : Swift.Hashable {}
+extension MillicastSDK.MCVideoViewScalingMode : Swift.RawRepresentable {}

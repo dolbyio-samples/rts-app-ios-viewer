@@ -1,0 +1,11 @@
+framework module MillicastSDK {
+  umbrella header "MillicastSDK.h"
+
+  export *
+  module * { export * }
+}
+
+module MillicastSDK.Swift {
+  header "MillicastSDK-Swift.h"
+  requires objc
+}
