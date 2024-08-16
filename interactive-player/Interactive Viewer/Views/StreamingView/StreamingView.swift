@@ -168,6 +168,7 @@ struct StreamingView: View {
         }
         .background(Color(uiColor: theme.neutral400))
         .clipShape(Circle().inset(by: Layout.spacing0_5x))
+        .accessibilityIdentifier("\(StreamingView.self).CloseButton")
     }
 
     @ViewBuilder
@@ -215,7 +216,7 @@ struct StreamingView: View {
     private var settingsToolbarItem: ToolbarItem<(), some View> {
         ToolbarItem(placement: .navigationBarTrailing) {
             SettingsButton { isShowingSettingsScreen = true }
-                .accessibilityIdentifier("StreamingScreen.SettingButton")
+                .accessibilityIdentifier("\(StreamingView.self).SettingButton")
         }
     }
 
