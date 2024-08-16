@@ -8,7 +8,7 @@ import MillicastSDK
 import os
 import SwiftUI
 
-public actor SubscriptionManager: ObservableObject {
+public actor SubscriptionManager {
     private static let logger = Logger(
         subsystem: Bundle.module.bundleIdentifier!,
         category: String(describing: SubscriptionManager.self)
@@ -29,7 +29,7 @@ public actor SubscriptionManager: ObservableObject {
     @Published public var streamStatistics: StreamStatistics?
     @Published public var websocketState: MCConnectionState = .IDLE
 
-    private var subscriber: MCSubscriber?
+    private let subscriber = MCSubscriber()
     private var sourceBuilder = SourceBuilder()
     private let logHandler: MillicastLogHandler = .init()
     private var isReconnectingPeerConnection: Bool = false
@@ -44,8 +44,7 @@ public actor SubscriptionManager: ObservableObject {
     }
 
     public func subscribe(streamName: String, accountID: String, token: String? = nil, configuration: SubscriptionConfiguration = SubscriptionConfiguration()) async throws {
-        let subscriber = MCSubscriber()
-        self.subscriber = subscriber
+
         logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
 
         Task(priority: .userInitiated) { [weak self] in
@@ -97,10 +96,6 @@ public actor SubscriptionManager: ObservableObject {
     }
 
     public func unSubscribe() async throws {
-        guard let subscriber else {
-            throw "No subscriber instance is present"
-        }
-
         Self.logger.debug("👨‍🔧 Stop subscription")
         await subscriber.enableStats(false)
         try await subscriber.unsubscribe()
@@ -114,7 +109,6 @@ public actor SubscriptionManager: ObservableObject {
         state = .disconnected
         deregisterToSubscriberEvents()
         sourceBuilder.reset()
-        subscriber = nil
         logHandler.setLogFilePath(filePath: nil)
         startTime = nil
     }
@@ -125,9 +119,6 @@ public actor SubscriptionManager: ObservableObject {
 extension SubscriptionManager {
     // swiftlint:disable function_body_length
     func registerToSubscriberEvents() async {
-        guard let subscriber else {
-            return
-        }
         Self.logger.debug("👨‍🔧 Register to subscriber events")
 
         let taskWebsocketStateObservation = Task {
