@@ -321,7 +321,7 @@ private extension StreamViewModel {
             await self.subscriptionManager.$websocketState
                 .sink { websocketState in
                     switch websocketState {
-                    case .CONNECTED:
+                    case .connected:
                         self.isWebsocketConnected = true
                     default:
                         break
