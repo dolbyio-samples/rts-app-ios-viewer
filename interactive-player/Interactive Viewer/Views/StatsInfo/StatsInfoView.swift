@@ -82,7 +82,7 @@ struct StatsInfoView: View {
             Text(verbatim: value, font: fontTableValue)
                 .foregroundColor(Color(theme.onBackground))
                 .frame(minWidth: Layout.spacing0x, maxWidth: .infinity, alignment: .leading)
-                .accessibilityIdentifier("Value.\(value)")
+                .accessibilityIdentifier("Value.\(title)")
                 .accessibilityValue("\(value)")
         }
         .padding([.top], Layout.spacing0_5x)

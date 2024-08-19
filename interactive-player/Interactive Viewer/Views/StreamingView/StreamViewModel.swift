@@ -45,6 +45,7 @@ final class StreamViewModel: ObservableObject {
     let settingsMode: SettingsMode
     let configuration: SubscriptionConfiguration
     let listViewPrimaryVideoQuality: VideoQuality
+    let serialTasks = SerialTasks()
 
     @Published private(set) var state: State = .loading {
         didSet {
@@ -126,8 +127,8 @@ final class StreamViewModel: ObservableObject {
             self.subscriptions.removeAll()
             self.reconnectionTimer?.invalidate()
             self.reconnectionTimer = nil
-            _ = try await self.subscriptionManager.unSubscribe()
             await self.videoTracksManager.reset()
+            _ = try await self.subscriptionManager.unSubscribe()
         }
     }
 
@@ -270,46 +271,48 @@ private extension StreamViewModel {
                 .sink { state, settings in
                     Self.logger.debug("🎰 State and settings events")
                     Task {
-                        switch state {
-                        case let .subscribed(sources: sources):
-                            let activeSources = Array(sources.filter { $0.videoTrack.isActive == true })
+                        try await self.serialTasks.enqueue {
+                            switch state {
+                            case let .subscribed(sources: sources):
+                                let activeSources = Array(sources.filter { $0.videoTrack.isActive == true })
 
-                            // Register Video Track events
-                            await withTaskGroup(of: Void.self) { group in
-                                for source in activeSources {
-                                    group.addTask {
-                                        await self.videoTracksManager.observeLayerUpdates(for: source)
+                                // Register Video Track events
+                                await withTaskGroup(of: Void.self) { group in
+                                    for source in activeSources {
+                                        group.addTask {
+                                            await self.videoTracksManager.observeLayerUpdates(for: source)
+                                        }
                                     }
                                 }
-                            }
-                            guard !Task.isCancelled else { return }
+                                guard !Task.isCancelled else { return }
 
-                            self.updateAudioSourceListing(for: activeSources, currentSettings: settings)
-                            guard let newState = self.makeState(from: activeSources, settings: settings) else {
-                                Self.logger.debug("🎰 Make state returned without a value")
-                                self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
-                                return
-                            }
-                            self.update(state: newState)
+                                await self.updateAudioSourceListing(for: activeSources, currentSettings: settings)
+                                guard let newState = await self.makeState(from: activeSources, settings: settings) else {
+                                    Self.logger.debug("🎰 Make state returned without a value")
+                                    await self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
+                                    return
+                                }
+                                await self.update(state: newState)
 
-                        case .disconnected:
-                            Self.logger.debug("🎰 Stream disconnected")
-                            self.update(state: .loading)
+                            case .disconnected:
+                                Self.logger.debug("🎰 Stream disconnected")
+                                await self.update(state: .loading)
 
-                        case let .error(connectionError) where connectionError.status == 0:
-                            // Status code `0` represents a `no network error`
-                            Self.logger.debug("🎰 No internet connection")
-                            if !self.isWebsocketConnected {
-                                self.scheduleReconnection()
-                            }
-                            self.update(state: .error(title: .noInternetErrorTitle, subtitle: nil))
+                            case let .error(connectionError) where connectionError.status == 0:
+                                // Status code `0` represents a `no network error`
+                                Self.logger.debug("🎰 No internet connection")
+                                if await !self.isWebsocketConnected {
+                                    await self.scheduleReconnection()
+                                }
+                                await self.update(state: .error(title: .noInternetErrorTitle, subtitle: nil))
 
-                        case let .error(connectionError):
-                            Self.logger.debug("🎰 Connection error - \(connectionError.status), \(connectionError.reason)")
-                            if !self.isWebsocketConnected {
-                                self.scheduleReconnection()
+                            case let .error(connectionError):
+                                Self.logger.debug("🎰 Connection error - \(connectionError.status), \(connectionError.reason)")
+                                if await !self.isWebsocketConnected {
+                                    await self.scheduleReconnection()
+                                }
+                                await self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
                             }
-                            self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
                         }
                     }
                 }
