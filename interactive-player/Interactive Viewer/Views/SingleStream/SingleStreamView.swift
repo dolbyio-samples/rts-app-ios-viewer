@@ -80,7 +80,7 @@ struct SingleStreamView: View {
 
             if isShowingDetailPresentation {
                 SettingsButton { isShowingSettingsScreen = true }
-                    .accessibilityIdentifier("\(SingleStreamView.self).SettingButton")
+                    .accessibilityIdentifier("\(StreamingView.self).SettingButton")
             }
         }
         .ignoresSafeArea()
@@ -94,7 +94,6 @@ struct SingleStreamView: View {
         }
         .background(Color(uiColor: theme.neutral400))
         .clipShape(Circle().inset(by: Layout.spacing0_5x))
-        .accessibilityIdentifier("\(SingleStreamView.self).CloseButton")
     }
 
     var body: some View {

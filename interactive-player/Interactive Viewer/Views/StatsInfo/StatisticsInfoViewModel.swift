@@ -207,14 +207,12 @@ private extension StatsInfoViewModel {
         )
 
         let framesDropped = videoStatsInboundRtp.framesDropped
-        if framesDropped > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.frames-dropped.label"),
-                    value: String(framesDropped)
-                )
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.frames-dropped.label"),
+                value: String(framesDropped)
             )
-        }
+        )
 
         let jitterBufferEmittedCount = videoStatsInboundRtp.jitterBufferEmittedCount
         result.append(
@@ -266,17 +264,14 @@ private extension StatsInfoViewModel {
         )
 
         let videoPacketsLost = videoStatsInboundRtp.packetsLost
-        if videoPacketsLost > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.video-packet-loss.label"),
-                    value: String(videoPacketsLost)
-                )
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.video-packet-loss.label"),
+                value: String(videoPacketsLost)
             )
-        }
+        )
 
-        if let audioPacketsLost = audioStatsInboundRtp?.packetsLost,
-           audioPacketsLost > 0 {
+        if let audioPacketsLost = audioStatsInboundRtp?.packetsLost {
             result.append(
                 StatsItem(
                     key: String(localized: "stream.stats.audio-packet-loss.label"),
@@ -286,44 +281,36 @@ private extension StatsInfoViewModel {
         }
 
         let freezeCount = videoStatsInboundRtp.freezeCount
-        if freezeCount > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.freeze-count.label"),
-                    value: String(freezeCount)
-                )
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.freeze-count.label"),
+                value: String(freezeCount)
             )
-        }
+        )
 
         let freezeDuration = videoStatsInboundRtp.freezeDuration
-        if freezeDuration > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.freeze-duration.label"),
-                    value: String(format: "%.2f ms", freezeDuration)
-                )
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.freeze-duration.label"),
+                value: String(format: "%.2f ms", freezeDuration)
             )
-        }
+        )
 
         let pauseCount = videoStatsInboundRtp.pauseCount
-        if pauseCount > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.pause-count.label"),
-                    value: String(pauseCount)
-                )
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.pause-count.label"),
+                value: String(pauseCount)
             )
-        }
+        )
 
         let pauseDuration = videoStatsInboundRtp.pauseDuration
-        if pauseDuration > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.pause-duration.label"),
-                    value: String(format: "%.2f ms", pauseDuration)
-                )
+        result.append(
+            StatsItem(
+                key: String(localized: "stream.stats.pause-duration.label"),
+                value: String(format: "%.2f ms", pauseDuration)
             )
-        }
+        )
 
         if let videoStatsOutboundRtp = streamStatistics.outboundVideoStatistics() {
             let retransmittedPackets = videoStatsOutboundRtp.retransmittedPackets

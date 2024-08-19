@@ -30,6 +30,8 @@ final actor VideoTracksManager {
         }
     }
 
+    private var sourceToTasks: [SourceID: SerialTasks] = [:]
+
     // View's rendering a source
     private var sourceToActiveViewsMapping: [SourceID: [ViewID]] = [:]
 
@@ -80,6 +82,7 @@ final actor VideoTracksManager {
     }
 
     func reset() {
+        sourceToTasks.removeAll()
         layerEventsObservationDictionary.removeAll()
         sourceToActiveViewsMapping.removeAll()
         viewToRequestedVideoQualityMapping.removeAll()
@@ -129,13 +132,13 @@ final actor VideoTracksManager {
                 Self.logger.debug("♼ Selecting videoquality \(videoQualityToSelect.displayText) for source \(sourceId) on view \(view)")
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
 
-                try await enableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
+                try await queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
             } else {
                 Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromTheList.displayText)")
                 Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on view \(view)")
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
 
-                try await enableTrack(for: source)
+                try await queueEnableTrack(for: source)
             }
         } catch {
             Self.logger.debug("♼🛑 Enabling video track threw error \(error.localizedDescription)")
@@ -175,12 +178,12 @@ final actor VideoTracksManager {
                     Self.logger.debug("♼ Has simulcast layer - \(layerToSelect) for source \(sourceId)")
                     Self.logger.debug("♼ Selecting videoquality \(selectedVideoQuality.displayText) for source \(sourceId); active view \(activeViews)")
                     sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
-                    try await enableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
+                    try await queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
                 } else {
                     Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromRequested.displayText)")
                     Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId); active view \(activeViews)")
                     sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
-                    try await enableTrack(for: source)
+                    try await queueEnableTrack(for: source)
                 }
             } catch {
                 Self.logger.debug("♼🛑 Enabling video track threw error \(error.localizedDescription)")
@@ -194,31 +197,44 @@ final actor VideoTracksManager {
 
                 removeAllStoredData(for: source)
 
-                try await disableTrack(for: source)
+                try await queueDisableTrack(for: source)
             } catch {
                 Self.logger.debug("♼🛑 Disabling video track threw error \(error.localizedDescription)")
             }
         }
     }
 
-    func enableTrack(for source: StreamSource, layer: MCRTSRemoteVideoTrackLayer? = nil) async throws {
-        let renderer = rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer
-        guard source.videoTrack.isActive else { return }
-        Self.logger.debug("♼ Queue: Enabling track for source \(source.sourceId) on renderer \(ObjectIdentifier(renderer).debugDescription)")
-        guard !Task.isCancelled, source.videoTrack.isActive else { return }
-        if let layer {
-            try await source.videoTrack.enable(renderer: renderer, layer: layer)
-        } else {
-            try await source.videoTrack.enable(renderer: renderer)
+    func queueEnableTrack(for source: StreamSource, layer: MCRTSRemoteVideoTrackLayer? = nil) async throws {
+        if self.sourceToTasks[source.sourceId] == nil {
+            self.sourceToTasks[source.sourceId] = SerialTasks()
         }
-        Self.logger.debug("♼ Queue: Finished enabling track for source \(source.sourceId) on renderer \(ObjectIdentifier(renderer).debugDescription)")
+        guard let serialTasks = sourceToTasks[source.sourceId],
+              source.videoTrack.isActive
+        else {
+            return
+        }
+
+        let renderer = rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer
+        try await serialTasks.enqueue {
+            Self.logger.debug("♼ Queue: Enabling track for source \(source.sourceId) on renderer \(ObjectIdentifier(renderer).debugDescription)")
+            guard !Task.isCancelled, source.videoTrack.isActive else { return }
+            if let layer {
+                try await source.videoTrack.enable(renderer: renderer, layer: layer)
+            } else {
+                try await source.videoTrack.enable(renderer: renderer)
+            }
+            Self.logger.debug("♼ Queue: Finished enabling track for source \(source.sourceId) on renderer \(ObjectIdentifier(renderer).debugDescription)")
+        }
     }
 
-    func disableTrack(for source: StreamSource) async throws {
-        guard !Task.isCancelled, source.videoTrack.isActive else { return }
-        Self.logger.debug("♼ Queue: Disabling track for source \(source.sourceId)")
-        try await source.videoTrack.disable()
-        Self.logger.debug("♼ Queue: Finished disabling track for source \(source.sourceId)")
+    func queueDisableTrack(for source: StreamSource) async throws {
+        guard let serialTasks = sourceToTasks[source.sourceId] else { return }
+        try await serialTasks.enqueue {
+            guard !Task.isCancelled, source.videoTrack.isActive else { return }
+            Self.logger.debug("♼ Queue: Disabling track for source \(source.sourceId)")
+            try await source.videoTrack.disable()
+            Self.logger.debug("♼ Queue: Finished disabling track for source \(source.sourceId)")
+        }
     }
 }
 
@@ -264,7 +280,7 @@ private extension VideoTracksManager {
                 let targetBitrateForLayer = getBitrates(from: layerToSelect, sourceId: sourceId)
                 sourcedBitrates[sourceId] = targetBitrateForLayer
 
-                try await enableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
+                try await queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
             } else {
                 Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromRequested.displayText)")
                 Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on view \(anyActiveView)")
@@ -273,7 +289,7 @@ private extension VideoTracksManager {
                 let targetBitrateForLayer = getBitrates(from: newVideoQualityAndLayerPair.layer, sourceId: sourceId)
                 sourcedBitrates[sourceId] = targetBitrateForLayer
 
-                try await enableTrack(for: source)
+                try await queueEnableTrack(for: source)
             }
         } catch {
             Self.logger.debug("♼🛑 Enabling video track threw error \(error.localizedDescription)")
