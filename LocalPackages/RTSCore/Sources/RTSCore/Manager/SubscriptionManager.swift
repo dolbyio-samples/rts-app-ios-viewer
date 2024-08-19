@@ -27,7 +27,7 @@ public actor SubscriptionManager {
 
     @Published public var state: State = .disconnected
     @Published public var streamStatistics: StreamStatistics?
-    @Published public var websocketState: MCConnectionState = .IDLE
+    @Published public var websocketState: MCConnectionState = .idle
 
     private let subscriber = MCSubscriber()
     private var sourceBuilder = SourceBuilder()
@@ -131,9 +131,9 @@ extension SubscriptionManager {
         let taskPeerConnectionStateObservation = Task {
             for await state in subscriber.peerConnectionState() {
                 Self.logger.debug("👨‍🔧 Peer connection state changed to \(state.rawValue)")
-                if state == .CONNECTING {
+                if state == .connecting {
                     setReconnectingPeerConnection(true)
-                } else if state == .CONNECTED && isReconnectingPeerConnection && !sourceBuilder.sources.isEmpty {
+                } else if state == .connected && isReconnectingPeerConnection && !sourceBuilder.sources.isEmpty {
                     Self.logger.debug("👨‍🔧 Peer connection restored")
                     updateState(to: .subscribed(sources: sourceBuilder.sources))
                     setReconnectingPeerConnection(false)

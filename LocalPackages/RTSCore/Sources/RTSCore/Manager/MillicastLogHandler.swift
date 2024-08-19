@@ -16,7 +16,7 @@ final class MillicastLogHandler: NSObject {
     override init() {
         super.init()
         MCLogger.setDelegate(self)
-        MCLogger.setLogLevelWithSdk(.DEBUG, webrtc: .OFF, websocket: .OFF)
+        MCLogger.setLogLevelWithSdk(.debug, webrtc: .off, websocket: .off)
     }
 
     func setLogFilePath(filePath: String?) {

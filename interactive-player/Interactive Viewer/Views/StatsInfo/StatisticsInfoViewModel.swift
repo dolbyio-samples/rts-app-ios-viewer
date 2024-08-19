@@ -92,7 +92,7 @@ private extension StatsInfoViewModel {
             return []
         }
 
-        let audioStatsInboundRtp = streamStatistics.inboundAudioStatistics(matching: mid)
+        let audioStatsInboundRtp = streamStatistics.audioStatsInboundRtpList.first
 
         var result = [StatsItem]()
 
