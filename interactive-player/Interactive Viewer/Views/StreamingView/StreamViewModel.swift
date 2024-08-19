@@ -67,7 +67,6 @@ final class StreamViewModel: ObservableObject {
     init(
         context: StreamingView.Context,
         settingsManager: SettingsManager = .shared,
-        videoTracksManager: VideoTracksManager = VideoTracksManager(),
         subscriptionManager: SubscriptionManager = SubscriptionManager()
     ) {
         self.subscriptionManager = subscriptionManager
@@ -76,7 +75,7 @@ final class StreamViewModel: ObservableObject {
         self.configuration = context.configuration
         self.listViewPrimaryVideoQuality = context.listViewPrimaryVideoQuality
         self.settingsMode = .stream(streamName: streamDetail.streamName, accountID: streamDetail.accountID)
-        self.videoTracksManager = videoTracksManager
+        self.videoTracksManager = VideoTracksManager(subscriptionManager: subscriptionManager)
 
         startObservers()
     }

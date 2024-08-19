@@ -8,11 +8,6 @@ import MillicastSDK
 import os
 import RTSCore
 
-struct LayerBitrates {
-    let targetBitrate: Int?
-    let bitrate: Int?
-}
-
 final actor VideoTracksManager {
     typealias ViewID = String
 
@@ -38,8 +33,7 @@ final actor VideoTracksManager {
     // View's to requested video quality
     private var viewToRequestedVideoQualityMapping: [ViewID: VideoQuality] = [:]
 
-    // Layer information
-    private var sourceToSimulcastLayersMapping: [SourceID: [MCRTSRemoteTrackLayer]] = [:]
+    // Selected layer information
     private var sourceToSelectedVideoQualityAndLayerMapping: [SourceID: VideoQualityAndLayerPair] = [:] {
         didSet {
             let sourceToVideoQuality = sourceToSelectedVideoQualityAndLayerMapping
@@ -50,14 +44,42 @@ final actor VideoTracksManager {
         }
     }
 
+    private let subscriptionManager: SubscriptionManager
     private var layerEventsObservationDictionary: [SourceID: Task<Void, Never>] = [:]
     private let videoQualitySubject: CurrentValueSubject<[SourceID: VideoQuality], Never> = CurrentValueSubject([:])
+    private let layersSubject: CurrentValueSubject<[SourceID: [MCRTSRemoteTrackLayer]], Never> = CurrentValueSubject([:])
+
     let rendererRegistry: RendererRegistry
     lazy var selectedVideoQualityPublisher = videoQualitySubject.eraseToAnyPublisher()
-    @Published var sourcedBitrates: [SourceID: LayerBitrates] = [:]
+    lazy var layersPublisher = layersSubject.eraseToAnyPublisher()
+    private(set) var projectedTimeStampForMids: [String: Double] = [:]
+    private(set) var sourceToSimulcastLayersMapping: [SourceID: [MCRTSRemoteTrackLayer]] = [:] {
+        didSet {
+            layersSubject.send(sourceToSimulcastLayersMapping)
+        }
+    }
+    private var subscriptions: Set<AnyCancellable> = []
+    private var projectedMids: Set<String> = []
 
-    init(rendererRegistry: RendererRegistry = RendererRegistry()) {
+    init(subscriptionManager: SubscriptionManager, rendererRegistry: RendererRegistry = RendererRegistry()) {
         self.rendererRegistry = rendererRegistry
+        self.subscriptionManager = subscriptionManager
+        observeStats()
+    }
+
+    nonisolated private func observeStats() {
+        Task { [weak self] in
+            guard let self else { return }
+            let cancellable = await self.subscriptionManager.$streamStatistics
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] statistics in
+                    guard let self, let stats = statistics else { return }
+                    Task {
+                        await self.saveProjectedTimeStamp(stats: stats)
+                    }
+                }
+            await self.store(cancellable: cancellable)
+        }
     }
 
     func observeLayerUpdates(for source: StreamSource) {
@@ -88,6 +110,8 @@ final actor VideoTracksManager {
         viewToRequestedVideoQualityMapping.removeAll()
         sourceToSimulcastLayersMapping.removeAll()
         sourceToSelectedVideoQualityAndLayerMapping.removeAll()
+        projectedMids.removeAll()
+        projectedTimeStampForMids.removeAll()
     }
 
     func enableTrack(for source: StreamSource, with preferredVideoQuality: VideoQuality, on view: ViewID) async {
@@ -215,13 +239,23 @@ final actor VideoTracksManager {
         }
 
         let renderer = rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer
-        try await serialTasks.enqueue {
+        try await serialTasks.enqueue { [weak self] in
             Self.logger.debug("♼ Queue: Enabling track for source \(source.sourceId) on renderer \(ObjectIdentifier(renderer).debugDescription)")
-            guard !Task.isCancelled, source.videoTrack.isActive else { return }
+            guard
+                let self,
+                !Task.isCancelled,
+                source.videoTrack.isActive
+            else {
+                return
+            }
             if let layer {
                 try await source.videoTrack.enable(renderer: renderer, layer: layer)
             } else {
                 try await source.videoTrack.enable(renderer: renderer)
+            }
+            // Store mid
+            if let mid = source.videoTrack.currentMID {
+                await self.store(mid: mid)
             }
             Self.logger.debug("♼ Queue: Finished enabling track for source \(source.sourceId) on renderer \(ObjectIdentifier(renderer).debugDescription)")
         }
@@ -233,6 +267,10 @@ final actor VideoTracksManager {
             guard !Task.isCancelled, source.videoTrack.isActive else { return }
             Self.logger.debug("♼ Queue: Disabling track for source \(source.sourceId)")
             try await source.videoTrack.disable()
+            // Remove mid
+            if let mid = source.videoTrack.currentMID {
+                await self.remove(mid: mid)
+            }
             Self.logger.debug("♼ Queue: Finished disabling track for source \(source.sourceId)")
         }
     }
@@ -241,6 +279,28 @@ final actor VideoTracksManager {
 // MARK: Helper functions
 
 private extension VideoTracksManager {
+    func store(cancellable: AnyCancellable) {
+        subscriptions.insert(cancellable)
+    }
+
+    func store(mid: String) {
+        projectedMids.insert(mid)
+    }
+
+    func remove(mid: String) {
+        projectedMids.remove(mid)
+        projectedTimeStampForMids.removeValue(forKey: mid)
+    }
+
+    func saveProjectedTimeStamp(stats: StreamStatistics) {
+        stats.videoStatsInboundRtpList.forEach {
+            if let mid = $0.mid, projectedMids.contains(mid),
+               projectedTimeStampForMids[mid] == nil {
+                projectedTimeStampForMids[mid] = $0.timestamp
+            }
+        }
+    }
+
     func addSimulcastLayers(_ layers: [MCRTSRemoteTrackLayer], for source: StreamSource) async {
         sourceToSimulcastLayersMapping[source.sourceId] = layers
         Self.logger.debug("♼ Add layers \(layers.count) for \(source.sourceId)")
@@ -277,17 +337,11 @@ private extension VideoTracksManager {
                 Self.logger.debug("♼ Selecting videoquality \(selectedVideoQuality.displayText) for source \(sourceId) on view \(anyActiveView)")
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
 
-                let targetBitrateForLayer = getBitrates(from: layerToSelect, sourceId: sourceId)
-                sourcedBitrates[sourceId] = targetBitrateForLayer
-
                 try await queueEnableTrack(for: source, layer: MCRTSRemoteVideoTrackLayer(layer: layerToSelect))
             } else {
                 Self.logger.debug("♼ No simulcast layer for source \(sourceId) matching \(bestVideoQualityFromRequested.displayText)")
                 Self.logger.debug("♼ Selecting videoquality 'Auto' for source \(sourceId) on view \(anyActiveView)")
                 sourceToSelectedVideoQualityAndLayerMapping[sourceId] = newVideoQualityAndLayerPair
-
-                let targetBitrateForLayer = getBitrates(from: newVideoQualityAndLayerPair.layer, sourceId: sourceId)
-                sourcedBitrates[sourceId] = targetBitrateForLayer
 
                 try await queueEnableTrack(for: source)
             }
@@ -303,21 +357,6 @@ private extension VideoTracksManager {
         activeViews?.forEach { viewToRequestedVideoQualityMapping[$0] = nil }
         sourceToSimulcastLayersMapping[sourceId] = nil
         sourceToActiveViewsMapping[sourceId] = nil
-    }
-
-    func getBitrates(from layer: MCRTSRemoteTrackLayer?, sourceId: SourceID) -> LayerBitrates {
-        var targetBitrate: Int?
-        var bitrate: Int?
-        if let target = layer?.targetBitrate {
-            targetBitrate = Int(truncating: target)
-            Self.logger.debug("♼ Updating target bitrate to \(target) for source \(sourceId)")
-        }
-        if let rate = layer?.bitrate {
-            bitrate = Int(rate)
-            Self.logger.debug("♼ Updating bitrate to \(rate) for source \(sourceId)")
-        }
-
-        return LayerBitrates(targetBitrate: targetBitrate, bitrate: bitrate)
     }
 }
 
