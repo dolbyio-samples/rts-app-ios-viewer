@@ -47,11 +47,8 @@ public struct StatsInboundRtp: Equatable, Hashable {
     public let freezeDuration: Double
     public let pauseCount: Int
     public let pauseDuration: Double
-    public let startTime: Double
     public let timestamp: Double
-    public let totalTime: Double
     public var codecName: String?
-    public var incomingBitrate: Double
 
     public var videoResolution: String {
         "\(frameWidth) x \(frameHeight)"
@@ -66,7 +63,7 @@ public struct StatsOutboundRtp: Equatable, Hashable {
 }
 
 extension StreamStatistics {
-    init?(_ report: MCStatsReport, startTime: Double? = nil) {
+    init?(_ report: MCStatsReport) {
         let streamDetails = report.getStreamDetails().asViewDetails()
         streamViewId = streamDetails?.streamViewId
         subscriberId = streamDetails?.subscriberId
@@ -92,7 +89,7 @@ extension StreamStatistics {
         let videos = inboundRtpStreamStatsList
             .filter { $0.kind == "video" }
             .map {
-                StatsInboundRtp($0, codecStatsList: codecStatsList, startTime: startTime)
+                StatsInboundRtp($0, codecStatsList: codecStatsList)
             }
         videoStatsInboundRtpList.append(contentsOf: videos)
 
@@ -100,7 +97,7 @@ extension StreamStatistics {
         let audios = inboundRtpStreamStatsList
             .filter { $0.kind == "audio" }
             .map {
-                StatsInboundRtp($0, codecStatsList: codecStatsList, startTime: startTime)
+                StatsInboundRtp($0, codecStatsList: codecStatsList)
             }
         audioStatsInboundRtpList.append(contentsOf: audios)
 
@@ -127,9 +124,7 @@ extension StreamStatistics {
 }
 
 extension StatsInboundRtp {
-    init(_ stats: MCInboundRtpStreamStats,
-         codecStatsList: [MCCodecsStats]?,
-         startTime: Double? = nil) {
+    init(_ stats: MCInboundRtpStreamStats, codecStatsList: [MCCodecsStats]?) {
         kind = stats.kind
         sid = stats.sid
         mid = stats.mid
@@ -176,19 +171,10 @@ extension StatsInboundRtp {
         totalSampleDuration = stats.total_samples_duration
         codec = stats.codec_id
         timestamp = Double(stats.timestamp)
-        if let startTime {
-            self.startTime = startTime
-        } else {
-            self.startTime = timestamp
-        }
         
-        totalTime = timestamp - self.startTime
-
         if let codecStats = codecStatsList?.first(where: { $0.sid == stats.codec_id }) {
             codecName = codecStats.mime_type
         }
-
-        incomingBitrate = totalTime == 0 ? 0 : Double(bytesReceived) / totalTime
     }
 
     private static func msNormalised(numerator: Double, denominator: UInt) -> Double {

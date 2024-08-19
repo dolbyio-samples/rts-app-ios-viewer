@@ -34,7 +34,6 @@ public actor SubscriptionManager {
     private let logHandler: MillicastLogHandler = .init()
     private var isReconnectingPeerConnection: Bool = false
     private var subscriberEventObservationTasks: [Task<Void, Never>] = []
-    private var startTime: Double?
 
     // MARK: Subscribe API methods
 
@@ -110,7 +109,6 @@ public actor SubscriptionManager {
         deregisterToSubscriberEvents()
         sourceBuilder.reset()
         logHandler.setLogFilePath(filePath: nil)
-        startTime = nil
     }
 }
 
@@ -173,7 +171,7 @@ extension SubscriptionManager {
 
         let statsObservation = Task {
             for await statsReport in subscriber.statsReport() {
-                guard !Task.isCancelled, let stats = StreamStatistics(statsReport, startTime: startTime) else {
+                guard !Task.isCancelled, let stats = StreamStatistics(statsReport) else {
                     return
                 }
                 updateStats(stats)
@@ -222,9 +220,6 @@ extension SubscriptionManager {
 private extension SubscriptionManager {
     func updateStats(_ stats: StreamStatistics) {
         streamStatistics = stats
-        if startTime == nil {
-            startTime = stats.videoStatsInboundRtpList.first?.startTime
-        }
     }
 
     func updateState(to state: State) {

@@ -54,9 +54,6 @@ struct StatsInfoView: View {
                 ForEach(viewModel.statsItems) { item in
                     statLabel(for: item.key, value: item.value)
                 }
-
-                statLabel(for: String(localized: "stream.stats.target-bitrate.label"), value: viewModel.targetBitrate)
-                statLabel(for: String(localized: "stream.stats.outgoing-bitrate.label"), value: viewModel.outgoingBitrate)
             }
             .padding([.leading, .trailing], Layout.spacing2x)
             .padding(.bottom, Layout.spacing3x)
