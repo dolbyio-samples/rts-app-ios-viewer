@@ -166,7 +166,7 @@ final class StreamViewModel: ObservableObject {
         case .connectionOrder:
             sortedSources = sources
         case .alphaNumeric:
-            sortedSources = sources.sorted { $0 < $1 }
+            sortedSources = sources.sorted { $0.sourceId.description < $1.sourceId.description }
         }
 
         let selectedVideoSource: StreamSource
