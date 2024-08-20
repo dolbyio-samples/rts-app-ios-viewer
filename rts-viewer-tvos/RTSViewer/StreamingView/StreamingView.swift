@@ -34,7 +34,7 @@ struct StreamingView: View {
         BackgroundContainerView {
             ZStack {
                 switch viewModel.state {
-                case let .streaming(source: source):
+                case let .streaming(source: source, _):
                     VideoView(renderer: viewModel.rendererRegistry.acceleratedRenderer(for: source))
                         .overlay(alignment: .bottomTrailing) {
                             SettingsButton {
