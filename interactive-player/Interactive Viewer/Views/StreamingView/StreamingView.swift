@@ -147,14 +147,14 @@ struct StreamingView: View {
     // swiftlint:enable function_body_length
 
     @ViewBuilder
-    private func errorView(title: String, subtitle: String?) -> some View {
+    private func errorView(title: String, subtitle: String?, showLiveIndicator: Bool) -> some View {
         ErrorView(title: title, subtitle: subtitle)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(alignment: .topTrailing) {
                 closeButton
             }
             .overlay(alignment: .topLeading) {
-                if shouldShowLiveIndicatorView {
+                if showLiveIndicator {
                     liveIndicatorView
                 }
             }
@@ -249,8 +249,8 @@ struct StreamingView: View {
                     )
                 case .loading:
                     progressView
-                case let .error(title: title, subtitle: subtitle):
-                    errorView(title: title, subtitle: subtitle)
+                case let .error(title: title, subtitle: subtitle, showLiveIndicator: showLiveIndicator):
+                    errorView(title: title, subtitle: subtitle, showLiveIndicator: showLiveIndicator)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

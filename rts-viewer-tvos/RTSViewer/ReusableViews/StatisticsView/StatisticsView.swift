@@ -3,15 +3,26 @@
 //
 
 import DolbyIOUIKit
-import SwiftUI
-import RTSCore
 import Foundation
+import MillicastSDK
+import RTSCore
+import SwiftUI
 
 struct StatisticsView: View {
     private let viewModel: StatisticsViewModel
 
-    init(source: StreamSource, streamStatistics: StreamStatistics) {
-        viewModel = StatisticsViewModel(source: source, streamStatistics: streamStatistics)
+    init(
+        source: StreamSource,
+        streamStatistics: StreamStatistics,
+        layers: [MCRTSRemoteTrackLayer],
+        projectedTimeStamp: Double?
+    ) {
+        viewModel = StatisticsViewModel(
+            source: source,
+            streamStatistics: streamStatistics,
+            layers: layers,
+            projectedTimeStamp: projectedTimeStamp
+        )
     }
 
     private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption2, style: .caption2)
@@ -31,7 +42,7 @@ struct StatisticsView: View {
 
             HStack {
                 Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption)
-                    .frame(maxWidth: 350, alignment: .leading)
+                    .frame(maxWidth: 250, alignment: .leading)
                 Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -43,15 +54,15 @@ struct StatisticsView: View {
                 HStack {
                     Text(item.key)
                         .font(theme[fontAssetTable])
-                        .frame(maxWidth: 350, alignment: .leading)
+                        .frame(maxWidth: 250, alignment: .leading)
                     Text(item.value)
                         .font(fontTable)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .frame(maxWidth: 700)
-        .padding(35)
+        .frame(maxWidth: 850)
+        .padding(20)
         .background {
             Color(uiColor: UIColor.Neutral.neutral800)
                 .opacity(0.7)

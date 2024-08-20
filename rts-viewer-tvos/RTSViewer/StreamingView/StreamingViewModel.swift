@@ -26,10 +26,12 @@ final class StreamingViewModel: ObservableObject {
     private var isWebsocketConnected: Bool = false
 
     private var subscriptions: [AnyCancellable] = []
+    private var projectedMids: Set<String> = []
+    private let serialTasks = SerialTasks()
 
     enum ViewState: Equatable {
         case disconnected
-        case streaming(source: StreamSource)
+        case streaming(source: StreamSource, playingAudio: Bool)
         case noNetwork(title: String)
         case streamNotPublished(title: String, subtitle: String, source: StreamSource?)
         case otherError(message: String)
@@ -47,7 +49,7 @@ final class StreamingViewModel: ObservableObject {
             if !videoQualityList.contains(where: { $0.encodingId == selectedVideoQuality.encodingId }) {
                 Self.logger.debug("♼ Reset layer to `auto`")
                 switch state {
-                case let .streaming(source: source):
+                case let .streaming(source: source, _):
                     select(videoQuality: .auto, for: source)
                 default:
                     break
@@ -57,6 +59,7 @@ final class StreamingViewModel: ObservableObject {
     }
     @Published private(set) var selectedVideoQuality: VideoQuality = .auto
     @Published private(set) var streamStatistics: StreamStatistics?
+    @Published private(set) var projectedTimeStampForMids: [String: Double] = [:]
 
     let subscriptionManager: SubscriptionManager
     let rendererRegistry: RendererRegistry
@@ -115,6 +118,7 @@ final class StreamingViewModel: ObservableObject {
                 case let .quality(underlyingLayer):
                     try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: underlyingLayer), promote: true)
                 }
+                self.storeProjectedMid(for: source)
             } catch {
                 Self.logger.debug("🎰 Select video quality error \(error.localizedDescription)")
             }
@@ -144,22 +148,6 @@ final class StreamingViewModel: ObservableObject {
                                 return
                             }
 
-                            switch self.state {
-                            case let .streaming(source: previousSource):
-                                Self.logger.debug("🎰 Disabling previous source \(previousSource.sourceId)")
-                                if previousSource.audioTrack?.isActive == true {
-                                    try await previousSource.audioTrack?.disable()
-                                }
-                                if previousSource.videoTrack.isActive {
-                                    try await previousSource.videoTrack.disable()
-                                }
-                                self.clearLayerInformation()
-                            default:
-                                break
-                            }
-
-                            Self.logger.debug("🎰 Picked source \(videoSource.sourceId)")
-
                             Task(priority: .userInitiated) {
                                 guard !Task.isCancelled else { return }
 
@@ -167,20 +155,52 @@ final class StreamingViewModel: ObservableObject {
                             }
 
                             Task(priority: .high) {
-                                guard !Task.isCancelled, videoSource.videoTrack.isActive else { return }
-
-                                let renderer = self.rendererRegistry.acceleratedRenderer(for: videoSource)
-                                try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
-                                Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for video")
-
-                                if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
-                                    Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
-                                    // Enable new audio track
-                                    try await audioTrack.enable()
+                                guard
+                                    !Task.isCancelled,
+                                    videoSource.videoTrack.isActive
+                                else {
+                                    return
                                 }
 
-                                await MainActor.run {
-                                    self.state = .streaming(source: videoSource)
+                                try await self.serialTasks.enqueue {
+                                    switch await self.state {
+                                    case let .streaming(source: currentSource, playingAudio: isPlayingAudio):
+                                        // No-action needed, already viewing stream
+                                        Self.logger.debug("🎰 Already viewing source \(currentSource.sourceId)")
+                                        if !isPlayingAudio {
+                                            if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
+                                                Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
+                                                // Enable new audio track
+                                                try await audioTrack.enable()
+                                                await MainActor.run {
+                                                    self.state = .streaming(source: videoSource, playingAudio: true)
+                                                }
+                                            }
+                                        }
+                                    default:
+                                        Self.logger.debug("🎰 Picked source \(videoSource.sourceId)")
+
+                                        let renderer = await MainActor.run {
+                                            self.rendererRegistry.acceleratedRenderer(for: videoSource)
+                                        }
+                                        try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
+                                        Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for video")
+                                        await self.storeProjectedMid(for: videoSource)
+
+                                        let isPlayingAudio: Bool
+                                        if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
+                                            Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
+                                            // Enable new audio track
+                                            try await audioTrack.enable()
+                                            isPlayingAudio = true
+                                        } else {
+                                            isPlayingAudio = false
+                                        }
+
+                                        await MainActor.run {
+                                            self.state = .streaming(source: videoSource, playingAudio: isPlayingAudio)
+                                        }
+                                    }
                                 }
                             }
 
@@ -224,7 +244,7 @@ final class StreamingViewModel: ObservableObject {
                 .receive(on: DispatchQueue.main)
                 .sink { websocketState in
                     switch websocketState {
-                    case .CONNECTED:
+                    case .connected:
                         self.isWebsocketConnected = true
                     default:
                         break
@@ -255,12 +275,11 @@ final class StreamingViewModel: ObservableObject {
 
 // MARK: Track lifecycle events
 
-extension StreamingViewModel {
+private extension StreamingViewModel {
 
     func observeLayerEvents(for source: StreamSource) async {
-        if layersEventsObservationDictionary[source.sourceId] != nil {
-            layersEventsObservationDictionary[source.sourceId]?.cancel()
-            layersEventsObservationDictionary[source.sourceId] = nil
+        guard layersEventsObservationDictionary[source.sourceId] == nil else {
+            return
         }
 
         Self.logger.debug("♼ Registering layer events for \(source.sourceId)")
@@ -293,6 +312,8 @@ extension StreamingViewModel {
         reconnectionTimer = nil
         clearLayerInformation()
         streamStatistics = nil
+        projectedTimeStampForMids.removeAll()
+        projectedMids.removeAll()
     }
 
     func clearLayerInformation() {
@@ -312,10 +333,34 @@ extension StreamingViewModel {
                 .sink { statistics in
                     guard let statistics else { return }
                     Task {
+                        self.saveProjectedTimeStamp(stats: statistics)
                         self.streamStatistics = statistics
                     }
                 }
                 .store(in: &subscriptions)
         }
+    }
+
+    func saveProjectedTimeStamp(stats: StreamStatistics) {
+        stats.videoStatsInboundRtpList.forEach {
+            if let mid = $0.mid, projectedMids.contains(mid),
+               projectedTimeStampForMids[mid] == nil {
+                projectedTimeStampForMids[mid] = $0.timestamp
+            }
+        }
+    }
+
+    func storeProjectedMid(for source: StreamSource) {
+        guard let mid = source.videoTrack.currentMID else {
+            return
+        }
+        projectedMids.insert(mid)
+    }
+
+    func removeProjectedMid(for source: StreamSource) {
+        guard let mid = source.videoTrack.currentMID else {
+            return
+        }
+        projectedMids.remove(mid)
     }
 }

@@ -479,11 +479,11 @@ private extension StatsInfoViewModel {
 
     static func formatBitRate(bitRate: Double) -> String {
         if bitRate < KILOBITS {
-            "\(bitRate)bps"
+            "\(bitRate) bps"
         } else if bitRate >= KILOBITS && bitRate < MEGABITS {
-            "\((bitRate / KILOBITS).rounded(toPlaces: 4))Kbps"
+            "\((bitRate / KILOBITS).rounded(toPlaces: 4)) Kbps"
         } else {
-            "\((bitRate / MEGABITS).rounded(toPlaces: 4))Mbps"
+            "\((bitRate / MEGABITS).rounded(toPlaces: 4)) Mbps"
         }
     }
 

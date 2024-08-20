@@ -34,7 +34,7 @@ struct StreamingView: View {
         BackgroundContainerView {
             ZStack {
                 switch viewModel.state {
-                case let .streaming(source: source):
+                case let .streaming(source: source, _):
                     VideoView(renderer: viewModel.rendererRegistry.acceleratedRenderer(for: source))
                         .overlay(alignment: .bottomTrailing) {
                             SettingsButton {
@@ -45,8 +45,21 @@ struct StreamingView: View {
                             .padding()
                         }
                         .overlay(alignment: .bottomLeading) {
-                            if showStatsView, let streamStatistics = viewModel.streamStatistics {
-                                StatisticsView(source: source, streamStatistics: streamStatistics)
+                            if showStatsView, let streamStatistics = viewModel.streamStatistics,
+                               let mid = source.videoTrack.currentMID {
+                                StatisticsView(
+                                    source: source,
+                                    streamStatistics: streamStatistics,
+                                    layers: viewModel.videoQualityList.compactMap {
+                                        switch $0 {
+                                        case .auto:
+                                            return nil
+                                        case let .quality(layer):
+                                            return layer
+                                        }
+                                    },
+                                    projectedTimeStamp: viewModel.projectedTimeStampForMids[mid]
+                                )
                             }
                         }
                         .overlay(alignment: .trailing) {
