@@ -100,11 +100,10 @@ public actor SubscriptionManager {
     public func unSubscribe() async throws {
         Self.logger.debug("👨‍🔧 Stop subscription")
         await subscriber.enableStats(false)
+        reset()
         try await subscriber.unsubscribe()
         try await subscriber.disconnect()
         Self.logger.debug("👨‍🔧 Successfully stopped subscription")
-
-        reset()
     }
 
     private func reset() {
