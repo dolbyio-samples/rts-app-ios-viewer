@@ -86,3 +86,5 @@
 "stream.stats.packets-received.label" = "Packets Received";
 "stream.stats.timestamp.label" = "Timestamp (GMT)";
 "stream.stats.total-stream-time.label" = "Total Stream Time";
+"stream.stats.target-bitrate.label" = "Target Bitrate";
+"stream.stats.outgoing-bitrate.label" = "Outgoing Bitrate";

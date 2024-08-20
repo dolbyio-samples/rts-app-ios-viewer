@@ -4,6 +4,7 @@
 
 import Combine
 import Foundation
+import MillicastSDK
 import RTSCore
 import SwiftUI
 import UIKit
@@ -18,22 +19,37 @@ final class StatisticsViewModel: ObservableObject {
     private let source: StreamSource
     let statsItems: [StatsItem]
 
-    init(source: StreamSource, streamStatistics: StreamStatistics) {
+    init(
+        source: StreamSource,
+        streamStatistics: StreamStatistics,
+        layers: [MCRTSRemoteTrackLayer],
+        projectedTimeStamp: Double?
+    ) {
         self.source = source
-        statsItems = Self.makeStatsList(from: source, streamStatistics: streamStatistics)
+        statsItems = Self.makeStatsList(
+            from: source,
+            streamStatistics: streamStatistics,
+            layers: layers,
+            projectedTimeStamp: projectedTimeStamp
+        )
     }
 }
 
 // MARK: Stats report parsing
 
 private extension StatisticsViewModel {
-    // swiftlint:disable function_body_length
-    static func makeStatsList(from source: StreamSource, streamStatistics: StreamStatistics) -> [StatsItem] {
+    // swiftlint:disable function_body_length cyclomatic_complexity
+    static func makeStatsList(
+        from source: StreamSource,
+        streamStatistics: StreamStatistics,
+        layers: [MCRTSRemoteTrackLayer],
+        projectedTimeStamp: Double?
+    ) -> [StatsItem] {
         var result = [StatsItem]()
         guard let videoStatsInboundRtp = streamStatistics.videoStatsInboundRtpList.first(where: { $0.mid == source.videoTrack.currentMID }) else {
             return []
         }
-        let audioStatsInboundRtp = streamStatistics.audioStatsInboundRtpList.first(where: { $0.mid == source.videoTrack.currentMID })
+        let audioStatsInboundRtp = streamStatistics.audioStatsInboundRtpList.first
 
         if let streamViewId = streamStatistics.streamViewId {
             result.append(
@@ -308,13 +324,15 @@ private extension StatisticsViewModel {
             )
         )
 
-        let totalTime = videoStatsInboundRtp.totalTime
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.total-stream-time.label"),
-                value: elapsedTimeString(totalTime / 1000)
+        if let projectedTimeStamp {
+            let totalTime = videoStatsInboundRtp.timestamp - projectedTimeStamp
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.total-stream-time.label"),
+                    value: elapsedTimeString(totalTime / 1000)
+                )
             )
-        )
+        }
 
         let audioCodec = audioStatsInboundRtp?.codecName
         let videoCodec = videoStatsInboundRtp.codecName
@@ -332,18 +350,64 @@ private extension StatisticsViewModel {
             )
         }
 
-        let incomingBitrate = videoStatsInboundRtp.incomingBitrate
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.incoming-bitrate.label"),
-                value: formatBitRate(bitRate: Int(incomingBitrate))
+        if let projectedTimeStamp {
+            let bitsReceived = videoStatsInboundRtp.bytesReceived * 8
+            let totalTimeInSeconds = (videoStatsInboundRtp.timestamp - projectedTimeStamp) / 1000
+            let incomingBitRate = Double(bitsReceived) / totalTimeInSeconds
+
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.incoming-bitrate.label"),
+                    value: formatBitRate(bitRate: incomingBitRate)
+                )
             )
-        )
+        }
+
+        if let selectedLayer = layers.first(where: {
+            Int(videoStatsInboundRtp.frameWidth) == ($0.resolution?.width ?? 0)
+            && Int(videoStatsInboundRtp.frameHeight) == ($0.resolution?.height ?? 0)
+        }) {
+            if let targetBitrate = selectedLayer.targetBitrate {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.target-bitrate.label"),
+                        value: Self.formatBitRate(bitRate: targetBitrate.doubleValue)
+                    )
+                )
+            } else {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.target-bitrate.label"),
+                        value: "N/A"
+                    )
+                )
+            }
+
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.outgoing-bitrate.label"),
+                    value: Self.formatBitRate(bitRate: Double(selectedLayer.bitrate))
+                )
+            )
+        } else {
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.target-bitrate.label"),
+                    value: "N/A"
+                )
+            )
+
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.outgoing-bitrate.label"),
+                    value: "N/A"
+                )
+            )
+        }
 
         return result
     }
-
-    // swiftlint:enable function_body_length
+    // swiftlint:enable function_body_length cyclomatic_complexity
 
     static func dateString(_ timestamp: Double) -> String {
         let dateFormatter = DateFormatter()
@@ -369,9 +433,14 @@ private extension StatisticsViewModel {
         return "\(formatNumber(input: bytes))B"
     }
 
-    static func formatBitRate(bitRate: Int) -> String {
-        let value = formatNumber(input: bitRate).lowercased()
-        return "\(value)bps"
+    static func formatBitRate(bitRate: Double) -> String {
+        if bitRate < KILOBITS {
+            "\(bitRate)bps"
+        } else if bitRate >= KILOBITS && bitRate < MEGABITS {
+            "\((bitRate / KILOBITS).rounded(toPlaces: 4))Kbps"
+        } else {
+            "\((bitRate / MEGABITS).rounded(toPlaces: 4))Mbps"
+        }
     }
 
     static func formatNumber(input: Int) -> String {
@@ -382,3 +451,14 @@ private extension StatisticsViewModel {
 
 private let KILOBYTES = 1024
 private let MEGABYTES = KILOBYTES * KILOBYTES
+
+private let KILOBITS: Double = 1000
+private let MEGABITS = KILOBITS * KILOBITS
+
+private extension Double {
+    /// Rounds the double to decimal places value
+    func rounded(toPlaces places: Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return (self * divisor).rounded() / divisor
+    }
+}

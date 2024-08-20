@@ -45,8 +45,21 @@ struct StreamingView: View {
                             .padding()
                         }
                         .overlay(alignment: .bottomLeading) {
-                            if showStatsView, let streamStatistics = viewModel.streamStatistics {
-                                StatisticsView(source: source, streamStatistics: streamStatistics)
+                            if showStatsView, let streamStatistics = viewModel.streamStatistics,
+                               let mid = source.videoTrack.currentMID {
+                                StatisticsView(
+                                    source: source,
+                                    streamStatistics: streamStatistics,
+                                    layers: viewModel.videoQualityList.compactMap {
+                                        switch $0 {
+                                        case .auto:
+                                            return nil
+                                        case let .quality(layer):
+                                            return layer
+                                        }
+                                    },
+                                    projectedTimeStamp: viewModel.projectedTimeStampForMids[mid]
+                                )
                             }
                         }
                         .overlay(alignment: .trailing) {

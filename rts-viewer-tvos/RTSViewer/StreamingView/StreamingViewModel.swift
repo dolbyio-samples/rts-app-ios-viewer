@@ -26,6 +26,7 @@ final class StreamingViewModel: ObservableObject {
     private var isWebsocketConnected: Bool = false
 
     private var subscriptions: [AnyCancellable] = []
+    private var projectedMids: Set<String> = []
 
     enum ViewState: Equatable {
         case disconnected
@@ -57,6 +58,7 @@ final class StreamingViewModel: ObservableObject {
     }
     @Published private(set) var selectedVideoQuality: VideoQuality = .auto
     @Published private(set) var streamStatistics: StreamStatistics?
+    @Published private(set) var projectedTimeStampForMids: [String: Double] = [:]
 
     let subscriptionManager: SubscriptionManager
     let rendererRegistry: RendererRegistry
@@ -115,6 +117,7 @@ final class StreamingViewModel: ObservableObject {
                 case let .quality(underlyingLayer):
                     try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: underlyingLayer), promote: true)
                 }
+                self.storeProjectedMid(for: source)
             } catch {
                 Self.logger.debug("🎰 Select video quality error \(error.localizedDescription)")
             }
@@ -153,6 +156,7 @@ final class StreamingViewModel: ObservableObject {
                                 if previousSource.videoTrack.isActive {
                                     try await previousSource.videoTrack.disable()
                                 }
+                                self.removeProjectedMid(for: previousSource)
                                 self.clearLayerInformation()
                             default:
                                 break
@@ -172,7 +176,7 @@ final class StreamingViewModel: ObservableObject {
                                 let renderer = self.rendererRegistry.acceleratedRenderer(for: videoSource)
                                 try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
                                 Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for video")
-
+                                self.storeProjectedMid(for: videoSource)
                                 if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
                                     Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
                                     // Enable new audio track
@@ -224,7 +228,7 @@ final class StreamingViewModel: ObservableObject {
                 .receive(on: DispatchQueue.main)
                 .sink { websocketState in
                     switch websocketState {
-                    case .CONNECTED:
+                    case .connected:
                         self.isWebsocketConnected = true
                     default:
                         break
@@ -255,7 +259,7 @@ final class StreamingViewModel: ObservableObject {
 
 // MARK: Track lifecycle events
 
-extension StreamingViewModel {
+private extension StreamingViewModel {
 
     func observeLayerEvents(for source: StreamSource) async {
         if layersEventsObservationDictionary[source.sourceId] != nil {
@@ -293,6 +297,8 @@ extension StreamingViewModel {
         reconnectionTimer = nil
         clearLayerInformation()
         streamStatistics = nil
+        projectedTimeStampForMids.removeAll()
+        projectedMids.removeAll()
     }
 
     func clearLayerInformation() {
@@ -312,10 +318,34 @@ extension StreamingViewModel {
                 .sink { statistics in
                     guard let statistics else { return }
                     Task {
+                        self.saveProjectedTimeStamp(stats: statistics)
                         self.streamStatistics = statistics
                     }
                 }
                 .store(in: &subscriptions)
         }
+    }
+
+    func saveProjectedTimeStamp(stats: StreamStatistics) {
+        stats.videoStatsInboundRtpList.forEach {
+            if let mid = $0.mid, projectedMids.contains(mid),
+               projectedTimeStampForMids[mid] == nil {
+                projectedTimeStampForMids[mid] = $0.timestamp
+            }
+        }
+    }
+
+    func storeProjectedMid(for source: StreamSource) {
+        guard let mid = source.videoTrack.currentMID else {
+            return
+        }
+        projectedMids.insert(mid)
+    }
+
+    func removeProjectedMid(for source: StreamSource) {
+        guard let mid = source.videoTrack.currentMID else {
+            return
+        }
+        projectedMids.remove(mid)
     }
 }
