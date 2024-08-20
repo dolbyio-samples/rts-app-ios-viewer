@@ -30,7 +30,7 @@ final class StreamViewModel: ObservableObject {
             selectedAudioSource: StreamSource?,
             settings: StreamSettings
         )
-        case error(title: String, subtitle: String?)
+        case error(title: String, subtitle: String?, showLiveIndicator: Bool)
     }
 
     let subscriptionManager: SubscriptionManager
@@ -288,7 +288,13 @@ private extension StreamViewModel {
                                 await self.updateAudioSourceListing(for: activeSources, currentSettings: settings)
                                 guard let newState = await self.makeState(from: activeSources, settings: settings) else {
                                     Self.logger.debug("🎰 Make state returned without a value")
-                                    await self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
+                                    await self.update(
+                                        state: .error(
+                                            title: .offlineErrorTitle,
+                                            subtitle: .offlineErrorSubtitle,
+                                            showLiveIndicator: true
+                                        )
+                                    )
                                     return
                                 }
                                 await self.update(state: newState)
@@ -303,14 +309,26 @@ private extension StreamViewModel {
                                 if await !self.isWebsocketConnected {
                                     await self.scheduleReconnection()
                                 }
-                                await self.update(state: .error(title: .noInternetErrorTitle, subtitle: nil))
+                                await self.update(
+                                    state: .error(
+                                        title: .noInternetErrorTitle,
+                                        subtitle: nil,
+                                        showLiveIndicator: false
+                                    )
+                                )
 
                             case let .error(connectionError):
                                 Self.logger.debug("🎰 Connection error - \(connectionError.status), \(connectionError.reason)")
                                 if await !self.isWebsocketConnected {
                                     await self.scheduleReconnection()
                                 }
-                                await self.update(state: .error(title: .offlineErrorTitle, subtitle: .offlineErrorSubtitle))
+                                await self.update(
+                                    state: .error(
+                                        title: .offlineErrorTitle,
+                                        subtitle: .offlineErrorSubtitle,
+                                        showLiveIndicator: true
+                                    )
+                                )
                             }
                         }
                     }
