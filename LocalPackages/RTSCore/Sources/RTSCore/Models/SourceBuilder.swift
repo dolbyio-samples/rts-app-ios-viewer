@@ -31,7 +31,7 @@ private class PartialSource {
     }
 }
 
-final class SourceBuilder {
+final actor SourceBuilder {
     static let logger = Logger(
         subsystem: Bundle.module.bundleIdentifier!,
         category: String(describing: SourceBuilder.self)
@@ -67,21 +67,27 @@ final class SourceBuilder {
         
         audioTrackStateUpdateSubject
             .sink { [weak self] sourceId in
-                guard let self, let source = self.partialSources.first(where: { $0.sourceId == sourceId }) else {
-                    return
+                guard let self else { return }
+                Task {
+                    guard let source = await self.partialSources.first(where: { $0.sourceId == sourceId }) else {
+                        return
+                    }
+                    Self.logger.debug("👨‍🔧 Handle audio track active state change \(sourceId); isActive \(source.audioTrack?.isActive == true)")
+                    await self.sourceStreamContinuation.yield(self.sources)
                 }
-                Self.logger.debug("👨‍🔧 Handle audio track active state change \(sourceId); isActive \(source.audioTrack?.isActive == true)")
-                self.sourceStreamContinuation.yield(self.sources)
             }
             .store(in: &subscriptions)
 
         videoTrackStateUpdateSubject
             .sink { [weak self] sourceId in
-                guard let self, let source = self.partialSources.first(where: { $0.sourceId == sourceId }) else {
-                    return
+                guard let self else { return }
+                Task {
+                    guard let source = await self.partialSources.first(where: { $0.sourceId == sourceId }) else {
+                        return
+                    }
+                    Self.logger.debug("👨‍🔧 Handle video track active state change \(sourceId); isActive \(source.videoTrack?.isActive == true)")
+                    await self.sourceStreamContinuation.yield(self.sources)
                 }
-                Self.logger.debug("👨‍🔧 Handle video track active state change \(sourceId); isActive \(source.videoTrack?.isActive == true)")
-                self.sourceStreamContinuation.yield(self.sources)
             }
             .store(in: &subscriptions)
     }
@@ -135,9 +141,17 @@ final class SourceBuilder {
 
 private extension SourceBuilder {
 
+    func setAudioTrackObservation(task: Task<Void, Never>, for sourceId: SourceID) {
+        audioTrackActivityObservationDictionary[sourceId] = task
+    }
+    
+    func setVideoTrackObservation(task: Task<Void, Never>, for sourceId: SourceID) {
+        videoTrackActivityObservationDictionary[sourceId] = task
+    }
+
     func observeAudioTrackEvents(for track: MCRTSRemoteAudioTrack, sourceId: SourceID) {
         Task { [weak self] in
-            guard let self, self.audioTrackActivityObservationDictionary[sourceId] == nil else {
+            guard let self, await self.audioTrackActivityObservationDictionary[sourceId] == nil else {
                 return
             }
             Self.logger.debug("👨‍🔧 Registering for audio track lifecycle events of \(sourceId)")
@@ -155,14 +169,14 @@ private extension SourceBuilder {
                     }
                 }
             }
-            self.audioTrackActivityObservationDictionary[sourceId] = audioTrackActivityObservation
+            await self.setAudioTrackObservation(task: audioTrackActivityObservation, for: sourceId)
             await audioTrackActivityObservation.value
         }
     }
 
     func observeVideoTrackEvents(for track: MCRTSRemoteVideoTrack, sourceId: SourceID) {
         Task { [weak self] in
-            guard let self, self.videoTrackActivityObservationDictionary[sourceId] == nil else { return }
+            guard let self, await self.videoTrackActivityObservationDictionary[sourceId] == nil else { return }
 
             Self.logger.debug("👨‍🔧 Registering for video track lifecycle events of \(sourceId)")
             let videoTrackActivityObservation = Task {
@@ -179,7 +193,8 @@ private extension SourceBuilder {
                     }
                 }
             }
-            self.videoTrackActivityObservationDictionary[sourceId] = videoTrackActivityObservation
+
+            await self.setVideoTrackObservation(task: videoTrackActivityObservation, for: sourceId)
             await videoTrackActivityObservation.value
         }
     }
