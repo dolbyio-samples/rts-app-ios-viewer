@@ -40,16 +40,19 @@ public actor SubscriptionManager {
     public init() {
         // Configure the AVAudioSession with our settings.
         AVAudioSession.configure()
-    }
-
-    public func subscribe(streamName: String, accountID: String, token: String? = nil, configuration: SubscriptionConfiguration = SubscriptionConfiguration()) async throws {
-
-        logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
-
+        
         Task(priority: .userInitiated) { [weak self] in
             guard let self else { return }
             await self.registerToSubscriberEvents()
         }
+    }
+    
+    deinit {
+        deregisterToSubscriberEvents()
+    }
+
+    public func subscribe(streamName: String, accountID: String, token: String? = nil, configuration: SubscriptionConfiguration = SubscriptionConfiguration()) async throws {
+        logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
 
         let subscribeTask = Task(priority: .high) { [weak subscriber] in
             guard let subscriber else { return }
@@ -106,7 +109,6 @@ public actor SubscriptionManager {
 
     private func reset() {
         state = .disconnected
-        deregisterToSubscriberEvents()
         sourceBuilder.reset()
         logHandler.setLogFilePath(filePath: nil)
     }

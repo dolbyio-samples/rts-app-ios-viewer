@@ -30,13 +30,11 @@ final class StatsInfoViewModel: ObservableObject {
             let layers = await self.videoTracksManager.sourceToSimulcastLayersMapping
             let projectedTimeStampForMids = await self.videoTracksManager.projectedTimeStampForMids
             let projectedTimeStampForSource = mid.map { projectedTimeStampForMids[$0] } ?? nil
-            guard
-                let stats = await subscriptionManager.streamStatistics,
-                let layersForSource = layers[self.streamSource.sourceId]
-            else {
+            guard let stats = await subscriptionManager.streamStatistics else {
                 return
             }
 
+            let layersForSource = layers[self.streamSource.sourceId] ?? []
             self.statsItems = Self.makeStatsItems(
                 for: stats,
                 streamSource: self.streamSource,
@@ -66,11 +64,11 @@ final class StatsInfoViewModel: ObservableObject {
                     Task {
                         guard
                             let self,
-                            let stats = statistics,
-                            let layersForSource = layers[self.streamSource.sourceId]
+                            let stats = statistics
                         else {
                             return
                         }
+                        let layersForSource = layers[self.streamSource.sourceId] ?? []
                         let mid = self.streamSource.videoTrack.currentMID
                         let projectedTimeStampForMids = await self.videoTracksManager.projectedTimeStampForMids
                         let projectedTimeStampForSource = mid.map { projectedTimeStampForMids[$0] } ?? nil
