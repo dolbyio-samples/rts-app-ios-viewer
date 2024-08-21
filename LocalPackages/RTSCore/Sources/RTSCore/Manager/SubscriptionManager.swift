@@ -100,15 +100,15 @@ public actor SubscriptionManager {
     public func unSubscribe() async throws {
         Self.logger.debug("👨‍🔧 Stop subscription")
         await subscriber.enableStats(false)
-        reset()
+        await reset()
         try await subscriber.unsubscribe()
         try await subscriber.disconnect()
         Self.logger.debug("👨‍🔧 Successfully stopped subscription")
     }
 
-    private func reset() {
+    private func reset() async {
         state = .disconnected
-        sourceBuilder.reset()
+        await sourceBuilder.reset()
         logHandler.setLogFilePath(filePath: nil)
     }
 }
@@ -120,70 +120,78 @@ extension SubscriptionManager {
     func registerToSubscriberEvents() async {
         Self.logger.debug("👨‍🔧 Register to subscriber events")
 
-        let taskWebsocketStateObservation = Task {
-            for await state in subscriber.websocketState() {
+        let taskWebsocketStateObservation = Task { [weak self] in
+            guard let self else { return }
+            for await state in self.subscriber.websocketState() {
                 Self.logger.debug("👨‍🔧 Websocket connection state changed to \(state.rawValue)")
-                self.websocketState = state
+                await self.updateWebSocketState(state: state)
             }
         }
 
-        let taskPeerConnectionStateObservation = Task {
-            for await state in subscriber.peerConnectionState() {
+        let taskPeerConnectionStateObservation = Task { [weak self] in
+            guard let self else { return }
+            for await state in self.subscriber.peerConnectionState() {
                 Self.logger.debug("👨‍🔧 Peer connection state changed to \(state.rawValue)")
                 if state == .connecting {
-                    setReconnectingPeerConnection(true)
-                } else if state == .connected && isReconnectingPeerConnection && !sourceBuilder.sources.isEmpty {
+                    await self.setReconnectingPeerConnection(true)
+                } else if state == .connected, await self.isReconnectingPeerConnection, await self.sourceBuilder.sources.isEmpty == false {
                     Self.logger.debug("👨‍🔧 Peer connection restored")
-                    updateState(to: .subscribed(sources: sourceBuilder.sources))
-                    setReconnectingPeerConnection(false)
+                    await self.updateState(to: .subscribed(sources: self.sourceBuilder.sources))
+                    await self.setReconnectingPeerConnection(false)
                 }
             }
         }
 
-        let streamStoppedStateObservation = Task {
-            for await state in subscriber.streamStopped() {
+        let streamStoppedStateObservation = Task { [weak self] in
+            guard let self else { return }
+            for await state in self.subscriber.streamStopped() {
                 guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Stream stopped \(state.description)")
             }
         }
 
-        let taskHttpErrorStateObservation = Task {
-            for await state in subscriber.httpError() {
+        let taskHttpErrorStateObservation = Task { [weak self] in
+            guard let self else { return }
+            for await state in self.subscriber.httpError() {
                 guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Http error state changed to \(state.code), reason: \(state.reason)")
-                updateState(to: .error(ConnectionError(status: state.code, reason: state.reason)))
+                await self.updateState(to: .error(ConnectionError(status: state.code, reason: state.reason)))
             }
         }
 
-        let taskSignalingErrorStateObservation = Task {
-            for await state in subscriber.signalingError() {
+        let taskSignalingErrorStateObservation = Task { [weak self] in
+            guard let self else { return }
+            for await state in self.subscriber.signalingError() {
                 guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Signalling error state: reason - \(state.reason)")
             }
         }
 
-        let tracksObservation = Task {
-            for await track in subscriber.rtsRemoteTrackAdded() {
+        let tracksObservation = Task { [weak self] in
+            guard let self else { return }
+            for await track in self.subscriber.rtsRemoteTrackAdded() {
                 guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Remote track added - \(track.sourceID)")
-                sourceBuilder.addTrack(track)
+                await self.sourceBuilder.addTrack(track)
             }
         }
 
-        let statsObservation = Task {
-            for await statsReport in subscriber.statsReport() {
+        let statsObservation = Task { [weak self] in
+            guard let self else { return }
+            for await statsReport in self.subscriber.statsReport() {
                 guard !Task.isCancelled, let stats = StreamStatistics(statsReport) else {
                     return
                 }
-                updateStats(stats)
+                await self.updateStats(stats)
             }
         }
 
-        let sourcesObservation = Task {
-            for await sources in sourceBuilder.sourceStream {
+        let sourcesObservation = Task { [weak self] in
+            guard let self else { return }
+            for await sources in await self.sourceBuilder.sourceStream {
                 guard !Task.isCancelled else { return }
                 Self.logger.debug("👨‍🔧 Sources builder emitted \(sources)")
-                updateState(to: .subscribed(sources: sources))
+                await self.updateState(to: .subscribed(sources: sources))
             }
         }
 
@@ -233,6 +241,10 @@ private extension SubscriptionManager {
 
     func addEventObservationTask(_ task: Task<Void, Never>) {
         subscriberEventObservationTasks.append(task)
+    }
+    
+    func updateWebSocketState(state: MCConnectionState) {
+        websocketState = state
     }
 }
 
