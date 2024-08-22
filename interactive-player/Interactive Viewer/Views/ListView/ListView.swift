@@ -56,7 +56,7 @@ struct ListView: View {
         let selectedVideoSource = viewModel.selectedVideoSource
         let tileWidth = deviceOrientation.isPortrait ? screenSize.width - Constants.tileSpacing : screenSize.width * 0.75 - Constants.tileSpacing
         let displayLabel = selectedVideoSource.sourceId.displayLabel
-        let preferredVideoQuality: VideoQuality = selectedVideoSource == viewModel.selectedVideoSource ? .auto : .low
+        let preferredVideoQuality: VideoQuality = viewModel.mainTilePreferredVideoQuality
         let isSelectedVideoSource = true
         let isSelectedAudioSource = selectedVideoSource == viewModel.selectedAudioSource
         let viewId = deviceOrientation.isPortrait ? "\(ListView.self).Primary.Portrait.\(displayLabel)" : "\(ListView.self).Primary.Landscape.\(displayLabel)"

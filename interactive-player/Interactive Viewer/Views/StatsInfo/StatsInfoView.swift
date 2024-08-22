@@ -15,6 +15,9 @@ struct StatsInfoView: View {
     private let fontTableValue = Font.custom("AvenirNext-DemiBold", size: FontSize.body)
     private let fontTitle = Font.custom("AvenirNext-Bold", size: FontSize.title2)
 
+    @Environment(\.presentationMode) private var presentationMode
+    @State private var deviceOrientation: UIDeviceOrientation = UIDeviceOrientation.portrait
+
     init(statsInfoViewModel: StatsInfoViewModel) {
         self.viewModel = statsInfoViewModel
     }
@@ -30,6 +33,15 @@ struct StatsInfoView: View {
             .padding([.top], Layout.spacing0_5x)
     }
 
+    private var closeButton: some View {
+        IconButton(iconAsset: .close) {
+            presentationMode.wrappedValue.dismiss()
+        }
+        .background(Color(uiColor: theme.neutral400))
+        .clipShape(Circle().inset(by: Layout.spacing0_5x))
+        .padding(.top)
+    }
+
     private var titleView: some View {
         Text("stream.media-stats.label", font: fontTitle)
             .frame(maxWidth: .infinity, alignment: .center)
@@ -39,7 +51,9 @@ struct StatsInfoView: View {
     var body: some View {
         ScrollView {
             VStack {
-                pullDownIndicatorView
+                if deviceOrientation.isPortrait {
+                    pullDownIndicatorView
+                }
 
                 titleView
 
@@ -58,12 +72,22 @@ struct StatsInfoView: View {
             .padding([.leading, .trailing], Layout.spacing2x)
             .padding(.bottom, Layout.spacing3x)
         }
+        .overlay(alignment: .topTrailing, content: {
+            if deviceOrientation.isLandscape {
+                closeButton
+            }
+        })
         .contextMenu {
             Button(action: {
                 copyToPasteboard(text: formattedStatisticsText())
             }) {
                 Text("stream.stats.copy.label")
                 Image(systemName: "doc.on.doc")
+            }
+        }
+        .onRotate { newOrientation in
+            if !newOrientation.isFlat && newOrientation.isValidInterfaceOrientation {
+                deviceOrientation = newOrientation
             }
         }
     }
