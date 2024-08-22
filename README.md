@@ -4,15 +4,14 @@
 
 There are example app demonstrate what a simple Realtime Streaming monitor experience is like when built for an iOS/tvOS device.
 
-| Use cases                            | Location                                 | 
-| ------------------------------------ | ---------------------------------------- | 
-| Monitor a video stream on an iPhone  | [rts-viewer-ios](rts-viewer-ios)         |
-| Monitor a video stream on an AppleTV | [rts-viewer-tvos](rts-viewer-tvos)       | 
+| Use cases                            | Location                                 |
+| ------------------------------------ | ---------------------------------------- |
 | Monitor multi-streams on an iPhone   | [interactive-player](interactive-player) |
+| Monitor a video stream on an AppleTV | [rts-viewer-tvos](rts-viewer-tvos)       |
 
 ### How to get a Dolby.io account
 
-To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
+To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.
 
 ## Cloning the repo
 
