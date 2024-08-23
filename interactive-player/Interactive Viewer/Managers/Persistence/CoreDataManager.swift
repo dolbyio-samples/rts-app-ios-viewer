@@ -22,9 +22,16 @@ final class CoreDataManager {
 
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "RTSViewer", managedObjectModel: Self.managedObjectModel)
+
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        if let description = container.persistentStoreDescriptions.first {
+            description.shouldMigrateStoreAutomatically = true
+            description.shouldInferMappingModelAutomatically = false
+        }
+
         container.loadPersistentStores(completionHandler: { _, error in
             if let error = error {
                 print("$$$ \("Failed loading persistent stores with error: \(error.localizedDescription)")")
