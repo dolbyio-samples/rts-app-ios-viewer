@@ -69,7 +69,7 @@ struct ListView: View {
             showSourceLabel: viewModel.showSourceLabels,
             showAudioIndicator: isSelectedAudioSource,
             maxWidth: tileWidth,
-            maxHeight: .infinity,
+            maxHeight: screenSize.height,
             accessibilityIdentifier: "PrimaryVideoTile.\(displayLabel)",
             preferredVideoQuality: viewModel.mainTilePreferredVideoQuality,
             subscriptionManager: viewModel.subscriptionManager,
@@ -111,7 +111,7 @@ struct ListView: View {
                         showSourceLabel: viewModel.showSourceLabels,
                         showAudioIndicator: isSelectedAudioSource,
                         maxWidth: secondaryTileWidth(for: screenSize.width),
-                        maxHeight: .infinity,
+                        maxHeight: screenSize.height,
                         accessibilityIdentifier: "SecondaryVideoTile.\(displayLabel)",
                         preferredVideoQuality: preferredVideoQuality,
                         subscriptionManager: viewModel.subscriptionManager,
@@ -153,11 +153,13 @@ struct ListView: View {
                 if deviceOrientation.isPortrait {
                     VStack(spacing: Constants.tileSpacing) {
                         primaryView(for: proxy.size)
+                            .frame(width: proxy.size.width)
                         gridOfSecondaryTiles(for: proxy.size)
                     }
                 } else {
                     HStack(spacing: Constants.tileSpacing) {
                         primaryView(for: proxy.size)
+                            .frame(height: proxy.size.height)
                         gridOfSecondaryTiles(for: proxy.size)
                     }
                 }
