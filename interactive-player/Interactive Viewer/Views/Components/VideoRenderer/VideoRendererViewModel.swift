@@ -74,10 +74,15 @@ final class VideoRendererViewModel: ObservableObject {
     // swiftlint:enable force_cast
 
     func tileSize(from videoSize: CGSize) -> CGSize {
-        let multiplier = maxWidth / videoSize.width
+        let ratio = calculateAspectRatio(
+            screenWidth: maxWidth,
+            screenHeight: maxHeight,
+            videoWidth: videoSize.width,
+            videoHeight: videoSize.height
+        )
 
-        let scaledWidth = videoSize.width * multiplier
-        let scaledHeight = videoSize.height * multiplier
+        let scaledWidth = videoSize.width * ratio
+        let scaledHeight = videoSize.height * ratio
 
         return CGSize(width: scaledWidth, height: scaledHeight)
     }
@@ -92,6 +97,23 @@ final class VideoRendererViewModel: ObservableObject {
                     self.currentVideoQuality = quality
                 }
                 .store(in: &subscriptions)
+        }
+    }
+
+    private func calculateAspectRatio(
+        screenWidth: CGFloat,
+        screenHeight: CGFloat,
+        videoWidth: CGFloat,
+        videoHeight: CGFloat
+    ) -> CGFloat {
+        guard videoWidth > 0, videoHeight > 0 else {
+            return 1.0
+        }
+
+        if (screenWidth / videoWidth) < (screenHeight / videoHeight) {
+            return screenWidth / videoWidth
+        } else {
+            return screenHeight / videoHeight
         }
     }
 }
