@@ -8,7 +8,7 @@ import MillicastSDK
 public struct SubscriptionConfiguration {
     public enum Constants {
         public static let autoReconnect = true
-        public static let jitterMinimumDelayMs: UInt = 20
+        public static let jitterMinimumDelayMs: UInt = 0
         public static let statsDelayMs: UInt = 1000
         public static let maxBitrate: UInt = 0
         public static let disableAudio = false
