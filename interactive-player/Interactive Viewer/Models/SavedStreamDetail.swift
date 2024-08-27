@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import RTSCore
 
 struct SavedStreamDetail: Identifiable, Equatable {
     let id: UUID
@@ -16,6 +17,10 @@ struct SavedStreamDetail: Identifiable, Equatable {
     let disableAudio: Bool
     let primaryVideoQuality: VideoQuality
     let maxBitrate: UInt?
+    let forceSmooth: Bool
+    let monitorDuration: UInt
+    let rateChangePercentage: Float
+    let upwardsLayerWaitTimeMs: UInt
     let saveLogs: Bool
 
     init(
@@ -28,6 +33,10 @@ struct SavedStreamDetail: Identifiable, Equatable {
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
         maxBitrate: UInt,
+        forceSmooth: Bool,
+        monitorDuration: UInt,
+        rateChangePercentage: Float,
+        upwardsLayerWaitTimeMs: UInt,
         saveLogs: Bool,
         dateProvider: DateProvider = DefaultDateProvider()
     ) {
@@ -42,6 +51,10 @@ struct SavedStreamDetail: Identifiable, Equatable {
         self.disableAudio = disableAudio
         self.primaryVideoQuality = primaryVideoQuality
         self.maxBitrate = maxBitrate
+        self.forceSmooth = forceSmooth
+        self.monitorDuration = monitorDuration
+        self.rateChangePercentage = rateChangePercentage
+        self.upwardsLayerWaitTimeMs = upwardsLayerWaitTimeMs
         self.saveLogs = saveLogs
     }
 }
@@ -63,6 +76,10 @@ extension SavedStreamDetail {
         let disableAudio = managedObject.disableAudio
         let saveLogs = managedObject.saveLogs
         let maxBitrate = managedObject.maxBitrate ?? 0
+        let forceSmooth = managedObject.forceSmooth
+        let duration = managedObject.bweMonitorDurationUs ?? NSNumber(value: SubscriptionConfiguration.Constants.bweMonitorDurationUs)
+        let rateChange = managedObject.bweRateChangePercentage ?? NSNumber(value: SubscriptionConfiguration.Constants.bweRateChangePercentage)
+        let waitTime = managedObject.upwardsLayerWaitTimeMs ?? NSNumber(value: SubscriptionConfiguration.Constants.upwardsLayerWaitTimeMs)
 
         self.id = UUID()
         self.accountID = accountID
@@ -73,8 +90,12 @@ extension SavedStreamDetail {
         self.minPlayoutDelay = minPlayoutDelay.map { UInt(truncating: $0) }
         self.maxPlayoutDelay = maxPlayoutDelay.map { UInt(truncating: $0) }
         self.disableAudio = disableAudio
+        self.forceSmooth = forceSmooth
         self.primaryVideoQuality = primaryVideoQuality
         self.maxBitrate = UInt(truncating: maxBitrate)
+        self.monitorDuration = UInt(truncating: duration)
+        self.rateChangePercentage = Float(truncating: rateChange)
+        self.upwardsLayerWaitTimeMs = UInt(truncating: waitTime)
         self.saveLogs = saveLogs
     }
 }

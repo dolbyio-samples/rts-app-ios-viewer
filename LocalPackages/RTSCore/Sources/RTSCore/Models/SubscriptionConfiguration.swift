@@ -13,7 +13,12 @@ public struct SubscriptionConfiguration {
         public static let maxBitrate: UInt = 0
         public static let disableAudio = false
         public static let enableStats = true
-        public static let playoutDelay: MCForcePlayoutDelay? = nil
+        public static let playoutDelay: MCForcePlayoutDelay = MCForcePlayoutDelay(min: 500, max: 700)
+        public static let jitterBufferDelayMs: UInt = 0
+        public static let forceSmooth: Bool = true
+        public static let bweMonitorDurationUs: UInt = 150000
+        public static let bweRateChangePercentage: Float = 0.05
+        public static let upwardsLayerWaitTimeMs: UInt = 0
         public static let productionSubscribeURL = "https://director.millicast.com/api/director/subscribe"
         public static let developmentSubscribeURL = "https://director-dev.millicast.com/api/director/subscribe"
     }
@@ -27,7 +32,12 @@ public struct SubscriptionConfiguration {
     public let rtcEventLogPath: String?
     public let sdkLogPath: String?
     public let enableStats: Bool
-    public let playoutDelay: MCForcePlayoutDelay?
+    public let playoutDelay: MCForcePlayoutDelay
+    public let jitterBufferDelayMs: UInt
+    public let forceSmooth: Bool
+    public let bweMonitorDurationUs: UInt
+    public let bweRateChangePercentage: Float
+    public let upwardsLayerWaitTimeMs: UInt
 
     public init(
         subscribeAPI: String = Constants.productionSubscribeURL,
@@ -39,7 +49,12 @@ public struct SubscriptionConfiguration {
         rtcEventLogPath: String? = nil,
         sdkLogPath: String? = nil,
         enableStats: Bool = Constants.enableStats,
-        playoutDelay: MCForcePlayoutDelay? = Constants.playoutDelay
+        playoutDelay: MCForcePlayoutDelay = Constants.playoutDelay,
+        jitterBufferDelayMs: UInt = Constants.jitterMinimumDelayMs,
+        forceSmooth: Bool = Constants.forceSmooth,
+        bweMonitorDurationUs: UInt = Constants.bweMonitorDurationUs,
+        bweRateChangePercentage: Float = Constants.bweRateChangePercentage,
+        upwardsLayerWaitTimeMs: UInt = Constants.upwardsLayerWaitTimeMs
     ) {
         self.subscribeAPI = subscribeAPI
         self.autoReconnect = autoReconnect
@@ -51,5 +66,10 @@ public struct SubscriptionConfiguration {
         self.sdkLogPath = sdkLogPath
         self.enableStats = enableStats
         self.playoutDelay = playoutDelay
+        self.jitterBufferDelayMs = jitterBufferDelayMs
+        self.forceSmooth = forceSmooth
+        self.bweMonitorDurationUs = bweMonitorDurationUs
+        self.bweRateChangePercentage = bweRateChangePercentage
+        self.upwardsLayerWaitTimeMs = upwardsLayerWaitTimeMs
     }
 }

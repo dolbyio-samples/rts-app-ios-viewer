@@ -20,7 +20,11 @@ struct StreamDetailInputScreen: View {
     @State private var accountID: String = ""
     @State private var showAlert = false
     @State private var useCustomServerURL: Bool = false
-    @State private var isShowingMaxBitrate: Bool = false
+    @State private var showMaxBitrate: Bool = false
+    @State private var showPlayoutDelay: Bool = false
+    @State private var showMonitorDuration: Bool = false
+    @State private var showRateChangePercentage: Bool = false
+    @State private var showUpwardsLayerWaitTime: Bool = false
     @State private var subscribeAPI: String = SubscriptionConfiguration.Constants.developmentSubscribeURL
     @State private var disableAudio: Bool = false
     @State private var saveLogs: Bool = false
@@ -28,9 +32,12 @@ struct StreamDetailInputScreen: View {
     @State private var primaryVideoQuality: VideoQuality = .auto
     @State private var maxBitrateString: String = "0"
     @State private var isShowingSettingsView: Bool = false
-    @State private var showPlayoutDelay: Bool = false
     @State private var minPlayoutDelay = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
     @State private var maxPlayoutDelay = Float(SubscriptionConfiguration.Constants.jitterMinimumDelayMs)
+    @State private var forceSmooth: Bool = SubscriptionConfiguration.Constants.forceSmooth
+    @State private var monitorDurationString: String = "\(SubscriptionConfiguration.Constants.bweMonitorDurationUs)"
+    @State private var rateChangePercentage: Float = SubscriptionConfiguration.Constants.bweRateChangePercentage
+    @State private var upwardsLayerWaitTimeString: String = "\(SubscriptionConfiguration.Constants.upwardsLayerWaitTimeMs)"
 
     @FocusState private var inputFocus: InputFocusable?
 
@@ -121,7 +128,9 @@ struct StreamDetailInputScreen: View {
                                 let videoJitterMinimumDelayInMs = UInt(jitterBufferDelayInMs)
                                 let minPlayoutDelay = showPlayoutDelay ? UInt(minPlayoutDelay) : nil
                                 let maxPlayoutDelay = showPlayoutDelay ? UInt(maxPlayoutDelay) : nil
-                                let maxBitrate: UInt = UInt(maxBitrateString) ?? 0
+                                let maxBitrate: UInt = .init(maxBitrateString) ?? 0
+                                let duration: UInt = UInt(self.monitorDurationString) ?? SubscriptionConfiguration.Constants.bweMonitorDurationUs
+                                let waitTime: UInt = UInt(self.upwardsLayerWaitTimeString) ?? SubscriptionConfiguration.Constants.upwardsLayerWaitTimeMs
 
                                 let success = viewModel.validateAndSaveStream(
                                     streamName: streamName,
@@ -131,6 +140,10 @@ struct StreamDetailInputScreen: View {
                                     minPlayoutDelay: minPlayoutDelay,
                                     maxPlayoutDelay: maxPlayoutDelay,
                                     maxBitrate: maxBitrate,
+                                    forceSmooth: self.forceSmooth,
+                                    monitorDuration: duration,
+                                    rateChangePercentage: self.rateChangePercentage,
+                                    upwardLayerWaitTime: waitTime,
                                     disableAudio: disableAudio,
                                     primaryVideoQuality: primaryVideoQuality,
                                     saveLogs: saveLogs,
@@ -337,6 +350,13 @@ struct StreamDetailInputScreen: View {
                     )
                 }
 
+                Toggle(isOn: $forceSmooth) {
+                    Text(
+                        "stream-detail-input.force-smooth-placeholder-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+
                 HStack {
                     Text("stream-detail-input.primary-video-quality-label",
                          style: .labelMedium,
@@ -354,19 +374,76 @@ struct StreamDetailInputScreen: View {
                     .pickerStyle(.automatic)
                 }
 
-                Toggle(isOn: $isShowingMaxBitrate) {
+                Toggle(isOn: $showMaxBitrate) {
                     Text(
                         "stream-detail-input.set-max-bitrate-label",
                         font: .streamConfigurationItemsFont
                     )
                 }
 
-                if isShowingMaxBitrate {
+                if showMaxBitrate {
                     DolbyIOUIKit.TextField(text: $maxBitrateString, placeholderText: "stream-detail-input.max-bitrate-label")
                         .keyboardType(.numberPad)
                         .accessibilityIdentifier("InputScreen.MaximumBitrate")
                         .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
                         .submitLabel(.next)
+                }
+
+                Toggle(isOn: $showMonitorDuration) {
+                    Text(
+                        "stream-detail-input.set-monitor-duration-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+
+                if showMonitorDuration {
+                    DolbyIOUIKit.TextField(text: $monitorDurationString, placeholderText: "stream-detail-input.set-monitor-duration-label")
+                        .keyboardType(.numberPad)
+                        .accessibilityIdentifier("InputScreen.MonitorDuration")
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                        .submitLabel(.next)
+                }
+
+                Toggle(isOn: $showUpwardsLayerWaitTime) {
+                    Text(
+                        "stream-detail-input.set-upwards-layer-wait-time-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+
+                if showUpwardsLayerWaitTime {
+                    DolbyIOUIKit.TextField(text: $upwardsLayerWaitTimeString, placeholderText: "stream-detail-input.set-upwards-layer-wait-time-label")
+                        .keyboardType(.numberPad)
+                        .accessibilityIdentifier("InputScreen.WaitTime")
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                        .submitLabel(.next)
+                }
+
+                Toggle(isOn: $showRateChangePercentage) {
+                    Text(
+                        "stream-detail-input.set-rate-change-percentage-label",
+                        font: .streamConfigurationItemsFont
+                    )
+                }
+
+                if showRateChangePercentage {
+                    Text(
+                        "\(String(localized: "stream-detail-input.rate-change-percentage-label")) - \(Int(rateChangePercentage * 100))%",
+                        style: .labelMedium,
+                        font: .custom("AvenirNext-Regular", size: FontSize.body, relativeTo: .body)
+                    )
+                    Slider(
+                        value: $rateChangePercentage,
+                        in: 0...1,
+                        step: 0.05,
+                        label: {},
+                        minimumValueLabel: {
+                            Text("0")
+                        },
+                        maximumValueLabel: {
+                            Text("100%")
+                        }
+                    )
                 }
             }
             .padding()
@@ -415,6 +492,10 @@ struct StreamDetailInputScreen: View {
         let disableAudio = false
         let videoQuality = VideoQuality.auto
         let saveLogs = false
+        let forceSmooth = SubscriptionConfiguration.Constants.forceSmooth
+        let duration = SubscriptionConfiguration.Constants.bweMonitorDurationUs
+        let rateChange = SubscriptionConfiguration.Constants.bweRateChangePercentage
+        let waitTime = SubscriptionConfiguration.Constants.upwardsLayerWaitTimeMs
 
         RecentStreamCell(streamDetail: SavedStreamDetail(
             accountID: accountID,
@@ -426,9 +507,12 @@ struct StreamDetailInputScreen: View {
             disableAudio: disableAudio,
             primaryVideoQuality: videoQuality,
             maxBitrate: 0,
+            forceSmooth: forceSmooth,
+            monitorDuration: UInt(duration),
+            rateChangePercentage: rateChange,
+            upwardsLayerWaitTimeMs: UInt(waitTime),
             saveLogs: saveLogs
         )) {
-
             let success = viewModel.validateAndSaveStream(
                 streamName: streamName,
                 accountID: accountID,
@@ -437,6 +521,10 @@ struct StreamDetailInputScreen: View {
                 minPlayoutDelay: nil,
                 maxPlayoutDelay: nil,
                 maxBitrate: 0,
+                forceSmooth: forceSmooth,
+                monitorDuration: duration,
+                rateChangePercentage: rateChange,
+                upwardLayerWaitTime: waitTime,
                 disableAudio: disableAudio,
                 primaryVideoQuality: videoQuality,
                 saveLogs: saveLogs,
@@ -453,8 +541,7 @@ struct StreamDetailInputScreen: View {
                 jitterMinimumDelayMs: jitterMinimumDelayMs,
                 disableAudio: disableAudio,
                 rtcEventLogPath: nil,
-                sdkLogPath: nil,
-                playoutDelay: nil
+                sdkLogPath: nil
             )
             streamingScreenContext = StreamingView.Context(
                 streamName: streamName,
@@ -475,6 +562,10 @@ struct StreamDetailInputScreen: View {
         minPlayoutDelay = 0
         maxPlayoutDelay = 0
         maxBitrateString = "0"
+        forceSmooth = SubscriptionConfiguration.Constants.forceSmooth
+        rateChangePercentage = SubscriptionConfiguration.Constants.bweRateChangePercentage
+        upwardsLayerWaitTimeString = "\(SubscriptionConfiguration.Constants.upwardsLayerWaitTimeMs)"
+        monitorDurationString = "\(SubscriptionConfiguration.Constants.bweMonitorDurationUs)"
     }
 
     func syncMaxPlayoutDelay() {

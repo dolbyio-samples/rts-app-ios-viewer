@@ -90,11 +90,12 @@ final class RecentStreamsViewModel: ObservableObject {
         let currentDate = dateProvider.now
         let rtcLogPath = streamDetail.saveLogs ? URL.rtcLogPath(for: currentDate) : nil
         let sdkLogPath = streamDetail.saveLogs ? URL.sdkLogPath(for: currentDate) : nil
-        var playoutDelay: MCForcePlayoutDelay?
+        var playoutDelay: MCForcePlayoutDelay = SubscriptionConfiguration.Constants.playoutDelay
         if let minPlayoutDelay = streamDetail.minPlayoutDelay,
            let maxPlayoutDelay = streamDetail.maxPlayoutDelay {
             playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
         }
+        let forceSmooth = streamDetail.forceSmooth
 
         return SubscriptionConfiguration(
             subscribeAPI: streamDetail.subscribeAPI,
@@ -103,7 +104,8 @@ final class RecentStreamsViewModel: ObservableObject {
             disableAudio: streamDetail.disableAudio,
             rtcEventLogPath: rtcLogPath?.path,
             sdkLogPath: sdkLogPath?.path,
-            playoutDelay: playoutDelay
+            playoutDelay: playoutDelay,
+            forceSmooth: forceSmooth
         )
     }
 }

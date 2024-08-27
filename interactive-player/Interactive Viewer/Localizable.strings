@@ -19,6 +19,7 @@
 "stream-detail-input.configure-stream-label" = "More Stream configurations";
 "stream-detail-input.development-placeholder-label" = "Server URL (uses prod by default)";
 "stream-detail-input.disable-audio-placeholder-label" = "Disable audio";
+"stream-detail-input.force-smooth-placeholder-label" = "Force Smooth";
 "stream-detail-input.save-logs-placeholder-label" = "Save logs";
 "stream-detail-input.show-playout-delay-label" = "Playout delay";
 "stream-detail-input.jitter-buffer-delay-placeholder-label" = "Jitter Buffer Delay";
@@ -26,6 +27,10 @@
 "stream-detail-input.maximum-playout-delay-placeholder-label" = "Maximum Playout Delay";
 "stream-detail-input.primary-video-quality-label" = "Primary video quality:";
 "stream-detail-input.set-max-bitrate-label" = "Set Maximum Bitrate";
+"stream-detail-input.set-monitor-duration-label" = "Set Monitor Duration";
+"stream-detail-input.set-upwards-layer-wait-time-label" = "Set Upwards Layer Wait Time";
+"stream-detail-input.rate-change-percentage-label" = "Rate Change Percentage";
+"stream-detail-input.set-rate-change-percentage-label" = "Set Rate Change Percentage";
 "stream-detail-input.max-bitrate-label" = "Maxium Bitrate (kbps):";
 "stream-detail-server-url-label" = "Server URL";
 

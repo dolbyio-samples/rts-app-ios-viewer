@@ -89,6 +89,9 @@ public actor SubscriptionManager {
             }
             clientOptions.disableAudio = configuration.disableAudio
             clientOptions.forcePlayoutDelay = configuration.playoutDelay
+            clientOptions.forceSmooth = configuration.forceSmooth
+            clientOptions.bweMonitorDurationUs = NSNumber(value: configuration.bweMonitorDurationUs)
+            clientOptions.bweRateChangePercentage = NSNumber(value: configuration.bweRateChangePercentage)
 
             await subscriber.enableStats(configuration.enableStats)
             try await subscriber.subscribe(with: clientOptions)

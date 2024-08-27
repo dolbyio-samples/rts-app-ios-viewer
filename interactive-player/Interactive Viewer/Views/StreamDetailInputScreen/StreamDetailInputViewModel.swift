@@ -45,6 +45,10 @@ final class StreamDetailInputViewModel: ObservableObject {
         minPlayoutDelay: UInt?,
         maxPlayoutDelay: UInt?,
         maxBitrate: UInt,
+        forceSmooth: Bool,
+        monitorDuration: UInt,
+        rateChangePercentage: Float,
+        upwardLayerWaitTime: UInt,
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
         saveLogs: Bool,
@@ -66,6 +70,10 @@ final class StreamDetailInputViewModel: ObservableObject {
                     disableAudio: disableAudio,
                     primaryVideoQuality: primaryVideoQuality,
                     maxBitrate: maxBitrate,
+                    forceSmooth: forceSmooth,
+                    monitorDuration: monitorDuration,
+                    rateChangePercentage: rateChangePercentage,
+                    upwardsLayerWaitTimeMs: upwardLayerWaitTime,
                     saveLogs: saveLogs
                 )
             )
@@ -83,7 +91,7 @@ final class StreamDetailInputViewModel: ObservableObject {
         primaryVideoQuality: VideoQuality,
         saveLogs: Bool
     ) -> SubscriptionConfiguration {
-        var playoutDelay: MCForcePlayoutDelay?
+        var playoutDelay: MCForcePlayoutDelay = SubscriptionConfiguration.Constants.playoutDelay
         if let minPlayoutDelay, let maxPlayoutDelay {
             playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
         }

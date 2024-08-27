@@ -95,6 +95,10 @@ struct RecentStreamCell_Previews: PreviewProvider {
                 disableAudio: true,
                 primaryVideoQuality: .auto,
                 maxBitrate: 0,
+                forceSmooth: true,
+                monitorDuration: SubscriptionConfiguration.Constants.bweMonitorDurationUs,
+                rateChangePercentage: SubscriptionConfiguration.Constants.bweRateChangePercentage,
+                upwardsLayerWaitTimeMs: SubscriptionConfiguration.Constants.upwardsLayerWaitTimeMs,
                 saveLogs: false
             ),
             action: {}
