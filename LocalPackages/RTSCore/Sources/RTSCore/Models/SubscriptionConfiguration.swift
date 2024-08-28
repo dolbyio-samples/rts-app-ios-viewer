@@ -14,7 +14,6 @@ public struct SubscriptionConfiguration {
         public static let disableAudio = false
         public static let enableStats = true
         public static let playoutDelay: MCForcePlayoutDelay = MCForcePlayoutDelay(min: 500, max: 700)
-        public static let jitterBufferDelayMs: UInt = 0
         public static let forceSmooth: Bool = true
         public static let bweMonitorDurationUs: UInt = 150000
         public static let bweRateChangePercentage: Float = 0.05
@@ -33,7 +32,6 @@ public struct SubscriptionConfiguration {
     public let sdkLogPath: String?
     public let enableStats: Bool
     public let playoutDelay: MCForcePlayoutDelay
-    public let jitterBufferDelayMs: UInt
     public let forceSmooth: Bool
     public let bweMonitorDurationUs: UInt
     public let bweRateChangePercentage: Float
@@ -50,7 +48,6 @@ public struct SubscriptionConfiguration {
         sdkLogPath: String? = nil,
         enableStats: Bool = Constants.enableStats,
         playoutDelay: MCForcePlayoutDelay = Constants.playoutDelay,
-        jitterBufferDelayMs: UInt = Constants.jitterMinimumDelayMs,
         forceSmooth: Bool = Constants.forceSmooth,
         bweMonitorDurationUs: UInt = Constants.bweMonitorDurationUs,
         bweRateChangePercentage: Float = Constants.bweRateChangePercentage,
@@ -66,7 +63,6 @@ public struct SubscriptionConfiguration {
         self.sdkLogPath = sdkLogPath
         self.enableStats = enableStats
         self.playoutDelay = playoutDelay
-        self.jitterBufferDelayMs = jitterBufferDelayMs
         self.forceSmooth = forceSmooth
         self.bweMonitorDurationUs = bweMonitorDurationUs
         self.bweRateChangePercentage = bweRateChangePercentage

@@ -12,11 +12,11 @@ struct SavedStreamDetail: Identifiable, Equatable {
     let lastUsedDate: Date
     let subscribeAPI: String
     let videoJitterMinimumDelayInMs: UInt
-    let minPlayoutDelay: UInt?
-    let maxPlayoutDelay: UInt?
+    let minPlayoutDelay: UInt
+    let maxPlayoutDelay: UInt
     let disableAudio: Bool
     let primaryVideoQuality: VideoQuality
-    let maxBitrate: UInt?
+    let maxBitrate: UInt
     let forceSmooth: Bool
     let monitorDuration: UInt
     let rateChangePercentage: Float
@@ -28,8 +28,8 @@ struct SavedStreamDetail: Identifiable, Equatable {
         streamName: String,
         subscribeAPI: String,
         videoJitterMinimumDelayInMs: UInt,
-        minPlayoutDelay: UInt?,
-        maxPlayoutDelay: UInt?,
+        minPlayoutDelay: UInt,
+        maxPlayoutDelay: UInt,
         disableAudio: Bool,
         primaryVideoQuality: VideoQuality,
         maxBitrate: UInt,
@@ -71,15 +71,9 @@ extension SavedStreamDetail {
         else {
             return nil
         }
-        let minPlayoutDelay = managedObject.minPlayoutDelay
-        let maxPlayoutDelay = managedObject.maxPlayoutDelay
+
         let disableAudio = managedObject.disableAudio
         let saveLogs = managedObject.saveLogs
-        let maxBitrate = managedObject.maxBitrate ?? 0
-        let forceSmooth = managedObject.forceSmooth
-        let duration = managedObject.bweMonitorDurationUs ?? NSNumber(value: SubscriptionConfiguration.Constants.bweMonitorDurationUs)
-        let rateChange = managedObject.bweRateChangePercentage ?? NSNumber(value: SubscriptionConfiguration.Constants.bweRateChangePercentage)
-        let waitTime = managedObject.upwardsLayerWaitTimeMs ?? NSNumber(value: SubscriptionConfiguration.Constants.upwardsLayerWaitTimeMs)
 
         self.id = UUID()
         self.accountID = accountID
@@ -87,15 +81,15 @@ extension SavedStreamDetail {
         self.lastUsedDate = lastUsedDate
         self.subscribeAPI = subscribeAPI
         self.videoJitterMinimumDelayInMs = UInt(managedObject.videoJitterMinimumDelayInMs)
-        self.minPlayoutDelay = minPlayoutDelay.map { UInt(truncating: $0) }
-        self.maxPlayoutDelay = maxPlayoutDelay.map { UInt(truncating: $0) }
+        self.minPlayoutDelay = UInt(managedObject.minPlayoutDelay)
+        self.maxPlayoutDelay = UInt(managedObject.maxPlayoutDelay)
         self.disableAudio = disableAudio
-        self.forceSmooth = forceSmooth
+        self.forceSmooth = managedObject.forceSmooth
         self.primaryVideoQuality = primaryVideoQuality
-        self.maxBitrate = UInt(truncating: maxBitrate)
-        self.monitorDuration = UInt(truncating: duration)
-        self.rateChangePercentage = Float(truncating: rateChange)
-        self.upwardsLayerWaitTimeMs = UInt(truncating: waitTime)
+        self.maxBitrate = UInt(managedObject.maxBitrate)
+        self.monitorDuration = UInt(managedObject.bweMonitorDurationUs)
+        self.rateChangePercentage = Float(managedObject.bweRateChangePercentage)
+        self.upwardsLayerWaitTimeMs = UInt(managedObject.upwardsLayerWaitTimeMs)
         self.saveLogs = saveLogs
     }
 }

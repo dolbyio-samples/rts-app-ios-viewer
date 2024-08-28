@@ -92,6 +92,7 @@ public actor SubscriptionManager {
             clientOptions.forceSmooth = configuration.forceSmooth
             clientOptions.bweMonitorDurationUs = NSNumber(value: configuration.bweMonitorDurationUs)
             clientOptions.bweRateChangePercentage = NSNumber(value: configuration.bweRateChangePercentage)
+            clientOptions.upwardsLayerWaitTimeMs = NSNumber(value: configuration.upwardsLayerWaitTimeMs)
 
             await subscriber.enableStats(configuration.enableStats)
             try await subscriber.subscribe(with: clientOptions)

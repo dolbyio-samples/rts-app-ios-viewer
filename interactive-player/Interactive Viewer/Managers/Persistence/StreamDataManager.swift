@@ -134,13 +134,16 @@ final class StreamDataManager: NSObject, StreamDataManagerProtocol {
             streamDetailToSave.lastUsedDate = dateProvider.now
             streamDetailToSave.subscribeAPI = streamDetail.subscribeAPI
             streamDetailToSave.videoJitterMinimumDelayInMs = Int32(streamDetail.videoJitterMinimumDelayInMs)
-            streamDetailToSave.minPlayoutDelay = streamDetail.minPlayoutDelay.map { NSNumber(value: $0) }
-            streamDetailToSave.maxPlayoutDelay = streamDetail.maxPlayoutDelay.map { NSNumber(value: $0) }
+            streamDetailToSave.minPlayoutDelay = Int32(streamDetail.minPlayoutDelay)
+            streamDetailToSave.maxPlayoutDelay = Int32(streamDetail.maxPlayoutDelay)
             streamDetailToSave.disableAudio = streamDetail.disableAudio
             streamDetailToSave.primaryVideoQuality = streamDetail.primaryVideoQuality.rawValue
-            streamDetailToSave.maxBitrate = streamDetail.maxBitrate.map { NSNumber(value: $0) }
+            streamDetailToSave.maxBitrate = Int32(streamDetail.maxBitrate)
             streamDetailToSave.forceSmooth = streamDetail.forceSmooth
             streamDetailToSave.saveLogs = streamDetail.saveLogs
+            streamDetailToSave.bweMonitorDurationUs = Int32(streamDetail.monitorDuration)
+            streamDetailToSave.bweRateChangePercentage = streamDetail.rateChangePercentage
+            streamDetailToSave.upwardsLayerWaitTimeMs = Int32(streamDetail.upwardsLayerWaitTimeMs)
 
             // Delete streams that are older and exceeding the maximum allowed count
             let request: NSFetchRequest<StreamDetailManagedObject> = Self.recentStreamsFetchRequest

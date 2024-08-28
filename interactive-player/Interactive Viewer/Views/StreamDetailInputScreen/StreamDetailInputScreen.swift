@@ -126,8 +126,8 @@ struct StreamDetailInputScreen: View {
                             action: {
                                 let api = useCustomServerURL ? subscribeAPI : SubscriptionConfiguration.Constants.productionSubscribeURL
                                 let videoJitterMinimumDelayInMs = UInt(jitterBufferDelayInMs)
-                                let minPlayoutDelay = showPlayoutDelay ? UInt(minPlayoutDelay) : nil
-                                let maxPlayoutDelay = showPlayoutDelay ? UInt(maxPlayoutDelay) : nil
+                                let minPlayoutDelay = showPlayoutDelay ? UInt(minPlayoutDelay) : UInt(SubscriptionConfiguration.Constants.playoutDelay.minimum)
+                                let maxPlayoutDelay = showPlayoutDelay ? UInt(maxPlayoutDelay) : UInt(SubscriptionConfiguration.Constants.playoutDelay.maximum)
                                 let maxBitrate: UInt = .init(maxBitrateString) ?? 0
                                 let duration: UInt = UInt(self.monitorDurationString) ?? SubscriptionConfiguration.Constants.bweMonitorDurationUs
                                 let waitTime: UInt = UInt(self.upwardsLayerWaitTimeString) ?? SubscriptionConfiguration.Constants.upwardsLayerWaitTimeMs
@@ -502,8 +502,8 @@ struct StreamDetailInputScreen: View {
             streamName: streamName,
             subscribeAPI: productionSubscribeURL,
             videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
-            minPlayoutDelay: nil,
-            maxPlayoutDelay: nil,
+            minPlayoutDelay: UInt(minPlayoutDelay),
+            maxPlayoutDelay: UInt(maxPlayoutDelay),
             disableAudio: disableAudio,
             primaryVideoQuality: videoQuality,
             maxBitrate: 0,
@@ -518,8 +518,8 @@ struct StreamDetailInputScreen: View {
                 accountID: accountID,
                 subscribeAPI: productionSubscribeURL,
                 videoJitterMinimumDelayInMs: jitterMinimumDelayMs,
-                minPlayoutDelay: nil,
-                maxPlayoutDelay: nil,
+                minPlayoutDelay: UInt(minPlayoutDelay),
+                maxPlayoutDelay: UInt(maxPlayoutDelay),
                 maxBitrate: 0,
                 forceSmooth: forceSmooth,
                 monitorDuration: duration,

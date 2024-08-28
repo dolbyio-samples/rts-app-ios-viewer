@@ -90,22 +90,21 @@ final class RecentStreamsViewModel: ObservableObject {
         let currentDate = dateProvider.now
         let rtcLogPath = streamDetail.saveLogs ? URL.rtcLogPath(for: currentDate) : nil
         let sdkLogPath = streamDetail.saveLogs ? URL.sdkLogPath(for: currentDate) : nil
-        var playoutDelay: MCForcePlayoutDelay = SubscriptionConfiguration.Constants.playoutDelay
-        if let minPlayoutDelay = streamDetail.minPlayoutDelay,
-           let maxPlayoutDelay = streamDetail.maxPlayoutDelay {
-            playoutDelay = MCForcePlayoutDelay(min: Int32(minPlayoutDelay), max: Int32(maxPlayoutDelay))
-        }
-        let forceSmooth = streamDetail.forceSmooth
+        var playoutDelay = MCForcePlayoutDelay(min: Int32(streamDetail.minPlayoutDelay),
+                                               max: Int32(streamDetail.maxPlayoutDelay))
 
         return SubscriptionConfiguration(
             subscribeAPI: streamDetail.subscribeAPI,
             jitterMinimumDelayMs: streamDetail.videoJitterMinimumDelayInMs,
-            maxBitrate: streamDetail.maxBitrate ?? 0,
+            maxBitrate: streamDetail.maxBitrate,
             disableAudio: streamDetail.disableAudio,
             rtcEventLogPath: rtcLogPath?.path,
             sdkLogPath: sdkLogPath?.path,
             playoutDelay: playoutDelay,
-            forceSmooth: forceSmooth
+            forceSmooth: streamDetail.forceSmooth,
+            bweMonitorDurationUs: streamDetail.monitorDuration,
+            bweRateChangePercentage: streamDetail.rateChangePercentage,
+            upwardsLayerWaitTimeMs: streamDetail.upwardsLayerWaitTimeMs
         )
     }
 }
