@@ -8,8 +8,8 @@
         <attribute name="forceSmooth" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="lastUsedDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="maxBitrate" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="maxPlayoutDelay" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
-        <attribute name="minPlayoutDelay" optional="YES" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="maxPlayoutDelay" attributeType="Integer 32" usesScalarValueType="YES"/>
+        <attribute name="minPlayoutDelay" attributeType="Integer 32" usesScalarValueType="YES"/>
         <attribute name="primaryVideoQuality" attributeType="String"/>
         <attribute name="saveLogs" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="streamName" attributeType="String"/>
