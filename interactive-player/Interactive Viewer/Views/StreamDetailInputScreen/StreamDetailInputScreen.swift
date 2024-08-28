@@ -391,7 +391,7 @@ struct StreamDetailInputScreen: View {
 
                 Toggle(isOn: $showMonitorDuration) {
                     Text(
-                        "stream-detail-input.set-monitor-duration-label",
+                        "stream-detail-input.set-monitor-duration-toggle-label",
                         font: .streamConfigurationItemsFont
                     )
                 }
@@ -406,7 +406,7 @@ struct StreamDetailInputScreen: View {
 
                 Toggle(isOn: $showUpwardsLayerWaitTime) {
                     Text(
-                        "stream-detail-input.set-upwards-layer-wait-time-label",
+                        "stream-detail-input.set-upwards-layer-wait-time-toggle-label",
                         font: .streamConfigurationItemsFont
                     )
                 }
@@ -421,7 +421,7 @@ struct StreamDetailInputScreen: View {
 
                 Toggle(isOn: $showRateChangePercentage) {
                     Text(
-                        "stream-detail-input.set-rate-change-percentage-label",
+                        "stream-detail-input.rate-change-percentage-toggle-label",
                         font: .streamConfigurationItemsFont
                     )
                 }
