@@ -35,6 +35,10 @@ class V2MigrationPolicy: NSEntityMigrationPolicy {
         destinationInstance.setValue(0, forKey: "maxBitrate")
         destinationInstance.setValue(0, forKey: "maxPlayoutDelay")
         destinationInstance.setValue(0, forKey: "minPlayoutDelay")
+        destinationInstance.setValue(150000, forKey: "bweMonitorDurationUs")
+        destinationInstance.setValue(0.05, forKey: "bweRateChangePercentage")
+        destinationInstance.setValue(true, forKey: "forceSmooth")
+        destinationInstance.setValue(0, forKey: "upwardsLayerWaitTimeMs")
 
         manager.associate(sourceInstance: sInstance, withDestinationInstance: destinationInstance, for: mapping)
     }
