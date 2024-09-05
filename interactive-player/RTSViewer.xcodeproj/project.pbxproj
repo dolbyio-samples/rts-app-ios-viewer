@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		896AECC02C812225002CD12D /* V1toV2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 896AECBF2C812225002CD12D /* V1toV2.xcmappingmodel */; };
 		B6376BC22A1C4120007AD9D9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6376BC12A1C4120007AD9D9 /* Constants.swift */; };
 		E82112CE2C2A33150003DBF7 /* VideoQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112CB2C2A33140003DBF7 /* VideoQuality.swift */; };
 		E82112CF2C2A33150003DBF7 /* StreamSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112CA2C2A33140003DBF7 /* StreamSettings.swift */; };
@@ -58,7 +59,6 @@
 		E83CDA0B2A10878C008690FD /* RecentStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CD9F72A10878C008690FD /* RecentStreamsScreen.swift */; };
 		E83CDA0C2A10878C008690FD /* SavedStreamsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83CD9F82A10878C008690FD /* SavedStreamsScreen.swift */; };
 		E846A89A2C784F720052D6C8 /* RTSViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E846A8982C784F720052D6C8 /* RTSViewer.xcdatamodeld */; };
-		E846A89F2C785CBE0052D6C8 /* V1toV2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = E846A89E2C785CBE0052D6C8 /* V1toV2.xcmappingmodel */; };
 		E846A8A22C785D220052D6C8 /* V2MigrationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = E846A8A12C785D220052D6C8 /* V2MigrationPolicy.swift */; };
 		E874A0312AE1FD07003C3FF8 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874A0302AE1FD07003C3FF8 /* AppSettingsView.swift */; };
 		E87FD0C72AD8DE4600E9164A /* ImageAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87FD0C62AD8DE4600E9164A /* ImageAsset.swift */; };
@@ -90,6 +90,7 @@
 
 /* Begin PBXFileReference section */
 		3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTSViewer.swift; sourceTree = "<group>"; };
+		896AECBF2C812225002CD12D /* V1toV2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = V1toV2.xcmappingmodel; sourceTree = "<group>"; };
 		B6376BC12A1C4120007AD9D9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E8067F482A329F680083E94B /* InteractiveVieweriOSFirebaseReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSFirebaseReleaseSettings.xcconfig; sourceTree = "<group>"; };
 		E82112C72C2A330C0003DBF7 /* PiPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPManager.swift; sourceTree = "<group>"; };
@@ -143,7 +144,6 @@
 		E83CD9F82A10878C008690FD /* SavedStreamsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedStreamsScreen.swift; sourceTree = "<group>"; };
 		E846A8992C784F720052D6C8 /* RTSViewer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RTSViewer.xcdatamodel; sourceTree = "<group>"; };
 		E846A89B2C7851630052D6C8 /* RTSViewer_v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RTSViewer_v2.xcdatamodel; sourceTree = "<group>"; };
-		E846A89E2C785CBE0052D6C8 /* V1toV2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = V1toV2.xcmappingmodel; sourceTree = "<group>"; };
 		E846A8A12C785D220052D6C8 /* V2MigrationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = V2MigrationPolicy.swift; sourceTree = "<group>"; };
 		E8649BF2295299FB00309BF7 /* fastlane */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fastlane; sourceTree = "<group>"; };
 		E874A0302AE1FD07003C3FF8 /* AppSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
@@ -350,8 +350,8 @@
 		E846A8A02C785CF60052D6C8 /* Migration */ = {
 			isa = PBXGroup;
 			children = (
-				E846A89E2C785CBE0052D6C8 /* V1toV2.xcmappingmodel */,
 				E846A8A12C785D220052D6C8 /* V2MigrationPolicy.swift */,
+				896AECBF2C812225002CD12D /* V1toV2.xcmappingmodel */,
 			);
 			path = Migration;
 			sourceTree = "<group>";
@@ -569,12 +569,12 @@
 				E8E1855F2A1099F900BF4726 /* StreamDetailInputViewModel.swift in Sources */,
 				E87FD19E2AD8E77B00E9164A /* FooterView.swift in Sources */,
 				E83CDA0B2A10878C008690FD /* RecentStreamsScreen.swift in Sources */,
-				E846A89F2C785CBE0052D6C8 /* V1toV2.xcmappingmodel in Sources */,
 				E82113172C2A37C30003DBF7 /* SettingsMultiviewScreen.swift in Sources */,
 				E83CDA072A10878C008690FD /* ContentView.swift in Sources */,
 				E87FD1C52ADCFEB700E9164A /* SavedStreamDetail.swift in Sources */,
 				E82113202C2A37D00003DBF7 /* StatsInfoView.swift in Sources */,
 				E821131C2C2A37C30003DBF7 /* SettingsViewModel.swift in Sources */,
+				896AECC02C812225002CD12D /* V1toV2.xcmappingmodel in Sources */,
 				E87FD1CB2ADCFEDA00E9164A /* Task+Delayed.swift in Sources */,
 				E83CDA092A10878C008690FD /* RecentStreamsViewModel.swift in Sources */,
 				E82112D92C2A331C0003DBF7 /* String+Error.swift in Sources */,

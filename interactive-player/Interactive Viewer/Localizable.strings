@@ -18,14 +18,22 @@
 "stream-detail-input.try-a-demo.label" = "Try a Dolby.io demo stream.";
 "stream-detail-input.configure-stream-label" = "More Stream configurations";
 "stream-detail-input.development-placeholder-label" = "Server URL (uses prod by default)";
-"stream-detail-input.disable-audio-placeholder-label" = "Disable audio";
-"stream-detail-input.save-logs-placeholder-label" = "Save logs";
-"stream-detail-input.show-playout-delay-label" = "Playout delay";
+"stream-detail-input.disable-audio-placeholder-label" = "Disable Audio";
+"stream-detail-input.force-smooth-placeholder-label" = "Force Smooth";
+"stream-detail-input.save-logs-placeholder-label" = "Save Logs";
+"stream-detail-input.show-playout-delay-label" = "Playout Delay";
 "stream-detail-input.jitter-buffer-delay-placeholder-label" = "Jitter Buffer Delay";
 "stream-detail-input.minimum-playout-delay-placeholder-label" = "Minimum Playout Delay";
 "stream-detail-input.maximum-playout-delay-placeholder-label" = "Maximum Playout Delay";
-"stream-detail-input.primary-video-quality-label" = "Primary video quality:";
+"stream-detail-input.primary-video-quality-label" = "Primary Video Quality:";
 "stream-detail-input.set-max-bitrate-label" = "Set Maximum Bitrate";
+
+"stream-detail-input.set-monitor-duration-toggle-label" = "Set Monitor Duration";
+"stream-detail-input.set-monitor-duration-label" = "Monitor Duration (ms)";
+"stream-detail-input.set-upwards-layer-wait-time-toggle-label" = "Set Upwards Layer Wait Time";
+"stream-detail-input.set-upwards-layer-wait-time-label" = "Upwards Layer Wait Time (ms)";
+"stream-detail-input.rate-change-percentage-label" = "Rate Change Percentage";
+"stream-detail-input.rate-change-percentage-toggle-label" = "Set Rate Change Percentage";
 "stream-detail-input.max-bitrate-label" = "Maxium Bitrate (kbps):";
 "stream-detail-server-url-label" = "Server URL";
 
@@ -43,16 +51,16 @@
 "recent-streams.table-header-button" = "View all";
 "recent-streams.account-id.title.label" = "ID:";
 "recent-streams.server-url.label" = "Server URL:";
-"recent-streams.video-jitter-buffer.label" = "Video Jitter buffer in ms:";
+"recent-streams.video-jitter-buffer.label" = "Video Jitter Buffer(ms):";
 "recent-streams.min-playout-delay.label" = "Min Playout Delay:";
 "recent-streams.max-playout-delay.label" = "Max Playout Delay:";
 "recent-streams.max-bitrate.label" = "Maxium Bitrate:";
 "recent-streams.disable-audio.label" = "Disable Audio:";
-"recent-streams.primary-video-quality.label" = "Primary video quality:";
+"recent-streams.primary-video-quality.label" = "Primary Video Quality:";
 "recent-streams.save-logs.label" = "Save Logs:";
 "recent-streams.option-separator.label" = "or";
 "recent-streams.play-new.button" = "PLAY NEW";
-"recent-streams.footnote.label" = "Copyright © 2023 Dolby.io — All Rights Reserved";
+"recent-streams.footnote.label" = "Copyright © 2024 Dolby.io — All Rights Reserved";
 
 /** Saved Streams Screen */
 
