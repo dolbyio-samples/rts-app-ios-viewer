@@ -1,6 +1,5 @@
 //
 //  ChannelGridView.swift
-//  Interactive Player
 //
 
 import DolbyIOUIKit

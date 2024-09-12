@@ -1,6 +1,5 @@
 //
 //  ChannelDetailInputViewModel.swift
-//  Interactive Player
 //
 
 import Combine

@@ -20,12 +20,12 @@ struct SavedStreamsScreen: View {
 
     var body: some View {
         ZStack {
-//            NavigationLink(
-//                destination: StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext),
-//                isActive: $isShowingStreamInputView) {
-//                    EmptyView()
-//                }
-//                .hidden()
+            NavigationLink(
+                destination: StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext),
+                isActive: $isShowingStreamInputView) {
+                    EmptyView()
+                }
+                .hidden()
 
             if viewModel.streamDetails.isEmpty {
                 VStack(spacing: Layout.spacing1x) {
