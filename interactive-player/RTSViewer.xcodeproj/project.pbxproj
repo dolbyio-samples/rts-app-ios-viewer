@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		896AECC02C812225002CD12D /* V1toV2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 896AECBF2C812225002CD12D /* V1toV2.xcmappingmodel */; };
+		89C391AF2C8A3BE400861FD5 /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391AE2C8A3BE400861FD5 /* ChannelView.swift */; };
+		89C391B12C8A3C1900861FD5 /* ChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391B02C8A3C1900861FD5 /* ChannelViewModel.swift */; };
+		89C391B42C8F58E900861FD5 /* ChannelDetailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391B32C8F58E900861FD5 /* ChannelDetailInputView.swift */; };
+		89C391B62C8F58F800861FD5 /* ChannelDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391B52C8F58F800861FD5 /* ChannelDetailInputViewModel.swift */; };
+		89C391B92C8F93A100861FD5 /* ChannelGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391B82C8F93A100861FD5 /* ChannelGridView.swift */; };
+		89C391BB2C8F93B300861FD5 /* ChannelGridViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391BA2C8F93B300861FD5 /* ChannelGridViewModel.swift */; };
+		89C391BD2C939F2000861FD5 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391BC2C939F2000861FD5 /* Channel.swift */; };
 		B6376BC22A1C4120007AD9D9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6376BC12A1C4120007AD9D9 /* Constants.swift */; };
 		E82112CE2C2A33150003DBF7 /* VideoQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112CB2C2A33140003DBF7 /* VideoQuality.swift */; };
 		E82112CF2C2A33150003DBF7 /* StreamSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112CA2C2A33140003DBF7 /* StreamSettings.swift */; };
@@ -91,6 +98,13 @@
 /* Begin PBXFileReference section */
 		3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTSViewer.swift; sourceTree = "<group>"; };
 		896AECBF2C812225002CD12D /* V1toV2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = V1toV2.xcmappingmodel; sourceTree = "<group>"; };
+		89C391AE2C8A3BE400861FD5 /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
+		89C391B02C8A3C1900861FD5 /* ChannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewModel.swift; sourceTree = "<group>"; };
+		89C391B32C8F58E900861FD5 /* ChannelDetailInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailInputView.swift; sourceTree = "<group>"; };
+		89C391B52C8F58F800861FD5 /* ChannelDetailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailInputViewModel.swift; sourceTree = "<group>"; };
+		89C391B82C8F93A100861FD5 /* ChannelGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelGridView.swift; sourceTree = "<group>"; };
+		89C391BA2C8F93B300861FD5 /* ChannelGridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelGridViewModel.swift; sourceTree = "<group>"; };
+		89C391BC2C939F2000861FD5 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		B6376BC12A1C4120007AD9D9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E8067F482A329F680083E94B /* InteractiveVieweriOSFirebaseReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSFirebaseReleaseSettings.xcconfig; sourceTree = "<group>"; };
 		E82112C72C2A330C0003DBF7 /* PiPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPManager.swift; sourceTree = "<group>"; };
@@ -195,6 +209,34 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		89C391AD2C8A3BB500861FD5 /* ChannelView */ = {
+			isa = PBXGroup;
+			children = (
+				89C391AE2C8A3BE400861FD5 /* ChannelView.swift */,
+				89C391B02C8A3C1900861FD5 /* ChannelViewModel.swift */,
+			);
+			name = ChannelView;
+			path = ../ChannelView;
+			sourceTree = "<group>";
+		};
+		89C391B22C8F58C000861FD5 /* ChannelDetailInputScreen */ = {
+			isa = PBXGroup;
+			children = (
+				89C391B32C8F58E900861FD5 /* ChannelDetailInputView.swift */,
+				89C391B52C8F58F800861FD5 /* ChannelDetailInputViewModel.swift */,
+			);
+			path = ChannelDetailInputScreen;
+			sourceTree = "<group>";
+		};
+		89C391B72C8F938A00861FD5 /* ChannelGridView */ = {
+			isa = PBXGroup;
+			children = (
+				89C391B82C8F93A100861FD5 /* ChannelGridView.swift */,
+				89C391BA2C8F93B300861FD5 /* ChannelGridViewModel.swift */,
+			);
+			path = ChannelGridView;
+			sourceTree = "<group>";
+		};
 		E82112C62C2A330C0003DBF7 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -220,6 +262,9 @@
 				E82112E72C2A339D0003DBF7 /* StatsInfo */,
 				E83CD9DE2A10878C008690FD /* StreamDetailInputScreen */,
 				E82112F82C2A339D0003DBF7 /* StreamingView */,
+				89C391B22C8F58C000861FD5 /* ChannelDetailInputScreen */,
+				89C391AD2C8A3BB500861FD5 /* ChannelView */,
+				89C391B72C8F938A00861FD5 /* ChannelGridView */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -438,6 +483,7 @@
 				E82112CA2C2A33140003DBF7 /* StreamSettings.swift */,
 				E82112CB2C2A33140003DBF7 /* VideoQuality.swift */,
 				E87FD1892AD8E1EF00E9164A /* SavedStreamDetail.swift */,
+				89C391BC2C939F2000861FD5 /* Channel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -585,6 +631,7 @@
 				E82113182C2A37C30003DBF7 /* SettingsButton.swift in Sources */,
 				E82113212C2A37D00003DBF7 /* StatisticsInfoViewModel.swift in Sources */,
 				E821130C2C2A378A0003DBF7 /* VideoRendererViewModel.swift in Sources */,
+				89C391BD2C939F2000861FD5 /* Channel.swift in Sources */,
 				E82113192C2A37C30003DBF7 /* SettingsScreen.swift in Sources */,
 				E87FD1C92ADCFED400E9164A /* DateProvider.swift in Sources */,
 				E82112D72C2A331C0003DBF7 /* UserDefaults+Codable.swift in Sources */,
@@ -594,11 +641,13 @@
 				E87FD0C72AD8DE4600E9164A /* ImageAsset.swift in Sources */,
 				E821131F2C2A37C90003DBF7 /* UserInteractionViewModel.swift in Sources */,
 				E82113112C2A37930003DBF7 /* ErrorView.swift in Sources */,
+				89C391BB2C8F93B300861FD5 /* ChannelGridViewModel.swift in Sources */,
 				E82113102C2A37900003DBF7 /* LiveIndicatorView.swift in Sources */,
 				E82113232C2A37D80003DBF7 /* StreamViewModel.swift in Sources */,
 				E821130D2C2A378A0003DBF7 /* VideoRendererView.swift in Sources */,
 				E821130F2C2A37900003DBF7 /* LiveIndicatorViewModel.swift in Sources */,
 				E83CD9F92A10878C008690FD /* StreamDetailInputScreen.swift in Sources */,
+				89C391B62C8F58F800861FD5 /* ChannelDetailInputViewModel.swift in Sources */,
 				E846A8A22C785D220052D6C8 /* V2MigrationPolicy.swift in Sources */,
 				E82112CF2C2A33150003DBF7 /* StreamSettings.swift in Sources */,
 				E82112D82C2A331C0003DBF7 /* UserDefaultsBacked.swift in Sources */,
@@ -606,9 +655,12 @@
 				B6376BC22A1C4120007AD9D9 /* Constants.swift in Sources */,
 				E874A0312AE1FD07003C3FF8 /* AppSettingsView.swift in Sources */,
 				E82113122C2A37970003DBF7 /* BackButton.swift in Sources */,
+				89C391AF2C8A3BE400861FD5 /* ChannelView.swift in Sources */,
 				E82113242C2A37D80003DBF7 /* StreamingView.swift in Sources */,
 				E83CDA0C2A10878C008690FD /* SavedStreamsScreen.swift in Sources */,
 				E821131B2C2A37C30003DBF7 /* SettingsStreamSortOrderScreen.swift in Sources */,
+				89C391B42C8F58E900861FD5 /* ChannelDetailInputView.swift in Sources */,
+				89C391B92C8F93A100861FD5 /* ChannelGridView.swift in Sources */,
 				E821130E2C2A378A0003DBF7 /* SourceLabel.swift in Sources */,
 				E846A89A2C784F720052D6C8 /* RTSViewer.xcdatamodeld in Sources */,
 				E82112D62C2A331C0003DBF7 /* SourceId+Display.swift in Sources */,
@@ -620,6 +672,7 @@
 				E821131D2C2A37C90003DBF7 /* SingleStreamViewModel.swift in Sources */,
 				E821130B2C2A37700003DBF7 /* PiPManager.swift in Sources */,
 				E83CD9FE2A10878C008690FD /* SplashScreen.swift in Sources */,
+				89C391B12C8A3C1900861FD5 /* ChannelViewModel.swift in Sources */,
 				E83CD9FB2A10878C008690FD /* LandingViewModel.swift in Sources */,
 				E82113092C2A37680003DBF7 /* SettingsManager.swift in Sources */,
 				E8264D682A25B32D00660507 /* RTSViewer.swift in Sources */,

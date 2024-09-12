@@ -7,14 +7,11 @@ import Foundation
 import SwiftUI
 
 final class AppConfigurations {
-
     static let standard = AppConfigurations(userDefaults: .standard)
     fileprivate let userDefaults: UserDefaults
 
     fileprivate let _appConfigurationsChangedSubject = PassthroughSubject<AnyKeyPath, Never>()
-    fileprivate lazy var appConfigurationsChangedSubject = {
-        _appConfigurationsChangedSubject.eraseToAnyPublisher()
-    }()
+    fileprivate lazy var appConfigurationsChangedSubject = _appConfigurationsChangedSubject.eraseToAnyPublisher()
 
     init(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
@@ -25,6 +22,9 @@ final class AppConfigurations {
 
     @UserDefault("enable_pip")
     var enablePiP: Bool = false
+
+    @UserDefault("enable_multichannel")
+    var enableMultiChannel: Bool = false
 }
 
 @propertyWrapper
@@ -64,7 +64,6 @@ struct UserDefault<Value> {
 
 @propertyWrapper
 struct AppConfiguration<Value>: DynamicProperty {
-
     @ObservedObject private var appConfigurationsObserver: PublisherObservableObject
     private let keyPath: ReferenceWritableKeyPath<AppConfigurations, Value>
     private let appConfigurations: AppConfigurations
@@ -95,11 +94,10 @@ struct AppConfiguration<Value>: DynamicProperty {
 }
 
 final class PublisherObservableObject: ObservableObject {
-
     var subscriber: AnyCancellable?
 
     init(publisher: AnyPublisher<Void, Never>) {
-        subscriber = publisher.sink(receiveValue: { [weak self] _ in
+        self.subscriber = publisher.sink(receiveValue: { [weak self] _ in
             self?.objectWillChange.send()
         })
     }

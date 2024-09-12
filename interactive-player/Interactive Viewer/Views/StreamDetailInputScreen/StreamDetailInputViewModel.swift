@@ -7,25 +7,24 @@ import Foundation
 import MillicastSDK
 import RTSCore
 
+enum ValidationError: LocalizedError {
+    case emptyStreamNameOrAccountID
+    case failedToConnect
+
+    var errorDescription: String? {
+        switch self {
+        case .emptyStreamNameOrAccountID:
+            return String(localized: "stream-detail-input.empty-credentials-error.label")
+        case .failedToConnect:
+            return String(localized: "stream-detail-input.connection-failure.label")
+        }
+    }
+}
+
 @MainActor
 final class StreamDetailInputViewModel: ObservableObject {
     private let streamDataManager: StreamDataManagerProtocol
     private let dateProvider: DateProvider
-
-    enum ValidationError: LocalizedError {
-        case emptyStreamNameOrAccountID
-        case failedToConnect
-
-        var errorDescription: String? {
-            switch self {
-            case .emptyStreamNameOrAccountID:
-                return String(localized: "stream-detail-input.empty-credentials-error.label")
-            case .failedToConnect:
-                return String(localized: "stream-detail-input.connection-failure.label")
-            }
-        }
-    }
-
     @Published var validationError: ValidationError?
 
     init(

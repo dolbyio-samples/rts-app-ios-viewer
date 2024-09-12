@@ -11,6 +11,7 @@ import DolbyIOUIKit
 struct AppSettingsView: View {
     @AppConfiguration(\.showDebugFeatures) var showDebugFeatures
     @AppConfiguration(\.enablePiP) var enablePiP
+    @AppConfiguration(\.enableMultiChannel) var enableMultiChannel
 
     var body: some View {
         // Custom App Configurations
@@ -25,6 +26,14 @@ struct AppSettingsView: View {
         Toggle(isOn: $enablePiP) {
             Text(
                 "app-configuration-enable-pip-features-label",
+                style: .titleMedium,
+                font: .custom("AvenirNext-Regular", size: FontSize.body)
+            )
+        }
+
+        Toggle(isOn: $enableMultiChannel) {
+            Text(
+                "app-configuration-enable-multichannel-label",
                 style: .titleMedium,
                 font: .custom("AvenirNext-Regular", size: FontSize.body)
             )

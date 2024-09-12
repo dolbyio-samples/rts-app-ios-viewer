@@ -38,4 +38,5 @@ public enum IconAsset: String {
     case simulcast = "simulcast"
     case fullScreen = "full-screen"
     case exitFullScreen = "exit-full-screen"
+    case plus = "plus"
 }
