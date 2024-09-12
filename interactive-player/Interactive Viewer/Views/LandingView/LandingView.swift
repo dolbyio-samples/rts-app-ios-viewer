@@ -2,8 +2,8 @@
 //  LandingView.swift
 //
 
-import RTSCore
 import DolbyIOUIKit
+import RTSCore
 import SwiftUI
 
 struct Stream {
@@ -12,13 +12,17 @@ struct Stream {
 }
 
 struct LandingView: View {
+    @AppConfiguration(\.enableMultiChannel) private var enableMultiChannel
     @StateObject private var viewModel: LandingViewModel = .init()
-    @StateObject private var recentStreamsViewModel: RecentStreamsViewModel = RecentStreamsViewModel()
+    @StateObject private var recentStreamsViewModel: RecentStreamsViewModel = .init()
 
     @State private var isShowingStreamInputView = false
+    @State private var isShowingChannelInputView = false
     @State private var isShowingFullStreamHistoryView: Bool = false
     @State private var isShowingSettingsView: Bool = false
     @State private var streamingScreenContext: StreamingView.Context?
+    @State private var channels: [Channel]?
+    @State private var showChannelView: Bool = false
 
     @EnvironmentObject private var appState: AppState
 
@@ -27,36 +31,40 @@ struct LandingView: View {
             NavigationLink(
                 destination: StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext),
                 isActive: $isShowingStreamInputView) {
-                    EmptyView()
-                }
-                .hidden()
+                EmptyView()
+            }
+            .hidden()
 
             NavigationLink(
                 destination: SavedStreamsScreen(viewModel: recentStreamsViewModel),
                 isActive: $isShowingFullStreamHistoryView) {
-                    EmptyView()
-                }
-                .hidden()
+                EmptyView()
+            }
+            .hidden()
 
             NavigationLink(
                 destination: SettingsScreen(mode: .global, moreSettings: {
                     AppSettingsView()
                 }),
                 isActive: $isShowingSettingsView) {
-                    EmptyView()
-                }
-                .hidden()
+                EmptyView()
+            }
+            .hidden()
 
-            if viewModel.hasSavedStreams {
-                RecentStreamsScreen(
-                    viewModel: recentStreamsViewModel,
-                    isShowingStreamInputView: $isShowingStreamInputView,
-                    isShowingFullStreamHistoryView: $isShowingFullStreamHistoryView,
-                    isShowingSettingsView: $isShowingSettingsView,
-                    streamingScreenContext: $streamingScreenContext
-                )
+            if enableMultiChannel {
+                let viewModel = ChannelDetailInputViewModel(channels: $channels, showChannelView: $showChannelView)
+                ChannelDetailInputView(viewModel: viewModel)
             } else {
-                StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext)
+                if viewModel.hasSavedStreams {
+                    RecentStreamsScreen(
+                        viewModel: recentStreamsViewModel,
+                        isShowingStreamInputView: $isShowingStreamInputView,
+                        isShowingFullStreamHistoryView: $isShowingFullStreamHistoryView,
+                        isShowingSettingsView: $isShowingSettingsView,
+                        streamingScreenContext: $streamingScreenContext)
+                } else {
+                    StreamDetailInputScreen(streamingScreenContext: $streamingScreenContext)
+                }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -69,8 +77,8 @@ struct LandingView: View {
                 SettingsButton { isShowingSettingsView = true }
                     .accessibilityIdentifier(
                         viewModel.hasSavedStreams
-                        ? "RecentScreen.SettingButton"
-                        : "InputScreen.SettingButton"
+                            ? "RecentScreen.SettingButton"
+                            : "InputScreen.SettingButton"
                     )
             }
 
@@ -89,6 +97,16 @@ struct LandingView: View {
                 streamingScreenContext = nil
             }
         }
+
+        .fullScreenCover(isPresented: $showChannelView, content: {
+            if let channels {
+                let channelViewModel = ChannelViewModel(channels: $channels)
+                ChannelView(viewModel: channelViewModel, onClose: {
+                    self.channels = nil
+                    self.showChannelView = false
+                })
+            }
+        })
     }
 }
 
