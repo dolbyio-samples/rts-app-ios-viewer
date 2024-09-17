@@ -88,3 +88,20 @@
 "stream.stats.total-stream-time.label" = "Total Stream Time";
 "stream.stats.target-bitrate.label" = "Target Bitrate";
 "stream.stats.outgoing-bitrate.label" = "Outgoing Bitrate";
+
+/** Channel Detail Input View */
+"channel-detail-input.start-a-channel.label" = "Multi-Channels";
+"channel-detail-input.subtitle.label" = "Enter up to 4 separate streamNames & accountIDs to view a multiple channels.";
+"channel-detail-input.channel-1.label" = "Channel 1";
+"channel-detail-input.channel-2.label" = "Channel 2";
+"channel-detail-input.channel-3.label" = "Channel 3";
+"channel-detail-input.channel-4.label" = "Channel 4";
+"channel-detail-input.subtitle.label" = "Enter your stream information to view channels";
+"channel-detail-input.streamName.placeholder1.label" = "Enter your first stream name";
+"channel-detail-input.accountId.placeholder1.label" = "Enter your first account ID";
+"channel-detail-input.streamName.placeholder2.label" = "Enter your second stream name";
+"channel-detail-input.accountId.placeholder2.label" = "Enter your second account ID";
+"channel-detail-input.streamName.placeholder3.label" = "Enter your third stream name";
+"channel-detail-input.accountId.placeholder3.label" = "Enter your third account ID";
+"channel-detail-input.streamName.placeholder4.label" = "Enter your fourth stream name";
+"channel-detail-input.accountId.placeholder4.label" = "Enter your fourth account ID";

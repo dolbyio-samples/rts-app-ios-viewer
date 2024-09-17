@@ -14,6 +14,14 @@
 		6D61A9FC299DBC30004CAF9E /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61A9FA299DBC30004CAF9E /* ErrorView.swift */; };
 		6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D61AA06299F51AC004CAF9E /* VideoView.swift */; };
 		6D6382B92977BCAE00DF4DA7 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */; };
+		89C391C02C98C8B600861FD5 /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391BF2C98C8B600861FD5 /* ChannelView.swift */; };
+		89C391C22C98C9A900861FD5 /* ChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391C12C98C9A900861FD5 /* ChannelViewModel.swift */; };
+		89C391C42C98C9D700861FD5 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391C32C98C9D700861FD5 /* Channel.swift */; };
+		89C391C72C98CA2E00861FD5 /* ChannelGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391C62C98CA2E00861FD5 /* ChannelGridView.swift */; };
+		89C391C92C98CA3D00861FD5 /* ChannelGridViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391C82C98CA3D00861FD5 /* ChannelGridViewModel.swift */; };
+		89C391CC2C9A0A5C00861FD5 /* ChannelDetailInputBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391CB2C9A0A5C00861FD5 /* ChannelDetailInputBox.swift */; };
+		89C391CE2C9A0A7900861FD5 /* ChannelDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391CD2C9A0A7900861FD5 /* ChannelDetailInputViewModel.swift */; };
+		89C391D02C9A0D1700861FD5 /* StreamDetailInputBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391CF2C9A0D1700861FD5 /* StreamDetailInputBox.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC82C1010BE001733EA /* Assets.xcassets */; };
 		E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC92C1010BE001733EA /* Localizable.strings */; };
@@ -95,6 +103,14 @@
 		6D61A9FA299DBC30004CAF9E /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		6D61AA06299F51AC004CAF9E /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		6D6382B72977BCAE00DF4DA7 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
+		89C391BF2C98C8B600861FD5 /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
+		89C391C12C98C9A900861FD5 /* ChannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewModel.swift; sourceTree = "<group>"; };
+		89C391C32C98C9D700861FD5 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		89C391C62C98CA2E00861FD5 /* ChannelGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelGridView.swift; sourceTree = "<group>"; };
+		89C391C82C98CA3D00861FD5 /* ChannelGridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelGridViewModel.swift; sourceTree = "<group>"; };
+		89C391CB2C9A0A5C00861FD5 /* ChannelDetailInputBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailInputBox.swift; sourceTree = "<group>"; };
+		89C391CD2C9A0A7900861FD5 /* ChannelDetailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelDetailInputViewModel.swift; sourceTree = "<group>"; };
+		89C391CF2C9A0D1700861FD5 /* StreamDetailInputBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputBox.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E80E2BC82C1010BE001733EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E80E2BC92C1010BE001733EA /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -193,7 +209,10 @@
 				E83CDA2D2A10917A008690FD /* ReusableViews */,
 				3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */,
 				E82A0C19296D0F04007214B8 /* StreamDetailInputView */,
+				89C391CA2C9A0A4300861FD5 /* ChannelDetailInputView */,
 				E844ABEA296DA4C60067B78C /* StreamingView */,
+				89C391BE2C98C89400861FD5 /* ChannelView */,
+				89C391C52C98CA1E00861FD5 /* ChannelGridView */,
 				E82FC5042977CF2A0050777F /* Utils */,
 			);
 			path = RTSViewer;
@@ -205,6 +224,33 @@
 				3FE90C2226B2AF4300B206A3 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		89C391BE2C98C89400861FD5 /* ChannelView */ = {
+			isa = PBXGroup;
+			children = (
+				89C391BF2C98C8B600861FD5 /* ChannelView.swift */,
+				89C391C12C98C9A900861FD5 /* ChannelViewModel.swift */,
+			);
+			path = ChannelView;
+			sourceTree = "<group>";
+		};
+		89C391C52C98CA1E00861FD5 /* ChannelGridView */ = {
+			isa = PBXGroup;
+			children = (
+				89C391C62C98CA2E00861FD5 /* ChannelGridView.swift */,
+				89C391C82C98CA3D00861FD5 /* ChannelGridViewModel.swift */,
+			);
+			path = ChannelGridView;
+			sourceTree = "<group>";
+		};
+		89C391CA2C9A0A4300861FD5 /* ChannelDetailInputView */ = {
+			isa = PBXGroup;
+			children = (
+				89C391CB2C9A0A5C00861FD5 /* ChannelDetailInputBox.swift */,
+				89C391CD2C9A0A7900861FD5 /* ChannelDetailInputViewModel.swift */,
+			);
+			path = ChannelDetailInputView;
 			sourceTree = "<group>";
 		};
 		E80E2BC72C1010BE001733EA /* Resources */ = {
@@ -222,6 +268,7 @@
 			children = (
 				E8D5AE57299068E20019C132 /* StreamDetailInputViewModel.swift */,
 				E82A0C1A296D0F04007214B8 /* StreamDetailInputView.swift */,
+				89C391CF2C9A0D1700861FD5 /* StreamDetailInputBox.swift */,
 			);
 			path = StreamDetailInputView;
 			sourceTree = "<group>";
@@ -342,6 +389,7 @@
 			children = (
 				E8752B4D298C75BD002D5C2B /* StreamDetail.swift */,
 				E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */,
+				89C391C32C98C9D700861FD5 /* Channel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -566,8 +614,10 @@
 				E83CDA512A1092A3008690FD /* ImageAsset.swift in Sources */,
 				E8D5AE59299068E20019C132 /* StreamDetailInputViewModel.swift in Sources */,
 				E83CDA3A2A10917A008690FD /* FooterView.swift in Sources */,
+				89C391C02C98C8B600861FD5 /* ChannelView.swift in Sources */,
 				E8BA8E202991EF3C0043DEE1 /* SettingsView.swift in Sources */,
 				6D61A9FC299DBC30004CAF9E /* ErrorView.swift in Sources */,
+				89C391C72C98CA2E00861FD5 /* ChannelGridView.swift in Sources */,
 				E8B48E86297A2957000DC59A /* RecentStreamButton.swift in Sources */,
 				E8752B52298C7D02002D5C2B /* DateProvider.swift in Sources */,
 				E8D1947C29717D410080C4E0 /* RecentStreamsView.swift in Sources */,
@@ -578,10 +628,14 @@
 				E83CDA3D2A10917A008690FD /* NavigationHeaderView.swift in Sources */,
 				E8BA8E102991CB0E0043DEE1 /* StreamingViewModel.swift in Sources */,
 				E8C776D92C2BEEA5002DE392 /* VideoQuality.swift in Sources */,
+				89C391CC2C9A0A5C00861FD5 /* ChannelDetailInputBox.swift in Sources */,
 				631DD25826F1E18E0023D24A /* ContentView.swift in Sources */,
 				E83F0F932C192D4B00F6FA6B /* SettingsViewModel.swift in Sources */,
 				E83CDA492A10917A008690FD /* BackgroundContainerView.swift in Sources */,
+				89C391D02C9A0D1700861FD5 /* StreamDetailInputBox.swift in Sources */,
 				E89D28902C747AFE002254AB /* SerialTasks.swift in Sources */,
+				89C391C22C98C9A900861FD5 /* ChannelViewModel.swift in Sources */,
+				89C391C42C98C9D700861FD5 /* Channel.swift in Sources */,
 				6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */,
 				E82A0C1E296D0F04007214B8 /* StreamDetailInputView.swift in Sources */,
 				E8752B4B298C72F7002D5C2B /* CoreDataManager.swift in Sources */,
@@ -593,8 +647,10 @@
 				E8BA8E192991E8B30043DEE1 /* SimulcastViewModel.swift in Sources */,
 				E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,
 				E8752B5A298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift in Sources */,
+				89C391CE2C9A0A7900861FD5 /* ChannelDetailInputViewModel.swift in Sources */,
 				E83F0F982C19305800F6FA6B /* SettingsButton.swift in Sources */,
 				B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */,
+				89C391C92C98CA3D00861FD5 /* ChannelGridViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

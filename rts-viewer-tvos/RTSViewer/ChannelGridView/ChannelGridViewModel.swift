@@ -1,0 +1,5 @@
+//
+//  ChannelGridViewModel.swift
+//
+
+import Foundation
