@@ -12,7 +12,7 @@ on:
 
 jobs:
   Build-And-Deploy-TVOS-App-To-Appstore:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3

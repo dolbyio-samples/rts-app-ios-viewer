@@ -11,6 +11,7 @@
 "stream-detail-input.streamName.placeholder.label" = "Enter your stream name";
 "stream-detail-input.accountId.placeholder.label" = "Enter your account ID";
 "stream-detail-input.play.button" = "Play";
+"stream-detail-input.play-from-config.button" = "Play From Config";
 "stream-detail-input.recent-streams.button" = "Saved Streams";
 "stream-detail-input.clear-stream-history.button" = "Clear stream history";
 "stream-detail-input.rememberStream.toggle" = "Remember stream";
@@ -88,3 +89,5 @@
 "stream.stats.total-stream-time.label" = "Total Stream Time";
 "stream.stats.target-bitrate.label" = "Target Bitrate";
 "stream.stats.outgoing-bitrate.label" = "Outgoing Bitrate";
+
+"video-view.main.label" = "Main";

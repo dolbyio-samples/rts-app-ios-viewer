@@ -9,7 +9,7 @@ on:
 
 jobs:
   Run-UnitTests:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -18,7 +18,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1.2
-          
+
       - name: Run Unit tests
         run: |
           cd rts-viewer-tvos

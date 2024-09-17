@@ -23,14 +23,16 @@ final class StatisticsViewModel: ObservableObject {
         source: StreamSource,
         streamStatistics: StreamStatistics,
         layers: [MCRTSRemoteTrackLayer],
-        projectedTimeStamp: Double?
+        projectedTimeStamp: Double?,
+        isMultiChannel: Bool = false
     ) {
         self.source = source
         statsItems = Self.makeStatsList(
             from: source,
             streamStatistics: streamStatistics,
             layers: layers,
-            projectedTimeStamp: projectedTimeStamp
+            projectedTimeStamp: projectedTimeStamp,
+            isMultiChannel: isMultiChannel
         )
     }
 }
@@ -43,7 +45,8 @@ private extension StatisticsViewModel {
         from source: StreamSource,
         streamStatistics: StreamStatistics,
         layers: [MCRTSRemoteTrackLayer],
-        projectedTimeStamp: Double?
+        projectedTimeStamp: Double?,
+        isMultiChannel: Bool = false
     ) -> [StatsItem] {
         var result = [StatsItem]()
         guard let videoStatsInboundRtp = streamStatistics.videoStatsInboundRtpList.first(where: { $0.mid == source.videoTrack.currentMID }) else {
@@ -145,233 +148,249 @@ private extension StatisticsViewModel {
             )
         }
 
-        let packetsReceived = videoStatsInboundRtp.packetsReceived
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.packets-received.label"),
-                value: String(packetsReceived)
-            )
-        )
-
-        let framesDecoded = videoStatsInboundRtp.framesDecoded
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.frames-decoded.label"),
-                value: String(framesDecoded)
-            )
-        )
-
-        let framesDropped = videoStatsInboundRtp.framesDropped
-        if framesDropped > 0 {
+        if !isMultiChannel {
+            let packetsReceived = videoStatsInboundRtp.packetsReceived
             result.append(
                 StatsItem(
-                    key: String(localized: "stream.stats.frames-dropped.label"),
-                    value: String(framesDropped)
-                )
-            )
-        }
-
-        let jitterBufferEmittedCount = videoStatsInboundRtp.jitterBufferEmittedCount
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.jitter-buffer-est-count.label"),
-                value: String(jitterBufferEmittedCount)
-            )
-        )
-
-        let videoJitter = videoStatsInboundRtp.jitter
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.video-jitter.label"),
-                value: "\(videoJitter) ms"
-            )
-        )
-
-        if let audioJitter = audioStatsInboundRtp?.jitter {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.audio-jitter.label"),
-                    value: "\(audioJitter) ms"
-                )
-            )
-        }
-
-        let jitterBufferDelay = videoStatsInboundRtp.jitterBufferDelay
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.jitter-buffer-delay.label"),
-                value: String(format: "%.2f ms", jitterBufferDelay)
-            )
-        )
-
-        let jitterBufferTargetDelay = videoStatsInboundRtp.jitterBufferTargetDelay
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.jitter-buffer-target-delay.label"),
-                value: String(format: "%.2f ms", jitterBufferTargetDelay)
-            )
-        )
-
-        let jitterBufferMinimumDelay = videoStatsInboundRtp.jitterBufferMinimumDelay
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.jitter-buffer-minimum-delay.label"),
-                value: String(format: "%.2f ms", jitterBufferMinimumDelay)
-            )
-        )
-
-        let videoPacketsLost = videoStatsInboundRtp.packetsLost
-        if videoPacketsLost > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.video-packet-loss.label"),
-                    value: String(videoPacketsLost)
-                )
-            )
-        }
-
-        if let audioPacketsLost = audioStatsInboundRtp?.packetsLost,
-           audioPacketsLost > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.audio-packet-loss.label"),
-                    value: String(audioPacketsLost)
-                )
-            )
-        }
-
-        let freezeCount = videoStatsInboundRtp.freezeCount
-        if freezeCount > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.freeze-count.label"),
-                    value: String(freezeCount)
-                )
-            )
-        }
-
-        let freezeDuration = videoStatsInboundRtp.freezeDuration
-        if freezeDuration > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.freeze-duration.label"),
-                    value: String(format: "%.2f ms", freezeDuration)
-                )
-            )
-        }
-
-        let pauseCount = videoStatsInboundRtp.pauseCount
-        if pauseCount > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.pause-count.label"),
-                    value: String(pauseCount)
-                )
-            )
-        }
-
-        let pauseDuration = videoStatsInboundRtp.pauseDuration
-        if pauseDuration > 0 {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.pause-duration.label"),
-                    value: String(format: "%.2f ms", pauseDuration)
-                )
-            )
-        }
-
-        if let videoStatsOutboundRtp = streamStatistics.outboundVideoStatistics() {
-            let retransmittedPackets = videoStatsOutboundRtp.retransmittedPackets
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.retransmitted-packets.label"),
-                    value: String(retransmittedPackets)
+                    key: String(localized: "stream.stats.packets-received.label"),
+                    value: String(packetsReceived)
                 )
             )
 
-            let retransmittedBytes = videoStatsOutboundRtp.retransmittedBytes
+            let framesDecoded = videoStatsInboundRtp.framesDecoded
             result.append(
                 StatsItem(
-                    key: String(localized: "stream.stats.retransmitted-bytes.label"),
-                    value: String(retransmittedBytes)
+                    key: String(localized: "stream.stats.frames-decoded.label"),
+                    value: String(framesDecoded)
                 )
             )
-        }
 
-        if let currentRTT = streamStatistics.currentRoundTripTime {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.current-rtt.label"),
-                    value: String(currentRTT)
-                )
-            )
-        }
-
-        if let totalRTT = streamStatistics.totalRoundTripTime {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.total-rtt.label"),
-                    value: String(totalRTT)
-                )
-            )
-        }
-
-        let timestamp = videoStatsInboundRtp.timestamp
-        result.append(
-            StatsItem(
-                key: String(localized: "stream.stats.timestamp.label"),
-                value: dateString(timestamp / 1000)
-            )
-        )
-
-        if let projectedTimeStamp {
-            let totalTime = videoStatsInboundRtp.timestamp - projectedTimeStamp
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.total-stream-time.label"),
-                    value: elapsedTimeString(totalTime / 1000)
-                )
-            )
-        }
-
-        let audioCodec = audioStatsInboundRtp?.codecName
-        let videoCodec = videoStatsInboundRtp.codecName
-        if audioCodec != nil || videoCodec != nil {
-            var delimiter = ", "
-            if audioCodec == nil || videoCodec == nil {
-                delimiter = ""
-            }
-            let codecs = "\(audioCodec ?? "")\(delimiter)\(videoCodec ?? "")"
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.codecs.label"),
-                    value: codecs
-                )
-            )
-        }
-
-        if let projectedTimeStamp {
-            let bitsReceived = videoStatsInboundRtp.bytesReceived * 8
-            let totalTimeInSeconds = (videoStatsInboundRtp.timestamp - projectedTimeStamp) / 1000
-            let incomingBitRate = Double(bitsReceived) / totalTimeInSeconds
-
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.incoming-bitrate.label"),
-                    value: formatBitRate(bitRate: incomingBitRate)
-                )
-            )
-        }
-
-        if let selectedLayer = layers.first(where: {
-            Int(videoStatsInboundRtp.frameWidth) == ($0.resolution?.width ?? 0)
-            && Int(videoStatsInboundRtp.frameHeight) == ($0.resolution?.height ?? 0)
-        }) {
-            if let targetBitrate = selectedLayer.targetBitrate {
+            let framesDropped = videoStatsInboundRtp.framesDropped
+            if framesDropped > 0 {
                 result.append(
                     StatsItem(
-                        key: String(localized: "stream.stats.target-bitrate.label"),
-                        value: Self.formatBitRate(bitRate: targetBitrate.doubleValue)
+                        key: String(localized: "stream.stats.frames-dropped.label"),
+                        value: String(framesDropped)
+                    )
+                )
+            }
+
+            let jitterBufferEmittedCount = videoStatsInboundRtp.jitterBufferEmittedCount
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.jitter-buffer-est-count.label"),
+                    value: String(jitterBufferEmittedCount)
+                )
+            )
+
+            let videoJitter = videoStatsInboundRtp.jitter
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.video-jitter.label"),
+                    value: "\(videoJitter) ms"
+                )
+            )
+
+            if let audioJitter = audioStatsInboundRtp?.jitter {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.audio-jitter.label"),
+                        value: "\(audioJitter) ms"
+                    )
+                )
+            }
+
+            let jitterBufferDelay = videoStatsInboundRtp.jitterBufferDelay
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.jitter-buffer-delay.label"),
+                    value: String(format: "%.2f ms", jitterBufferDelay)
+                )
+            )
+
+            let jitterBufferTargetDelay = videoStatsInboundRtp.jitterBufferTargetDelay
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.jitter-buffer-target-delay.label"),
+                    value: String(format: "%.2f ms", jitterBufferTargetDelay)
+                )
+            )
+
+            let jitterBufferMinimumDelay = videoStatsInboundRtp.jitterBufferMinimumDelay
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.jitter-buffer-minimum-delay.label"),
+                    value: String(format: "%.2f ms", jitterBufferMinimumDelay)
+                )
+            )
+
+            let videoPacketsLost = videoStatsInboundRtp.packetsLost
+            if videoPacketsLost > 0 {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.video-packet-loss.label"),
+                        value: String(videoPacketsLost)
+                    )
+                )
+            }
+
+            if let audioPacketsLost = audioStatsInboundRtp?.packetsLost,
+               audioPacketsLost > 0 {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.audio-packet-loss.label"),
+                        value: String(audioPacketsLost)
+                    )
+                )
+            }
+
+            let freezeCount = videoStatsInboundRtp.freezeCount
+            if freezeCount > 0 {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.freeze-count.label"),
+                        value: String(freezeCount)
+                    )
+                )
+            }
+
+            let freezeDuration = videoStatsInboundRtp.freezeDuration
+            if freezeDuration > 0 {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.freeze-duration.label"),
+                        value: String(format: "%.2f ms", freezeDuration)
+                    )
+                )
+            }
+
+            let pauseCount = videoStatsInboundRtp.pauseCount
+            if pauseCount > 0 {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.pause-count.label"),
+                        value: String(pauseCount)
+                    )
+                )
+            }
+
+            let pauseDuration = videoStatsInboundRtp.pauseDuration
+            if pauseDuration > 0 {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.pause-duration.label"),
+                        value: String(format: "%.2f ms", pauseDuration)
+                    )
+                )
+            }
+
+            if let videoStatsOutboundRtp = streamStatistics.outboundVideoStatistics() {
+                let retransmittedPackets = videoStatsOutboundRtp.retransmittedPackets
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.retransmitted-packets.label"),
+                        value: String(retransmittedPackets)
+                    )
+                )
+
+                let retransmittedBytes = videoStatsOutboundRtp.retransmittedBytes
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.retransmitted-bytes.label"),
+                        value: String(retransmittedBytes)
+                    )
+                )
+            }
+
+            if let currentRTT = streamStatistics.currentRoundTripTime {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.current-rtt.label"),
+                        value: String(currentRTT)
+                    )
+                )
+            }
+
+            if let totalRTT = streamStatistics.totalRoundTripTime {
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.total-rtt.label"),
+                        value: String(totalRTT)
+                    )
+                )
+            }
+
+            let timestamp = videoStatsInboundRtp.timestamp
+            result.append(
+                StatsItem(
+                    key: String(localized: "stream.stats.timestamp.label"),
+                    value: dateString(timestamp / 1000)
+                )
+            )
+
+            if let projectedTimeStamp {
+                let totalTime = videoStatsInboundRtp.timestamp - projectedTimeStamp
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.total-stream-time.label"),
+                        value: elapsedTimeString(totalTime / 1000)
+                    )
+                )
+            }
+
+            let audioCodec = audioStatsInboundRtp?.codecName
+            let videoCodec = videoStatsInboundRtp.codecName
+            if audioCodec != nil || videoCodec != nil {
+                var delimiter = ", "
+                if audioCodec == nil || videoCodec == nil {
+                    delimiter = ""
+                }
+                let codecs = "\(audioCodec ?? "")\(delimiter)\(videoCodec ?? "")"
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.codecs.label"),
+                        value: codecs
+                    )
+                )
+            }
+
+            if let projectedTimeStamp {
+                let bitsReceived = videoStatsInboundRtp.bytesReceived * 8
+                let totalTimeInSeconds = (videoStatsInboundRtp.timestamp - projectedTimeStamp) / 1000
+                let incomingBitRate = Double(bitsReceived) / totalTimeInSeconds
+
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.incoming-bitrate.label"),
+                        value: formatBitRate(bitRate: incomingBitRate)
+                    )
+                )
+            }
+
+            if let selectedLayer = layers.first(where: {
+                Int(videoStatsInboundRtp.frameWidth) == ($0.resolution?.width ?? 0)
+                    && Int(videoStatsInboundRtp.frameHeight) == ($0.resolution?.height ?? 0)
+            }) {
+                if let targetBitrate = selectedLayer.targetBitrate {
+                    result.append(
+                        StatsItem(
+                            key: String(localized: "stream.stats.target-bitrate.label"),
+                            value: Self.formatBitRate(bitRate: targetBitrate.doubleValue)
+                        )
+                    )
+                } else {
+                    result.append(
+                        StatsItem(
+                            key: String(localized: "stream.stats.target-bitrate.label"),
+                            value: "N/A"
+                        )
+                    )
+                }
+
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.outgoing-bitrate.label"),
+                        value: Self.formatBitRate(bitRate: Double(selectedLayer.bitrate))
                     )
                 )
             } else {
@@ -381,32 +400,19 @@ private extension StatisticsViewModel {
                         value: "N/A"
                     )
                 )
+
+                result.append(
+                    StatsItem(
+                        key: String(localized: "stream.stats.outgoing-bitrate.label"),
+                        value: "N/A"
+                    )
+                )
             }
-
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.outgoing-bitrate.label"),
-                    value: Self.formatBitRate(bitRate: Double(selectedLayer.bitrate))
-                )
-            )
-        } else {
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.target-bitrate.label"),
-                    value: "N/A"
-                )
-            )
-
-            result.append(
-                StatsItem(
-                    key: String(localized: "stream.stats.outgoing-bitrate.label"),
-                    value: "N/A"
-                )
-            )
         }
 
         return result
     }
+
     // swiftlint:enable function_body_length cyclomatic_complexity
 
     static func dateString(_ timestamp: Double) -> String {
