@@ -70,7 +70,7 @@ struct ChannelDetailInputBox: View {
 
                 Button(
                     action: {
-                        viewModel.onPlayTapped()
+                        viewModel.playButtonPressed()
                     },
                     text: "stream-detail-input.play.button"
                 )
@@ -111,6 +111,6 @@ struct ChannelDetailInputBox: View {
         }
 }
 
-#Preview {
-    ChannelDetailInputBox(viewModel: ChannelDetailInputViewModel(isShowingChannelView: .constant(true), onPlayTapped: {}))
-}
+// #Preview {
+//    ChannelDetailInputBox(viewModel: ChannelDetailInputViewModel(isShowingChannelView: .constant(true), onPlayTapped: {}))
+// }

@@ -84,6 +84,15 @@ struct StreamDetailInputBox: View {
                 Spacer()
                     .frame(height: Layout.spacing8x)
             }
+            .sheet(isPresented: $viewModel.isShowingRecentStreams) {
+                RecentStreamsView(
+                    streamName: $viewModel.streamName,
+                    accountID: $viewModel.accountID,
+                    isShowingRecentStreams: $viewModel.isShowingRecentStreams
+                ) {
+                    viewModel.playStream()
+                }
+            }
             .padding(.all, Layout.spacing5x)
             .background(Color(uiColor: UIColor.Background.black))
             .cornerRadius(Layout.cornerRadius6x)

@@ -1,20 +1,20 @@
 //
-//  StreamDetailInputView.swift
+//  LandingView.swift
 //
 
 import DolbyIOUIKit
 import RTSCore
 import SwiftUI
 
-struct StreamDetailInputView: View {
-    @ObservedObject private var viewModel = StreamDetailInputViewModel()
+struct LandingView: View {
+    @ObservedObject private var viewModel = LandingViewModel()
 
     var body: some View {
         BackgroundContainerView {
             ZStack {
                 /*
                  NavigationLink - Adds an unnecessary padding across its containing view -
-                 so screen navigations are not visually rendered - but only used for programmatic navigation
+                 so Øscreen navigations are not visually rendered - but only used for programmatic navigation
                  - in this case - controlled by the Binded `Bool` value.
                  */
 
@@ -23,35 +23,32 @@ struct StreamDetailInputView: View {
                 }
                 .hidden()
 
-                // TODO play channelview
-//                NavigationLink(destination: ChannelView(streamName: viewModel.streamName, accountID: viewModel.accountID), isActive: $viewModel.isShowingChannelView) {
-//                    EmptyView()
-//                }
-//                .hidden()
+                let channelViewModel = ChannelViewModel(channels: $viewModel.channels) {
+                    viewModel.isShowingChannelView = false
+                }
+                NavigationLink(destination: ChannelView(viewModel: channelViewModel), isActive: $viewModel.isShowingChannelView) {
+                    EmptyView()
+                }
+                .hidden()
 
                 VStack {
                     Spacer()
                     TabView {
-                        StreamDetailInputBox(viewModel: viewModel)
+                        let streamDetailInputViewModel = StreamDetailInputViewModel(streamName: $viewModel.streamName,
+                                                                                    accountID: $viewModel.accountID,
+                                                                                    isShowingStreamingView: $viewModel.isShowingStreamingView,
+                                                                                    isShowingRecentStreams: $viewModel.isShowingRecentStreams)
+                        StreamDetailInputBox(viewModel: streamDetailInputViewModel)
                             .tabItem { Label("SingleView", systemImage: "tv") }
 
-                        // TODO: onplaytapped
-                        let channelDetailInputViewModel = ChannelDetailInputViewModel(isShowingChannelView: $viewModel.isShowingChannelView, onPlayTapped: {})
+                        let channelDetailInputViewModel = ChannelDetailInputViewModel(channels: $viewModel.channels,
+                                                                                      isShowingChannelView: $viewModel.isShowingChannelView)
                         ChannelDetailInputBox(viewModel: channelDetailInputViewModel)
                             .tabItem { Label("MultiChannel", systemImage: "tv") }
                     }
 
                     FooterView(text: "stream-detail-input.footnote.label")
                         .padding(.bottom, Layout.spacing3x)
-                }
-                .sheet(isPresented: $viewModel.isShowingRecentStreams) {
-                    RecentStreamsView(
-                        streamName: $viewModel.streamName,
-                        accountID: $viewModel.accountID,
-                        isShowingRecentStreams: $viewModel.isShowingRecentStreams
-                    ) {
-                        viewModel.playStream()
-                    }
                 }
             }
         }
@@ -77,6 +74,6 @@ struct StreamDetailInputView: View {
 
 struct StreamDetailInputView_Previews: PreviewProvider {
     static var previews: some View {
-        StreamDetailInputView()
+        LandingView()
     }
 }

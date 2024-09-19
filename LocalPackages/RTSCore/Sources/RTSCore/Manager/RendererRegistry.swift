@@ -21,6 +21,7 @@ public final class RendererRegistry {
     }
     
     public func acceleratedRenderer(for source: StreamSource) -> MCVideoSwiftUIView.Renderer {
+        print("$$$ accelerated Renderer")
         if let renderer = renderers[source.sourceId] {
             return renderer
         } else {

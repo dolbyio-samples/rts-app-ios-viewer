@@ -45,8 +45,7 @@ struct StreamingView: View {
                         }
                         .overlay(alignment: .bottomLeading) {
                             if showStatsView, let streamStatistics = viewModel.streamStatistics,
-                               let mid = source.videoTrack.currentMID
-                            {
+                               let mid = source.videoTrack.currentMID {
                                 StatisticsView(
                                     source: source,
                                     streamStatistics: streamStatistics,
