@@ -22,18 +22,41 @@ struct ChannelGridView: View {
             let tileWidth = screenSize.width / CGFloat(Self.numberOfColumns)
             let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: Self.numberOfColumns)
 
-            VideoView(renderer: viewModel.channels[0].rendererRegistry.acceleratedRenderer(for: viewModel.channels[0].source))
-            //                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
-            //                        .id(channel.source.id)
-//            LazyVGrid(columns: columns, alignment: .leading) {
-//                ForEach(viewModel.channels) { channel in
-//                    Text("Grid View Channel \(channel.source.id)")
-//                    VideoView(renderer: channel.rendererRegistry.acceleratedRenderer(for: channel.source))
-//                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
-//                        .id(channel.source.id)
-//                }
-//            }
-//            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+            LazyVGrid(columns: columns, alignment: .leading) {
+                ForEach(viewModel.channels) { channel in
+                    let source = channel.source
+                    let preferredVideoQuality: VideoQuality = .auto
+                    let displayLabel = source.sourceId.displayLabel
+                    let viewId = "\(ChannelGridView.self).\(displayLabel)"
+                    VideoRendererView(source: source,
+                                      isSelectedVideoSource: true,
+                                      isSelectedAudioSource: true,
+                                      showSourceLabel: false,
+                                      showAudioIndicator: false,
+                                      maxWidth: tileWidth,
+                                      maxHeight: .infinity,
+                                      accessibilityIdentifier: "ChannelGridViewVideoTile.\(source.sourceId.displayLabel)",
+                                      preferredVideoQuality: preferredVideoQuality,
+                                      subscriptionManager: channel.subscriptionManager,
+                                      videoTracksManager: channel.videoTracksManager)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+                        .onAppear {
+                            ChannelGridViewModel.logger.debug("♼ Channel Grid view: Video view appear for \(source.sourceId)")
+                            Task {
+                                await channel.videoTracksManager.enableTrack(for: source, with: preferredVideoQuality, on: viewId)
+                            }
+                        }
+                        .onDisappear {
+                            ChannelGridViewModel.logger.debug("♼ Channel Grid view: Video view disappear for \(source.sourceId)")
+                            Task {
+                                await channel.videoTracksManager.disableTrack(for: source, on: viewId)
+                            }
+                        }
+                        .id(source.id)
+                        .id(channel.source.id)
+                }
+            }
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
         }
     }
 }

@@ -105,3 +105,5 @@
 "channel-detail-input.accountId.placeholder3.label" = "Enter your third account ID";
 "channel-detail-input.streamName.placeholder4.label" = "Enter your fourth stream name";
 "channel-detail-input.accountId.placeholder4.label" = "Enter your fourth account ID";
+
+"video-view.main.label" = "Main";

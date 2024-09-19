@@ -47,9 +47,11 @@ class ChannelDetailInputViewModel: ObservableObject {
 private extension ChannelDetailInputViewModel {
     func setupChannel(for detail: StreamPair) -> Channel? {
         guard !detail.streamName.isEmpty, !detail.accountID.isEmpty else { return nil }
+        let subscriptionManager = SubscriptionManager()
+        let videoTracksManager = VideoTracksManager(subscriptionManager: subscriptionManager)
         return Channel(streamDetail: detail,
-                       subscriptionManager: SubscriptionManager(),
-                       rendererRegistry: RendererRegistry())
+                       subscriptionManager: subscriptionManager,
+                       videoTracksManager: videoTracksManager)
     }
 
     func createStreamDetailArray() -> [StreamPair] {

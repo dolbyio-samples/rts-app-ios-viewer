@@ -24,6 +24,10 @@
 		89C391D02C9A0D1700861FD5 /* StreamDetailInputBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391CF2C9A0D1700861FD5 /* StreamDetailInputBox.swift */; };
 		89C391D32C9B78A800861FD5 /* StreamDetailInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391D22C9B78A800861FD5 /* StreamDetailInputViewModel.swift */; };
 		89C391D72C9C963A00861FD5 /* VideoTracksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391D62C9C963A00861FD5 /* VideoTracksManager.swift */; };
+		89C391D92C9C9EF500861FD5 /* String+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391D82C9C9EF500861FD5 /* String+Error.swift */; };
+		89C391DC2C9CA94800861FD5 /* VideoRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391DB2C9CA94800861FD5 /* VideoRendererView.swift */; };
+		89C391DE2C9CA96600861FD5 /* VideoRendererViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391DD2C9CA96600861FD5 /* VideoRendererViewModel.swift */; };
+		89C391E02C9CB5A600861FD5 /* SourceId+Display.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391DF2C9CB5A600861FD5 /* SourceId+Display.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC82C1010BE001733EA /* Assets.xcassets */; };
 		E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC92C1010BE001733EA /* Localizable.strings */; };
@@ -115,6 +119,10 @@
 		89C391CF2C9A0D1700861FD5 /* StreamDetailInputBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputBox.swift; sourceTree = "<group>"; };
 		89C391D22C9B78A800861FD5 /* StreamDetailInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetailInputViewModel.swift; sourceTree = "<group>"; };
 		89C391D62C9C963A00861FD5 /* VideoTracksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTracksManager.swift; sourceTree = "<group>"; };
+		89C391D82C9C9EF500861FD5 /* String+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Error.swift"; sourceTree = "<group>"; };
+		89C391DB2C9CA94800861FD5 /* VideoRendererView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRendererView.swift; sourceTree = "<group>"; };
+		89C391DD2C9CA96600861FD5 /* VideoRendererViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRendererViewModel.swift; sourceTree = "<group>"; };
+		89C391DF2C9CB5A600861FD5 /* SourceId+Display.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SourceId+Display.swift"; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E80E2BC82C1010BE001733EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E80E2BC92C1010BE001733EA /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -202,6 +210,7 @@
 		3FE90C1A26B2AF4200B206A3 /* RTSViewer */ = {
 			isa = PBXGroup;
 			children = (
+				89C391DA2C9CA93400861FD5 /* VideoRenderView */,
 				89C391D52C9C962900861FD5 /* Managers */,
 				3FE90C1D26B2AF4200B206A3 /* ContentView.swift */,
 				E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */,
@@ -276,6 +285,15 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
+		89C391DA2C9CA93400861FD5 /* VideoRenderView */ = {
+			isa = PBXGroup;
+			children = (
+				89C391DB2C9CA94800861FD5 /* VideoRendererView.swift */,
+				89C391DD2C9CA96600861FD5 /* VideoRendererViewModel.swift */,
+			);
+			path = VideoRenderView;
+			sourceTree = "<group>";
+		};
 		E80E2BC72C1010BE001733EA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -301,6 +319,8 @@
 				E89D288F2C747AFE002254AB /* SerialTasks.swift */,
 				E83CDA4F2A1092A3008690FD /* ImageAsset.swift */,
 				E8752B50298C7D02002D5C2B /* DateProvider.swift */,
+				89C391D82C9C9EF500861FD5 /* String+Error.swift */,
+				89C391DF2C9CB5A600861FD5 /* SourceId+Display.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -636,6 +656,7 @@
 				E83CDA512A1092A3008690FD /* ImageAsset.swift in Sources */,
 				E8D5AE59299068E20019C132 /* LandingViewModel.swift in Sources */,
 				E83CDA3A2A10917A008690FD /* FooterView.swift in Sources */,
+				89C391DC2C9CA94800861FD5 /* VideoRendererView.swift in Sources */,
 				89C391C02C98C8B600861FD5 /* ChannelView.swift in Sources */,
 				E8BA8E202991EF3C0043DEE1 /* SettingsView.swift in Sources */,
 				6D61A9FC299DBC30004CAF9E /* ErrorView.swift in Sources */,
@@ -656,7 +677,9 @@
 				E83CDA492A10917A008690FD /* BackgroundContainerView.swift in Sources */,
 				89C391D02C9A0D1700861FD5 /* StreamDetailInputBox.swift in Sources */,
 				E89D28902C747AFE002254AB /* SerialTasks.swift in Sources */,
+				89C391E02C9CB5A600861FD5 /* SourceId+Display.swift in Sources */,
 				89C391C22C98C9A900861FD5 /* ChannelViewModel.swift in Sources */,
+				89C391DE2C9CA96600861FD5 /* VideoRendererViewModel.swift in Sources */,
 				89C391C42C98C9D700861FD5 /* Channel.swift in Sources */,
 				6D61AA07299F51AC004CAF9E /* VideoView.swift in Sources */,
 				E82A0C1E296D0F04007214B8 /* LandingView.swift in Sources */,
@@ -669,6 +692,7 @@
 				89C391D72C9C963A00861FD5 /* VideoTracksManager.swift in Sources */,
 				631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */,
 				E8BA8E192991E8B30043DEE1 /* SimulcastViewModel.swift in Sources */,
+				89C391D92C9C9EF500861FD5 /* String+Error.swift in Sources */,
 				E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,
 				E8752B5A298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift in Sources */,
 				89C391CE2C9A0A7900861FD5 /* ChannelDetailInputViewModel.swift in Sources */,

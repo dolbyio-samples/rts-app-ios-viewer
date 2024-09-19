@@ -36,7 +36,7 @@
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
-            viewModel.endStreams()
+            viewModel.endStream()
         }
     }
 
