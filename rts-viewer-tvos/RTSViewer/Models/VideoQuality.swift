@@ -15,11 +15,12 @@ enum VideoQuality: Identifiable, Equatable, Comparable {
 }
 
 extension VideoQuality {
-    // TODO: set this up
     static func < (lhs: VideoQuality, rhs: VideoQuality) -> Bool {
         return switch (lhs, rhs) {
-        case(let .quality(_), .auto):
+        case(.quality, .auto):
             false
+        case let (.quality(lhsQuality), .quality(rhsQuality)):
+            lhsQuality == rhsQuality
         default:
             true
         }
@@ -67,7 +68,7 @@ extension VideoQuality {
         }
         var target: [String] = []
         if let bitrate = layer.targetBitrate {
-            target.append("Bitrate: \(bitrate.intValue/1000) kbps")
+            target.append("Bitrate: \(bitrate.intValue / 1000) kbps")
         }
         if let resolution = layer.resolution {
             target.append("Resolution: \(resolution.width)x\(resolution.height)")

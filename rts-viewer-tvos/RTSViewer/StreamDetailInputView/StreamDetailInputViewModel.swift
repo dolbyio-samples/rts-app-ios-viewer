@@ -8,7 +8,7 @@ import RTSCore
 import SwiftUI
 
 @MainActor
-class StreamDetailInputViewModel: ObservableObject {
+final class StreamDetailInputViewModel: ObservableObject {
     @Binding var streamName: String
     @Binding var accountID: String
     @Binding var isShowingStreamingView: Bool
@@ -55,10 +55,6 @@ class StreamDetailInputViewModel: ObservableObject {
             saveStream(streamName: streamName, accountID: accountID)
             isShowingStreamingView = true
         }
-    }
-
-    func clearAllStreams() {
-        streamDataManager.clearAllStreams()
     }
 }
 
