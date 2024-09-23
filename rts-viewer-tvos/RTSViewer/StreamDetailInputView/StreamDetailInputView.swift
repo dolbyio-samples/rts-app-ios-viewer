@@ -3,11 +3,10 @@
 //
 
 import DolbyIOUIKit
-import SwiftUI
 import RTSCore
+import SwiftUI
 
 struct StreamDetailInputView: View {
-
     @State private var streamName: String = ""
     @State private var accountID: String = ""
 
@@ -21,7 +20,6 @@ struct StreamDetailInputView: View {
     var body: some View {
         BackgroundContainerView {
             ZStack {
-
                 /*
                  NavigationLink - Adds an unnecessary padding across its containing view -
                  so screen navigations are not visually rendered - but only used for programmatic navigation
@@ -47,6 +45,23 @@ struct StreamDetailInputView: View {
                     )
 
                     Spacer()
+                    HStack(spacing: Layout.spacing6x) {
+                        DolbyIOUIKit.Text(
+                            text: "\(viewModel.appVersion)",
+                            font: .avenirNextRegular(
+                                withStyle: .caption,
+                                size: FontSize.caption1
+                            )
+                        )
+
+                        DolbyIOUIKit.Text(
+                            text: "\(viewModel.sdkVersion)",
+                            font: .avenirNextRegular(
+                                withStyle: .caption,
+                                size: FontSize.caption1
+                            )
+                        )
+                    }
                     FooterView(text: "stream-detail-input.footnote.label")
                         .padding(.bottom, Layout.spacing3x)
                 }
@@ -63,7 +78,7 @@ struct StreamDetailInputView: View {
         }
         .navigationHeaderView()
         .navigationBarHidden(true)
-        .alert("stream-detail-input.credentials-error.label", isPresented: $isShowingErrorAlert) { }
+        .alert("stream-detail-input.credentials-error.label", isPresented: $isShowingErrorAlert) {}
         .alert("stream-detail-input.clear-streams.label", isPresented: $isShowingClearStreamsAlert, actions: {
             Button(
                 "stream-detail-input.clear-streams.alert.clear.button",
@@ -151,7 +166,6 @@ private struct StreamDetailInputBox: View {
                 }
 
                 VStack(spacing: Layout.spacing3x) {
-
                     TextField("stream-detail-input.streamName.placeholder.label", text: $streamName)
                         .onReceive(streamName.publisher) { _ in
                             streamName = String(streamName.prefix(64))

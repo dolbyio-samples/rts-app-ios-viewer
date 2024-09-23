@@ -22,6 +22,9 @@ final class SettingsViewModel: ObservableObject {
         }
     }
 
+    @Published private(set) var appVersion: String = ""
+    @Published private(set) var sdkVersion: String = ""
+
     @Published private(set) var showSourceLabels = StreamSettings.default.showSourceLabels
     @Published private(set) var multiviewLayout = StreamSettings.default.multiviewLayout
     @Published private(set) var streamSortOrder = StreamSettings.default.streamSortOrder
@@ -53,6 +56,13 @@ final class SettingsViewModel: ObservableObject {
         mutliviewSelectedLabelKey = "place.holder"
         streamSortOrderSelectedLabelKey = "place.holder"
         audioSelectedLabelKey = "place.holder"
+
+        if let version = Bundle.main.releaseVersionNumber,
+           let build = Bundle.main.buildVersionNumber {
+            appVersion = "App Version \(version).\(build)"
+        }
+
+        sdkVersion = "SDK Version \(Constants.sdkVersion)"
 
         setupSettingsObservers()
     }

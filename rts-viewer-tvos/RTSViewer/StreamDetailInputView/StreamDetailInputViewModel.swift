@@ -19,8 +19,18 @@ final class StreamDetailInputViewModel: ObservableObject {
     }
     @Published private(set) var hasSavedStreams: Bool = false
 
+    @Published private(set) var appVersion: String = ""
+    @Published private(set) var sdkVersion: String = ""
+
     init(streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared) {
         self.streamDataManager = streamDataManager
+
+        if let version = Bundle.main.releaseVersionNumber,
+           let build = Bundle.main.buildVersionNumber {
+            appVersion = "App Version \(version).\(build)"
+        }
+
+        sdkVersion = "SDK Version \(Constants.sdkVersion)"
 
         streamDataManager.streamDetailsSubject
             .receive(on: DispatchQueue.main)
