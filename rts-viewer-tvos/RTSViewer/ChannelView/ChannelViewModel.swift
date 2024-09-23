@@ -134,14 +134,6 @@ private extension ChannelViewModel {
                                     if await !self.isWebsocketConnected {
                                         await self.scheduleReconnection()
                                     }
-                                    // TODO: This will stop streaming all screens, needs rethinking
-//                                    await self.update(
-//                                        state: .error(
-//                                            title: .offlineErrorTitle,
-//                                            subtitle: .offlineErrorSubtitle,
-//                                            showLiveIndicator: true
-//                                        )
-//                                    )
                                 }
                             }
                         }
