@@ -10,6 +10,7 @@ struct Channel: Identifiable {
     let streamDetail: StreamPair
     let subscriptionManager: SubscriptionManager
     let videoTracksManager: VideoTracksManager
+    let enableSound: Bool
 }
 
 struct SourcedChannel: Identifiable {
@@ -18,6 +19,7 @@ struct SourcedChannel: Identifiable {
     let subscriptionManager: SubscriptionManager
     let videoTracksManager: VideoTracksManager
     let source: StreamSource
+    let enableSound: Bool
 }
 
 extension SourcedChannel {
@@ -26,6 +28,7 @@ extension SourcedChannel {
                               streamDetail: channel.streamDetail,
                               subscriptionManager: channel.subscriptionManager,
                               videoTracksManager: channel.videoTracksManager,
-                              source: source)
+                              source: source,
+                              enableSound: channel.enableSound)
     }
 }

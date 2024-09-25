@@ -8,7 +8,9 @@ import RTSCore
 import SwiftUI
 
 struct ChannelGridView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
     private let viewModel: ChannelGridViewModel
+    private var theme: Theme { themeManager.theme }
 
     static let numberOfColumns = 2
 
@@ -24,13 +26,15 @@ struct ChannelGridView: View {
 
             LazyVGrid(columns: columns, alignment: .leading) {
                 ForEach(viewModel.channels) { channel in
+                    let isFocused = channel.enableSound
+                    let borderColor = isFocused ? Color(UIColor.Primary.neonPurple400) : Color(UIColor.Neutral.neutral400)
                     let source = channel.source
                     let preferredVideoQuality: VideoQuality = .auto
                     let displayLabel = source.sourceId.displayLabel
                     let viewId = "\(ChannelGridView.self).\(displayLabel)"
                     VideoRendererView(source: source,
                                       isSelectedVideoSource: true,
-                                      isSelectedAudioSource: true,
+                                      isSelectedAudioSource: channel.enableSound,
                                       showSourceLabel: false,
                                       showAudioIndicator: false,
                                       maxWidth: tileWidth,
@@ -40,10 +44,13 @@ struct ChannelGridView: View {
                                       subscriptionManager: channel.subscriptionManager,
                                       videoTracksManager: channel.videoTracksManager)
                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+                        .border(borderColor, width: 3)
                         .onAppear {
                             ChannelGridViewModel.logger.debug("♼ Channel Grid view: Video view appear for \(source.sourceId)")
+                            viewModel.enableSound(for: channel)
                             Task {
                                 await channel.videoTracksManager.enableTrack(for: source, with: preferredVideoQuality, on: viewId)
+
                             }
                         }
                         .onDisappear {

@@ -97,8 +97,10 @@ private extension ChannelViewModel {
                                 switch state {
                                 case let .subscribed(sources: sources):
                                     let activeSources = Array(sources.filter { $0.videoTrack.isActive == true })
+                                    let soundSources = Array(activeSources.filter { $0.audioTrack?.isActive == true })
 
-                                    await self.updateChannelWithSources(channel: channel, sources: activeSources)
+                                    guard !soundSources.isEmpty else { return }
+                                    await self.updateChannelWithSources(channel: channel, sources: soundSources)
 
                                     // Register Video Track events
                                     await withTaskGroup(of: Void.self) { group in
@@ -156,6 +158,7 @@ private extension ChannelViewModel {
 
     // swiftlint:enable function_body_length cyclomatic_complexity
 
+    // TODO: Should be reworked when we have streams with a single source with audio
     func updateChannelWithSources(channel: Channel, sources: [StreamSource]) {
         guard !sourcedChannels.contains(where: { $0.id == channel.id }),
               sources.count > 0 else { return }
