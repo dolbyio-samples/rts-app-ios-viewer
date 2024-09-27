@@ -35,7 +35,7 @@ class ChannelDetailInputViewModel: ObservableObject {
         var confirmedChannels = [Channel]()
         let streamDetails = createStreamDetailArray()
         for (index, detail) in streamDetails.enumerated() {
-            guard let channel = setupChannel(for: detail, enableSound: index == 0) else { return }
+            guard let channel = setupChannel(for: detail) else { return }
             confirmedChannels.append(channel)
         }
 
@@ -46,13 +46,12 @@ class ChannelDetailInputViewModel: ObservableObject {
 }
 
 private extension ChannelDetailInputViewModel {
-    func setupChannel(for detail: StreamPair, enableSound: Bool) -> Channel? {
+    func setupChannel(for detail: StreamPair) -> Channel? {
         let subscriptionManager = SubscriptionManager()
         let videoTracksManager = VideoTracksManager(subscriptionManager: subscriptionManager)
         return Channel(streamDetail: detail,
                        subscriptionManager: subscriptionManager,
-                       videoTracksManager: videoTracksManager,
-                       enableSound: enableSound)
+                       videoTracksManager: videoTracksManager)
     }
 
     func createStreamDetailArray() -> [StreamPair] {

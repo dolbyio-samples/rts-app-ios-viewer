@@ -8,12 +8,9 @@ import RTSCore
 import SwiftUI
 
 struct ChannelGridView: View {
-    @ObservedObject private var themeManager = ThemeManager.shared
-    @FocusState private var isFocused: Bool
-    private let viewModel: ChannelGridViewModel
-    private var theme: Theme { themeManager.theme }
-
     static let numberOfColumns = 2
+    @ObservedObject var viewModel: ChannelGridViewModel
+    @State var showSettingsView: Bool = false
 
     init(viewModel: ChannelGridViewModel) {
         self.viewModel = viewModel
@@ -26,17 +23,17 @@ struct ChannelGridView: View {
             let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: Self.numberOfColumns)
 
             LazyVGrid(columns: columns, alignment: .leading) {
-                ForEach(viewModel.channels) { channel in
+                ForEach(Array(viewModel.channels.enumerated()), id: \.offset) { index, channel in
                     let source = channel.source
                     let preferredVideoQuality: VideoQuality = .auto
                     let displayLabel = source.sourceId.displayLabel
                     let viewId = "\(ChannelGridView.self).\(displayLabel)"
+                    let focusedRendererViewModel = FocusedRendererViewModel(channel: channel, currentlyFocusedChannel: $viewModel.currentlyFocusedChannel, isFocused: index == 0)
 
-                    FocusableVideoRenderView(channel: channel, width: tileWidth, height: .infinity)
+                    FocusableVideoRendererView(viewModel: focusedRendererViewModel, width: tileWidth, height: .infinity)
                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                         .onAppear {
                             ChannelGridViewModel.logger.debug("♼ Channel Grid view: Video view appear for \(source.sourceId)")
-                            viewModel.enableSound(for: channel)
                             Task {
                                 await channel.videoTracksManager.enableTrack(for: source, with: preferredVideoQuality, on: viewId)
                             }
@@ -48,10 +45,28 @@ struct ChannelGridView: View {
                             }
                         }
                         .id(source.id)
-                        .id(channel.source.id)
                 }
             }
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+//            .overlay(alignment: .trailing) {
+//                if showSettingsView {
+//                    SettingsView(
+//                        source: source,
+//                        showStatsView: $showStatsView,
+//                        showLiveIndicator: Binding(get: {
+//                            viewModel.isLiveIndicatorEnabled
+//                        }, set: {
+//                            viewModel.updateLiveIndicator($0)
+//                        }),
+//                        videoQualityList: viewModel.videoQualityList,
+//                        selectedVideoQuality: viewModel.selectedVideoQuality,
+//                        rendererRegistry: viewModel.rendererRegistry,
+//                        onSelectVideoQuality: { source, videoQuality in
+//                            viewModel.select(videoQuality: videoQuality, for: source)
+//                        }
+//                    )
+//                }
+//            }
         }
     }
 }

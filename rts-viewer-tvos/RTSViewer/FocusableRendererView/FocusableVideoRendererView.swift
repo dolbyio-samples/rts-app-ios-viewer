@@ -4,14 +4,13 @@
 
 import SwiftUI
 
-struct FocusableVideoRenderView: View {
-    @State private var isFocused: Bool = false
-    let channel: SourcedChannel
+struct FocusableVideoRendererView: View {
+    @ObservedObject var viewModel: FocusedRendererViewModel
     let width: CGFloat
     let height: CGFloat
 
-    init(channel: SourcedChannel, width: CGFloat, height: CGFloat) {
-        self.channel = channel
+    init(viewModel: FocusedRendererViewModel, width: CGFloat, height: CGFloat) {
+        self.viewModel = viewModel
         self.width = width
         self.height = height
     }
@@ -19,19 +18,21 @@ struct FocusableVideoRenderView: View {
     var body: some View {
         ZStack {
             videoRendererView
-                .border(isFocused ? .purple : .gray, width: 2)
+                .border(viewModel.isFocused ? .purple : .gray, width: 2)
         }
         .focusable(true) { isFocused in
-            self.isFocused = isFocused
+            self.viewModel.isFocused = isFocused
+            viewModel.updateFocus(with: isFocused)
         }
-        .animation(.easeInOut, value: isFocused)
+        .animation(.easeInOut, value: viewModel.isFocused)
     }
 
     @ViewBuilder
     private var videoRendererView: some View {
+        let channel = viewModel.channel
         VideoRendererView(source: channel.source,
                           isSelectedVideoSource: true,
-                          isSelectedAudioSource: channel.enableSound,
+                          isSelectedAudioSource: true,
                           showSourceLabel: false,
                           showAudioIndicator: false,
                           maxWidth: width,
