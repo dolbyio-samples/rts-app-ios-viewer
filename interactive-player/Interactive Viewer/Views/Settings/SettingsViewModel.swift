@@ -3,13 +3,15 @@
 //
 
 import Combine
-import Foundation
 import DolbyIOUIKit
+import Foundation
+import MillicastSDK
 import RTSCore
 import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
-
+    let sdkVersion: String = "SDK Version \(MCLogger.getVersion())"
+    var appVersion: String = ""
     private let settingsManager: SettingsManager
     private let mode: SettingsMode
 
@@ -45,14 +47,19 @@ final class SettingsViewModel: ObservableObject {
 
         switch mode {
         case .global:
-            self.settingsScreenTitle = "settings.global.title.label"
+            settingsScreenTitle = "settings.global.title.label"
         case .stream:
-            self.settingsScreenTitle = "settings.stream.title.label"
+            settingsScreenTitle = "settings.stream.title.label"
         }
 
         mutliviewSelectedLabelKey = "place.holder"
         streamSortOrderSelectedLabelKey = "place.holder"
         audioSelectedLabelKey = "place.holder"
+
+        if let version = Bundle.main.releaseVersionNumber,
+           let build = Bundle.main.buildVersionNumber {
+            appVersion = "App Version \(version) \(build)"
+        }
 
         setupSettingsObservers()
     }
@@ -117,7 +124,6 @@ final class SettingsViewModel: ObservableObject {
 }
 
 extension SettingsViewModel {
-
     private func setupSettingsObservers() {
         settingsManager.publisher(for: mode)
             .receive(on: DispatchQueue.main)
@@ -129,10 +135,10 @@ extension SettingsViewModel {
     }
 
     private func updateState(for settings: StreamSettings) {
-        self.showSourceLabels = settings.showSourceLabels
-        self.multiviewLayout = settings.multiviewLayout
-        self.streamSortOrder = settings.streamSortOrder
-        self.audioSelection = settings.audioSelection
+        showSourceLabels = settings.showSourceLabels
+        multiviewLayout = settings.multiviewLayout
+        streamSortOrder = settings.streamSortOrder
+        audioSelection = settings.audioSelection
 
         updateMultiviewSelection()
         updateStreamSortOrderSelection()
@@ -182,23 +188,24 @@ extension SettingsViewModel {
         case .global:
             items = [
                 .init(key: "audio-selection.first-source.label",
-                          selected: audioSelection == .firstSource),
+                      selected: audioSelection == .firstSource),
                 .init(key: "audio-selection.follow-video.label",
-                          selected: audioSelection == .followVideo)]
+                      selected: audioSelection == .followVideo)
+            ]
         default:
             items = [
                 .init(key: "audio-selection.first-source.label",
-                          selected: audioSelection == .firstSource),
+                      selected: audioSelection == .firstSource),
                 .init(key: "audio-selection.follow-video.label",
-                          selected: audioSelection == .followVideo),
+                      selected: audioSelection == .followVideo),
                 .init(key: "audio-selection.main-source.label",
-                          selected: audioSelection == .mainSource)
+                      selected: audioSelection == .mainSource)
             ]
 
             settings.audioSources.forEach {
                 items.append(
                     .init(key: LocalizedStringKey($0),
-                                  selected: audioSelection == .source(sourceId: $0))
+                          selected: audioSelection == .source(sourceId: $0))
                 )
             }
         }
