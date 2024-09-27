@@ -57,9 +57,8 @@ final class SettingsViewModel: ObservableObject {
         audioSelectedLabelKey = "place.holder"
 
         if let version = Bundle.main.releaseVersionNumber,
-           let build = Bundle.main.buildVersionNumber
-        {
-            appVersion = "App Version \(version).\(build)"
+           let build = Bundle.main.buildVersionNumber {
+            appVersion = "App Version \(version) \(build)"
         }
 
         setupSettingsObservers()
