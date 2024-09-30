@@ -32,6 +32,7 @@
 		89C391F12CA7148500861FD5 /* FocusedRendererViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F02CA7148500861FD5 /* FocusedRendererViewModel.swift */; };
 		89C391F42CA752AE00861FD5 /* SettingsMultichannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F32CA752AE00861FD5 /* SettingsMultichannelView.swift */; };
 		89C391F62CA753E500861FD5 /* SettingMultichannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F52CA753E500861FD5 /* SettingMultichannelViewModel.swift */; };
+		89C391F82CAB552A00861FD5 /* GridButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F72CAB552A00861FD5 /* GridButtonStyle.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC82C1010BE001733EA /* Assets.xcassets */; };
 		E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC92C1010BE001733EA /* Localizable.strings */; };
@@ -131,6 +132,7 @@
 		89C391F02CA7148500861FD5 /* FocusedRendererViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusedRendererViewModel.swift; sourceTree = "<group>"; };
 		89C391F32CA752AE00861FD5 /* SettingsMultichannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMultichannelView.swift; sourceTree = "<group>"; };
 		89C391F52CA753E500861FD5 /* SettingMultichannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingMultichannelViewModel.swift; sourceTree = "<group>"; };
+		89C391F72CAB552A00861FD5 /* GridButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridButtonStyle.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E80E2BC82C1010BE001733EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E80E2BC92C1010BE001733EA /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 			children = (
 				89C391C62C98CA2E00861FD5 /* ChannelGridView.swift */,
 				89C391C82C98CA3D00861FD5 /* ChannelGridViewModel.swift */,
+				89C391F72CAB552A00861FD5 /* GridButtonStyle.swift */,
 			);
 			path = ChannelGridView;
 			sourceTree = "<group>";
@@ -708,6 +711,7 @@
 				89C391D02C9A0D1700861FD5 /* StreamDetailInputBox.swift in Sources */,
 				E89D28902C747AFE002254AB /* SerialTasks.swift in Sources */,
 				89C391E02C9CB5A600861FD5 /* SourceId+Display.swift in Sources */,
+				89C391F82CAB552A00861FD5 /* GridButtonStyle.swift in Sources */,
 				89C391C22C98C9A900861FD5 /* ChannelViewModel.swift in Sources */,
 				89C391DE2C9CA96600861FD5 /* VideoRendererViewModel.swift in Sources */,
 				89C391C42C98C9D700861FD5 /* Channel.swift in Sources */,

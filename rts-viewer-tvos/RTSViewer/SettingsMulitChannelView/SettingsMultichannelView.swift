@@ -8,9 +8,8 @@ import SwiftUI
 
 struct SettingsMultichannelView: View {
     @State private var showSimulcastView: Bool = false
-    @Binding private var overlayIsFocused: Bool
+    @Binding private var showSettingsView: Bool
     @Binding private var showStatsView: Bool
-//    @Binding private var returnFocus: Channel?
     @FocusState private var focus: FocusableField?
 
     private let viewModel: SettingMultichannelViewModel
@@ -24,13 +23,13 @@ struct SettingsMultichannelView: View {
 
     init(
         viewModel: SettingMultichannelViewModel,
-        overlayIsFocused: Binding<Bool>,
+        showSettingsView: Binding<Bool>,
         showStatsView: Binding<Bool>,
         onSelectVideoQuality: @escaping (Channel, VideoQuality) -> Void
     ) {
         self.viewModel = viewModel
         self._showStatsView = showStatsView
-        self._overlayIsFocused = overlayIsFocused
+        self._showSettingsView = showSettingsView
         self.onSelectVideoQuality = onSelectVideoQuality
     }
 
@@ -73,6 +72,9 @@ struct SettingsMultichannelView: View {
         .onAppear {
             focus = .simulcastSelection
 //            focus = viewModel.videoQualityList.isEmpty ? .streamStatisticsToggle : .simulcastSelection
+        }
+        .onExitCommand {
+            showSettingsView.toggle()
         }
     }
 
