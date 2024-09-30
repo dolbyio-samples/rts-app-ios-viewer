@@ -5,19 +5,35 @@
 import Foundation
 import RTSCore
 
-struct Channel: Identifiable {
+struct Channel: Identifiable, Hashable, Equatable {
     let id = UUID()
     let streamDetail: StreamPair
     let subscriptionManager: SubscriptionManager
     let videoTracksManager: VideoTracksManager
+
+    static func == (lhs: Channel, rhs: Channel) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        return hasher.combine(id)
+    }
 }
 
-struct SourcedChannel: Identifiable {
+struct SourcedChannel: Identifiable, Hashable, Equatable {
     let id: UUID
     let streamDetail: StreamPair
     let subscriptionManager: SubscriptionManager
     let videoTracksManager: VideoTracksManager
     let source: StreamSource
+
+    static func == (lhs: SourcedChannel, rhs: SourcedChannel) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        return hasher.combine(id)
+    }
 }
 
 extension SourcedChannel {

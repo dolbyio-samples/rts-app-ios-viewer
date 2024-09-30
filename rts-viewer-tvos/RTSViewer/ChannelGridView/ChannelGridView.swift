@@ -11,6 +11,10 @@ struct ChannelGridView: View {
     static let numberOfColumns = 2
     @ObservedObject var viewModel: ChannelGridViewModel
     @State var showSettingsView: Bool = false
+    @State private var showStatsView = false
+
+    @FocusState var overlayIsFocused: Bool
+    @FocusState var focusedChannel: SourcedChannel?
 
     init(viewModel: ChannelGridViewModel) {
         self.viewModel = viewModel
@@ -28,10 +32,21 @@ struct ChannelGridView: View {
                     let preferredVideoQuality: VideoQuality = .auto
                     let displayLabel = source.sourceId.displayLabel
                     let viewId = "\(ChannelGridView.self).\(displayLabel)"
-                    let focusedRendererViewModel = FocusedRendererViewModel(channel: channel, currentlyFocusedChannel: $viewModel.currentlyFocusedChannel, isFocused: index == 0)
-
-                    FocusableVideoRendererView(viewModel: focusedRendererViewModel, width: tileWidth, height: .infinity)
+                    let focusedRendererViewModel = FocusedRendererViewModel(channel: channel, currentlyFocusedChannel: $viewModel.currentlyFocusedChannel)
+                    FocusableVideoRendererView(viewModel: focusedRendererViewModel,
+                                               showSettingsView: $showSettingsView,
+                                               width: tileWidth,
+                                               height: .infinity,
+                                               isFocused: index == 0)
                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+                        .onLongPressGesture(minimumDuration: 0.1, perform: {
+                            showSettingsView.toggle()
+                            print("$$$ open/close settings")
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                overlayIsFocused = true
+                            }
+                        })
+                        .focused($focusedChannel, equals: channel)
                         .onAppear {
                             ChannelGridViewModel.logger.debug("♼ Channel Grid view: Video view appear for \(source.sourceId)")
                             Task {
@@ -48,25 +63,15 @@ struct ChannelGridView: View {
                 }
             }
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
-//            .overlay(alignment: .trailing) {
-//                if showSettingsView {
-//                    SettingsView(
-//                        source: source,
-//                        showStatsView: $showStatsView,
-//                        showLiveIndicator: Binding(get: {
-//                            viewModel.isLiveIndicatorEnabled
-//                        }, set: {
-//                            viewModel.updateLiveIndicator($0)
-//                        }),
-//                        videoQualityList: viewModel.videoQualityList,
-//                        selectedVideoQuality: viewModel.selectedVideoQuality,
-//                        rendererRegistry: viewModel.rendererRegistry,
-//                        onSelectVideoQuality: { source, videoQuality in
-//                            viewModel.select(videoQuality: videoQuality, for: source)
-//                        }
-//                    )
-//                }
-//            }
+            .overlay(alignment: .trailing) {
+                if showSettingsView {
+//                    let settingViewModel = SettingMultichannelViewModel(channel: viewModel.currentlyFocusedChannel)
+//                    SettingsMultichannelView(viewModel: settingViewModel, overlayIsFocused: $overlayIsFocused, showStatsView: $showStatsView) { _, _ in
+//                        print("change quality of selected")
+//                    }
+//                    .focused($overlayIsFocused)
+                }
+            }
         }
     }
 }

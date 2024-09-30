@@ -7,17 +7,12 @@ import SwiftUI
 
 @MainActor
 class FocusedRendererViewModel: ObservableObject {
-    @Published var isFocused: Bool
     @Binding var currentlyFocusedChannel: SourcedChannel?
     let channel: SourcedChannel
 
-    init(channel: SourcedChannel, currentlyFocusedChannel: Binding<SourcedChannel?>, isFocused: Bool) {
-        self.isFocused = isFocused
+    init(channel: SourcedChannel, currentlyFocusedChannel: Binding<SourcedChannel?>) {
         self.channel = channel
         self._currentlyFocusedChannel = currentlyFocusedChannel
-
-        guard let currentlyFocusedChannel = self.currentlyFocusedChannel else { return }
-        self.isFocused = currentlyFocusedChannel.id == channel.id
     }
 
     func updateFocus(with isFocused: Bool) {

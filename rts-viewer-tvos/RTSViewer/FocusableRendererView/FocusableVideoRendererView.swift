@@ -2,29 +2,34 @@
 //  FocusableItemView.swift
 //
 
+import DolbyIOUIKit
 import SwiftUI
 
 struct FocusableVideoRendererView: View {
     @ObservedObject var viewModel: FocusedRendererViewModel
+    @Binding var showSettingsView: Bool
+    @State var isFocused: Bool
     let width: CGFloat
     let height: CGFloat
 
-    init(viewModel: FocusedRendererViewModel, width: CGFloat, height: CGFloat) {
+    init(viewModel: FocusedRendererViewModel, showSettingsView: Binding<Bool>, width: CGFloat, height: CGFloat, isFocused: Bool) {
         self.viewModel = viewModel
+        self._showSettingsView = showSettingsView
         self.width = width
         self.height = height
+        self.isFocused = isFocused
     }
 
     var body: some View {
         ZStack {
             videoRendererView
-                .border(viewModel.isFocused ? .purple : .gray, width: 2)
+                .border(isFocused ? .purple : .gray, width: 2)
         }
         .focusable(true) { isFocused in
-            self.viewModel.isFocused = isFocused
+            self.isFocused = isFocused
             viewModel.updateFocus(with: isFocused)
         }
-        .animation(.easeInOut, value: viewModel.isFocused)
+        .animation(.easeInOut, value: isFocused)
     }
 
     @ViewBuilder
@@ -41,5 +46,11 @@ struct FocusableVideoRendererView: View {
                           preferredVideoQuality: .auto,
                           subscriptionManager: channel.subscriptionManager,
                           videoTracksManager: channel.videoTracksManager)
+        .overlay(alignment: .bottomTrailing) {
+            IconView(name: .settings)
+                .padding()
+                .opacity(isFocused ? 1 : 0)
+                .animation(.easeInOut, value: isFocused)
+        }
     }
 }
