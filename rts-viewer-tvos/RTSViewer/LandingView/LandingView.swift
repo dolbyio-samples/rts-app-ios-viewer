@@ -35,6 +35,25 @@ struct LandingView: View {
                     Spacer()
                     streamInputBox
 
+                    Spacer()
+                    HStack(spacing: Layout.spacing6x) {
+                        DolbyIOUIKit.Text(
+                            text: "\(viewModel.appVersion)",
+                            font: .avenirNextRegular(
+                                withStyle: .caption,
+                                size: FontSize.caption1
+                            )
+                        )
+
+                        DolbyIOUIKit.Text(
+                            text: "\(viewModel.sdkVersion)",
+                            font: .avenirNextRegular(
+                                withStyle: .caption,
+                                size: FontSize.caption1
+                            )
+                        )
+                    }
+
                     FooterView(text: "stream-detail-input.footnote.label")
                         .padding(.bottom, Layout.spacing3x)
                 }

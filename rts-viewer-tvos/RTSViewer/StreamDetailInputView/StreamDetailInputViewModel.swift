@@ -28,15 +28,21 @@ final class StreamDetailInputViewModel: ObservableObject {
         }
     }
 
-    let sdkVersion = "SDK Version \(MCLogger.getVersion())"
-    var appVersion: String = ""
+    init(
+        streamName: Binding<String>,
+        accountID: Binding<String>,
+        channels: Binding<[Channel]?>,
+        isShowingStreamingView: Binding<Bool>,
+        isShowingChannelView: Binding<Bool>,
+        isShowingRecentStreams: Binding<Bool>,
+        streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared
+    ) {
+        self._streamName = streamName
+        self._accountID = accountID
+        self._channels = channels
+        self._isShowingStreamingView = isShowingStreamingView
+        self._isShowingChannelView = isShowingChannelView
         self.streamDataManager = streamDataManager
-
-        if let version = Bundle.main.releaseVersionNumber,
-           let build = Bundle.main.buildVersionNumber
-        {
-            appVersion = "App Version \(version) \(build)"
-        }
 
         streamDataManager.streamDetailsSubject
             .receive(on: DispatchQueue.main)

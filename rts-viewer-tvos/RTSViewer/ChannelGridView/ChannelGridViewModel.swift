@@ -137,7 +137,7 @@ private extension ChannelGridViewModel {
                 .store(in: &cancellables)
         }
     }
-    
+
     func clearLayerInformation() {
         videoQualityListForChannel.removeAll()
         selectedvideoQualityForChannel.removeAll()
