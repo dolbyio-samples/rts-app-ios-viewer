@@ -4,6 +4,7 @@
 
 import Combine
 import Foundation
+import MillicastSDK
 import RTSCore
 import SwiftUI
 
@@ -27,21 +28,15 @@ final class StreamDetailInputViewModel: ObservableObject {
         }
     }
 
-    init(
-        streamName: Binding<String>,
-        accountID: Binding<String>,
-        channels: Binding<[Channel]?>,
-        isShowingStreamingView: Binding<Bool>,
-        isShowingChannelView: Binding<Bool>,
-        isShowingRecentStreams: Binding<Bool>,
-        streamDataManager: StreamDataManagerProtocol = StreamDataManager.shared
-    ) {
-        self._streamName = streamName
-        self._accountID = accountID
-        self._channels = channels
-        self._isShowingStreamingView = isShowingStreamingView
-        self._isShowingChannelView = isShowingChannelView
+    let sdkVersion = "SDK Version \(MCLogger.getVersion())"
+    var appVersion: String = ""
         self.streamDataManager = streamDataManager
+
+        if let version = Bundle.main.releaseVersionNumber,
+           let build = Bundle.main.buildVersionNumber
+        {
+            appVersion = "App Version \(version) \(build)"
+        }
 
         streamDataManager.streamDetailsSubject
             .receive(on: DispatchQueue.main)

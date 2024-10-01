@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		896AECC02C812225002CD12D /* V1toV2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 896AECBF2C812225002CD12D /* V1toV2.xcmappingmodel */; };
+		89C391E22CA218CC00861FD5 /* Bundle+Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391E12CA218CC00861FD5 /* Bundle+Version.swift */; };
 		B6376BC22A1C4120007AD9D9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6376BC12A1C4120007AD9D9 /* Constants.swift */; };
 		E82112CE2C2A33150003DBF7 /* VideoQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112CB2C2A33140003DBF7 /* VideoQuality.swift */; };
 		E82112CF2C2A33150003DBF7 /* StreamSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82112CA2C2A33140003DBF7 /* StreamSettings.swift */; };
@@ -91,6 +92,7 @@
 /* Begin PBXFileReference section */
 		3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTSViewer.swift; sourceTree = "<group>"; };
 		896AECBF2C812225002CD12D /* V1toV2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = V1toV2.xcmappingmodel; sourceTree = "<group>"; };
+		89C391E12CA218CC00861FD5 /* Bundle+Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Version.swift"; sourceTree = "<group>"; };
 		B6376BC12A1C4120007AD9D9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E8067F482A329F680083E94B /* InteractiveVieweriOSFirebaseReleaseSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = InteractiveVieweriOSFirebaseReleaseSettings.xcconfig; sourceTree = "<group>"; };
 		E82112C72C2A330C0003DBF7 /* PiPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPManager.swift; sourceTree = "<group>"; };
@@ -405,6 +407,7 @@
 				E87FD1822AD8E1EF00E9164A /* DateProvider.swift */,
 				E87FD1842AD8E1EF00E9164A /* Task+Delayed.swift */,
 				E8B4B14B2ADD03DF003DDA44 /* URL+LogPath.swift */,
+				89C391E12CA218CC00861FD5 /* Bundle+Version.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -600,6 +603,7 @@
 				E821130F2C2A37900003DBF7 /* LiveIndicatorViewModel.swift in Sources */,
 				E83CD9F92A10878C008690FD /* StreamDetailInputScreen.swift in Sources */,
 				E846A8A22C785D220052D6C8 /* V2MigrationPolicy.swift in Sources */,
+				89C391E22CA218CC00861FD5 /* Bundle+Version.swift in Sources */,
 				E82112CF2C2A33150003DBF7 /* StreamSettings.swift in Sources */,
 				E82112D82C2A331C0003DBF7 /* UserDefaultsBacked.swift in Sources */,
 				E82112D12C2A33150003DBF7 /* StreamDetail.swift in Sources */,

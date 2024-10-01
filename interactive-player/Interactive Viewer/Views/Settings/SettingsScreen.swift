@@ -50,44 +50,60 @@ struct SettingsScreen<Content: View>: View {
                 }
                 .hidden()
 
-            List {
-                moreSettings
+            VStack {
+                List {
+                    moreSettings
 
-                Toggle(isOn: Binding<Bool>(
-                    get: { viewModel.showSourceLabels },
-                    set: { viewModel.setShowSourceLabels($0) })
-                ) {
-                    Text(
-                        "settings.show-source-labels.label",
-                        bundle: .main,
-                        style: .titleMedium,
-                        font: .custom("AvenirNext-Regular", size: FontSize.body)
+                    Toggle(isOn: Binding<Bool>(
+                        get: { viewModel.showSourceLabels },
+                        set: { viewModel.setShowSourceLabels($0) })
+                    ) {
+                        Text(
+                            "settings.show-source-labels.label",
+                            bundle: .main,
+                            style: .titleMedium,
+                            font: .custom("AvenirNext-Regular", size: FontSize.body)
+                        )
+                    }
+
+                    SettingsCell(text: "settings.default-multiview-layout.label",
+                                 textColor: .white,
+                                 value: viewModel.mutliviewSelectedLabelKey,
+                                 valueColor: .gray,
+                                 image: .textLink,
+                                 bundle: .main,
+                                 action: { isShowingMultiviewScreen = true }
+                    )
+
+                    SettingsCell(text: "settings.stream-sort-order.label",
+                                 textColor: .white,
+                                 value: viewModel.streamSortOrderSelectedLabelKey,
+                                 image: .textLink,
+                                 bundle: .main,
+                                 action: { isShowingStreamSortOrderScreen = true }
+                    )
+
+                    SettingsCell(text: "settings.audio-selection.label",
+                                 textColor: .white,
+                                 value: viewModel.audioSelectedLabelKey,
+                                 image: .textLink,
+                                 bundle: .main,
+                                 action: { isShowingAudioSelectionScreen = true }
                     )
                 }
 
-                SettingsCell(text: "settings.default-multiview-layout.label",
-                             textColor: .white,
-                             value: viewModel.mutliviewSelectedLabelKey,
-                             valueColor: .gray,
-                             image: .textLink,
-                             bundle: .main,
-                             action: { isShowingMultiviewScreen = true }
+                Spacer()
+
+                Text(
+                    "\(viewModel.appVersion)",
+                    style: .bodyMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.body)
                 )
 
-                SettingsCell(text: "settings.stream-sort-order.label",
-                             textColor: .white,
-                             value: viewModel.streamSortOrderSelectedLabelKey,
-                             image: .textLink,
-                             bundle: .main,
-                             action: { isShowingStreamSortOrderScreen = true }
-                )
-
-                SettingsCell(text: "settings.audio-selection.label",
-                             textColor: .white,
-                             value: viewModel.audioSelectedLabelKey,
-                             image: .textLink,
-                             bundle: .main,
-                             action: { isShowingAudioSelectionScreen = true }
+                Text(
+                    "\(viewModel.sdkVersion)",
+                    style: .bodyMedium,
+                    font: .custom("AvenirNext-Regular", size: FontSize.body)
                 )
             }
             .environment(\.defaultMinListRowHeight, Layout.spacing6x)
