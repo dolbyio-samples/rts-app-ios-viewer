@@ -33,6 +33,7 @@
 		89C391F42CA752AE00861FD5 /* SettingsMultichannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F32CA752AE00861FD5 /* SettingsMultichannelView.swift */; };
 		89C391F62CA753E500861FD5 /* SettingMultichannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F52CA753E500861FD5 /* SettingMultichannelViewModel.swift */; };
 		89C391F82CAB552A00861FD5 /* GridButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F72CAB552A00861FD5 /* GridButtonStyle.swift */; };
+		89FDEBB92CAC6163003A1856 /* StreamConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FDEBB82CAC6163003A1856 /* StreamConfig.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC82C1010BE001733EA /* Assets.xcassets */; };
 		E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC92C1010BE001733EA /* Localizable.strings */; };
@@ -133,11 +134,12 @@
 		89C391F32CA752AE00861FD5 /* SettingsMultichannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMultichannelView.swift; sourceTree = "<group>"; };
 		89C391F52CA753E500861FD5 /* SettingMultichannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingMultichannelViewModel.swift; sourceTree = "<group>"; };
 		89C391F72CAB552A00861FD5 /* GridButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridButtonStyle.swift; sourceTree = "<group>"; };
+		89FDEBB82CAC6163003A1856 /* StreamConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamConfig.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E80E2BC82C1010BE001733EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E80E2BC92C1010BE001733EA /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E80E2BCA2C1010BE001733EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = IDETemplateMacros.plist; path = RTSViewer.xcworkspace/xcshareddata/IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
+		E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = IDETemplateMacros.plist; sourceTree = SOURCE_ROOT; };
 		E82A0C1A296D0F04007214B8 /* LandingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		E83CDA2F2A10917A008690FD /* FooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		E83CDA312A10917A008690FD /* NavigationHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationHeaderView.swift; sourceTree = "<group>"; };
@@ -204,6 +206,8 @@
 				E8A0C5CA2A10B88000C1D99B /* Frameworks */,
 				3FE90C1926B2AF4200B206A3 /* Products */,
 				3FE90C1A26B2AF4200B206A3 /* RTSViewer */,
+				E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */,
+				3FA8DBA82704AECD009713E8 /* README.md */,
 				E8752B60298CA4C4002D5C2B /* RTSViewer TVOSTests */,
 			);
 			sourceTree = "<group>";
@@ -220,27 +224,25 @@
 		3FE90C1A26B2AF4200B206A3 /* RTSViewer */ = {
 			isa = PBXGroup;
 			children = (
-				89C391DA2C9CA93400861FD5 /* VideoRenderView */,
-				89C391D52C9C962900861FD5 /* Managers */,
+				3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */,
 				3FE90C1D26B2AF4200B206A3 /* ContentView.swift */,
-				E81D7C74296FAEE400856B89 /* IDETemplateMacros.plist */,
+				89C391D52C9C962900861FD5 /* Managers */,
 				E8752B4C298C75A4002D5C2B /* Models */,
 				E8C47C6B29778BAA0026E877 /* Persistence */,
-				3FE90C2126B2AF4300B206A3 /* Preview Content */,
-				3FA8DBA82704AECD009713E8 /* README.md */,
 				E8D1947929717D050080C4E0 /* RecentStreamsView */,
 				E80E2BC72C1010BE001733EA /* Resources */,
 				E83CDA2D2A10917A008690FD /* ReusableViews */,
-				3FE90C1B26B2AF4200B206A3 /* RTSViewer.swift */,
 				89C391D12C9B733600861FD5 /* LandingView */,
 				E82A0C19296D0F04007214B8 /* StreamDetailInputView */,
 				89C391CA2C9A0A4300861FD5 /* ChannelDetailInputView */,
 				E844ABEA296DA4C60067B78C /* StreamingView */,
+				89C391DA2C9CA93400861FD5 /* VideoRenderView */,
 				89C391BE2C98C89400861FD5 /* ChannelView */,
 				89C391C52C98CA1E00861FD5 /* ChannelGridView */,
 				89C391EF2CA7146300861FD5 /* FocusableRendererView */,
 				89C391F22CA7528E00861FD5 /* SettingsMulitChannelView */,
 				E82FC5042977CF2A0050777F /* Utils */,
+				3FE90C2126B2AF4300B206A3 /* Preview Content */,
 			);
 			path = RTSViewer;
 			sourceTree = "<group>";
@@ -460,6 +462,7 @@
 		E8752B4C298C75A4002D5C2B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				89FDEBB82CAC6163003A1856 /* StreamConfig.swift */,
 				E8752B4D298C75BD002D5C2B /* StreamDetail.swift */,
 				E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */,
 				89C391C32C98C9D700861FD5 /* Channel.swift */,
@@ -727,6 +730,7 @@
 				E83F0F962C192ECF00F6FA6B /* LiveIndicatorView.swift in Sources */,
 				89C391D72C9C963A00861FD5 /* VideoTracksManager.swift in Sources */,
 				631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */,
+				89FDEBB92CAC6163003A1856 /* StreamConfig.swift in Sources */,
 				E8BA8E192991E8B30043DEE1 /* SimulcastViewModel.swift in Sources */,
 				89C391D92C9C9EF500861FD5 /* String+Error.swift in Sources */,
 				E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,

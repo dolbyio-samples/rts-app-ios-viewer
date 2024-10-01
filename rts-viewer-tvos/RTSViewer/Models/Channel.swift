@@ -7,7 +7,7 @@ import RTSCore
 
 struct Channel: Identifiable, Hashable, Equatable {
     let id = UUID()
-    let streamDetail: StreamPair
+    let streamConfig: StreamConfig
     let subscriptionManager: SubscriptionManager
     let videoTracksManager: VideoTracksManager
 
@@ -22,7 +22,7 @@ struct Channel: Identifiable, Hashable, Equatable {
 
 struct SourcedChannel: Identifiable, Hashable, Equatable {
     let id: UUID
-    let streamDetail: StreamPair
+    let streamConfig: StreamConfig
     let subscriptionManager: SubscriptionManager
     let videoTracksManager: VideoTracksManager
     let source: StreamSource
@@ -39,7 +39,7 @@ struct SourcedChannel: Identifiable, Hashable, Equatable {
 extension SourcedChannel {
     static func build(from channel: Channel, source: StreamSource) -> SourcedChannel {
         return SourcedChannel(id: channel.id,
-                              streamDetail: channel.streamDetail,
+                              streamConfig: channel.streamConfig,
                               subscriptionManager: channel.subscriptionManager,
                               videoTracksManager: channel.videoTracksManager,
                               source: source)

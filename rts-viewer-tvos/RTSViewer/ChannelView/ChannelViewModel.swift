@@ -49,9 +49,11 @@ final class ChannelViewModel: ObservableObject {
     func viewStream(with channel: Channel) {
         Task(priority: .userInitiated) {
             let subscriptionManager = channel.subscriptionManager
+            let configuration = SubscriptionConfiguration(subscribeAPI: channel.streamConfig.apiUrl)
             _ = try await subscriptionManager.subscribe(
-                streamName: channel.streamDetail.streamName,
-                accountID: channel.streamDetail.accountID
+                streamName: channel.streamConfig.streamName,
+                accountID: channel.streamConfig.accountId,
+                configuration: configuration
             )
         }
     }

@@ -33,19 +33,7 @@ struct LandingView: View {
 
                 VStack {
                     Spacer()
-                    TabView {
-                        let streamDetailInputViewModel = StreamDetailInputViewModel(streamName: $viewModel.streamName,
-                                                                                    accountID: $viewModel.accountID,
-                                                                                    isShowingStreamingView: $viewModel.isShowingStreamingView,
-                                                                                    isShowingRecentStreams: $viewModel.isShowingRecentStreams)
-                        StreamDetailInputBox(viewModel: streamDetailInputViewModel)
-                            .tabItem { Label("SingleView", systemImage: "tv") }
-
-                        let channelDetailInputViewModel = ChannelDetailInputViewModel(channels: $viewModel.channels,
-                                                                                      isShowingChannelView: $viewModel.isShowingChannelView)
-                        ChannelDetailInputBox(viewModel: channelDetailInputViewModel)
-                            .tabItem { Label("MultiChannel", systemImage: "tv") }
-                    }
+                    streamInputBox
 
                     FooterView(text: "stream-detail-input.footnote.label")
                         .padding(.bottom, Layout.spacing3x)
@@ -69,6 +57,16 @@ struct LandingView: View {
                 action: {}
             )
         })
+    }
+
+    @ViewBuilder var streamInputBox: some View {
+        let streamDetailInputViewModel = StreamDetailInputViewModel(streamName: $viewModel.streamName,
+                                                                    accountID: $viewModel.accountID,
+                                                                    channels: $viewModel.channels,
+                                                                    isShowingStreamingView: $viewModel.isShowingStreamingView,
+                                                                    isShowingChannelView: $viewModel.isShowingChannelView,
+                                                                    isShowingRecentStreams: $viewModel.isShowingRecentStreams)
+        StreamDetailInputBox(viewModel: streamDetailInputViewModel)
     }
 }
 

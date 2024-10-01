@@ -80,6 +80,13 @@ struct StreamDetailInputBox: View {
                             Spacer()
                         }
                     }
+
+                    Button(
+                        action: {
+                            viewModel.playFromConfig()
+                        },
+                        text: "stream-detail-input.play-from-config.button"
+                    )
                 }
                 Spacer()
                     .frame(height: Layout.spacing8x)

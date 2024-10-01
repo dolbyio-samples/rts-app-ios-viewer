@@ -27,5 +27,4 @@ final class LandingViewModel: ObservableObject {
     func clearAllStreams() {
         streamDataManager.clearAllStreams()
     }
-
 }
