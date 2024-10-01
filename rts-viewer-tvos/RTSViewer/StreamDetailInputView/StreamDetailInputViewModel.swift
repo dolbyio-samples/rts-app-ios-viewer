@@ -86,6 +86,7 @@ private extension StreamDetailInputViewModel {
         streamDataManager.saveStream(streamName, accountID: accountID)
     }
 
+    // TODO: Temporary until we have an online config to pull from
     func getStreamConfigArray() -> [StreamConfig] {
         let config1 = StreamConfig(apiUrl: "https://director.millicast.com/api/director/subscribe",
                                    streamName: "multiview",

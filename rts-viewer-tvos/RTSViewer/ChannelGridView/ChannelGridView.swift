@@ -11,7 +11,7 @@ struct ChannelGridView: View {
     static let numberOfColumns = 2
     @ObservedObject var viewModel: ChannelGridViewModel
     @FocusState var focusedView: FocusedView?
-    @State private var showSettingsView: Bool = false
+    @State private var showSettingsView = false
     @State private var showStatsView = false
 
     enum FocusedView: Hashable, Equatable {
@@ -32,6 +32,7 @@ struct ChannelGridView: View {
             LazyVGrid(columns: columns, alignment: .leading) {
                 ForEach(viewModel.channels) { channel in
                     Button {
+                        viewModel.currentlyFocusedChannel = channel
                         showSettingsView.toggle()
                     } label: {
                         focusedVideoView(channel: channel, width: tileWidth)
@@ -51,11 +52,10 @@ struct ChannelGridView: View {
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
             .overlay(alignment: .trailing) {
                 if showSettingsView {
-                    let settingViewModel = SettingMultichannelViewModel(channel: viewModel.currentlyFocusedChannel)
-                    SettingsMultichannelView(viewModel: settingViewModel, showSettingsView: $showSettingsView, showStatsView: $showStatsView) { _, _ in
-                        print("change quality of selected")
+                    if let currentlyFocusedChannel = viewModel.currentlyFocusedChannel {
+                        settingsView(for: currentlyFocusedChannel)
+                            .focused($focusedView, equals: .settings)
                     }
-                    .focused($focusedView, equals: .settings)
                 }
             }
             .onChange(of: focusedView ?? .settings) { focus in
@@ -68,7 +68,6 @@ struct ChannelGridView: View {
 
     @ViewBuilder
     func focusedVideoView(channel: SourcedChannel, width: CGFloat) -> some View {
-        let isFocused = channel == viewModel.currentlyFocusedChannel
         VideoRendererView(source: channel.source,
                           isSelectedVideoSource: true,
                           isSelectedAudioSource: true,
@@ -89,6 +88,18 @@ struct ChannelGridView: View {
                     .animation(.easeInOut, value: isFocused)
             }
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+    }
+
+    @ViewBuilder
+    func settingsView(for channel: SourcedChannel) -> some View {
+        let qualityList = viewModel.getVideoQualityList(for: channel)
+        let selectedQuality = viewModel.getSelectedQuality(for: channel)
+        let settingViewModel = SettingsMultichannelViewModel(channel: channel,
+                                                             videoQualityList: qualityList,
+                                                             selectedVideoQuality: selectedQuality)
+        SettingsMultichannelView(viewModel: settingViewModel, showSettingsView: $showSettingsView, showStatsView: $showStatsView) { channel, quality in
+            viewModel.enableVideo(for: channel, with: quality)
+        }
     }
 }
 
