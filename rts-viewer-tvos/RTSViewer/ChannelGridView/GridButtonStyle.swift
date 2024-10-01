@@ -5,14 +5,12 @@
 import SwiftUI
 
 struct GridButtonStyle: ButtonStyle {
-    let isFocused: Bool
+    var isFocused: Bool = false
     let focusedBorderColor: Color
 
     init(focusedView: ChannelGridView.FocusedView?, currentChannel: SourcedChannel, focusedBorderColor: Color) {
         if case let .gridView(channel) = focusedView {
             isFocused = currentChannel == channel
-        } else {
-            isFocused = false
         }
         self.focusedBorderColor = focusedBorderColor
     }
