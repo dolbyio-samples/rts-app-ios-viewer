@@ -29,6 +29,7 @@
 		89C391F42CA752AE00861FD5 /* SettingsMultichannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F32CA752AE00861FD5 /* SettingsMultichannelView.swift */; };
 		89C391F82CAB552A00861FD5 /* GridButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C391F72CAB552A00861FD5 /* GridButtonStyle.swift */; };
 		89FDEBB92CAC6163003A1856 /* StreamConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FDEBB82CAC6163003A1856 /* StreamConfig.swift */; };
+		89FDEBBB2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FDEBBA2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC82C1010BE001733EA /* Assets.xcassets */; };
 		E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC92C1010BE001733EA /* Localizable.strings */; };
@@ -125,6 +126,7 @@
 		89C391F32CA752AE00861FD5 /* SettingsMultichannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMultichannelView.swift; sourceTree = "<group>"; };
 		89C391F72CAB552A00861FD5 /* GridButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridButtonStyle.swift; sourceTree = "<group>"; };
 		89FDEBB82CAC6163003A1856 /* StreamConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamConfig.swift; sourceTree = "<group>"; };
+		89FDEBBA2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMultichannelViewModel.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E80E2BC82C1010BE001733EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E80E2BC92C1010BE001733EA /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				89C391F32CA752AE00861FD5 /* SettingsMultichannelView.swift */,
+				89FDEBBA2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift */,
 			);
 			path = SettingsMulitChannelView;
 			sourceTree = "<group>";
@@ -695,6 +698,7 @@
 				E83F0F962C192ECF00F6FA6B /* LiveIndicatorView.swift in Sources */,
 				89C391D72C9C963A00861FD5 /* VideoTracksManager.swift in Sources */,
 				631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */,
+				89FDEBBB2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift in Sources */,
 				89FDEBB92CAC6163003A1856 /* StreamConfig.swift in Sources */,
 				E8BA8E192991E8B30043DEE1 /* SimulcastViewModel.swift in Sources */,
 				89C391D92C9C9EF500861FD5 /* String+Error.swift in Sources */,
