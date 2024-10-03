@@ -6,6 +6,7 @@ import Combine
 import Foundation
 import MillicastSDK
 import os
+import RTSCore
 import SwiftUI
 
 @MainActor
@@ -16,7 +17,10 @@ final class ChannelGridViewModel: ObservableObject {
     )
 
     @Published var channels: [SourcedChannel]
-    @Published var currentlyFocusedChannel: SourcedChannel?
+    @Published var currentlyFocusedChannel: SourcedChannel
+    @Published var streamStatistics: StreamStatistics?
+    @Published var projectedTimeStampForMids: [String: Double] = [:]
+    @Published var showStatsForChannel: [Channel.ID: Bool] = [:]
 
     private var cancellables: [AnyCancellable] = []
     private var layersEventsObservationDictionary: [Channel.ID: Task<Void, Never>] = [:]
@@ -25,10 +29,13 @@ final class ChannelGridViewModel: ObservableObject {
 
     init(channels: [SourcedChannel]) {
         self.channels = channels
+        currentlyFocusedChannel = channels[0]
+//        enableSound(for: currentlyFocusedChannel)
 
         channels.forEach { channel in
             startVideoQualityListObserver(for: channel)
             startSelectedQualityObserver(for: channel)
+            showStatsForChannel[channel.id] = false
         }
     }
 
@@ -54,26 +61,26 @@ final class ChannelGridViewModel: ObservableObject {
         guard currentlyFocusedChannel != focusedChannel else { return }
         currentlyFocusedChannel = focusedChannel
 
-        let otherChannels = channels.filter { $0.id != focusedChannel.id }
-        otherChannels.forEach { channel in
-            disableSound(for: channel)
-        }
-        enableSound(for: focusedChannel)
+//        let otherChannels = channels.filter { $0.id != focusedChannel.id }
+//        otherChannels.forEach { channel in
+//            disableSound(for: channel)
+//        }
+//        enableSound(for: focusedChannel)
     }
 
-    func enableSound(for channel: SourcedChannel) {
-        Task {
-            try? await channel.source.audioTrack?.enable()
-            Self.logger.debug("♼ Channel \(channel.source.sourceId) audio enabled")
-        }
-    }
-
-    func disableSound(for channel: SourcedChannel) {
-        Task {
-            try? await channel.source.audioTrack?.disable()
-            Self.logger.debug("♼ Channel \(channel.source.sourceId) audio disabled")
-        }
-    }
+//    func enableSound(for channel: SourcedChannel) {
+//        Task {
+//            try? await channel.source.audioTrack?.enable()
+//            Self.logger.debug("♼ Channel \(channel.source.sourceId) audio enabled")
+//        }
+//    }
+//
+//    func disableSound(for channel: SourcedChannel) {
+//        Task {
+//            try? await channel.source.audioTrack?.disable()
+//            Self.logger.debug("♼ Channel \(channel.source.sourceId) audio disabled")
+//        }
+//    }
 
     func isFocusedChannel(focusedView: ChannelGridView.FocusedView?, currentChannel: SourcedChannel) -> Bool {
         guard let focusedView else { return false }
@@ -87,7 +94,6 @@ final class ChannelGridViewModel: ObservableObject {
     func getVideoQualityList(for channel: SourcedChannel?) -> [VideoQuality] {
         guard let channel,
               let list = videoQualityListForChannel[channel.id] else { return [] }
-        print("$$$ list to \(list)")
         return list
     }
 
@@ -132,7 +138,6 @@ private extension ChannelGridViewModel {
                 .receive(on: DispatchQueue.main)
                 .sink { quality in
                     self.selectedvideoQualityForChannel[channel.id] = quality
-                    print("$$$ quality is \(quality)")
                 }
                 .store(in: &cancellables)
         }

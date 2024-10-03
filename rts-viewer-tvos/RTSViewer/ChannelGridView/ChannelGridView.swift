@@ -24,70 +24,47 @@ struct ChannelGridView: View {
     }
 
     var body: some View {
-        GeometryReader { proxy in
-            let screenSize = proxy.size
-            let tileWidth = screenSize.width / CGFloat(Self.numberOfColumns)
-            let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: Self.numberOfColumns)
+        BackgroundContainerView {
+            GeometryReader { proxy in
+                let screenSize = proxy.size
+                let tileWidth = screenSize.width / CGFloat(Self.numberOfColumns)
+                let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: Self.numberOfColumns)
 
-            LazyVGrid(columns: columns, alignment: .leading) {
-                ForEach(viewModel.channels) { channel in
-                    Button {
-                        viewModel.currentlyFocusedChannel = channel
-                        showSettingsView.toggle()
-                    } label: {
-                        focusedVideoView(channel: channel, width: tileWidth)
+                LazyVGrid(columns: columns, alignment: .leading) {
+                    ForEach(viewModel.channels) { channel in
+                        Button {
+                            viewModel.currentlyFocusedChannel = channel
+                            showSettingsView.toggle()
+                        } label: {
+                            let channelVideoViewModel = ChannelVideoViewModel(channel: channel, focusedChannel: $viewModel.currentlyFocusedChannel)
+                            ChannelVideoView(viewModel: channelVideoViewModel, width: tileWidth)
+                        }
+                        .focused($focusedView, equals: .gridView(channel))
+                        .disabled(showSettingsView)
+                        .buttonStyle(GridButtonStyle(focusedView: focusedView, currentChannel: channel, focusedBorderColor: .purple))
+                        .onAppear {
+                            viewModel.enableVideo(for: channel)
+                        }
+                        .onDisappear {
+                            viewModel.disableVideo(for: channel)
+                        }
+                        .id(channel.source.id)
                     }
-                    .focused($focusedView, equals: .gridView(channel))
-                    .disabled(showSettingsView)
-                    .buttonStyle(GridButtonStyle(focusedView: focusedView, currentChannel: channel, focusedBorderColor: .purple))
-                    .onAppear {
-                        viewModel.enableVideo(for: channel)
-                    }
-                    .onDisappear {
-                        viewModel.disableVideo(for: channel)
-                    }
-                    .id(channel.source.id)
                 }
-            }
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
-            .overlay(alignment: .trailing) {
-                if showSettingsView {
-                    if let currentlyFocusedChannel = viewModel.currentlyFocusedChannel {
-                        settingsView(for: currentlyFocusedChannel)
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+                .overlay(alignment: .trailing) {
+                    if showSettingsView {
+                        settingsView(for: viewModel.currentlyFocusedChannel)
                             .focused($focusedView, equals: .settings)
                     }
                 }
-            }
-            .onChange(of: focusedView ?? .settings) { focus in
-                if case let .gridView(focusedChannel) = focus {
-                    viewModel.updateFocus(with: focusedChannel)
+                .onChange(of: focusedView ?? .settings) { focus in
+                    if case let .gridView(focusedChannel) = focus {
+                        viewModel.updateFocus(with: focusedChannel)
+                    }
                 }
             }
         }
-    }
-
-    @ViewBuilder
-    func focusedVideoView(channel: SourcedChannel, width: CGFloat) -> some View {
-        VideoRendererView(source: channel.source,
-                          isSelectedVideoSource: true,
-                          isSelectedAudioSource: true,
-                          showSourceLabel: false,
-                          showAudioIndicator: false,
-                          maxWidth: width,
-                          maxHeight: .infinity,
-                          accessibilityIdentifier: "ChannelGridViewVideoTile.\(channel.source.sourceId.displayLabel)",
-                          preferredVideoQuality: .auto,
-                          subscriptionManager: channel.subscriptionManager,
-                          videoTracksManager: channel.videoTracksManager)
-            .overlay(alignment: .bottomTrailing) {
-                let isFocused = viewModel.isFocusedChannel(focusedView: focusedView, currentChannel: channel)
-
-                IconView(name: .settings)
-                    .padding()
-                    .opacity(isFocused ? 1 : 0)
-                    .animation(.easeInOut, value: isFocused)
-            }
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
     }
 
     @ViewBuilder

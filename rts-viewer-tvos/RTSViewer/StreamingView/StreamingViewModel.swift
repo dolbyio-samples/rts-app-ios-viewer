@@ -346,6 +346,7 @@ private extension StreamingViewModel {
             if let mid = $0.mid, projectedMids.contains(mid),
                projectedTimeStampForMids[mid] == nil {
                 projectedTimeStampForMids[mid] = $0.timestamp
+                print("$$$ mid \(mid)")
             }
         }
     }
@@ -355,6 +356,7 @@ private extension StreamingViewModel {
             return
         }
         projectedMids.insert(mid)
+        print("$$$ mid \(mid)")
     }
 
     func removeProjectedMid(for source: StreamSource) {
