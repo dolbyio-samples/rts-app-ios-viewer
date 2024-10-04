@@ -287,7 +287,7 @@ private extension StreamViewModel {
 
                                 await self.updateAudioSourceListing(for: activeSources, currentSettings: settings)
                                 guard let newState = await self.makeState(from: activeSources, settings: settings) else {
-                                    Self.logger.debug("🎰 Make state returned without a value")
+                                    await Self.logger.debug("🎰 Make state returned without a value")
                                     await self.update(
                                         state: .error(
                                             title: .offlineErrorTitle,
@@ -300,12 +300,12 @@ private extension StreamViewModel {
                                 await self.update(state: newState)
 
                             case .disconnected:
-                                Self.logger.debug("🎰 Stream disconnected")
+                                await Self.logger.debug("🎰 Stream disconnected")
                                 await self.update(state: .loading)
 
                             case let .error(connectionError) where connectionError.status == 0:
                                 // Status code `0` represents a `no network error`
-                                Self.logger.debug("🎰 No internet connection")
+                                await Self.logger.debug("🎰 No internet connection")
                                 if await !self.isWebsocketConnected {
                                     await self.scheduleReconnection()
                                 }
@@ -318,7 +318,7 @@ private extension StreamViewModel {
                                 )
 
                             case let .error(connectionError):
-                                Self.logger.debug("🎰 Connection error - \(connectionError.status), \(connectionError.reason)")
+                                await Self.logger.debug("🎰 Connection error - \(connectionError.status), \(connectionError.reason)")
                                 if await !self.isWebsocketConnected {
                                     await self.scheduleReconnection()
                                 }
