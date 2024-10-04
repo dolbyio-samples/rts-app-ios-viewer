@@ -75,8 +75,8 @@ final class StreamDetailInputViewModel: ObservableObject {
     func playFromConfig() {
         var confirmedChannels = [UnsourcedChannel]()
         let streamConfigs = getStreamConfigArray()
-        for (index, config) in streamConfigs.enumerated() {
-            guard let channel = setupChannel(for: config) else { return }
+        streamConfigs.forEach {
+            guard let channel = setupChannel(for: $0) else { return }
             confirmedChannels.append(channel)
         }
 

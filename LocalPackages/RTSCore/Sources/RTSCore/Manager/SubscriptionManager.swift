@@ -25,11 +25,11 @@ public actor SubscriptionManager {
         case disconnected
     }
 
+    public let subscriber = MCSubscriber()
+
     @Published public var state: State = .disconnected
-    @Published public var streamStatistics: StreamStatistics?
     @Published public var websocketState: MCConnectionState = .idle
 
-    private let subscriber = MCSubscriber()
     private var sourceBuilder = SourceBuilder()
     private let logHandler: MillicastLogHandler = .init()
     private var isReconnectingPeerConnection: Bool = false
@@ -180,16 +180,6 @@ extension SubscriptionManager {
             }
         }
 
-        let statsObservation = Task { [weak self] in
-            guard let self else { return }
-            for await statsReport in self.subscriber.statsReport() {
-                guard !Task.isCancelled, let stats = StreamStatistics(statsReport) else {
-                    return
-                }
-                await self.updateStats(stats)
-            }
-        }
-
         let sourcesObservation = Task { [weak self] in
             guard let self else { return }
             for await sources in await self.sourceBuilder.sourceStream {
@@ -200,8 +190,9 @@ extension SubscriptionManager {
         }
 
         [
-            taskWebsocketStateObservation, taskPeerConnectionStateObservation, taskHttpErrorStateObservation, taskSignalingErrorStateObservation,
-            streamStoppedStateObservation, tracksObservation, statsObservation, sourcesObservation
+            taskWebsocketStateObservation, taskPeerConnectionStateObservation,
+            taskHttpErrorStateObservation, taskSignalingErrorStateObservation,
+            streamStoppedStateObservation, tracksObservation, sourcesObservation
         ].forEach(addEventObservationTask)
 
         Self.logger.debug("👨‍🔧 Registered to subscriber events")
@@ -212,7 +203,6 @@ extension SubscriptionManager {
             taskSignalingErrorStateObservation.value,
             streamStoppedStateObservation.value,
             tracksObservation.value,
-            statsObservation.value,
             sourcesObservation.value
         ]
     }
@@ -231,10 +221,6 @@ extension SubscriptionManager {
 // MARK: Private Helpers
 
 private extension SubscriptionManager {
-    func updateStats(_ stats: StreamStatistics) {
-        streamStatistics = stats
-    }
-
     func updateState(to state: State) {
         self.state = state
     }

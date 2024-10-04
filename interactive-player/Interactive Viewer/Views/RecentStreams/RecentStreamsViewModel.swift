@@ -90,7 +90,7 @@ final class RecentStreamsViewModel: ObservableObject {
         let currentDate = dateProvider.now
         let rtcLogPath = streamDetail.saveLogs ? URL.rtcLogPath(for: currentDate) : nil
         let sdkLogPath = streamDetail.saveLogs ? URL.sdkLogPath(for: currentDate) : nil
-        var playoutDelay = MCForcePlayoutDelay(min: Int32(streamDetail.minPlayoutDelay),
+        let playoutDelay = MCForcePlayoutDelay(min: Int32(streamDetail.minPlayoutDelay),
                                                max: Int32(streamDetail.maxPlayoutDelay))
 
         return SubscriptionConfiguration(

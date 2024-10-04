@@ -13,7 +13,7 @@ public struct SubscriptionConfiguration {
         public static let maxBitrate: UInt = 0
         public static let disableAudio = false
         public static let enableStats = true
-        public static let playoutDelay: MCForcePlayoutDelay = MCForcePlayoutDelay(min: 500, max: 700)
+        public static let playoutDelay: MCForcePlayoutDelay = MCForcePlayoutDelay(min: 0, max: 700)
         public static let forceSmooth: Bool = true
         public static let bweMonitorDurationUs: UInt = 150000
         public static let bweRateChangePercentage: Float = 0.05
