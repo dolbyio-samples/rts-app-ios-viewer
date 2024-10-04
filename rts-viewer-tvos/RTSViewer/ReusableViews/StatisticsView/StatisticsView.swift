@@ -13,7 +13,7 @@ struct StatisticsView: View {
 
     init(
         source: StreamSource,
-        streamStatistics: StreamStatistics,
+        streamStatistics: MCSubscriberStats,
         layers: [MCRTSRemoteTrackLayer],
         projectedTimeStamp: Double?
     ) {
@@ -29,45 +29,60 @@ struct StatisticsView: View {
     private let fontTable = Font.avenirNextRegular(withStyle: .caption2, size: FontSize.caption2)
 
     private let fontAssetCaption = FontAsset.avenirNextDemiBold(size: FontSize.caption1, style: .caption)
-    private let fontAssetTitle = FontAsset.avenirNextBold(size: FontSize.title3, style: .title3)
+    private let fontAssetTitle = FontAsset.avenirNextBold(size: FontSize.headline, style: .headline)
     private let theme = ThemeManager.shared.theme
+    @FocusState private var isFocused: Bool
+
+    private func statsCell(for index: Int, containerViewSize: CGSize) -> some View {
+        HStack {
+            Text(viewModel.statsItems[index].key)
+                .font(theme[fontAssetTable])
+                .frame(maxWidth: containerViewSize.width * 0.35, alignment: .leading)
+            Text(viewModel.statsItems[index].value)
+                .font(fontTable)
+        }
+    }
 
     var body: some View {
-        VStack {
-            Text(text: "stream.media-stats.label", fontAsset: fontAssetTitle)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        GeometryReader { proxy in
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack {
+                    FocusableView {
+                        Text(text: "stream.media-stats.label", fontAsset: fontAssetTitle)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer()
-                .frame(height: Layout.spacing1x)
+                    HStack {
+                        Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption)
+                            .frame(maxWidth: proxy.size.width * 0.35, alignment: .leading)
+                        Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-            HStack {
-                Text(text: "stream.stats.name.label", fontAsset: fontAssetCaption)
-                    .frame(maxWidth: 250, alignment: .leading)
-                Text(text: "stream.stats.value.label", fontAsset: fontAssetCaption)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            Spacer()
-                .frame(height: Layout.spacing1x)
-
-            ForEach(viewModel.statsItems) { item in
-                HStack {
-                    Text(item.key)
-                        .font(theme[fontAssetTable])
-                        .frame(maxWidth: 250, alignment: .leading)
-                    Text(item.value)
-                        .font(fontTable)
+                    ForEach(0..<viewModel.statsItems.count, id: \.self) { index in
+                        if index == viewModel.statsItems.count - 1 {
+                            FocusableView {
+                                statsCell(for: index, containerViewSize: proxy.size)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        } else {
+                            HStack {
+                                statsCell(for: index, containerViewSize: proxy.size)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .focusSection()
+                .focused($isFocused)
+                .padding()
+                .background {
+                    Color(uiColor: UIColor.Neutral.neutral800)
+                        .opacity(isFocused ? 0.9 : 0.7)
+                        .cornerRadius(Layout.cornerRadius6x)
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: proxy.size.height)
         }
-        .frame(maxWidth: 850)
-        .padding(20)
-        .background {
-            Color(uiColor: UIColor.Neutral.neutral800)
-                .opacity(0.7)
-                .cornerRadius(Layout.cornerRadius6x)
-        }
-        .padding()
     }
 }

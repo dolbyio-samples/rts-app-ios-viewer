@@ -25,8 +25,7 @@ final class StreamDetailInputViewModel: ObservableObject {
         self.streamDataManager = streamDataManager
 
         if let version = Bundle.main.releaseVersionNumber,
-           let build = Bundle.main.buildVersionNumber
-        {
+           let build = Bundle.main.buildVersionNumber {
             appVersion = "App Version \(version) \(build)"
         }
 

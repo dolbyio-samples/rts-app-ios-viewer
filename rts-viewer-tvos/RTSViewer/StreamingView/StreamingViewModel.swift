@@ -58,8 +58,8 @@ final class StreamingViewModel: ObservableObject {
         }
     }
     @Published private(set) var selectedVideoQuality: VideoQuality = .auto
-    @Published private(set) var streamStatistics: StreamStatistics?
     @Published private(set) var projectedTimeStampForMids: [String: Double] = [:]
+    @Published private(set) var streamStatistics: MCSubscriberStats?
 
     let subscriptionManager: SubscriptionManager
     let rendererRegistry: RendererRegistry
@@ -118,7 +118,6 @@ final class StreamingViewModel: ObservableObject {
                 case let .quality(underlyingLayer):
                     try await source.videoTrack.enable(renderer: renderer.underlyingRenderer, layer: MCRTSRemoteVideoTrackLayer(layer: underlyingLayer), promote: true)
                 }
-                self.storeProjectedMid(for: source)
             } catch {
                 Self.logger.debug("🎰 Select video quality error \(error.localizedDescription)")
             }
@@ -145,6 +144,7 @@ final class StreamingViewModel: ObservableObject {
                                     source: nil
                                 )
                                 self.clearLayerInformation()
+                                self.removeProjectedMidsAndTimeStamps()
                                 return
                             }
 
@@ -166,10 +166,10 @@ final class StreamingViewModel: ObservableObject {
                                     switch await self.state {
                                     case let .streaming(source: currentSource, playingAudio: isPlayingAudio):
                                         // No-action needed, already viewing stream
-                                        Self.logger.debug("🎰 Already viewing source \(currentSource.sourceId)")
+                                        await Self.logger.debug("🎰 Already viewing source \(currentSource.sourceId)")
                                         if !isPlayingAudio {
                                             if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
-                                                Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
+                                                await Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
                                                 // Enable new audio track
                                                 try await audioTrack.enable()
                                                 await MainActor.run {
@@ -178,18 +178,18 @@ final class StreamingViewModel: ObservableObject {
                                             }
                                         }
                                     default:
-                                        Self.logger.debug("🎰 Picked source \(videoSource.sourceId)")
+                                        await Self.logger.debug("🎰 Picked source \(videoSource.sourceId)")
 
                                         let renderer = await MainActor.run {
                                             self.rendererRegistry.acceleratedRenderer(for: videoSource)
                                         }
                                         try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
-                                        Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for video")
                                         await self.storeProjectedMid(for: videoSource)
+                                        await Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for video")
 
                                         let isPlayingAudio: Bool
                                         if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
-                                            Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
+                                            await Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
                                             // Enable new audio track
                                             try await audioTrack.enable()
                                             isPlayingAudio = true
@@ -329,23 +329,18 @@ private extension StreamingViewModel {
     func observeStreamStatistics() {
         Task { [weak self] in
             guard let self else { return }
-            await subscriptionManager.$streamStatistics
-                .sink { statistics in
-                    guard let statistics else { return }
-                    Task {
-                        self.saveProjectedTimeStamp(stats: statistics)
-                        self.streamStatistics = statistics
-                    }
-                }
-                .store(in: &subscriptions)
+            for await statistics in await self.subscriptionManager.subscriber.stats() {
+                self.storeProjectedTimeStamp(stats: statistics)
+                self.streamStatistics = statistics
+            }
         }
     }
 
-    func saveProjectedTimeStamp(stats: StreamStatistics) {
-        stats.videoStatsInboundRtpList.forEach {
-            if let mid = $0.mid, projectedMids.contains(mid),
-               projectedTimeStampForMids[mid] == nil {
-                projectedTimeStampForMids[mid] = $0.timestamp
+    func storeProjectedTimeStamp(stats: MCSubscriberStats) {
+        stats.trackStats.forEach {
+            if projectedMids.contains($0.mid),
+               projectedTimeStampForMids[$0.mid] == nil {
+                projectedTimeStampForMids[$0.mid] = $0.timestamp
             }
         }
     }
@@ -357,10 +352,8 @@ private extension StreamingViewModel {
         projectedMids.insert(mid)
     }
 
-    func removeProjectedMid(for source: StreamSource) {
-        guard let mid = source.videoTrack.currentMID else {
-            return
-        }
-        projectedMids.remove(mid)
+    func removeProjectedMidsAndTimeStamps() {
+        projectedMids.removeAll()
+        projectedTimeStampForMids.removeAll()
     }
 }

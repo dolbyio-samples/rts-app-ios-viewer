@@ -14,6 +14,7 @@ struct StreamingView: View {
 
     @State private var showSettingsView = false
     @State private var showStatsView = false
+    @State var viewSize: CGSize = .zero
 
     @Environment(\.dismiss) var dismiss
 
@@ -36,6 +37,10 @@ struct StreamingView: View {
                 switch viewModel.state {
                 case let .streaming(source: source, _):
                     VideoView(renderer: viewModel.rendererRegistry.acceleratedRenderer(for: source))
+                        .sizePreferenceModifier()
+                        .onPreferenceChange(SizePreferenceKey.self) {
+                            viewSize = $0
+                        }
                         .overlay(alignment: .bottomTrailing) {
                             SettingsButton {
                                 withAnimation {
@@ -60,6 +65,8 @@ struct StreamingView: View {
                                     },
                                     projectedTimeStamp: viewModel.projectedTimeStampForMids[mid]
                                 )
+                                .frame(maxWidth: viewSize.width * 0.5, maxHeight: viewSize.height * 0.9, alignment: .bottomLeading)
+                                .padding()
                             }
                         }
                         .overlay(alignment: .trailing) {

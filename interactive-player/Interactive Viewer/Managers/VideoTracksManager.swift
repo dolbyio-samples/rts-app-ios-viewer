@@ -70,12 +70,12 @@ final actor VideoTracksManager {
     nonisolated private func observeStats() {
         Task { [weak self] in
             guard let self else { return }
-            let cancellable = await self.subscriptionManager.$streamStatistics
+            let cancellable = await self.subscriptionManager.subscriber.statsPublisher
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] statistics in
-                    guard let self, let stats = statistics else { return }
+                    guard let self else { return }
                     Task {
-                        await self.saveProjectedTimeStamp(stats: stats)
+                        await self.saveProjectedTimeStamp(stats: statistics)
                     }
                 }
             await self.store(cancellable: cancellable)
@@ -292,11 +292,11 @@ private extension VideoTracksManager {
         projectedTimeStampForMids.removeValue(forKey: mid)
     }
 
-    func saveProjectedTimeStamp(stats: StreamStatistics) {
-        stats.videoStatsInboundRtpList.forEach {
-            if let mid = $0.mid, projectedMids.contains(mid),
-               projectedTimeStampForMids[mid] == nil {
-                projectedTimeStampForMids[mid] = $0.timestamp
+    func saveProjectedTimeStamp(stats: MCSubscriberStats) {
+        stats.trackStats.forEach {
+            if projectedMids.contains($0.mid),
+               projectedTimeStampForMids[$0.mid] == nil {
+                projectedTimeStampForMids[$0.mid] = $0.timestamp
             }
         }
     }
