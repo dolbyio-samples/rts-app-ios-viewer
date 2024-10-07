@@ -335,7 +335,6 @@ private extension StreamingViewModel {
                     Task {
                         self.saveProjectedTimeStamp(stats: statistics)
                         self.streamStatistics = statistics
-                        print("$$$ observeStreamStatistics \(statistics)")
                     }
                 }
                 .store(in: &subscriptions)

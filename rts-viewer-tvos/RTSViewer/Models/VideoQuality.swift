@@ -19,6 +19,8 @@ extension VideoQuality {
         return switch (lhs, rhs) {
         case(.quality, .auto):
             false
+        case(.auto, .quality):
+            false
         case let (.quality(lhsQuality), .quality(rhsQuality)):
             lhsQuality == rhsQuality
         default:

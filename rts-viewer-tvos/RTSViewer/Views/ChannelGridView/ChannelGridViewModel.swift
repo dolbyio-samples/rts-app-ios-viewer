@@ -27,12 +27,13 @@ final class ChannelGridViewModel: ObservableObject {
         self.channels = channels
     }
 
-    func enableVideo(for channel: Channel, with quality: VideoQuality = .auto) {
-        channel.enableVideo(with: quality)
+    func onAppear(for channel: Channel) {
+        channel.enableVideo()
     }
 
-    func disableVideo(for channel: Channel) {
+    func onDisappear(for channel: Channel) {
         channel.disableVideo()
+        channel.disableSound()
     }
 
     func updateFocus(with focusedChannel: Channel) {

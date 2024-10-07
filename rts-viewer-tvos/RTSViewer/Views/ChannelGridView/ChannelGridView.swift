@@ -31,7 +31,7 @@ struct ChannelGridView: View {
                 let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: Self.numberOfColumns)
 
                 LazyVGrid(columns: columns, alignment: .leading) {
-                    ForEach(Array(viewModel.channels.enumerated()), id: \.offset) { index, channel in
+                    ForEach(Array(viewModel.channels.enumerated()), id: \.offset) { _, channel in
                         Button {
                             showSettingsView.toggle()
                         } label: {
@@ -42,14 +42,10 @@ struct ChannelGridView: View {
                         .disabled(showSettingsView)
                         .buttonStyle(GridButtonStyle(focusedView: focusedView, currentChannel: channel, focusedBorderColor: .purple))
                         .onAppear {
-                            viewModel.enableVideo(for: channel)
-                            if index == 0,
-                               channel.currentlyFocusedChannel != nil {
-                                viewModel.updateFocus(with: channel)
-                            }
+                            viewModel.onAppear(for: channel)
                         }
                         .onDisappear {
-                            viewModel.disableVideo(for: channel)
+                            viewModel.onDisappear(for: channel)
                         }
                         .id(channel.source.id)
                     }
