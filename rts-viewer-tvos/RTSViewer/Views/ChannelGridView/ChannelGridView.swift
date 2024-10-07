@@ -15,7 +15,7 @@ struct ChannelGridView: View {
     @State private var showStatsView = false
 
     enum FocusedView: Hashable, Equatable {
-        case gridView(SourcedChannel)
+        case gridView(Channel)
         case settings
     }
 
@@ -31,12 +31,11 @@ struct ChannelGridView: View {
                 let columns = [GridItem](repeating: GridItem(.flexible(), spacing: Layout.spacing1x), count: Self.numberOfColumns)
 
                 LazyVGrid(columns: columns, alignment: .leading) {
-                    ForEach(viewModel.channels) { channel in
+                    ForEach(Array(viewModel.channels.enumerated()), id: \.offset) { index, channel in
                         Button {
-                            viewModel.currentlyFocusedChannel = channel
                             showSettingsView.toggle()
                         } label: {
-                            let channelVideoViewModel = ChannelVideoViewModel(channel: channel, focusedChannel: $viewModel.currentlyFocusedChannel)
+                            let channelVideoViewModel = ChannelVideoViewModel(channel: channel)
                             ChannelVideoView(viewModel: channelVideoViewModel, width: tileWidth)
                         }
                         .focused($focusedView, equals: .gridView(channel))
@@ -44,6 +43,10 @@ struct ChannelGridView: View {
                         .buttonStyle(GridButtonStyle(focusedView: focusedView, currentChannel: channel, focusedBorderColor: .purple))
                         .onAppear {
                             viewModel.enableVideo(for: channel)
+                            if index == 0,
+                               channel.currentlyFocusedChannel != nil {
+                                viewModel.updateFocus(with: channel)
+                            }
                         }
                         .onDisappear {
                             viewModel.disableVideo(for: channel)
@@ -53,8 +56,9 @@ struct ChannelGridView: View {
                 }
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
                 .overlay(alignment: .trailing) {
-                    if showSettingsView {
-                        settingsView(for: viewModel.currentlyFocusedChannel)
+                    if showSettingsView,
+                       let currentlyFocusedChannel = viewModel.getCurrentlyFocusedChannel() {
+                        settingsView(for: currentlyFocusedChannel)
                             .focused($focusedView, equals: .settings)
                     }
                 }
@@ -68,15 +72,9 @@ struct ChannelGridView: View {
     }
 
     @ViewBuilder
-    func settingsView(for channel: SourcedChannel) -> some View {
-        let qualityList = viewModel.getVideoQualityList(for: channel)
-        let selectedQuality = viewModel.getSelectedQuality(for: channel)
-        let settingViewModel = SettingsMultichannelViewModel(channel: channel,
-                                                             videoQualityList: qualityList,
-                                                             selectedVideoQuality: selectedQuality)
-        SettingsMultichannelView(viewModel: settingViewModel, showSettingsView: $showSettingsView, showStatsView: $showStatsView) { channel, quality in
-            viewModel.enableVideo(for: channel, with: quality)
-        }
+    func settingsView(for channel: Channel) -> some View {
+        let settingViewModel = SettingsMultichannelViewModel(channel: channel)
+        SettingsMultichannelView(viewModel: settingViewModel, showSettingsView: $showSettingsView, showStatsView: channel.showStatsView)
     }
 }
 

@@ -43,11 +43,11 @@ class Channel: ObservableObject, Identifiable, Hashable, Equatable {
     private var cancellables = [AnyCancellable]()
     private var layersEventsObserver: Task<Void, Never>?
 
-    init(channel: UnsourcedChannel, source: StreamSource) {
-        self.id = channel.id
-        self.streamConfig = channel.streamConfig
-        self.subscriptionManager = channel.subscriptionManager
-        self.videoTracksManager = channel.videoTracksManager
+    init(unsourcedChannel: UnsourcedChannel, source: StreamSource) {
+        self.id = unsourcedChannel.id
+        self.streamConfig = unsourcedChannel.streamConfig
+        self.subscriptionManager = unsourcedChannel.subscriptionManager
+        self.videoTracksManager = unsourcedChannel.videoTracksManager
         self.source = source
 
         observeStreamStatistics()

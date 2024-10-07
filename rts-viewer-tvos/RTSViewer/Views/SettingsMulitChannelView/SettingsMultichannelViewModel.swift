@@ -6,14 +6,18 @@ import Foundation
 import MillicastSDK
 import RTSCore
 
-final class SettingsMultichannelViewModel {
-    var videoQualityList: [VideoQuality] = []
-    var selectedVideoQuality: VideoQuality
-    let channel: SourcedChannel
+final class SettingsMultichannelViewModel: ObservableObject {
+    @Published var channel: Channel
 
-    init(channel: SourcedChannel, videoQualityList: [VideoQuality], selectedVideoQuality: VideoQuality) {
+    init(channel: Channel) {
         self.channel = channel
-        self.videoQualityList = videoQualityList
-        self.selectedVideoQuality = selectedVideoQuality
+    }
+
+    func updateSelectedVideoQuality(with quality: VideoQuality) {
+        channel.enableVideo(with: quality)
+    }
+
+    func shouldShowStatsView(showStats: Bool) {
+        channel.shouldShowStatsView(showStats: showStats)
     }
 }

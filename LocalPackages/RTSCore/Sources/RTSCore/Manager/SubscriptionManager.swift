@@ -8,7 +8,7 @@ import MillicastSDK
 import os
 import SwiftUI
 
-public actor SubscriptionManager {
+public actor SubscriptionManager: ObservableObject {
     private static let logger = Logger(
         subsystem: Bundle.module.bundleIdentifier!,
         category: String(describing: SubscriptionManager.self)

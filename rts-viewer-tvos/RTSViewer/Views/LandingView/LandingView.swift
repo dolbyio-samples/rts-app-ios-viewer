@@ -23,7 +23,7 @@ struct LandingView: View {
                 }
                 .hidden()
 
-                let channelViewModel = ChannelViewModel(channels: $viewModel.channels) {
+                let channelViewModel = ChannelViewModel(unsourcedChannels: $viewModel.unsourcedChannel) {
                     viewModel.isShowingChannelView = false
                 }
                 NavigationLink(destination: ChannelView(viewModel: channelViewModel), isActive: $viewModel.isShowingChannelView) {
@@ -81,7 +81,7 @@ struct LandingView: View {
     @ViewBuilder var streamInputBox: some View {
         let streamDetailInputViewModel = StreamDetailInputViewModel(streamName: $viewModel.streamName,
                                                                     accountID: $viewModel.accountID,
-                                                                    channels: $viewModel.channels,
+                                                                    channels: $viewModel.unsourcedChannel,
                                                                     isShowingStreamingView: $viewModel.isShowingStreamingView,
                                                                     isShowingChannelView: $viewModel.isShowingChannelView,
                                                                     isShowingRecentStreams: $viewModel.isShowingRecentStreams)

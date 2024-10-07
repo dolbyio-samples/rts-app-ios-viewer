@@ -11,7 +11,7 @@ import RTSCore
 final class LandingViewModel: ObservableObject {
     @Published var streamName: String = ""
     @Published var accountID: String = ""
-    @Published var channels: [Channel]?
+    @Published var unsourcedChannel: [UnsourcedChannel]?
 
     @Published var isShowingStreamingView: Bool = false
     @Published var isShowingChannelView: Bool = false

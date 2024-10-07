@@ -12,7 +12,7 @@ import SwiftUI
 final class StreamDetailInputViewModel: ObservableObject {
     @Binding var streamName: String
     @Binding var accountID: String
-    @Binding private var channels: [Channel]?
+    @Binding private var channels: [UnsourcedChannel]?
     @Binding var isShowingStreamingView: Bool
     @Binding private var isShowingChannelView: Bool
     @Published var isShowingRecentStreams: Bool = false
@@ -31,7 +31,7 @@ final class StreamDetailInputViewModel: ObservableObject {
     init(
         streamName: Binding<String>,
         accountID: Binding<String>,
-        channels: Binding<[Channel]?>,
+        channels: Binding<[UnsourcedChannel]?>,
         isShowingStreamingView: Binding<Bool>,
         isShowingChannelView: Binding<Bool>,
         isShowingRecentStreams: Binding<Bool>,
@@ -65,7 +65,7 @@ final class StreamDetailInputViewModel: ObservableObject {
     }
 
     func playFromConfig() {
-        var confirmedChannels = [Channel]()
+        var confirmedChannels = [UnsourcedChannel]()
         let streamConfigs = getStreamConfigArray()
         for (index, config) in streamConfigs.enumerated() {
             guard let channel = setupChannel(for: config) else { return }
@@ -107,10 +107,10 @@ private extension StreamDetailInputViewModel {
         return [config1, config2, config3, config4]
     }
 
-    func setupChannel(for config: StreamConfig) -> Channel? {
+    func setupChannel(for config: StreamConfig) -> UnsourcedChannel? {
         let subscriptionManager = SubscriptionManager()
         let videoTracksManager = VideoTracksManager(subscriptionManager: subscriptionManager)
-        return Channel(streamConfig: config,
+        return UnsourcedChannel(streamConfig: config,
                        subscriptionManager: subscriptionManager,
                        videoTracksManager: videoTracksManager)
     }

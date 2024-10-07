@@ -8,13 +8,13 @@ import SwiftUI
 
 struct SettingsMultichannelView: View {
     @State private var showSimulcastView: Bool = false
+    @State private var showStatsView: Bool = false
     @Binding private var showSettingsView: Bool
-    @Binding private var showStatsView: Bool
+
     @FocusState private var focus: FocusableField?
 
     private let viewModel: SettingsMultichannelViewModel
     private let theme = ThemeManager.shared.theme
-    private let onSelectVideoQuality: (SourcedChannel, VideoQuality) -> Void
 
     private enum FocusableField: Hashable {
         case simulcastSelection
@@ -24,13 +24,11 @@ struct SettingsMultichannelView: View {
     init(
         viewModel: SettingsMultichannelViewModel,
         showSettingsView: Binding<Bool>,
-        showStatsView: Binding<Bool>,
-        onSelectVideoQuality: @escaping (SourcedChannel, VideoQuality) -> Void
+        showStatsView: Bool
     ) {
         self.viewModel = viewModel
-        self._showStatsView = showStatsView
+        self.showStatsView = showStatsView
         self._showSettingsView = showSettingsView
-        self.onSelectVideoQuality = onSelectVideoQuality
     }
 
     var body: some View {
@@ -52,13 +50,14 @@ struct SettingsMultichannelView: View {
         .transition(.move(edge: .trailing))
         .overlay(content: {
             if showSimulcastView {
+                let channel = viewModel.channel
                 SimulcastView(
-                    source: viewModel.channel.source,
-                    videoQualityList: viewModel.videoQualityList,
-                    selectedVideoQuality: viewModel.selectedVideoQuality
+                    source: channel.source,
+                    videoQualityList: channel.videoQualityList,
+                    selectedVideoQuality: channel.selectedVideoQuality
                 ) { videoQuality in
                     showSimulcastView = false
-                    onSelectVideoQuality(viewModel.channel, videoQuality)
+                    viewModel.updateSelectedVideoQuality(with: videoQuality)
                     focus = .simulcastSelection
                 }
                 .onExitCommand {
@@ -69,11 +68,8 @@ struct SettingsMultichannelView: View {
                 }
             }
         })
-        .overlay {
-
-        }
         .onAppear {
-            focus = viewModel.videoQualityList.isEmpty ? .streamStatisticsToggle : .simulcastSelection
+            focus = viewModel.channel.videoQualityList.isEmpty ? .streamStatisticsToggle : .simulcastSelection
         }
         .onExitCommand {
             showSettingsView.toggle()
@@ -101,8 +97,7 @@ struct SettingsMultichannelView: View {
             showSimulcastView = true
         }, label: {
             HStack(spacing: Layout.spacing0x) {
-                let iconColor = Color(uiColor: viewModel.videoQualityList.isEmpty ? .tertiaryLabel : .secondaryLabel)
-//                let iconColor = Color(uiColor: .secondaryLabel)
+                let iconColor = Color(uiColor: viewModel.channel.videoQualityList.isEmpty ? .tertiaryLabel : .secondaryLabel)
                 IconView(name: .simulcast, tintColor: iconColor)
 
                 Spacer()
@@ -119,7 +114,7 @@ struct SettingsMultichannelView: View {
 
                 Text(
                     text: "stream.simulcast.label",
-                    mode: viewModel.videoQualityList.isEmpty ? .tertiary : .primary,
+                    mode: viewModel.channel.videoQualityList.isEmpty ? .tertiary : .primary,
                     fontAsset: .avenirNextDemiBold(
                         size: FontSize.body,
                         style: .body
@@ -128,16 +123,15 @@ struct SettingsMultichannelView: View {
 
                 Spacer()
 
-                Text(viewModel.selectedVideoQuality.displayText)
+                Text(viewModel.channel.selectedVideoQuality.displayText)
                     .font(theme[.avenirNextRegular(size: FontSize.body, style: .body)])
-                    .foregroundStyle(viewModel.videoQualityList.isEmpty ? .tertiary : .secondary)
+                    .foregroundStyle(viewModel.channel.videoQualityList.isEmpty ? .tertiary : .secondary)
 
                 IconView(name: .chevronRight, tintColor: iconColor)
             }
             .frame(height: Layout.spacing10x)
         })
-        .disabled(viewModel.videoQualityList.isEmpty)
-//        .disabled(true)
+        .disabled(viewModel.channel.videoQualityList.isEmpty)
     }
 
     private var statsToggle: some View {
@@ -150,6 +144,9 @@ struct SettingsMultichannelView: View {
                 ))
             }
             .frame(height: Layout.spacing10x)
+        })
+        .onChange(of: showStatsView, perform: { show in
+            viewModel.shouldShowStatsView(showStats: show)
         })
         .font(theme[.avenirNextRegular(size: FontSize.body, style: .body)])
     }

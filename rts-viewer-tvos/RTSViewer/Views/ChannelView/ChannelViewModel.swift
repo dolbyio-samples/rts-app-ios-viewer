@@ -16,7 +16,7 @@ final class ChannelViewModel: ObservableObject {
         category: String(describing: ChannelViewModel.self)
     )
 
-    @Binding var channels: [Channel]?
+    @Binding var unsourcedChannels: [UnsourcedChannel]?
     @Published private(set) var state: State = .loading
 
     private let onClose: () -> Void
@@ -25,34 +25,34 @@ final class ChannelViewModel: ObservableObject {
     private var reconnectionTimer: Timer?
     private var isWebsocketConnected: Bool = false
 
-    private var sourcedChannels: [SourcedChannel] = []
+    private var sourcedChannels: [Channel] = []
 
     enum State {
         case loading
-        case success(channels: [SourcedChannel])
+        case success(channels: [Channel])
         case error(title: String, subtitle: String?, showLiveIndicator: Bool)
     }
 
-    init(channels: Binding<[Channel]?>, onClose: @escaping () -> Void) {
-        self._channels = channels
+    init(unsourcedChannels: Binding<[UnsourcedChannel]?>, onClose: @escaping () -> Void) {
+        self._unsourcedChannels = unsourcedChannels
         self.onClose = onClose
         startObservers()
     }
 
     @objc func viewStreams() {
-        guard let channels else { return }
-        for channel in channels {
-            viewStream(with: channel)
+        guard let unsourcedChannels else { return }
+        for unsourcedChannel in unsourcedChannels {
+            viewStream(with: unsourcedChannel)
         }
     }
 
-    func viewStream(with channel: Channel) {
+    func viewStream(with unsourcedChannel: UnsourcedChannel) {
         Task(priority: .userInitiated) {
-            let subscriptionManager = channel.subscriptionManager
-            let configuration = SubscriptionConfiguration(subscribeAPI: channel.streamConfig.apiUrl)
+            let subscriptionManager = unsourcedChannel.subscriptionManager
+            let configuration = SubscriptionConfiguration(subscribeAPI: unsourcedChannel.streamConfig.apiUrl)
             _ = try await subscriptionManager.subscribe(
-                streamName: channel.streamConfig.streamName,
-                accountID: channel.streamConfig.accountId,
+                streamName: unsourcedChannel.streamConfig.streamName,
+                accountID: unsourcedChannel.streamConfig.accountId,
                 configuration: configuration
             )
         }
@@ -61,13 +61,13 @@ final class ChannelViewModel: ObservableObject {
     func endStream() {
         Task(priority: .userInitiated) { [weak self] in
             guard let self,
-                  let channels else { return }
-            for channel in channels {
+                  let unsourcedChannels else { return }
+            for unsourcedChannel in unsourcedChannels {
                 self.subscriptions.removeAll()
                 self.reconnectionTimer?.invalidate()
                 self.reconnectionTimer = nil
-                await channel.videoTracksManager.reset()
-                _ = try await channel.subscriptionManager.unSubscribe()
+                await unsourcedChannel.videoTracksManager.reset()
+                _ = try await unsourcedChannel.subscriptionManager.unSubscribe()
             }
             onClose()
         }
@@ -88,10 +88,10 @@ private extension ChannelViewModel {
     func startObservers() {
         Task { [weak self] in
             guard let self,
-                  let channels else { return }
+                  let unsourcedChannels else { return }
 
-            for channel in channels {
-                await channel.subscriptionManager.$state
+            for unsourcedChannel in unsourcedChannels {
+                await unsourcedChannel.subscriptionManager.$state
                     .sink { state in
                         Self.logger.debug("🎰 State and settings events")
                         Task {
@@ -102,13 +102,13 @@ private extension ChannelViewModel {
                                     let soundSources = Array(activeSources.filter { $0.audioTrack?.isActive == true })
 
                                     guard !soundSources.isEmpty else { return }
-                                    await self.updateChannelWithSources(channel: channel, sources: soundSources)
+                                    await self.updateChannelWithSources(unsourcedChannel: unsourcedChannel, sources: soundSources)
 
                                     // Register Video Track events
                                     await withTaskGroup(of: Void.self) { group in
                                         for source in activeSources {
                                             group.addTask {
-                                                await channel.videoTracksManager.observeLayerUpdates(for: source)
+                                                await unsourcedChannel.videoTracksManager.observeLayerUpdates(for: source)
                                             }
                                         }
                                     }
@@ -144,7 +144,7 @@ private extension ChannelViewModel {
                     }
                     .store(in: &subscriptions)
 
-                await channel.subscriptionManager.$websocketState
+                await unsourcedChannel.subscriptionManager.$websocketState
                     .sink { websocketState in
                         switch websocketState {
                         case .connected:
@@ -161,10 +161,10 @@ private extension ChannelViewModel {
     // swiftlint:enable function_body_length cyclomatic_complexity
 
     // TODO: Should be reworked when we have streams with a single source with audio
-    func updateChannelWithSources(channel: Channel, sources: [StreamSource]) {
-        guard !sourcedChannels.contains(where: { $0.id == channel.id }),
+    func updateChannelWithSources(unsourcedChannel: UnsourcedChannel, sources: [StreamSource]) {
+        guard !sourcedChannels.contains(where: { $0.id == unsourcedChannel.id }),
               sources.count > 0 else { return }
-        let sourcedChannel = SourcedChannel.build(from: channel, source: sources[0])
+        let sourcedChannel = Channel(unsourcedChannel: unsourcedChannel, source: sources[0])
         sourcedChannels.append(sourcedChannel)
 
         update(state: .success(channels: sourcedChannels))

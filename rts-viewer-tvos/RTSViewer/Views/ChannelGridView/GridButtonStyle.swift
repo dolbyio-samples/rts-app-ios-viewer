@@ -8,7 +8,7 @@ struct GridButtonStyle: ButtonStyle {
     var isFocused: Bool = false
     let focusedBorderColor: Color
 
-    init(focusedView: ChannelGridView.FocusedView?, currentChannel: SourcedChannel, focusedBorderColor: Color) {
+    init(focusedView: ChannelGridView.FocusedView?, currentChannel: Channel, focusedBorderColor: Color) {
         if case let .gridView(channel) = focusedView {
             isFocused = currentChannel == channel
         }

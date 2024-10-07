@@ -54,5 +54,5 @@
  }
 
  #Preview {
-     ChannelView(viewModel: ChannelViewModel(channels: .constant([]), onClose: {}))
+     ChannelView(viewModel: ChannelViewModel(unsourcedChannels: .constant([]), onClose: {}))
  }

@@ -2,68 +2,62 @@
 //  ChannelVideoViewModel.swift
 //
 
+import Combine
 import Foundation
 import os
+import RTSCore
 import SwiftUI
 
 @MainActor
 class ChannelVideoViewModel: ObservableObject {
-    static let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier!,
-        category: String(describing: ChannelVideoViewModel.self)
-    )
+    @Published var showStatsView: Bool
+    @Published var isFocused: Bool
+    @Published var statistics: StreamStatistics?
+    @Published var videoQualityList: [VideoQuality]
 
-    @Published var isFocused: Bool {
-        didSet {
-            print("$$$ isFocused \(isFocused)")
-//            if isFocused {
-//                print("$$$ enable sound \(isFocused)")
-//                enableSound()
-//            } else {
-//                print("$$$ disable sound \(isFocused)")
-//                disableSound()
-//            }
-        }
-    }
+    let channel: Channel
+    private var cancellables = [AnyCancellable]()
 
-    @Binding var focusedChannel: SourcedChannel {
-        didSet {
-            isFocused = focusedChannel.id == channel.id
-            if isFocused {
-                print("$$$ enable sound \(isFocused)")
-                enableSound()
-            } else {
-                print("$$$ disable sound \(isFocused)")
-                disableSound()
-            }
-        }
-    }
-
-    let channel: SourcedChannel
-
-    init(channel: SourcedChannel, focusedChannel: Binding<SourcedChannel>) {
-        print("$$$ init channelvideoviewmodel")
+    init(channel: Channel) {
         self.channel = channel
-        self._focusedChannel = focusedChannel
-        self.isFocused = channel.id == focusedChannel.id
-        if isFocused {
-            enableSound()
-        } else {
-            disableSound()
-        }
-    }
 
-    func enableSound() {
-        Task {
-            try? await self.channel.source.audioTrack?.enable()
-            Self.logger.debug("♼ Channel \(self.channel.source.sourceId) audio enabled")
-        }
-    }
+        self.showStatsView = channel.showStatsView
+        self.isFocused = channel.isFocusedChannel
+        self.statistics = channel.streamStatistics
+        self.videoQualityList = channel.videoQualityList
 
-    func disableSound() {
-        Task {
-            try? await self.channel.source.audioTrack?.disable()
-            Self.logger.debug("♼ Channel \(self.channel.source.sourceId) audio disabled")
+        setListeners()
+    }
+}
+
+private extension ChannelVideoViewModel {
+    func setListeners() {
+        channel.$showStatsView
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] show in
+            self?.showStatsView = show
         }
+        .store(in: &cancellables)
+
+        channel.$isFocusedChannel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isFocused in
+            self?.isFocused = isFocused
+        }
+        .store(in: &cancellables)
+
+        channel.$streamStatistics
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] stats in
+            self?.statistics = stats
+        }
+        .store(in: &cancellables)
+
+        channel.$videoQualityList
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] list in
+            self?.videoQualityList = list
+        }
+        .store(in: &cancellables)
     }
 }

@@ -10,7 +10,6 @@ struct ChannelVideoView: View {
     let width: CGFloat
 
     init(viewModel: ChannelVideoViewModel, width: CGFloat) {
-        print("$$$ init channelvideoview")
         self.viewModel = viewModel
         self.width = width
     }
@@ -35,31 +34,27 @@ struct ChannelVideoView: View {
                         .opacity(viewModel.isFocused ? 1 : 0)
                         .animation(.easeInOut, value: viewModel.isFocused)
                 }
-//                .overlay(alignment: .bottomLeading) {
-//                    if let streamStatistics = viewModel.streamStatistics,
-//                       let mid = viewModel.channel.source.videoTrack.currentMID
-//                    {
-//                        let videoQualityList = viewModel.getVideoQualityList(for: channel)
-//                        StatisticsView(
-//                            source: channel.source,
-//                            streamStatistics: streamStatistics,
-//                            layers: videoQualityList.compactMap {
-//                                switch $0 {
-//                                case .auto:
-//                                    return nil
-//                                case let .quality(layer):
-//                                    return layer
-//                                }
-//                            },
-//                            projectedTimeStamp: nil
-//                        )
-//                    }
-//                }
+                .overlay(alignment: .bottomLeading) {
+                    if viewModel.showStatsView,
+                       let streamStatistics = viewModel.statistics {
+                        let videoQualityList = viewModel.videoQualityList
+                        StatisticsView(
+                            source: channel.source,
+                            streamStatistics: streamStatistics,
+                            layers: videoQualityList.compactMap {
+                                switch $0 {
+                                case .auto:
+                                    return nil
+                                case let .quality(layer):
+                                    return layer
+                                }
+                            },
+                            projectedTimeStamp: nil,
+                            isMultiChannel: true
+                        )
+                    }
+                }
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
         }
     }
 }
-
-// #Preview {
-//    ChannelVideoView()
-// }

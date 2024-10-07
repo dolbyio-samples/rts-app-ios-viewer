@@ -10,27 +10,30 @@ import SwiftUI
 
 struct StatisticsView: View {
     private let viewModel: StatisticsViewModel
+    private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption2, style: .caption2)
+    private let fontTable = Font.avenirNextRegular(withStyle: .caption2, size: FontSize.caption2)
+    private let fontAssetCaption = FontAsset.avenirNextDemiBold(size: FontSize.caption1, style: .caption)
+    private let fontAssetTitle: FontAsset
+    private let theme = ThemeManager.shared.theme
+    private let isMultiChannel: Bool
 
     init(
         source: StreamSource,
         streamStatistics: StreamStatistics,
         layers: [MCRTSRemoteTrackLayer],
-        projectedTimeStamp: Double?
+        projectedTimeStamp: Double?,
+        isMultiChannel: Bool = false
     ) {
         viewModel = StatisticsViewModel(
             source: source,
             streamStatistics: streamStatistics,
             layers: layers,
-            projectedTimeStamp: projectedTimeStamp
+            projectedTimeStamp: projectedTimeStamp,
+            isMultiChannel: isMultiChannel
         )
+        fontAssetTitle = isMultiChannel ? FontAsset.avenirNextBold(size: FontSize.caption1, style: .caption) : FontAsset.avenirNextBold(size: FontSize.title3, style: .title3)
+        self.isMultiChannel = isMultiChannel
     }
-
-    private let fontAssetTable = FontAsset.avenirNextRegular(size: FontSize.caption2, style: .caption2)
-    private let fontTable = Font.avenirNextRegular(withStyle: .caption2, size: FontSize.caption2)
-
-    private let fontAssetCaption = FontAsset.avenirNextDemiBold(size: FontSize.caption1, style: .caption)
-    private let fontAssetTitle = FontAsset.avenirNextBold(size: FontSize.title3, style: .title3)
-    private let theme = ThemeManager.shared.theme
 
     var body: some View {
         VStack {
