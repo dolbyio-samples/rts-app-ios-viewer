@@ -2,18 +2,16 @@
 //  VideoRendererViewModel.swift
 //
 
-import RTSCore
 import Combine
 import Foundation
 import MillicastSDK
 import os
+import RTSCore
 
 @MainActor
 final class VideoRendererViewModel: ObservableObject {
-    private enum Constants {
-        static let defaultVideoTileSize = CGSize(width: 533, height: 300)
-    }
-
+    @Published private(set) var currentVideoQuality: VideoQuality = .auto
+    
     let isSelectedVideoSource: Bool
     let isSelectedAudioSource: Bool
     let source: StreamSource
@@ -23,10 +21,12 @@ final class VideoRendererViewModel: ObservableObject {
     let maxWidth: CGFloat
     let maxHeight: CGFloat
     let videoTracksManager: VideoTracksManager
-    @Published private(set) var currentVideoQuality: VideoQuality = .auto
-
     private let subscriptionManager: SubscriptionManager
     private var subscriptions: [AnyCancellable] = []
+    
+    private enum Constants {
+        static let defaultVideoTileSize = CGSize(width: 533, height: 300)
+    }
 
     init(
         source: StreamSource,
@@ -88,7 +88,7 @@ final class VideoRendererViewModel: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
             await self.videoTracksManager.selectedVideoQualityPublisher
-                .map({ $0[self.source.sourceId] ?? .auto })
+                .map { $0[self.source.sourceId] ?? .auto }
                 .receive(on: DispatchQueue.main)
                 .sink { quality in
                     self.currentVideoQuality = quality
