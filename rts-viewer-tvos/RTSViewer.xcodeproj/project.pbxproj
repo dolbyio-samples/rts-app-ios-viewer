@@ -32,7 +32,7 @@
 		89FDEBBB2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FDEBBA2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift */; };
 		89FDEBC42CAF0FE4003A1856 /* ChannelVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FDEBC32CAF0FE4003A1856 /* ChannelVideoView.swift */; };
 		89FDEBC62CAF0FF6003A1856 /* ChannelVideoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FDEBC52CAF0FF6003A1856 /* ChannelVideoViewModel.swift */; };
-		89FDEBCB2CB443FE003A1856 /* SourcedChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FDEBCA2CB443FE003A1856 /* SourcedChannel.swift */; };
+		89FDEBCB2CB443FE003A1856 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FDEBCA2CB443FE003A1856 /* Channel.swift */; };
 		B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B696B5312987790B00831FFF /* PersistentSettings.swift */; };
 		E80E2BCB2C1010BE001733EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC82C1010BE001733EA /* Assets.xcassets */; };
 		E80E2BCC2C1010BE001733EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E80E2BC92C1010BE001733EA /* Localizable.strings */; };
@@ -132,7 +132,7 @@
 		89FDEBBA2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMultichannelViewModel.swift; sourceTree = "<group>"; };
 		89FDEBC32CAF0FE4003A1856 /* ChannelVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelVideoView.swift; sourceTree = "<group>"; };
 		89FDEBC52CAF0FF6003A1856 /* ChannelVideoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelVideoViewModel.swift; sourceTree = "<group>"; };
-		89FDEBCA2CB443FE003A1856 /* SourcedChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourcedChannel.swift; sourceTree = "<group>"; };
+		89FDEBCA2CB443FE003A1856 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		B696B5312987790B00831FFF /* PersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentSettings.swift; sourceTree = "<group>"; };
 		E80E2BC82C1010BE001733EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E80E2BC92C1010BE001733EA /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -462,7 +462,7 @@
 				E8752B4D298C75BD002D5C2B /* StreamDetail.swift */,
 				E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */,
 				89C391C32C98C9D700861FD5 /* UnsourcedChannel.swift */,
-				89FDEBCA2CB443FE003A1856 /* SourcedChannel.swift */,
+				89FDEBCA2CB443FE003A1856 /* Channel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -731,7 +731,7 @@
 				89C391D92C9C9EF500861FD5 /* String+Error.swift in Sources */,
 				E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,
 				E8752B5A298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift in Sources */,
-				89FDEBCB2CB443FE003A1856 /* SourcedChannel.swift in Sources */,
+				89FDEBCB2CB443FE003A1856 /* Channel.swift in Sources */,
 				E83F0F982C19305800F6FA6B /* SettingsButton.swift in Sources */,
 				B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */,
 				89C391C92C98CA3D00861FD5 /* ChannelGridViewModel.swift in Sources */,
