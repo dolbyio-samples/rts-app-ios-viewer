@@ -33,7 +33,9 @@ struct ChannelGridView: View {
                 LazyVGrid(columns: columns, alignment: .leading) {
                     ForEach(Array(viewModel.channels.enumerated()), id: \.offset) { _, channel in
                         Button {
-                            showSettingsView.toggle()
+                            withAnimation {
+                                showSettingsView.toggle()
+                            }
                         } label: {
                             let channelVideoViewModel = ChannelVideoViewModel(channel: channel)
                             ChannelVideoView(viewModel: channelVideoViewModel, width: tileWidth)

@@ -63,7 +63,7 @@ class Channel: ObservableObject, Identifiable, Hashable, Equatable {
         let displayLabel = source.sourceId.displayLabel
         let viewId = "\(ChannelGridView.self).\(displayLabel)"
         Task {
-            ChannelGridViewModel.logger.debug("♼ Channel Grid view: Video view appear for \(self.source.sourceId)")
+            Self.logger.debug("♼ Channel Grid view: Video view appear for \(self.source.sourceId)")
             await self.videoTracksManager.enableTrack(for: self.source, with: quality, on: viewId)
         }
     }
@@ -72,7 +72,7 @@ class Channel: ObservableObject, Identifiable, Hashable, Equatable {
         let displayLabel = source.sourceId.displayLabel
         let viewId = "\(ChannelGridView.self).\(displayLabel)"
         Task {
-            ChannelGridViewModel.logger.debug("♼ Channel Grid view: Video view disappear for \(self.source.sourceId)")
+            Self.logger.debug("♼ Channel Grid view: Video view disappear for \(self.source.sourceId)")
             await self.videoTracksManager.disableTrack(for: self.source, on: viewId)
         }
     }
