@@ -10,11 +10,13 @@ import SwiftUI
  */
 @main
 struct RTSViewer: App {
-
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .preferredColorScheme(.dark)
+            NavigationView {
+                LandingView()
+            }
+            .navigationViewStyle(StackNavigationViewStyle())
+            .preferredColorScheme(.dark)
         }
     }
 }

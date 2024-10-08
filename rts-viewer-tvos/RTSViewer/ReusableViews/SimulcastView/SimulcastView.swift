@@ -16,7 +16,12 @@ struct SimulcastView: View {
     private let onSelectVideoQuality: (VideoQuality) -> Void
     @FocusState private var focusedVideoQuality: FocusableField?
 
-    init(source: StreamSource, videoQualityList: [VideoQuality], selectedVideoQuality: VideoQuality, onSelectVideoQuality: @escaping (VideoQuality) -> Void) {
+    init(
+        source: StreamSource,
+        videoQualityList: [VideoQuality],
+        selectedVideoQuality: VideoQuality,
+        onSelectVideoQuality: @escaping (VideoQuality) -> Void
+    ) {
         viewModel = SimulcastViewModel(source: source, videoQualityList: videoQualityList, selectedVideoQuality: selectedVideoQuality)
         self.onSelectVideoQuality = onSelectVideoQuality
     }
@@ -62,16 +67,16 @@ struct SimulcastView: View {
             onSelectVideoQuality(videoQuality)
         }, label: {
             HStack {
-              VStack(alignment: .leading) {
-                Text(videoQuality.displayText)
-                    .font(theme[.avenirNextDemiBold(size: FontSize.body, style: .body)])
-                if let targetInformation = videoQuality.targetInformation {
-                  Text(targetInformation)
-                    .font(theme[.avenirNextRegular(size: FontSize.caption2, style: .caption2)])
-                    .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.leading)
+                VStack(alignment: .leading) {
+                    Text(videoQuality.displayText)
+                        .font(theme[.avenirNextDemiBold(size: FontSize.body, style: .body)])
+                    if let targetInformation = videoQuality.targetInformation {
+                        Text(targetInformation)
+                            .font(theme[.avenirNextRegular(size: FontSize.caption2, style: .caption2)])
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
+                    }
                 }
-              }
 
                 Spacer()
                 if videoQuality.encodingId == viewModel.selectedVideoQuality.encodingId {

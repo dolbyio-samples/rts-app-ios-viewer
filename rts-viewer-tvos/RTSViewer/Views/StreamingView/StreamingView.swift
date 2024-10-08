@@ -3,13 +3,12 @@
 //
 
 import DolbyIOUIKit
-import SwiftUI
-import RTSCore
-import Network
 import MillicastSDK
+import Network
+import RTSCore
+import SwiftUI
 
 struct StreamingView: View {
-
     @StateObject private var viewModel: StreamingViewModel
 
     @State private var showSettingsView = false
@@ -87,7 +86,7 @@ struct StreamingView: View {
                     ErrorView(title: title, subtitle: nil)
                 case let .streamNotPublished(title: title, subtitle: subtitle, source: _):
                     ErrorView(title: title, subtitle: subtitle)
-                case .otherError(message: let message):
+                case let .otherError(message: message):
                     ErrorView(title: message, subtitle: nil)
                 }
             }

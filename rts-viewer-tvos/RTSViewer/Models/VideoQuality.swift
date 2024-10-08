@@ -5,16 +5,7 @@
 import Foundation
 import MillicastSDK
 
-enum VideoQuality: Identifiable {
-    var id: String {
-        switch self {
-        case .auto:
-            "Auto"
-        case let .quality(videoTrackLayer):
-            videoTrackLayer.encodingId
-        }
-    }
-
+enum VideoQuality: Identifiable, Equatable, Comparable {
     case auto
     case quality(MCRTSRemoteTrackLayer)
 
@@ -24,6 +15,28 @@ enum VideoQuality: Identifiable {
 }
 
 extension VideoQuality {
+    static func < (lhs: VideoQuality, rhs: VideoQuality) -> Bool {
+        return switch (lhs, rhs) {
+        case(.quality, .auto):
+            false
+        case(.auto, .quality):
+            false
+        case let (.quality(lhsQuality), .quality(rhsQuality)):
+            lhsQuality == rhsQuality
+        default:
+            true
+        }
+    }
+
+    var id: String {
+        switch self {
+        case .auto:
+            "Auto"
+        case let .quality(videoTrackLayer):
+            videoTrackLayer.encodingId
+        }
+    }
+
     var displayText: String {
         switch self {
         case .auto:
@@ -57,7 +70,7 @@ extension VideoQuality {
         }
         var target: [String] = []
         if let bitrate = layer.targetBitrate {
-            target.append("Bitrate: \(bitrate.intValue/1000) kbps")
+            target.append("Bitrate: \(bitrate.intValue / 1000) kbps")
         }
         if let resolution = layer.resolution {
             target.append("Resolution: \(resolution.width)x\(resolution.height)")
