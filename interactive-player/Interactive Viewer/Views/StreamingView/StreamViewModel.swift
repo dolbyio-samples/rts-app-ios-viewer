@@ -279,7 +279,7 @@ private extension StreamViewModel {
                                 await withTaskGroup(of: Void.self) { group in
                                     for source in activeSources {
                                         group.addTask {
-                                            await self.videoTracksManager.observeLayerUpdates(for: source)
+                                            await self.videoTracksManager.observeEvents(for: source)
                                         }
                                     }
                                 }
