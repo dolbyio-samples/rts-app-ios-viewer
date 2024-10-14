@@ -46,6 +46,8 @@ final actor VideoTracksManager {
 
     private let subscriptionManager: SubscriptionManager
     private var layerEventsObservationDictionary: [SourceID: Task<Void, Never>] = [:]
+    private var activeEventObservationDictionary: [SourceID: Task<Void, Never>] = [:]
+
     private let videoQualitySubject: CurrentValueSubject<[SourceID: VideoQuality], Never> = CurrentValueSubject([:])
     private let layersSubject: CurrentValueSubject<[SourceID: [MCRTSRemoteTrackLayer]], Never> = CurrentValueSubject([:])
 
@@ -82,7 +84,7 @@ final actor VideoTracksManager {
         }
     }
 
-    func observeLayerUpdates(for source: StreamSource) {
+    func observeEvents(for source: StreamSource) {
         Task { [weak self] in
             guard
                 let self,
@@ -101,11 +103,38 @@ final actor VideoTracksManager {
             await self.addLayerEventsObservationTask(layerEventsObservationTask, for: source)
             await layerEventsObservationTask.value
         }
+
+        Task { [weak self] in
+            guard
+                let self,
+                await self.activeEventObservationDictionary[source.sourceId] == nil
+            else {
+                return
+            }
+            let task = Task {
+                for await activity in source.videoTrack.activity() {
+                    switch activity {
+                    case .active:
+                        // No-op
+                        break
+                    case .inactive:
+                        if let mid = source.videoTrack.currentMID {
+                            await self.remove(mid: mid)
+                        }
+                    }
+                }
+            }
+
+            Self.logger.debug("♼ Registering activity events of \(source.sourceId)")
+            await self.addActivityEventsObservationTask(task, for: source)
+            await task.value
+        }
     }
 
     func reset() {
         sourceToTasks.removeAll()
         layerEventsObservationDictionary.removeAll()
+        activeEventObservationDictionary.removeAll()
         sourceToActiveViewsMapping.removeAll()
         viewToRequestedVideoQualityMapping.removeAll()
         sourceToSimulcastLayersMapping.removeAll()
@@ -365,6 +394,10 @@ private extension VideoTracksManager {
 private extension VideoTracksManager {
     func addLayerEventsObservationTask(_ task: Task<Void, Never>, for source: StreamSource) {
         layerEventsObservationDictionary[source.sourceId] = task
+    }
+
+    func addActivityEventsObservationTask(_ task: Task<Void, Never>, for source: StreamSource) {
+        activeEventObservationDictionary[source.sourceId] = task
     }
 }
 
