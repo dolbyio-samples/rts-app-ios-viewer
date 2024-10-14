@@ -110,7 +110,7 @@ final class StreamingViewModel: ObservableObject {
             guard let self else { return }
             do {
                 Self.logger.debug("🎰 Select video quality")
-                let renderer = self.rendererRegistry.acceleratedRenderer(for: source)
+                let renderer = self.rendererRegistry.sampleBufferRenderer(for: source)
                 self.selectedVideoQuality = videoQuality
                 switch videoQuality {
                 case .auto:
@@ -166,10 +166,10 @@ final class StreamingViewModel: ObservableObject {
                                     switch await self.state {
                                     case let .streaming(source: currentSource, playingAudio: isPlayingAudio):
                                         // No-action needed, already viewing stream
-                                        Self.logger.debug("🎰 Already viewing source \(currentSource.sourceId)")
+                                        await Self.logger.debug("🎰 Already viewing source \(currentSource.sourceId)")
                                         if !isPlayingAudio {
                                             if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
-                                                Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
+                                                await Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
                                                 // Enable new audio track
                                                 try await audioTrack.enable()
                                                 await MainActor.run {
@@ -178,18 +178,18 @@ final class StreamingViewModel: ObservableObject {
                                             }
                                         }
                                     default:
-                                        Self.logger.debug("🎰 Picked source \(videoSource.sourceId)")
+                                        await Self.logger.debug("🎰 Picked source \(videoSource.sourceId)")
 
                                         let renderer = await MainActor.run {
-                                            self.rendererRegistry.acceleratedRenderer(for: videoSource)
+                                            self.rendererRegistry.sampleBufferRenderer(for: videoSource)
                                         }
                                         try await videoSource.videoTrack.enable(renderer: renderer.underlyingRenderer, promote: true)
-                                        Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for video")
+                                        await Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for video")
                                         await self.storeProjectedMid(for: videoSource)
 
                                         let isPlayingAudio: Bool
                                         if let audioTrack = videoSource.audioTrack, audioTrack.isActive {
-                                            Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
+                                            await Self.logger.debug("🎰 Picked source \(videoSource.sourceId) for audio")
                                             // Enable new audio track
                                             try await audioTrack.enable()
                                             isPlayingAudio = true
