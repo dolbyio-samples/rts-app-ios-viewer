@@ -160,11 +160,16 @@ private extension SourceBuilder {
                     guard !Task.isCancelled else { return }
                     switch activityEvent {
                     case .active:
-                        Self.logger.debug("👨‍🔧 Audio track for \(sourceId) is active, \(track.isActive)")
+                        Self.logger.debug("👨‍🔧 Audio track for \(sourceId) is active")
                         self.audioTrackStateUpdateSubject.send(sourceId)
                         
                     case .inactive:
-                        Self.logger.debug("👨‍🔧 Audio track for \(sourceId) is inactive, \(track.isActive)")
+                        Self.logger.debug("👨‍🔧 Audio track for \(sourceId) is inactive")
+                        do {
+                            try await track.disable()
+                        } catch {
+                            Self.logger.debug("👨‍🔧 Error disabling audio track for \(sourceId), \(error.localizedDescription)")
+                        }
                         self.audioTrackStateUpdateSubject.send(sourceId)
                     }
                 }
@@ -184,11 +189,16 @@ private extension SourceBuilder {
                     guard !Task.isCancelled else { return }
                     switch activityEvent {
                     case .active:
-                        Self.logger.debug("👨‍🔧 Video track for \(sourceId) is active, \(track.isActive)")
+                        Self.logger.debug("👨‍🔧 Video track for \(sourceId) is active")
                         self.videoTrackStateUpdateSubject.send(sourceId)
                         
                     case .inactive:
-                        Self.logger.debug("👨‍🔧 Video track for \(sourceId) is inactive, \(track.isActive)")
+                        Self.logger.debug("👨‍🔧 Video track for \(sourceId) is inactive")
+                        do {
+                            try await track.disable()
+                        } catch {
+                            Self.logger.debug("👨‍🔧 Error disabling video track for \(sourceId), \(error.localizedDescription)")
+                        }
                         self.videoTrackStateUpdateSubject.send(sourceId)
                     }
                 }
