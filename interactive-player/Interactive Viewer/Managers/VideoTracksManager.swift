@@ -85,6 +85,7 @@ final actor VideoTracksManager {
     }
 
     func observeEvents(for source: StreamSource) {
+        guard let videoTrack = source.videoTrack else { return }
         Task { [weak self] in
             guard
                 let self,
@@ -93,7 +94,7 @@ final actor VideoTracksManager {
                 return
             }
             let layerEventsObservationTask = Task {
-                for await layerEvent in source.videoTrack.layers() {
+                for await layerEvent in videoTrack.layers() {
                     let simulcastLayers = layerEvent.layers()
                     await self.addSimulcastLayers(simulcastLayers, for: source)
                 }
@@ -112,13 +113,13 @@ final actor VideoTracksManager {
                 return
             }
             let task = Task {
-                for await activity in source.videoTrack.activity() {
+                for await activity in videoTrack.activity() {
                     switch activity {
                     case .active:
                         // No-op
                         break
                     case .inactive:
-                        if let mid = source.videoTrack.currentMID {
+                        if let mid = videoTrack.currentMID {
                             await self.remove(mid: mid)
                         }
                     }
@@ -144,6 +145,7 @@ final actor VideoTracksManager {
     }
 
     func enableTrack(for source: StreamSource, with preferredVideoQuality: VideoQuality, on view: ViewID) async {
+        guard source.videoTrack?.isActive == true else { return }
         let sourceId = source.sourceId
         Self.logger.debug("♼ Request to enable video track for source \(sourceId) with preferredVideoQuality \(preferredVideoQuality.displayText) from view \(view.description)")
 
@@ -199,6 +201,7 @@ final actor VideoTracksManager {
     }
 
     func disableTrack(for source: StreamSource, on view: ViewID) async {
+        guard source.videoTrack?.isActive == true else { return }
         let sourceId = source.sourceId
         Self.logger.debug("♼ Request to disable video track for source \(sourceId) on view \(view.description)")
         // Remove view from the list of active views for that source
@@ -262,7 +265,7 @@ final actor VideoTracksManager {
             self.sourceToTasks[source.sourceId] = SerialTasks()
         }
         guard let serialTasks = sourceToTasks[source.sourceId],
-              source.videoTrack.isActive
+              source.videoTrack?.isActive == true
         else {
             return
         }
@@ -273,17 +276,17 @@ final actor VideoTracksManager {
             guard
                 let self,
                 !Task.isCancelled,
-                source.videoTrack.isActive
+                source.videoTrack?.isActive == true
             else {
                 return
             }
             if let layer {
-                try await source.videoTrack.enable(renderer: renderer, layer: layer)
+                try await source.videoTrack?.enable(renderer: renderer, layer: layer)
             } else {
-                try await source.videoTrack.enable(renderer: renderer)
+                try await source.videoTrack?.enable(renderer: renderer)
             }
             // Store mid
-            if let mid = source.videoTrack.currentMID {
+            if let mid = source.videoTrack?.currentMID {
                 await self.store(mid: mid)
             }
             Self.logger.debug("♼ Queue: Finished enabling track for source \(source.sourceId) on renderer \(ObjectIdentifier(renderer).debugDescription)")
@@ -293,11 +296,11 @@ final actor VideoTracksManager {
     func queueDisableTrack(for source: StreamSource) async throws {
         guard let serialTasks = sourceToTasks[source.sourceId] else { return }
         try await serialTasks.enqueue {
-            guard !Task.isCancelled, source.videoTrack.isActive else { return }
+            guard !Task.isCancelled, source.videoTrack?.isActive == true else { return }
             Self.logger.debug("♼ Queue: Disabling track for source \(source.sourceId)")
-            try await source.videoTrack.disable()
+            try await source.videoTrack?.disable()
             // Remove mid
-            if let mid = source.videoTrack.currentMID {
+            if let mid = source.videoTrack?.currentMID {
                 await self.remove(mid: mid)
             }
             Self.logger.debug("♼ Queue: Finished disabling track for source \(source.sourceId)")

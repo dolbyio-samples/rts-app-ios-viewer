@@ -273,7 +273,7 @@ private extension StreamViewModel {
                         try await self.serialTasks.enqueue {
                             switch state {
                             case let .subscribed(sources: sources):
-                                let activeSources = Array(sources.filter { $0.videoTrack.isActive == true })
+                                let activeSources = Array(sources.filter { $0.videoTrack?.isActive == true || $0.audioTrack?.isActive == true })
 
                                 // Register Video Track events
                                 await withTaskGroup(of: Void.self) { group in

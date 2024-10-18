@@ -38,7 +38,7 @@ final class StatsInfoViewModel: ObservableObject {
             guard let self else { return }
             let streamStatisticsPublisher = await self.subscriptionManager.subscriber.statsPublisher
             let layersPublisher = await self.videoTracksManager.layersPublisher
-            let mid = self.streamSource.videoTrack.currentMID
+            let mid = self.streamSource.videoTrack?.currentMID
 
             streamStatisticsPublisher.combineLatest(layersPublisher)
                 .receive(on: DispatchQueue.main)
@@ -74,7 +74,7 @@ private extension StatsInfoViewModel {
         projectedTimeStamp: Double?
     ) -> [StatsItem] {
         var result = [StatsItem]()
-        let videoTrackStats = streamStatistics.trackStats.first(where: { $0.mid == streamSource.videoTrack.currentMID })
+        let videoTrackStats = streamStatistics.trackStats.first(where: { $0.mid == streamSource.videoTrack?.currentMID })
         let audioTrackStats = streamStatistics.trackStats.first(where: { $0.mid == streamSource.audioTrack?.currentMID })
 
         result.append(
