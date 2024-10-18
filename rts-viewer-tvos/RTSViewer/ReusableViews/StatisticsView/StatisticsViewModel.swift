@@ -49,7 +49,7 @@ private extension StatisticsViewModel {
         isMultiChannel: Bool = false
     ) -> [StatsItem] {
         var result = [StatsItem]()
-        let videoTrackStats = streamStatistics.trackStats.first(where: { $0.mid == source.videoTrack.currentMID })
+        let videoTrackStats = streamStatistics.trackStats.first(where: { $0.mid == source.videoTrack?.currentMID })
         let audioTrackStats = streamStatistics.trackStats.first(where: { $0.mid == source.audioTrack?.currentMID })
 
         result.append(

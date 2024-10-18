@@ -59,12 +59,12 @@ class Channel: ObservableObject, Identifiable, Hashable, Equatable {
             Self.logger.debug("♼ Channel Grid view: Video view appear for \(self.source.sourceId)")
             self.selectedVideoQuality = quality
             if let layer = quality.layer {
-                try await self.source.videoTrack.enable(
+                try await self.source.videoTrack?.enable(
                     renderer: rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer,
                     layer: MCRTSRemoteVideoTrackLayer(layer: layer)
                 )
             } else {
-                try await self.source.videoTrack.enable(renderer: rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer)
+                try await self.source.videoTrack?.enable(renderer: rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer)
             }
         }
     }
@@ -72,7 +72,7 @@ class Channel: ObservableObject, Identifiable, Hashable, Equatable {
     func disableVideo() {
         Task {
             Self.logger.debug("♼ Channel Grid view: Video view disappear for \(self.source.sourceId)")
-            try await self.source.videoTrack.disable()
+            try await self.source.videoTrack?.disable()
         }
     }
 
@@ -114,11 +114,12 @@ private extension Channel {
     func observeLayerEvents() {
         Task { [weak self] in
             guard let self,
+                  let videoTrack = self.source.videoTrack,
                   layersEventsObserver == nil else { return }
 
             Self.logger.debug("♼ Registering layer events for \(source.sourceId)")
             let layerEventsObservationTask = Task {
-                for await layerEvent in self.source.videoTrack.layers() {
+                for await layerEvent in videoTrack.layers() {
                     guard !Task.isCancelled else { return }
 
                     let videoQualities = layerEvent.layers()
