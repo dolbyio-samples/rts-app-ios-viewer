@@ -97,11 +97,9 @@ private extension ChannelViewModel {
                             try await self.serialTasks.enqueue {
                                 switch state {
                                 case let .subscribed(sources: sources):
-                                    let activeSources = Array(sources.filter { $0.videoTrack.isActive == true })
-                                    let soundSources = Array(activeSources.filter { $0.audioTrack?.isActive == true })
+                                    let activeSources = Array(sources.filter { $0.videoTrack?.isActive == true || $0.audioTrack?.isActive == true })
 
-                                    guard !soundSources.isEmpty else { return }
-                                    await self.updateChannelWithSources(unsourcedChannel: unsourcedChannel, sources: soundSources)
+                                    await self.updateChannelWithSources(unsourcedChannel: unsourcedChannel, sources: activeSources)
 
                                     guard !Task.isCancelled else { return }
 
@@ -150,7 +148,6 @@ private extension ChannelViewModel {
     }
     // swiftlint:enable function_body_length cyclomatic_complexity
 
-    // TODO: Should be reworked when we have streams with a single source with audio
     func updateChannelWithSources(unsourcedChannel: UnsourcedChannel, sources: [StreamSource]) {
         guard !sourcedChannels.contains(where: { $0.id == unsourcedChannel.id }),
               sources.count > 0 else { return }

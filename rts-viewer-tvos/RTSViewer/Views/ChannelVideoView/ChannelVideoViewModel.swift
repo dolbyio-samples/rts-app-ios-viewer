@@ -5,6 +5,7 @@
 import Combine
 import Foundation
 import os
+import MillicastSDK
 import RTSCore
 import SwiftUI
 
@@ -12,7 +13,7 @@ import SwiftUI
 class ChannelVideoViewModel: ObservableObject {
     @Published var showStatsView: Bool
     @Published var isFocused: Bool
-    @Published var statistics: StreamStatistics?
+    @Published var statistics: MCSubscriberStats?
     @Published var videoQualityList: [VideoQuality]
 
     let channel: Channel

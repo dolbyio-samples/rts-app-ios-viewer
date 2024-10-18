@@ -13,9 +13,9 @@ struct StreamingView: View {
 
     @State private var showSettingsView = false
     @State private var showStatsView = false
+    @State var viewSize: CGSize = .zero
 
     @Environment(\.dismiss) var dismiss
-    @State var viewSize: CGSize = .zero
 
     init(streamName: String, accountID: String) {
         _viewModel = StateObject(wrappedValue: StreamingViewModel(streamName: streamName, accountID: accountID))
@@ -34,7 +34,7 @@ struct StreamingView: View {
         BackgroundContainerView {
             ZStack {
                 switch viewModel.state {
-                case let .streaming(source: source, _):
+                case let .streaming(source: source, _, _):
                     VideoRendererView(
                         source: source,
                         showSourceLabel: false,
@@ -58,8 +58,9 @@ struct StreamingView: View {
                         .padding()
                     }
                     .overlay(alignment: .bottomLeading) {
-                        if showStatsView, let streamStatistics = viewModel.streamStatistics,
-                           let mid = source.videoTrack.currentMID {
+                        if showStatsView,
+                           let streamStatistics = viewModel.streamStatistics,
+                           let mid = source.videoTrack?.currentMID ?? source.audioTrack?.currentMID {
                             StatisticsView(
                                 source: source,
                                 streamStatistics: streamStatistics,
@@ -73,6 +74,8 @@ struct StreamingView: View {
                                 },
                                 projectedTimeStamp: viewModel.projectedTimeStampForMids[mid]
                             )
+                            .frame(maxWidth: viewSize.width * 0.5, maxHeight: viewSize.height * 0.9, alignment: .bottomLeading)
+                            .padding()
                         }
                     }
                     .overlay(alignment: .trailing) {
@@ -114,7 +117,6 @@ struct StreamingView: View {
                     false
                 }
                 // swiftlint: enable switch_case_alignment
-
                 if viewModel.isLiveIndicatorEnabled {
                     LiveIndicatorView(isStreamLive: isStreamLive)
                         .padding()
@@ -149,9 +151,9 @@ struct StreamingView: View {
 }
 
 #if DEBUG
-struct StreamingView_Previews: PreviewProvider {
-    static var previews: some View {
-        StreamingView(streamName: "StreamName", accountID: "AccountID")
+    struct StreamingView_Previews: PreviewProvider {
+        static var previews: some View {
+            StreamingView(streamName: "StreamName", accountID: "AccountID")
+        }
     }
-}
 #endif

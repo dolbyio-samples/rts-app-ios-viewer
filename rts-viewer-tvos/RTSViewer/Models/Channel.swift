@@ -24,7 +24,7 @@ class Channel: ObservableObject, Identifiable, Hashable, Equatable {
         }
     }
 
-    @Published private(set) var streamStatistics: StreamStatistics?
+    @Published private(set) var streamStatistics: MCSubscriberStats?
     @Published var showStatsView: Bool = false
     @Published var videoQualityList = [VideoQuality]()
     @Published var selectedVideoQuality: VideoQuality = .auto
@@ -55,27 +55,24 @@ class Channel: ObservableObject, Identifiable, Hashable, Equatable {
     }
 
     func enableVideo(with quality: VideoQuality) {
-        let displayLabel = source.sourceId.displayLabel
-        let viewId = "\(ChannelGridView.self).\(displayLabel)"
         Task {
             Self.logger.debug("♼ Channel Grid view: Video view appear for \(self.source.sourceId)")
             self.selectedVideoQuality = quality
             if let layer = quality.layer {
-                try await self.source.videoTrack.enable(
+                try await self.source.videoTrack?.enable(
                     renderer: rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer,
                     layer: MCRTSRemoteVideoTrackLayer(layer: layer)
                 )
             } else {
-                try await self.source.videoTrack.enable(renderer: rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer)
+                try await self.source.videoTrack?.enable(renderer: rendererRegistry.sampleBufferRenderer(for: source).underlyingRenderer)
             }
         }
     }
 
     func disableVideo() {
-        let displayLabel = source.sourceId.displayLabel
         Task {
             Self.logger.debug("♼ Channel Grid view: Video view disappear for \(self.source.sourceId)")
-            try await self.source.videoTrack.disable()
+            try await self.source.videoTrack?.disable()
         }
     }
 
@@ -106,12 +103,9 @@ private extension Channel {
     func observeStreamStatistics() {
         Task { [weak self] in
             guard let self else { return }
-            await subscriptionManager.$streamStatistics
+            await subscriptionManager.subscriber.statsPublisher
                 .sink { statistics in
-                    guard let statistics else { return }
-                    Task {
-                        self.streamStatistics = statistics
-                    }
+                    self.streamStatistics = statistics
                 }
                 .store(in: &cancellables)
         }
@@ -120,11 +114,12 @@ private extension Channel {
     func observeLayerEvents() {
         Task { [weak self] in
             guard let self,
+                  let videoTrack = self.source.videoTrack,
                   layersEventsObserver == nil else { return }
 
             Self.logger.debug("♼ Registering layer events for \(source.sourceId)")
             let layerEventsObservationTask = Task {
-                for await layerEvent in self.source.videoTrack.layers() {
+                for await layerEvent in videoTrack.layers() {
                     guard !Task.isCancelled else { return }
 
                     let videoQualities = layerEvent.layers()

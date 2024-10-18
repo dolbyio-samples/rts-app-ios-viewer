@@ -8,12 +8,10 @@ import MillicastSDK
 import os
 
 private class PartialSource {
-    var sourceId: SourceID
-    
     var videoTrack: MCRTSRemoteVideoTrack? {
         didSet {
             if let videoTrack {
-                source = StreamSource(sourceId: sourceId, videoTrack: videoTrack, audioTrack: audioTrack)
+                source?.addVideoTrack(videoTrack)
             }
         }
     }
@@ -25,9 +23,11 @@ private class PartialSource {
         }
     }
     private(set) var source: StreamSource?
+    let sourceId: SourceID
 
     init(sourceId: SourceID) {
         self.sourceId = sourceId
+        self.source = StreamSource(sourceId: sourceId)
     }
 }
 
