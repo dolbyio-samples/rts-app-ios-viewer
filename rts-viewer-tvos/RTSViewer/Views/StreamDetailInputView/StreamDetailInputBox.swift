@@ -44,10 +44,10 @@ struct StreamDetailInputBox: View {
                 }
 
                 VStack(spacing: Layout.spacing3x) {
-                    TextField("stream-detail-input.streamName.placeholder.label", text: $viewModel.streamName)
+                    TextField("stream-detail-input.accountId.placeholder.label", text: $viewModel.accountID)
                         .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
-                    TextField("stream-detail-input.accountId.placeholder.label", text: $viewModel.accountID)
+                    TextField("stream-detail-input.streamName.placeholder.label", text: $viewModel.streamName)
                         .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
 
                     if viewModel.hasSavedStreams {

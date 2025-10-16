@@ -26,7 +26,7 @@ struct FooterView: View {
 #if DEBUG
 struct FooterView_Previews: PreviewProvider {
     static var previews: some View {
-        FooterView(text: "Copyright © 2024 Dolby.io — All Rights Reserved")
+        FooterView(text: "Copyright © 2025 Dolby OptiView — All Rights Reserved")
     }
 }
 #endif

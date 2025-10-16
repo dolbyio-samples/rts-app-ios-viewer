@@ -1,8 +1,8 @@
-# Dolby.io Realtime Streaming Monitor - tvOS App
+# Dolby OptiView Real-time Streaming Monitor - tvOS App
 
 ## Readme
 
-This project demonstrates what a simple Realtime Streaming monitor experience is like when built for an tvOS device.
+This project demonstrates what a simple Real-time Streaming monitor experience is like when built for an tvOS device.
 
 | Use cases              | Features                                                         | Tech Stack  |
 | ---------------------- | ---------------------------------------------------------------- | ----------- |
@@ -19,24 +19,20 @@ This setup guide is validated on both Intel/M1-based MacBook Pro running macOS 1
 
 ### Other
 
-* A [Dolby.io](https://dashboard.dolby.io/signup/) account
-* Start a video streaming broadcasting, see [here](https://docs.dolby.io/streaming-apis/docs/how-to-broadcast-in-dashboard) 
-* The Stream name and Account ID pair from the video streaming above
-
-### How to get a Dolby.io account
-
-To setup your Dolby.io account, go to the [Dolby.io dashboard](https://dashboard.dolby.io/signup/) and complete the form. After confirming your email address, you will be logged in.  
+* Log in into your [Dolby OptiView](https://optiview.dolby.com/) account
+* Start a video streaming broadcasting, see [here](https://optiview.dolby.com/docs/millicast/how-to-broadcast-in-dashboard/) 
+* The Account ID and Stream name pair from the video streaming above
 
 ## Cloning the repo
 
-The Dolby.io Realtime Streaming Monitor sample app is hosted in an Xcode workspace. There are two Swift Package libraries under the `LocalPackages` directory.
+The Dolby OptiView Real-time Streaming Monitor sample app is hosted in an Xcode workspace. There are two Swift Package libraries under the `LocalPackages` directory.
 
 Get the code by cloning this repo using git.
 
 > **_Info:_** The main branch is constantly under development. Get a tagged branch for a stable release.
 
 ```bash
-git clone git@github.com:dolbyio-samples/rts-app-ios-viewer.git
+git clone https://github.com/dolbyio-samples/rts-app-ios-viewer
 ```
 
 ## Building and running the app
@@ -59,8 +55,4 @@ The known issues of this sample app can be found [here](KNOWN-ISSUES.md).
 
 ## License
 
-The Dolby.io Realtime Streaming Monitor sample and its repository are licensed under the MIT License.
-
-## More resources
-
-Looking for more sample apps and projects? Head to the [Project Gallery](https://docs.dolby.io/communications-apis/page/gallery).
+The Dolby OptiView Real-time Streaming Monitor sample and its repository are licensed under MIT License.
