@@ -56,6 +56,7 @@ struct StreamingView: View {
                             }
                         }
                         .padding()
+                        .opacity(0)
                     }
                     .overlay(alignment: .bottomLeading) {
                         if showStatsView, let streamStatistics = viewModel.streamStatistics,
