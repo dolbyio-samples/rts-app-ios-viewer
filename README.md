@@ -14,7 +14,7 @@ There are example app demonstrate what a simple Real-time Streaming monitor expe
 The Dolby OptiView Real-time Streaming Monitor sample app are hosted in an Xcode workspace/project.
 Get the code by cloning this repo using git.
 
-> **_Info:_** The `mai`n` branch is constantly under development. Get a tagged branch for a stable release.
+> **_Info:_** The `main` branch is constantly under development. Get a tagged branch for a stable release.
 
 ```bash
 git clone https://github.com/dolbyio-samples/rts-app-ios-viewer
