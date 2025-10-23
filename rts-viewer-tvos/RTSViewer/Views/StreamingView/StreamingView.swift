@@ -17,8 +17,8 @@ struct StreamingView: View {
     @Environment(\.dismiss) var dismiss
     @State var viewSize: CGSize = .zero
 
-    init(streamName: String, accountID: String) {
-        _viewModel = StateObject(wrappedValue: StreamingViewModel(streamName: streamName, accountID: accountID))
+    init(streamName: String, accountID: String, playoutDelay: PlayoutDelay) {
+        _viewModel = StateObject(wrappedValue: StreamingViewModel(streamName: streamName, accountID: accountID, playoutDelay: playoutDelay))
     }
 
     private func makeBackgroundView(@ViewBuilder content: () -> some View, opacity: CGFloat) -> some View {
@@ -152,7 +152,7 @@ struct StreamingView: View {
 #if DEBUG
 struct StreamingView_Previews: PreviewProvider {
     static var previews: some View {
-        StreamingView(streamName: "StreamName", accountID: "AccountID")
+        StreamingView(streamName: "StreamName", accountID: "AccountID", playoutDelay: PlayoutDelay())
     }
 }
 #endif

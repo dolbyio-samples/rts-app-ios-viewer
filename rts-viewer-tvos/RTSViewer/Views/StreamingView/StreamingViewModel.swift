@@ -19,6 +19,7 @@ final class StreamingViewModel: ObservableObject {
 
     private let streamName: String
     private let accountID: String
+    private let playoutDelay: PlayoutDelay
     private let persistentSettings: PersistentSettingsProtocol
     private var layersEventsObservationDictionary: [SourceID: Task<Void, Never>] = [:]
     private var stateObservation: Task<Void, Never>?
@@ -69,10 +70,12 @@ final class StreamingViewModel: ObservableObject {
         accountID: String,
         subscriptionManager: SubscriptionManager = SubscriptionManager(),
         persistentSettings: PersistentSettingsProtocol = PersistentSettings(),
+        playoutDelay: PlayoutDelay = PlayoutDelay(),
         rendererRegistry: RendererRegistry = RendererRegistry()
     ) {
         self.streamName = streamName
         self.accountID = accountID
+        self.playoutDelay = playoutDelay
         self.subscriptionManager = subscriptionManager
         self.persistentSettings = persistentSettings
         self.rendererRegistry = rendererRegistry
@@ -89,7 +92,7 @@ final class StreamingViewModel: ObservableObject {
         Task(priority: .userInitiated) {
             do {
                 Self.logger.debug("🎰 Subscribe to stream with \(self.streamName), \(self.accountID)")
-                try await subscriptionManager.subscribe(streamName: streamName, accountID: accountID)
+                try await subscriptionManager.subscribe(streamName: streamName, accountID: accountID, configuration: SubscriptionConfiguration(playoutDelay: MCForcePlayoutDelay(playoutDelay)))
             } catch {
                 Self.logger.debug("🎰 Subscribe failed with error \(error.localizedDescription)")
                 self.state = .otherError(message: error.localizedDescription)

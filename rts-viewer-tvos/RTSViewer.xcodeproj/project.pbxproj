@@ -69,6 +69,7 @@
 		E8D1947C29717D410080C4E0 /* RecentStreamsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D1947A29717D410080C4E0 /* RecentStreamsView.swift */; };
 		E8D5AE59299068E20019C132 /* LandingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D5AE57299068E20019C132 /* LandingViewModel.swift */; };
 		E8F2EE2829932A9100AF0471 /* MockPersistentSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F2EE2729932A9100AF0471 /* MockPersistentSettings.swift */; };
+		F5894C632EA9A52200D56F71 /* PlayoutDelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5894C622EA9A51900D56F71 /* PlayoutDelay.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +170,7 @@
 		E8D1947A29717D410080C4E0 /* RecentStreamsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamsView.swift; sourceTree = "<group>"; };
 		E8D5AE57299068E20019C132 /* LandingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingViewModel.swift; sourceTree = "<group>"; };
 		E8F2EE2729932A9100AF0471 /* MockPersistentSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPersistentSettings.swift; sourceTree = "<group>"; };
+		F5894C622EA9A51900D56F71 /* PlayoutDelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayoutDelay.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -437,6 +439,7 @@
 		E8752B4C298C75A4002D5C2B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				F5894C622EA9A51900D56F71 /* PlayoutDelay.swift */,
 				89FDEBB82CAC6163003A1856 /* StreamConfig.swift */,
 				E8752B4D298C75BD002D5C2B /* StreamDetail.swift */,
 				E8C776D82C2BEEA5002DE392 /* VideoQuality.swift */,
@@ -710,6 +713,7 @@
 				E8C47C7229778BDB0026E877 /* RTSViewer.xcdatamodeld in Sources */,
 				E8752B5A298C9FB6002D5C2B /* RecentStreamButtonViewModel.swift in Sources */,
 				89FDEBCB2CB443FE003A1856 /* Channel.swift in Sources */,
+				F5894C632EA9A52200D56F71 /* PlayoutDelay.swift in Sources */,
 				E83F0F982C19305800F6FA6B /* SettingsButton.swift in Sources */,
 				B696B5332987790B00831FFF /* PersistentSettings.swift in Sources */,
 				89C391C92C98CA3D00861FD5 /* ChannelGridViewModel.swift in Sources */,

@@ -10,6 +10,9 @@
 "stream-detail-input.subtitle.label" = "Enter your stream information to view a stream";
 "stream-detail-input.streamName.placeholder.label" = "Enter your stream name";
 "stream-detail-input.accountId.placeholder.label" = "Enter your account ID";
+"stream-detail-input.playoutDelayMin.placeholder.label" = "Enter the minimum video playout delay";
+"stream-detail-input.playoutDelayMax.placeholder.label" = "Enter the maximum video playout delay";
+
 "stream-detail-input.play.button" = "Play";
 "stream-detail-input.play-from-config.button" = "Play From Config";
 "stream-detail-input.recent-streams.button" = "Saved Streams";
