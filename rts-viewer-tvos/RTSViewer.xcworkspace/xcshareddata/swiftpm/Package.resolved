@@ -1,13 +1,13 @@
 {
-  "originHash" : "55c5bb51783dcbfad1b8b5bd2888d3846f22b84ddc7759242400a1260ba1846f",
+  "originHash" : "618e7155ffa27839b17ff65b712696bdb46a9da6e33b087736cb48661bb38d73",
   "pins" : [
     {
       "identity" : "millicast-sdk-swift-package",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/millicast/millicast-sdk-swift-package",
       "state" : {
-        "revision" : "a36748fd8b8d8fe8d94608f42972e5002d2dd9f5",
-        "version" : "2.0.0"
+        "revision" : "ae03398b36cb7eebcfd2477cafe8ad838b07114f",
+        "version" : "2.5.2"
       }
     }
   ],
