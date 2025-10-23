@@ -11,6 +11,8 @@ import RTSCore
 final class LandingViewModel: ObservableObject {
     @Published var streamName: String = ""
     @Published var accountID: String = ""
+    @Published var playoutDelayMin: Int32?
+    @Published var playoutDelayMax: Int32?
     @Published var unsourcedChannel: [UnsourcedChannel]?
 
     @Published var isShowingStreamingView: Bool = false
