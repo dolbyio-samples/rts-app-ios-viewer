@@ -94,7 +94,7 @@ struct LandingView: View {
         var playoutDelay = PlayoutDelay()
         if let min = viewModel.playoutDelayMin,
               let max = viewModel.playoutDelayMax,
-              min < max {
+              min <= max {
             playoutDelay = PlayoutDelay(min: min, max: max)
         }
         return playoutDelay
