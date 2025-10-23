@@ -42,17 +42,19 @@ public enum SourceID: Equatable, Hashable, CustomStringConvertible {
 public struct StreamSource: Identifiable {
     public let id = UUID()
     public let sourceId: SourceID
-    public let videoTrack: MCRTSRemoteVideoTrack
+    public private(set) var videoTrack: MCRTSRemoteVideoTrack?
     public private(set) var audioTrack: MCRTSRemoteAudioTrack?
     
-    init(sourceId: SourceID, videoTrack: MCRTSRemoteVideoTrack, audioTrack: MCRTSRemoteAudioTrack? = nil) {
+    init(sourceId: SourceID) {
         self.sourceId = sourceId
-        self.videoTrack = videoTrack
-        self.audioTrack = audioTrack
     }
 
     mutating func addAudioTrack(_ track: MCRTSRemoteAudioTrack) {
         audioTrack = track
+    }
+    
+    mutating func addVideoTrack(_ track: MCRTSRemoteVideoTrack) {
+        videoTrack = track
     }
 }
 

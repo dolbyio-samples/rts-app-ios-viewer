@@ -53,6 +53,7 @@
 		E8752B69298CA513002D5C2B /* StreamDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B68298CA513002D5C2B /* StreamDataManagerTests.swift */; };
 		E8752B72298CA78D002D5C2B /* MockDateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B71298CA78D002D5C2B /* MockDateProvider.swift */; };
 		E8752B74298CB535002D5C2B /* MockStreamDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8752B73298CB535002D5C2B /* MockStreamDataManager.swift */; };
+		E88D93FE2CB8242500A97F26 /* FocusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88D93FD2CB8242500A97F26 /* FocusableView.swift */; };
 		E89D28902C747AFE002254AB /* SerialTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89D288F2C747AFE002254AB /* SerialTasks.swift */; };
 		E8AEDCAC2CBCC3B400106361 /* SizePreferenceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AEDCAB2CBCC3B400106361 /* SizePreferenceKey.swift */; };
 		E8B48E86297A2957000DC59A /* RecentStreamButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B48E84297A2957000DC59A /* RecentStreamButton.swift */; };
@@ -156,6 +157,7 @@
 		E8752B68298CA513002D5C2B /* StreamDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDataManagerTests.swift; sourceTree = "<group>"; };
 		E8752B71298CA78D002D5C2B /* MockDateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDateProvider.swift; sourceTree = "<group>"; };
 		E8752B73298CB535002D5C2B /* MockStreamDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStreamDataManager.swift; sourceTree = "<group>"; };
+		E88D93FD2CB8242500A97F26 /* FocusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableView.swift; sourceTree = "<group>"; };
 		E89D288F2C747AFE002254AB /* SerialTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SerialTasks.swift; sourceTree = "<group>"; };
 		E8AEDCAB2CBCC3B400106361 /* SizePreferenceKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SizePreferenceKey.swift; sourceTree = "<group>"; };
 		E8B48E84297A2957000DC59A /* RecentStreamButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentStreamButton.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 		E83CDA2D2A10917A008690FD /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				E88D93FC2CB8241100A97F26 /* FocusableView */,
 				E83CDA372A10917A008690FD /* BackgroundView */,
 				E83F0F9B2C19326100F6FA6B /* ErrorView */,
 				E83CDA2E2A10917A008690FD /* Footer */,
@@ -474,6 +477,14 @@
 				E8752B73298CB535002D5C2B /* MockStreamDataManager.swift */,
 			);
 			path = Mocks;
+			sourceTree = "<group>";
+		};
+		E88D93FC2CB8241100A97F26 /* FocusableView */ = {
+			isa = PBXGroup;
+			children = (
+				E88D93FD2CB8242500A97F26 /* FocusableView.swift */,
+			);
+			path = FocusableView;
 			sourceTree = "<group>";
 		};
 		E8A0C5CA2A10B88000C1D99B /* Frameworks */ = {
@@ -687,6 +698,7 @@
 				89C391E42CA21D9500861FD5 /* Bundle+Version.swift in Sources */,
 				E8AEDCAC2CBCC3B400106361 /* SizePreferenceKey.swift in Sources */,
 				E8BA8E102991CB0E0043DEE1 /* StreamingViewModel.swift in Sources */,
+				E89E4EC72CB621B500B5490C /* SizePreferenceKey.swift in Sources */,
 				E8C776D92C2BEEA5002DE392 /* VideoQuality.swift in Sources */,
 				89C391F42CA752AE00861FD5 /* SettingsMultichannelView.swift in Sources */,
 				E83F0F932C192D4B00F6FA6B /* SettingsViewModel.swift in Sources */,
@@ -705,6 +717,7 @@
 				E8752B4F298C75BD002D5C2B /* StreamDetail.swift in Sources */,
 				89C391D32C9B78A800861FD5 /* StreamDetailInputViewModel.swift in Sources */,
 				E83F0F962C192ECF00F6FA6B /* LiveIndicatorView.swift in Sources */,
+				E88D93FE2CB8242500A97F26 /* FocusableView.swift in Sources */,
 				631DD25926F1E18E0023D24A /* RTSViewer.swift in Sources */,
 				89FDEBBB2CAC9E99003A1856 /* SettingsMultichannelViewModel.swift in Sources */,
 				89FDEBB92CAC6163003A1856 /* StreamConfig.swift in Sources */,
