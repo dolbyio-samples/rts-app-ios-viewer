@@ -15,9 +15,8 @@ struct PlayoutDelay {
     }
 
     init() {
-        let native = SubscriptionConfiguration.Constants.playoutDelay
-        self.min = native.minimum
-        self.max = native.maximum
+        self.min = 0
+        self.max = 0
     }
 }
 
