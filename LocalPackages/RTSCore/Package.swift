@@ -15,7 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/millicast/millicast-sdk-swift-package", .upToNextMajor(from: Version(2, 5, 2))),
-        .package(url: "https://github.com/apple/swift-collections.git", from: "1.3.0")
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.6")
     ],
     targets: [
         .target(
