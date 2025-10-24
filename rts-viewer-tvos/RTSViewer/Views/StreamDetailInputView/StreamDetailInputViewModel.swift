@@ -13,6 +13,7 @@ final class StreamDetailInputViewModel: ObservableObject {
     @Published private(set) var hasSavedStreams: Bool = false
     @Binding var streamName: String
     @Binding var accountID: String
+    @Binding var enableDebugLogging: Bool
     @Binding var playoutDelayMin: Int32?
     @Binding var playoutDelayMax: Int32?
     @Binding private var channels: [UnsourcedChannel]?
@@ -35,6 +36,7 @@ final class StreamDetailInputViewModel: ObservableObject {
     init(
         streamName: Binding<String>,
         accountID: Binding<String>,
+        enableDebugLogging: Binding<Bool>,
         playoutDelayMin: Binding<Int32?>,
         playoutDelayMax: Binding<Int32?>,
         channels: Binding<[UnsourcedChannel]?>,
@@ -45,6 +47,7 @@ final class StreamDetailInputViewModel: ObservableObject {
     ) {
         self._streamName = streamName
         self._accountID = accountID
+        self._enableDebugLogging = enableDebugLogging
         self._playoutDelayMin = playoutDelayMin
         self._playoutDelayMax = playoutDelayMax
         self._channels = channels

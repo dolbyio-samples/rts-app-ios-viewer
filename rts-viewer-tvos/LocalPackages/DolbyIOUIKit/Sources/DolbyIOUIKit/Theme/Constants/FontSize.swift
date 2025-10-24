@@ -17,4 +17,5 @@ public enum FontSize {
     public static let body: CGFloat = 29
     public static let caption1: CGFloat = 25.0
     public static let caption2: CGFloat = 23.0
+    public static let caption3: CGFloat = 18.0
 }

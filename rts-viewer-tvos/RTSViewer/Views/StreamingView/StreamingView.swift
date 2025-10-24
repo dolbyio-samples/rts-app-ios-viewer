@@ -17,8 +17,9 @@ struct StreamingView: View {
 
     @Environment(\.dismiss) var dismiss
 
-    init(streamName: String, accountID: String, playoutDelay: PlayoutDelay) {
-        _viewModel = StateObject(wrappedValue: StreamingViewModel(streamName: streamName, accountID: accountID, playoutDelay: playoutDelay))
+    init(streamName: String, accountID: String, playoutDelay: PlayoutDelay, enableDebugLogging: Bool = false) {
+        let subscriptionManager = SubscriptionManager(enableDebugLogging: enableDebugLogging)
+        _viewModel = StateObject(wrappedValue: StreamingViewModel(streamName: streamName, accountID: accountID, subscriptionManager: subscriptionManager, playoutDelay: playoutDelay))
     }
 
     private func makeBackgroundView(@ViewBuilder content: () -> some View, opacity: CGFloat) -> some View {

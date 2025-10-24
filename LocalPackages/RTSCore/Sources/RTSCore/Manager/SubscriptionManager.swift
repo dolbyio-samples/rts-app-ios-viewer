@@ -9,6 +9,7 @@ import os
 import SwiftUI
 
 public actor SubscriptionManager {
+    private static let TELEMETRY_URL: String = "https://playback-report.millicast.com"
     private static let logger = Logger(
         subsystem: Bundle.module.bundleIdentifier!,
         category: String(describing: SubscriptionManager.self)
@@ -31,13 +32,17 @@ public actor SubscriptionManager {
     @Published public var websocketState: MCConnectionState = .idle
 
     private var sourceBuilder = SourceBuilder()
-    private let logHandler: MillicastLogHandler = .init()
+    private var sdkLogger: SDKLogger
+    private let enableDebugLogging: Bool
     private var isReconnectingPeerConnection: Bool = false
     private var subscriberEventObservationTasks: [Task<Void, Never>] = []
 
     // MARK: Subscribe API methods
 
-    public init() {
+    public init(enableDebugLogging: Bool = false) {
+        self.enableDebugLogging = enableDebugLogging
+        let telemetryURL = URL(string: Self.TELEMETRY_URL)!
+        self.sdkLogger = enableDebugLogging ? SDKLogger(loglevel: .debug, telemetryUrl: telemetryURL) : SDKLogger(telemetryUrl: telemetryURL)
         // Configure the AVAudioSession with our settings.
         AVAudioSession.configure()
         
@@ -52,8 +57,10 @@ public actor SubscriptionManager {
     }
 
     public func subscribe(streamName: String, accountID: String, token: String? = nil, configuration: SubscriptionConfiguration = SubscriptionConfiguration()) async throws {
-        logHandler.setLogFilePath(filePath: configuration.sdkLogPath)
-
+        let tag = "\(accountID)/\(streamName)"
+        let loglevel: MCLogLevel = enableDebugLogging ? .debug : .warning
+        sdkLogger = SDKLogger(loglevel: loglevel, streamTag: tag, telemetryUrl: URL(string: Self.TELEMETRY_URL)!)
+        
         let subscribeTask = Task(priority: .high) { [weak subscriber] in
             guard let subscriber else { return }
             Self.logger.debug("👨‍🔧 Start a new connect request")
@@ -103,6 +110,7 @@ public actor SubscriptionManager {
 
     public func unSubscribe() async throws {
         Self.logger.debug("👨‍🔧 Stop subscription")
+        await sdkLogger.stop()
         await subscriber.enableStats(false)
         await reset()
         try await subscriber.unsubscribe()
@@ -113,7 +121,7 @@ public actor SubscriptionManager {
     private func reset() async {
         state = .disconnected
         await sourceBuilder.reset()
-        logHandler.setLogFilePath(filePath: nil)
+        //logHandler.setLogFilePath(filePath: nil)
     }
 }
 
@@ -180,6 +188,14 @@ extension SubscriptionManager {
             }
         }
 
+        let statsObservation = Task { [weak self] in
+            guard let self else { return }
+            for await stats in self.subscriber.stats() {
+                guard !Task.isCancelled else { return }
+                await self.sdkLogger.onStats(stats)
+            }
+        }
+        
         let sourcesObservation = Task { [weak self] in
             guard let self else { return }
             for await sources in await self.sourceBuilder.sourceStream {
@@ -192,7 +208,8 @@ extension SubscriptionManager {
         [
             taskWebsocketStateObservation, taskPeerConnectionStateObservation,
             taskHttpErrorStateObservation, taskSignalingErrorStateObservation,
-            streamStoppedStateObservation, tracksObservation, sourcesObservation
+            streamStoppedStateObservation, tracksObservation, statsObservation,
+            sourcesObservation
         ].forEach(addEventObservationTask)
 
         Self.logger.debug("👨‍🔧 Registered to subscriber events")
@@ -203,6 +220,7 @@ extension SubscriptionManager {
             taskSignalingErrorStateObservation.value,
             streamStoppedStateObservation.value,
             tracksObservation.value,
+            statsObservation.value,
             sourcesObservation.value
         ]
     }
