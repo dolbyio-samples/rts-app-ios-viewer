@@ -42,22 +42,32 @@ struct StreamDetailInputBox: View {
                         )
                     )
                 }
-
-                VStack(spacing: Layout.spacing2x) {
+                VStack {
                     TextField("stream-detail-input.accountId.placeholder.label", text: $viewModel.accountID)
-                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption3))
 
                     TextField("stream-detail-input.streamName.placeholder.label", text: $viewModel.streamName)
-                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
-
+                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption3))
                     Text(text: "Stream Config", fontAsset: .avenirNextRegular(
                         size: FontSize.caption2,
                         style: .caption2
                     ))
-                    TextField("stream-detail-input.playoutDelayMin.placeholder.label", value: $viewModel.playoutDelayMin, formatter: NumberFormatter())
-                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
-                    TextField("stream-detail-input.playoutDelayMax.placeholder.label", value: $viewModel.playoutDelayMax, formatter: NumberFormatter())
-                        .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption1))
+                    ScrollView {
+                        VStack {
+                            TextField("stream-detail-input.playoutDelayMin.placeholder.label", value: $viewModel.playoutDelayMin, formatter: NumberFormatter())
+                                .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption3))
+                            TextField("stream-detail-input.playoutDelayMax.placeholder.label", value: $viewModel.playoutDelayMax, formatter: NumberFormatter())
+                                .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption3))
+
+                            Toggle(isOn: $viewModel.enableDebugLogging) {
+                                Text("Debug Logging")
+                                    .font(.avenirNextRegular(withStyle: .caption, size: FontSize.caption3))
+                            }
+                            .toggleStyle(.automatic)
+                        }.padding(.horizontal, Layout.spacing2x)
+                         .padding(.vertical, Layout.spacing2x)
+                    }
+                    .frame(height: 150)
 
                     if viewModel.hasSavedStreams {
                         Button(
@@ -83,7 +93,7 @@ struct StreamDetailInputBox: View {
                                     viewModel.isShowingClearStreamsAlert = true
                                 },
                                 text: "stream-detail-input.clear-stream-history.button",
-                                fontAsset: .avenirNextBold(size: FontSize.caption2, style: .caption2)
+                                fontAsset: .avenirNextBold(size: FontSize.caption3, style: .caption2)
                             )
 
                             Spacer()

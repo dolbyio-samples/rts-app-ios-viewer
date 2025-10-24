@@ -18,7 +18,7 @@ struct LandingView: View {
                  - in this case - controlled by the Binded `Bool` value.
                  */
 
-                NavigationLink(destination: StreamingView(streamName: viewModel.streamName, accountID: viewModel.accountID, playoutDelay: createPlayoutDelay()), isActive: $viewModel.isShowingStreamingView) {
+                NavigationLink(destination: StreamingView(streamName: viewModel.streamName, accountID: viewModel.accountID, playoutDelay: createPlayoutDelay(), enableDebugLogging: viewModel.enableDebugLogging), isActive: $viewModel.isShowingStreamingView) {
                     EmptyView()
                 }
                 .hidden()
@@ -81,6 +81,7 @@ struct LandingView: View {
     @ViewBuilder var streamInputBox: some View {
         let streamDetailInputViewModel = StreamDetailInputViewModel(streamName: $viewModel.streamName,
                                                                     accountID: $viewModel.accountID,
+                                                                    enableDebugLogging: $viewModel.enableDebugLogging,
                                                                     playoutDelayMin: $viewModel.playoutDelayMin,
                                                                     playoutDelayMax: $viewModel.playoutDelayMax,
                                                                     channels: $viewModel.unsourcedChannel,
